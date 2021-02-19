@@ -1,0 +1,24 @@
+# ignore venvs
+.venv*
+.build-venv
+
+# python byproducts
+__pycache__
+output
+*.pyo
+
+# vs code project settings folder
+.vscode
+
+# pyinstaller output
+build
+dist
+
+settings.json
+log.txt
+settings-logviewer.json
+main.spec
+log.db
+
+# Microsoft stupidity
+debug.log
