@@ -1,0 +1,6 @@
+[submodule "src/qt"]
+	path = src/qt
+	url = git@github.com:DaelonSuzuka/qtenv.git
+[submodule "src/devices"]
+	path = src/devices
+	url = git@github.com:DaelonSuzuka/device-engine.git
