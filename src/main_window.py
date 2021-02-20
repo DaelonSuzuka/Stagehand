@@ -2,9 +2,8 @@ from qt import *
 from devices import DeviceControlsDockWidget
 from judipedal_controls import JudiPedalsControls
 import json
-import struct
-import sounddevice as sd
 import numpy as np
+import sounddevice as sd
 
 
 class ObsManager(QObject):
@@ -144,14 +143,14 @@ class ObsWidget(QWidget):
 
     def process_audio(self):
         buffer, _ = self.stream.read(self.stream.read_available)
-        floats = [f[0] for f in struct.iter_unpack("<f", buffer)]
-        raw = sum(f**2 for f in floats)
-
+        # calculate RMS
+        raw = np.sqrt(np.mean(np.power(buffer.flat, 2)))
+        # IIR low pass filter
         self.amplitude = self.amplitude - (0.2 * self.amplitude - raw)
-        gain = int(self.amplitude * 10)
-        if gain > 50:
-            gain = 50
-        self.meter.setText('|' * gain)
+        # convert to integer
+        volume = min(int(self.amplitude * 50), 100)
+        # draw bars
+        self.meter.setText(str(volume) + '|' * volume)
 
     def pedal(self, number):
         if not self.active:
