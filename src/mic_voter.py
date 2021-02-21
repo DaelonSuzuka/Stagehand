@@ -105,11 +105,16 @@ class MicVoterWidget(QWidget):
         self.timer.timeout.connect(self.process_audio)
         self.timer.start(50)
         self.last_changed_time = time()
+        self.rate_limit = PersistentLineEdit('rate_limit', default='1')
 
         with CVBoxLayout(self, align='top') as layout:
             with layout.hbox(align='left'):
                 layout.add(QLabel('Best Mic:'))
                 layout.add(self.best_mic)
+                layout.add(QLabel(), 1)
+                layout.add(QLabel('Rate Limit:'))
+                layout.add(self.rate_limit)
+
             layout.add(QLabel())
 
             with layout.hbox() as layout:
@@ -155,9 +160,10 @@ class MicVoterWidget(QWidget):
         sorted_keys = [k for k in reversed(sorted(volumes, key=volumes.get))]
         best_mic = self.mics[sorted_keys[0]]
             
-        if (time() - self.last_changed_time) < 1:
+        if (time() - self.last_changed_time) < float(self.rate_limit.text()):
             return
-        
+        self.last_changed_time = time()
+
         if best_mic.name != self.best_mic.text():
             mute = {}
             for key in sorted_keys:
