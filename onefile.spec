@@ -4,9 +4,9 @@ block_cipher = None
 
 a = Analysis(
     ['src\\main.py'],
-    pathex=['P:\\_software\\Octoprog'],
+    pathex=['P:\\_software\\Stagehand'],
     binaries=[],
-    datas=[('resources/octoprog.ico', '.')],
+    datas=[('resources/stagehand.ico', '.')],
     hiddenimports=[],
     hookspath=[],
     runtime_hooks=[],
@@ -36,7 +36,7 @@ exe = EXE(
     strip=False,
     upx=True,
     upx_exclude=[],
-    icon='resources/octoprog.ico',
+    icon='resources/stagehand.ico',
     runtime_tmpdir=None,
     console=False 
 )

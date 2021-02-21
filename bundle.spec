@@ -6,7 +6,7 @@ a = Analysis(
     ['src\\main.py'],
     pathex=['P:\\_software\\Stagehand'],
     binaries=[],
-    datas=[('resources/octoprog.ico', 'resources')],
+    datas=[('resources/stagehand.ico', 'resources')],
     hiddenimports=[],
     hookspath=[],
     runtime_hooks=[],
@@ -33,7 +33,7 @@ exe = EXE(
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    icon='resources/octoprog.ico',
+    icon='resources/stagehand.ico',
     console=False 
 )
 
