@@ -2,101 +2,10 @@ from qt import *
 from devices import DeviceControlsDockWidget
 from judipedal_controls import JudiPedalsControls
 import json
-import numpy as np
-import sounddevice as sd
+from mic_voter import MicVoterWidget
+from obs import ObsManager
+import qtawesome as qta
 
-
-class ObsManager(QObject):
-    message_recieved = Signal(str)
-
-    def __init__(self, parent=None, url='localhost', port='4444'):
-        super().__init__(parent=parent)
-        self.url = url
-        self.port = port
-        self.id = 0
-
-        self.socket = QWebSocket()
-        self.socket.connected.connect(self.connected)
-        self.socket.textMessageReceived.connect(self.recieve)
-
-        self.history = {}
-
-        self.scenes = {}
-        self.sources = {}
-
-        self.open()
-    
-    def connected(self):
-        self.send({"request-type": "GetAuthRequired"})
-
-    def open(self, url=None, port=None):
-        if url:
-            self.url = url
-        if port:
-            self.port = port
-        self.socket.open(QUrl(f'ws://{self.url}:{self.port}'))
-
-    def send(self, payload):
-        payload['message-id'] = str(self.id)
-        self.history[self.id] = payload
-        self.socket.sendTextMessage(json.dumps(payload))
-        self.id += 1
-
-    def get_previous_request_type(self, msg):
-        return self.history[int(msg['message-id'])]['request-type']
-
-    def recieve(self, message):
-        self.message_recieved.emit(message)
-        msg = json.loads(message)
-
-        if 'error' in msg:
-            print('error:', self.get_previous_request_type(msg))
-
-        # process responses
-        if 'message-id' in msg:
-            prev = self.get_previous_request_type(msg)
-            if f'_{prev}' in dir(self):
-                getattr(self, f'_{prev}')(msg)
-
-    def _GetAuthRequired(self, msg):
-        if msg['authRequired'] == False:
-            self.active = True
-            self.send({"request-type": 'GetVersion'})
-            self.send({"request-type": 'GetSceneList'})
-            self.send({"request-type": 'GetSourcesList'})
-            self.send({"request-type": 'ListOutputs'})
-
-    def _GetVersion(self, msg):
-        pass
-        # self.available_requests = msg['available-requests'].split(',')
-        # print(self.available_requests)
-
-    def _GetSceneList(self, msg):
-        for scene in msg['scenes']:
-            self.scenes[scene['name']] = scene
-    
-    def _GetSourcesList(self, msg):
-        for source in msg['sources']:
-            self.sources[source['name']] = source
-
-    
-        # if 'update-type' in msg:
-        #     if msg['update-type'] == 'SwitchScenes':
-        #         self.current_scene.setText(msg['scene-name'])
-        #         self.sources.clear()
-        #         for source in msg['sources']:
-        #             self.sources.addItem(source['name'])
-        # else:
-        #     if 'current-scene' in msg:
-        #         self.current_scene.setText(msg['current-scene'])
-                
-        #     if 'sources' in msg:
-        #         for source in msg['sources']:
-        #             self.sources.addItem(source['name'])
-
-        #     if 'scenes' in msg:
-        #         for scene in msg['scenes']:
-        #             self.scenes.addItem(scene['name'])
 
 
 class ObsWidget(QWidget):
@@ -105,7 +14,6 @@ class ObsWidget(QWidget):
         self._id = 0
         self.active = False
 
-        self.obs = ObsManager()
 
         self.payload = QLineEdit()
         self.payload.returnPressed.connect(self.enter)
@@ -117,56 +25,41 @@ class ObsWidget(QWidget):
         self.current_scene = QLabel('Unknown')
         self.sources = QListWidget()
 
-        self.stream = sd.InputStream(48000)
-        self.stream.start()
-
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.process_audio)
-        self.timer.start(50)
-
-        self.meter = QLabel()
-        self.prev_amplitude = 0
-        self.amplitude = 0
 
         with CVBoxLayout(self) as layout:
-            layout.add(self.meter)
-            with layout.hbox() as layout:
-                with layout.vbox() as layout:
-                    layout.add(QLabel('Scenes:'))
-                    layout.add(self.scenes)
-                    layout.add(QLabel('Sources:'))
-                    layout.add(self.current_scene)
-                    layout.add(self.sources)
-                with layout.vbox() as layout:    
-                    layout.add(self.payload)
-                    layout.add(self.history)
+            layout.add(self.mic_voter)
+            
+            # with layout.hbox() as layout:
+            #     with layout.vbox() as layout:
+            #         layout.add(QLabel('Scenes:'))
+            #         layout.add(self.scenes)
+            #         layout.add(QLabel('Sources:'))
+            #         layout.add(self.current_scene)
+            #         layout.add(self.sources)
+            #     with layout.vbox() as layout:    
+            #         layout.add(self.payload)
+            #         layout.add(self.history)
 
-    def process_audio(self):
-        buffer, _ = self.stream.read(self.stream.read_available)
-        # calculate RMS
-        raw = np.sqrt(np.mean(np.power(buffer.flat, 2)))
-        # IIR low pass filter
-        self.amplitude = self.amplitude - (0.2 * self.amplitude - raw)
-        # convert to integer
-        volume = min(int(self.amplitude * 50), 100)
-        # draw bars
-        self.meter.setText(str(volume) + '|' * volume)
 
-    def pedal(self, number):
-        if not self.active:
-            return
+    # def pedal(self, number):
+    #     if not self.active:
+    #         return
 
-        actions = {
-            1: lambda: self.send({"request-type": "GetSceneList"}),
-            2: lambda: self.send({"request-type": "GetSourcesList"}),
-            3: lambda: self.send({"request-type": "GetAuthRequired"}),
-            4: lambda: self.send({"request-type": "GetAuthRequired"}),
-        }
+    #     actions = {
+    #         1: lambda: self.obs.send({"request-type": "GetSceneList"}),
+    #         2: lambda: self.obs.send({"request-type": "GetSourcesList"}),
+    #         3: lambda: self.obs.send({"request-type": "GetAuthRequired"}),
+    #         4: lambda: self.obs.send({"request-type": "GetAuthRequired"}),
+    #     }
 
-        actions[number]()
+    #     actions[number]()
 
     def enter(self):
-        self.obs.send({"request-type": self.payload.text()})
+        try:
+            payload = json.dumps(self.payload.text())
+            self.obs.send(payload)
+        except:
+            pass
 
 
 class MainWindow(BaseMainWindow):
@@ -175,12 +68,47 @@ class MainWindow(BaseMainWindow):
         self.setObjectName("MainWindow")
 
         self.device_controls = DeviceControlsDockWidget(self)
-        self.socket = ObsWidget()
-        self.pedals = JudiPedalsControls()
-        self.pedals.pedal_pressed.connect(self.socket.pedal)
+        
+        self.obs = ObsManager(self)
+        self.pedals = JudiPedalsControls(obs=self.obs)        
+        self.voter = MicVoterWidget(obs=self.obs)
 
-        widget = QWidget()
-        self.setCentralWidget(widget)
-        with CVBoxLayout(widget) as layout:
-            layout.add(self.socket)
-            layout.add(self.pedals)
+        tabs = {
+            'OBS Manager': self.obs,
+            'Mic Voter': self.voter,
+            'Pedals': self.pedals,
+        }
+
+        self.tabs = PersistentTabWidget('main_tabs', tabs=tabs)
+        self.setCentralWidget(self.tabs)
+
+        self.tab_shortcuts = []
+        for i in range(10):
+            shortcut = QShortcut(f'Ctrl+{i + 1}', self, activated=lambda i=i: self.tabs.setCurrentIndex(i))
+            self.tab_shortcuts.append(shortcut)
+
+        self.init_statusbar()
+
+    def init_statusbar(self):
+        self.status = BaseToolbar(self, 'statusbar', location='bottom', size=30)
+
+        # settings button
+        settings_btn = QToolButton(self.status, icon=qta.icon('fa.gear', color='gray'))
+        menu = QMenu(settings_btn)
+        settings_btn.setMenu(menu)
+        settings_btn.setPopupMode(QToolButton.InstantPopup)
+        self.status.addWidget(settings_btn)
+        
+        # settings popup menu
+        menu.addSeparator()
+        menu.addAction(self.device_controls.toggleViewAction())
+
+        menu.addSeparator()
+            
+        menu.addAction(QAction('&Exit', menu, 
+            shortcut='Ctrl+Q', 
+            statusTip='Exit application',
+            triggered=self.close))
+        
+        self.status.add_spacer()
+        self.status.addWidget(self.obs.status_widget)

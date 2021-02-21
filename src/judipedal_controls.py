@@ -6,8 +6,8 @@ from devices import DeviceManager
 class JudiPedalsControls(QWidget):
     pedal_pressed = Signal(int)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, parent=None, obs=None):
+        super().__init__(parent=parent)
         self.one = QPushButton(checkable=True)
         self.two = QPushButton(checkable=True)
         self.three = QPushButton(checkable=True)
