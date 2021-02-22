@@ -41,6 +41,10 @@ class ObsManager(QWidget):
         self.rx_history_box = QTextEdit(readOnly=True)
         self.tx_history_box = QTextEdit(readOnly=True)
 
+        self.payload_box = QLineEdit(placeholderText='enter command payload')
+        self.payload_box.returnPressed.connect(self.enter)
+        self.send_btn = QPushButton('Send', clicked=self.enter)
+
         self.open()
 
         with CVBoxLayout(self, align='top') as layout:
@@ -54,6 +58,11 @@ class ObsManager(QWidget):
                 layout.add(self.port_box)
                 layout.add(self.connect_btn)
                 layout.add(QLabel(), 1)
+            with layout.hbox(align='left'):
+                layout.add(QLabel('Payload:'))
+                layout.add(self.payload_box)
+                layout.add(self.send_btn)
+
             # with layout.hbox():
             #     with layout.vbox():
             #         layout.add(QLabel('TX History:'))
@@ -61,7 +70,14 @@ class ObsManager(QWidget):
             #     with layout.vbox():
             #         layout.add(QLabel('RX History:'))
             #         layout.add(self.rx_history_box)
-    
+
+    def enter(self):
+        try:
+            payload = json.loads(self.payload_box.text())
+            self.send(payload)
+        except:
+            pass
+
     def connected(self):
         self.status.setText('Connected')
         self.status_widget.setText('Connected')
