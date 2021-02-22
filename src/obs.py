@@ -43,7 +43,7 @@ class ObsManager(QWidget):
 
         self.open()
 
-        with CVBoxLayout(self) as layout:
+        with CVBoxLayout(self, align='top') as layout:
             with layout.hbox(align='left'):
                 layout.add(QLabel('Status:'))
                 layout.add(self.status)
@@ -54,13 +54,13 @@ class ObsManager(QWidget):
                 layout.add(self.port_box)
                 layout.add(self.connect_btn)
                 layout.add(QLabel(), 1)
-            with layout.hbox():
-                with layout.vbox():
-                    layout.add(QLabel('TX History:'))
-                    layout.add(self.tx_history_box)
-                with layout.vbox():
-                    layout.add(QLabel('RX History:'))
-                    layout.add(self.rx_history_box)
+            # with layout.hbox():
+            #     with layout.vbox():
+            #         layout.add(QLabel('TX History:'))
+            #         layout.add(self.tx_history_box)
+            #     with layout.vbox():
+            #         layout.add(QLabel('RX History:'))
+            #         layout.add(self.rx_history_box)
     
     def connected(self):
         self.status.setText('Connected')
@@ -85,7 +85,7 @@ class ObsManager(QWidget):
         self.history[self.id] = payload
 
         message = json.dumps(payload)
-        self.tx_history_box.append(message)
+        # self.tx_history_box.append(message)
         self.socket.sendTextMessage(message)
         self.id += 1
 
@@ -94,7 +94,7 @@ class ObsManager(QWidget):
 
     def recieve(self, message):
         self.raw_message_received.emit(message)
-        self.rx_history_box.append(message)
+        # self.rx_history_box.append(message)
         msg = json.loads(message)
         self.message_received.emit(msg)
 
