@@ -11,22 +11,25 @@
 # https://julienharbulot.com/python-dynamical-import.html
 
 
-import os, sys
-from pathlib import Path
+from .judi_pedals import JudiPedals
 
-dir_path = os.path.dirname(os.path.abspath(__file__))
-files = [str(f.relative_to(dir_path).as_posix())[:-3] for f in Path(dir_path).rglob("*.py")]
-if '__init__' in files:
-    files.remove('__init__')
 
-files = [f.replace('/', '.') for f in files]
+# import os, sys
+# from pathlib import Path
 
-for f in files:
-    mod = __import__('.'.join([__name__, f]), fromlist=[f])
-    to_import = [getattr(mod, x) for x in dir(mod) if isinstance(getattr(mod, x), type)]
+# dir_path = os.path.dirname(os.path.abspath(__file__))
+# files = [str(f.relative_to(dir_path).as_posix())[:-3] for f in Path(dir_path).rglob("*.py")]
+# if '__init__' in files:
+#     files.remove('__init__')
 
-    for i in to_import:
-        try:
-            setattr(sys.modules[__name__], i.__name__, i)
-        except AttributeError:
-            pass
+# files = [f.replace('/', '.') for f in files]
+
+# for f in files:
+#     mod = __import__('.'.join([__name__, f]), fromlist=[f])
+#     to_import = [getattr(mod, x) for x in dir(mod) if isinstance(getattr(mod, x), type)]
+
+#     for i in to_import:
+#         try:
+#             setattr(sys.modules[__name__], i.__name__, i)
+#         except AttributeError:
+#             pass

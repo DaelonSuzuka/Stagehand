@@ -3,8 +3,8 @@
 block_cipher = None
 
 a = Analysis(
-    ['src\\main.py'],
-    pathex=['P:\\_software\\Stagehand'],
+    ['src/main.py'],
+    pathex=['./src'],
     binaries=[],
     datas=[('resources/stagehand.ico', 'resources')],
     hiddenimports=[],
@@ -32,7 +32,7 @@ exe = EXE(
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
-    upx=True,
+    upx=False,
     icon='resources/stagehand.ico',
     console=False 
 )
@@ -43,7 +43,7 @@ coll = COLLECT(
     a.zipfiles,
     a.datas,
     strip=False,
-    upx=True,
+    upx=False,
     upx_exclude=[],
     name='Stagehand'
 )
