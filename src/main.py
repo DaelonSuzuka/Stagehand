@@ -22,10 +22,12 @@ class Application(BaseApplication):
         tray.setVisible(True)
 
         menu = QMenu()
-        menu.addAction('one')
-        menu.addAction('two')
-        menu.addAction("Quit", triggered=self.quit)
+        self.test = QAction('test', triggered=lambda: print('test'))
+        menu.addAction(self.test)
+        self.quit_action = QAction("Quit", triggered=self.quit)
+        menu.addAction(self.quit_action)
         tray.setContextMenu(menu)
+        self.tray = tray
 
         self.device_manager = DeviceManager(self)
 
