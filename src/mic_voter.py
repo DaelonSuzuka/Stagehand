@@ -2,6 +2,7 @@ from qt import *
 import numpy as np
 import sounddevice as sd
 from time import time
+import os
 
 
 class MicStream:
@@ -56,14 +57,12 @@ class MicStreamWidget(QWidget):
         self.enabled = PersistentCheckBox(f'enabled:{self.name}', changed=self.on_check)
         self.obs_name = PersistentLineEdit(f'obs_name:{self.name}')
         self.meter = QLabel()
+        self.preferred = PersistentCheckBox(f'preferred:{self.name}')
 
-        self.gain = PersistentLineEdit(f'gain:{self.name}', changed=self.stream.set_gain)
-        if self.gain.text() == '':
-            self.gain.setText(str(self.stream.gain))
+
+        self.gain = PersistentLineEdit(f'gain:{self.name}', changed=self.stream.set_gain, default=str(self.stream.gain))
         self.gain.setFixedWidth(40)
-        self.beta = PersistentLineEdit(f'beta:{self.name}', changed=self.stream.set_beta)
-        if self.beta.text() == '':
-            self.beta.setText(str(self.stream.beta))
+        self.beta = PersistentLineEdit(f'beta:{self.name}', changed=self.stream.set_beta, default=str(self.stream.beta))
         self.beta.setFixedWidth(40)
 
         self.on_check()
@@ -96,22 +95,31 @@ class MicVoterWidget(QWidget):
         self.obs = obs
         self.obs.message_received.connect(self.rx_msg)
 
+        if os.name == 'nt':
+            default_host_api = 3
+        else:
+            default_host_api = 0
+
         self.mics = {}
         for i, d in enumerate(sd.query_devices()):
-            if d['hostapi'] == 0 and d['max_input_channels'] > 0:
+            if d['hostapi'] == default_host_api and d['max_input_channels'] > 0:
                 self.mics[i] = MicStreamWidget(i)
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.process_audio)
-        self.timer.start(50)
+        self.timer.start(20)
+
         self.last_changed_time = time()
         self.rate_limit = PersistentLineEdit('rate_limit', default='1')
+        self.change_threshold = PersistentLineEdit('change_threshold', default='5')
 
         with CVBoxLayout(self, align='top') as layout:
             with layout.hbox(align='left'):
                 layout.add(QLabel('Best Mic:'))
                 layout.add(self.best_mic)
                 layout.add(QLabel(), 1)
+                layout.add(QLabel('Switch Threshold:'))
+                layout.add(self.change_threshold)
                 layout.add(QLabel('Rate Limit:'))
                 layout.add(self.rate_limit)
 
@@ -124,6 +132,7 @@ class MicVoterWidget(QWidget):
                 layout.add(QLabel('gain'), 1)
                 layout.add(QLabel('obs_name'), 1)
                 layout.add(QLabel('enabled'), 1)
+                layout.add(QLabel('preferred'), 1)
 
             layout.add(HLine())
             with layout.hbox() as layout:
@@ -142,6 +151,7 @@ class MicVoterWidget(QWidget):
                             layout.add(mic.gain)
                             layout.add(mic.obs_name)
                             layout.add(mic.enabled)
+                            layout.add(mic.preferred)
                 
             layout.add(QLabel(), 1)
 
@@ -155,6 +165,8 @@ class MicVoterWidget(QWidget):
         for key, mic in self.mics.items():
             if mic.enabled.checkState() == Qt.Checked:
                 volume = mic.stream.process_audio()
+                if volume is None:
+                    volume = 0
                 volumes[key] = volume
                 mic.meter.setText(str(volume) + ' ' + '|' * volume)
 
@@ -162,8 +174,18 @@ class MicVoterWidget(QWidget):
         if len(sorted_keys) == 0:
             return
         best_mic = self.mics[sorted_keys[0]]
-            
-        if (time() - self.last_changed_time) < float(self.rate_limit.text()):
+        
+        need_to_change = False
+        for _, vol in volumes.items():
+            if vol > float(self.change_threshold.text()):
+                need_to_change = True
+
+        if not need_to_change:
+            return
+
+        if (threshold := self.rate_limit.text()) == '':
+            threshold = 5
+        if (time() - self.last_changed_time) < float(threshold):
             return
         self.last_changed_time = time()
 
