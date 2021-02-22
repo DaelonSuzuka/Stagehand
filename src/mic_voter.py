@@ -147,7 +147,8 @@ class MicVoterWidget(QWidget):
 
     def rx_msg(self, message):
         if 'sources' in message:
-            print('got it')
+            # print('got it')
+            pass
 
     def process_audio(self):
         volumes = {}
