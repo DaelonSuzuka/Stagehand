@@ -33,6 +33,10 @@ class Application(BaseApplication):
         self.window = MainWindow()
         self.window.show()
 
+    def closeEvent(self, event):
+        self.device_manager.close()
+        return super().closeEvent(event)
+
     def init_app_info(self):
         self.setOrganizationName("DaelonCo")
         self.setOrganizationDomain("DaelonCo")
