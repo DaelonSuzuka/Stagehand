@@ -98,7 +98,7 @@ class MicVoterWidget(QWidget):
 
         self.mics = {}
         for i, d in enumerate(sd.query_devices()):
-            if d['hostapi'] == 3 and d['max_input_channels'] > 0:
+            if d['hostapi'] == 0 and d['max_input_channels'] > 0:
                 self.mics[i] = MicStreamWidget(i)
 
         self.timer = QTimer()
@@ -159,6 +159,8 @@ class MicVoterWidget(QWidget):
                 mic.meter.setText(str(volume) + ' ' + '|' * volume)
 
         sorted_keys = [k for k in reversed(sorted(volumes, key=volumes.get))]
+        if len(sorted_keys) == 0:
+            return
         best_mic = self.mics[sorted_keys[0]]
             
         if (time() - self.last_changed_time) < float(self.rate_limit.text()):
