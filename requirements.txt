@@ -1,7 +1,7 @@
+numpy==1.20.1
 pyserial==3.5
 PySide2==5.15.2
 QtAwesome==1.0.2
 QtPy==1.9.0
 shiboken2==5.15.2
-sounddevice
-numpy
+sounddevice==0.4.1
