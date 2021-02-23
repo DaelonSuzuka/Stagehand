@@ -1,6 +1,7 @@
 from qt import *
 from devices import DeviceManager
 import json
+from obs import Sandbox
 
 
 class PedalActions(QWidget):
@@ -12,6 +13,8 @@ class PedalActions(QWidget):
         self.status = QLabel('up')
         self.pressed_action = PersistentLineEdit(f'{name}_pressed')
         self.released_action = PersistentLineEdit(f'{name}_released')
+        self.run_pressed = QPushButton('Run', clicked=self.pressed)
+        self.run_released = QPushButton('Run', clicked=self.released)
 
         with CVBoxLayout(self) as layout:
             with layout.hbox(align='left'):
@@ -28,24 +31,17 @@ class PedalActions(QWidget):
                 with layout.vbox():
                     layout.add(self.pressed_action)
                     layout.add(self.released_action)
+                with layout.vbox():
+                    layout.add(self.run_pressed)
+                    layout.add(self.run_released)
 
     def pressed(self):
         self.status.setText('down')
-        if self.pressed_action.text():
-            try:
-                payload = json.loads(self.pressed_action.text())
-                self.obs.send(payload)
-            except:
-                pass
+        Sandbox().run(self.pressed_action.text())
 
     def released(self):
         self.status.setText('up')
-        if self.released_action.text():
-            try:
-                payload = json.loads(self.released_action.text())
-                self.obs.send(payload)
-            except:
-                pass
+        Sandbox().run(self.released_action.text())
 
 
 @DeviceManager.subscribe_to("judipedals")

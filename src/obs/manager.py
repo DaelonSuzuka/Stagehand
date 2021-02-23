@@ -1,5 +1,6 @@
 from qt import *
 import json
+from obs import requests
 
 
 class ObsStatusWidget(QWidget):
@@ -19,7 +20,7 @@ class ObsManager(QWidget):
     message_received = Signal(dict)
     raw_message_received = Signal(str)
 
-    def __init__(self, parent=None, url='localhost', port='4444'):
+    def __init__(self, parent=None, url='10.0.0.227', port='4444'):
         super().__init__(parent=parent)
         self.url = url
         self.port = port
@@ -31,6 +32,7 @@ class ObsManager(QWidget):
         self.socket.textMessageReceived.connect(self.recieve)
 
         self.history = {}
+        self.callbacks = {}
 
         self.status = QLabel('Not Connected')
         self.status_widget = ObsStatusWidget()
@@ -81,7 +83,19 @@ class ObsManager(QWidget):
     def connected(self):
         self.status.setText('Connected')
         self.status_widget.setText('Connected')
-        self.send({"request-type": "GetAuthRequired"})
+
+        def auth_cb(msg):
+            if msg['authRequired']:
+                # do auth stuff
+                pass
+            else:
+                self.active = True
+                # self.send(requests.GetVersion())
+                # self.send(requests.GetSceneList())
+                # self.send(requests.GetSourcesList())
+                # self.send(requests.ListOutputs())
+
+        self.send(requests.GetAuthRequired(), auth_cb)
 
     def disconnected(self):
         self.status.setText('Not Connected')
@@ -96,9 +110,12 @@ class ObsManager(QWidget):
         # self.address.setText(address)
         self.socket.open(QUrl(address))
 
-    def send(self, payload):
+    def send(self, payload, callback=None):
         payload['message-id'] = str(self.id)
         self.history[self.id] = payload
+
+        if callback:
+            self.callbacks[str(self.id)] = callback
 
         message = json.dumps(payload)
         # self.tx_history_box.append(message)
@@ -113,52 +130,10 @@ class ObsManager(QWidget):
         # self.rx_history_box.append(message)
         msg = json.loads(message)
         self.message_received.emit(msg)
-
-        if 'error' in msg:
-            print('error:', self.get_previous_request_type(msg))
+        # if 'error' in msg:
+        #     print('error:', self.get_previous_request_type(msg))
 
         # process responses
         if 'message-id' in msg:
-            prev = self.get_previous_request_type(msg)
-            if f'_{prev}' in dir(self):
-                getattr(self, f'_{prev}')(msg)
-
-    def _GetAuthRequired(self, msg):
-        if msg['authRequired'] == False:
-            self.active = True
-            # self.send({"request-type": 'GetVersion'})
-            # self.send({"request-type": 'GetSceneList'})
-            self.send({"request-type": 'GetSourcesList'})
-            # self.send({"request-type": 'ListOutputs'})
-
-    # def _GetVersion(self, msg):
-    #     pass
-        # self.available_requests = msg['available-requests'].split(',')
-        # print(self.available_requests)
-
-    # def _GetSceneList(self, msg):
-    #     for scene in msg['scenes']:
-    #         self.scenes[scene['name']] = scene
-    
-    # def _GetSourcesList(self, msg):
-    #     for source in msg['sources']:
-    #         self.sources[source['name']] = source
-
-    
-        # if 'update-type' in msg:
-        #     if msg['update-type'] == 'SwitchScenes':
-        #         self.current_scene.setText(msg['scene-name'])
-        #         self.sources.clear()
-        #         for source in msg['sources']:
-        #             self.sources.addItem(source['name'])
-        # else:
-        #     if 'current-scene' in msg:
-        #         self.current_scene.setText(msg['current-scene'])
-                
-        #     if 'sources' in msg:
-        #         for source in msg['sources']:
-        #             self.sources.addItem(source['name'])
-
-        #     if 'scenes' in msg:
-        #         for scene in msg['scenes']:
-        #             self.scenes.addItem(scene['name'])
+            if msg['message-id'] in self.callbacks:
+                self.callbacks[msg['message-id']](msg)

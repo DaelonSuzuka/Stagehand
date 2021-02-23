@@ -1,9 +1,8 @@
 from qt import *
 from devices import DeviceControlsDockWidget
 from judipedal_controls import JudiPedalsControls
-import json
 from mic_voter import MicVoterWidget
-from obs import ObsManager
+from obs import ObsManager, Sandbox
 import qtawesome as qta
 
 
@@ -15,6 +14,8 @@ class MainWindow(BaseMainWindow):
         self.device_controls = DeviceControlsDockWidget(self)
         
         self.obs = ObsManager(self)
+        self.sandbox = Sandbox(self.obs)
+
         self.pedals = JudiPedalsControls(obs=self.obs)        
         self.voter = MicVoterWidget(obs=self.obs)
 
@@ -22,6 +23,7 @@ class MainWindow(BaseMainWindow):
             'OBS Manager': self.obs,
             'Mic Voter': self.voter,
             'Pedals': self.pedals,
+            'Sandbox': self.sandbox
         }
 
         self.tabs = PersistentTabWidget('main_tabs', tabs=tabs)
