@@ -114,6 +114,7 @@ class MicVoterWidget(QWidget):
         self.change_threshold = PersistentLineEdit('change_threshold', default='5')
 
         with CVBoxLayout(self, align='top') as layout:
+            
             with layout.hbox(align='left'):
                 layout.add(QLabel('Best Mic:'))
                 layout.add(self.best_mic)
@@ -124,34 +125,27 @@ class MicVoterWidget(QWidget):
                 layout.add(self.rate_limit)
 
             layout.add(QLabel())
+            layout.add(QLabel())
 
-            with layout.hbox() as layout:
-                layout.add(QLabel('title'), 6)
-                layout.add(QLabel('meter'), 5)
-                layout.add(QLabel('beta'), 1)
-                layout.add(QLabel('gain'), 1)
-                layout.add(QLabel('obs_name'), 1)
-                layout.add(QLabel('enabled'), 1)
-                layout.add(QLabel('preferred'), 1)
-
-            layout.add(HLine())
-            with layout.hbox() as layout:
-                with layout.vbox() as layout:
-                    for key, mic in self.mics.items():
-                        layout.add(mic.title)
-                layout.add(VLine())
-                with layout.vbox(1) as layout:
-                    for key, mic in self.mics.items():
-                        layout.add(mic.meter)
-                layout.add(VLine())
-                with layout.vbox() as layout:
-                    for key, mic in self.mics.items():
-                        with layout.hbox() as layout:
-                            layout.add(mic.beta)
-                            layout.add(mic.gain)
-                            layout.add(mic.obs_name)
-                            layout.add(mic.enabled)
-                            layout.add(mic.preferred)
+            with layout.grid() as layout:
+                layout.setColumnStretch(1, 1)
+                layout.add(QLabel('title'), 0, 0)
+                layout.add(QLabel('meter'), 0, 1)
+                layout.add(QLabel('beta'), 0, 3)
+                layout.add(QLabel('gain'), 0, 4)
+                layout.add(QLabel('obs_name'), 0, 5)
+                layout.add(QLabel('enabled'), 0, 6)
+                layout.add(QLabel('preferred'), 0, 7)
+                layout.add(HLine(), 1, 0, 1, 8)
+                
+                for i, mic in enumerate(self.mics.values()):
+                    layout.add(mic.title, i + 2, 0)
+                    layout.add(mic.meter, i + 2, 1)
+                    layout.add(mic.beta, i + 2, 3)
+                    layout.add(mic.gain, i + 2, 4)
+                    layout.add(mic.obs_name, i + 2, 5)
+                    layout.add(mic.enabled, i + 2, 6)
+                    layout.add(mic.preferred, i + 2, 7)
                 
             layout.add(QLabel(), 1)
 
