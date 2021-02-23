@@ -3,6 +3,17 @@ from obs import requests
 from qt import *
 from .highlighter import PythonHighlighter
 
+"""s
+def SetCurrentScene(scene):
+	send({"request-type":"SetCurrentScene","scene-name":scene}, print)
+
+def GetSceneList():
+    send({"request-type": 'GetSceneList'}, print)
+
+def GetCurrentScene(cb=lambda x: x):
+    send({"request-type": 'GetCurrentScene'}, lambda m: cb(m['name']))
+"""
+
 
 class ScriptBrowser(QListWidget):
     def __init__(self, parent=None):
