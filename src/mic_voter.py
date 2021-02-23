@@ -59,23 +59,12 @@ class MicStreamWidget(QWidget):
         self.meter = QLabel()
         self.preferred = PersistentCheckBox(f'preferred:{self.name}')
 
-
         self.gain = PersistentLineEdit(f'gain:{self.name}', changed=self.stream.set_gain, default=str(self.stream.gain))
         self.gain.setFixedWidth(40)
         self.beta = PersistentLineEdit(f'beta:{self.name}', changed=self.stream.set_beta, default=str(self.stream.beta))
         self.beta.setFixedWidth(40)
 
         self.on_check()
-        
-        # disabled until we can create a more structured widget layout
-        # with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
-        #     layout.add(self.title)
-        #     layout.add(self.meter)
-        #     layout.add(QLabel(), 1)
-        #     layout.add(self.beta)
-        #     layout.add(self.gain)
-        #     layout.add(self.enabled)
-        #     layout.add(self.obs_name)
 
     def on_check(self):
         if self.enabled.checkState() == Qt.Checked:
@@ -129,13 +118,12 @@ class MicVoterWidget(QWidget):
 
             with layout.grid() as layout:
                 layout.setColumnStretch(1, 1)
-                layout.add(QLabel('title'), 0, 0)
-                layout.add(QLabel('meter'), 0, 1)
-                layout.add(QLabel('beta'), 0, 3)
-                layout.add(QLabel('gain'), 0, 4)
-                layout.add(QLabel('obs_name'), 0, 5)
-                layout.add(QLabel('enabled'), 0, 6)
-                layout.add(QLabel('preferred'), 0, 7)
+                layout.add(QLabel('Title'), 0, 0)
+                layout.add(QLabel('Meter'), 0, 1)
+                layout.add(QLabel('Beta'), 0, 3)
+                layout.add(QLabel('Gain'), 0, 4)
+                layout.add(QLabel('OBS Name'), 0, 5)
+                layout.add(QLabel('Enabled'), 0, 6)
                 layout.add(HLine(), 1, 0, 1, 8)
                 
                 for i, mic in enumerate(self.mics.values()):
@@ -145,7 +133,6 @@ class MicVoterWidget(QWidget):
                     layout.add(mic.gain, i + 2, 4)
                     layout.add(mic.obs_name, i + 2, 5)
                     layout.add(mic.enabled, i + 2, 6)
-                    layout.add(mic.preferred, i + 2, 7)
                 
             layout.add(QLabel(), 1)
 
@@ -177,9 +164,9 @@ class MicVoterWidget(QWidget):
         if not need_to_change:
             return
 
-        if (threshold := self.rate_limit.text()) == '':
-            threshold = 5
-        if (time() - self.last_changed_time) < float(threshold):
+        if (rate_limit_period := self.rate_limit.text()) == '':
+            rate_limit_period = 5
+        if (time() - self.last_changed_time) < float(rate_limit_period):
             return
         self.last_changed_time = time()
 
