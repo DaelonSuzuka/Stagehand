@@ -2,37 +2,16 @@ import json
 from obs import requests
 from qt import *
 from .highlighter import PythonHighlighter
-
-"""s
-def SetCurrentScene(scene):
-	send({"request-type":"SetCurrentScene","scene-name":scene}, print)
-
-def GetSceneList():
-    send({"request-type": 'GetSceneList'}, print)
-
-def GetCurrentScene(cb=lambda x: x):
-    send({"request-type": 'GetCurrentScene'}, lambda m: cb(m['name']))
-"""
+from pathlib import Path
 
 
-class ScriptBrowser(QListWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent=parent)
-
-    def get_new_name(self):
-        name = 'new'
-        # for c in range(self.count()):
-        #     if self.itemAt(c).text
-        return name
-
-    def new(self):
-        item = QListWidgetItem(self.get_new_name())
-        item.setFlags(item.flags() | Qt.ItemIsEditable)
-        self.addItem(item)
-        self.editItem(item)
+class ScriptBrowser(PersistentListWidget):
+    def __init__(self, *args, **kwargs):
+        files = [f.as_posix()[8:] for f in Path('./sandbox').glob('*.py')]
+        super().__init__(*args, items=files, **kwargs)
 
 
-class CodeEditor(PersistentTextEdit):
+class CodeEditor(QTextEdit):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
@@ -48,33 +27,49 @@ class CodeEditor(PersistentTextEdit):
 
 
 class SandboxEditor(QWidget):
-    def __init__(self, reload=None, parent=None):
+    reload = Signal()
+
+    def __init__(self, parent=None):
         super().__init__(parent=parent)
 
-        self.scripts = QSettings().value('sandbox_scripts', {})
+        self.scripts = {}
+        for name in [f.as_posix() for f in Path('./sandbox').glob('*.py')]:
+            with open(name) as f:
+                self.scripts[name[8:]] = f.read()
 
-        self.browser = ScriptBrowser()
-        self.editor = CodeEditor('sandbox_editor', changed=reload)
-        self.new = QPushButton('New', clicked=self.browser.new)
-        self.reload = QPushButton('Reload')
+        self.browser = ScriptBrowser('sandbox_browser', changed=self.script_changed)
+        self.editor = CodeEditor()
+        self.editor.textChanged.connect(self.save)
+        self.current_file = ''
+        self.script_changed()
 
         with CHBoxLayout(self) as layout:
-            with layout.vbox() as layout:
-                with layout.hbox() as layout:
-                    layout.add(self.new)
-                    layout.add(self.reload)
-                layout.add(self.browser)
+            layout.add(self.browser)
             layout.add(self.editor, 2)
+
+    def save(self):
+        name = self.browser.selected_items()[0]
+        self.scripts[name] = self.editor.toPlainText()
+        with open('sandbox/' + name, 'w') as f:
+            f.write(self.scripts[name])
+        self.reload.emit()
+
+    def script_changed(self):
+        name = self.browser.selected_items()[0]
+        self.editor.setText(self.scripts[name])
+        self.current_file = 'sandbox/' + name
 
 
 class _Sandbox(QWidget):
     def __init__(self, obs, parent=None):
         super().__init__(parent=parent)
         self.obs = obs
-        self.reset_environment()
         
-        self.editor = SandboxEditor(self.reload_environment)
+        self.editor = SandboxEditor()
+        self.editor.reload.connect(self.reload_environment)
         self.error = QLabel()
+
+        self.reload_environment()
 
         with CVBoxLayout(self) as layout:
             layout.add(self.editor, 1)
@@ -99,7 +94,9 @@ class _Sandbox(QWidget):
         return self._data[name]
 
     def reload_environment(self):
-        text = self.editor.editor.toPlainText()
+        text = ''
+        for name, script in self.editor.scripts.items():
+            text += script
         self.reset_environment()
         try:
             code = compile(text, '', 'exec')
@@ -130,4 +127,3 @@ def Sandbox(obs=None):
     if sandbox is None:
         sandbox = _Sandbox(obs)
     return sandbox
-
