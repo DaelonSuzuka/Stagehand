@@ -29,6 +29,7 @@ class GenericActionsWidget(QWidget):
             self.actions.append(ActionWidget(f'Action {i}'))
 
         with CVBoxLayout(self) as layout:
+            layout.add(QLabel('This page is just for Blair'), 1)
             for action in self.actions:
                 layout.add(action)
             layout.add(QLabel(), 1)
