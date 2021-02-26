@@ -20,7 +20,7 @@ class ObsManager(QWidget):
     message_received = Signal(dict)
     raw_message_received = Signal(str)
 
-    def __init__(self, parent=None, url='10.0.0.227', port='4444'):
+    def __init__(self, parent=None, url='localhost', port='4444'):
         super().__init__(parent=parent)
         self.url = url
         self.port = port
