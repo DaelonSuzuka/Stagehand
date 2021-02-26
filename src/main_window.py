@@ -4,6 +4,7 @@ from judipedal_controls import JudiPedalsControls
 from mic_voter import MicVoterWidget
 from obs import ObsManager, Sandbox
 import qtawesome as qta
+from generic_actions import GenericActionsWidget
 
 
 class MainWindow(BaseMainWindow):
@@ -18,12 +19,14 @@ class MainWindow(BaseMainWindow):
 
         self.pedals = JudiPedalsControls(obs=self.obs)        
         self.voter = MicVoterWidget(obs=self.obs)
+        self.actions = GenericActionsWidget()
 
         tabs = {
             'OBS Manager': self.obs,
             'Mic Voter': self.voter,
+            'Actions': self.actions,
             'Pedals': self.pedals,
-            'Sandbox': self.sandbox
+            'Sandbox': self.sandbox,
         }
 
         self.tabs = PersistentTabWidget('main_tabs', tabs=tabs)
