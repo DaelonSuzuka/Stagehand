@@ -1,14 +1,13 @@
-
 from qt import *
 from main_window import MainWindow
 from devices import DeviceManager
 import qtawesome as qta
+from appdirs import AppDirs
 
 
 class Application(BaseApplication):
     def __init__(self) -> None:
         super().__init__()
-
         self.init_app_info()
         
         # self.setQuitOnLastWindowClosed(False)
@@ -44,6 +43,8 @@ class Application(BaseApplication):
         self.setOrganizationDomain("DaelonCo")
         self.setApplicationName("Stagehand")
         self.setApplicationVersion("v0.1")
+
+        self.dirs = AppDirs('Stagehand', 'DaelonCo')
 
 
 def run():    
