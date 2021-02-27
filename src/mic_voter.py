@@ -82,7 +82,6 @@ class MicVoterWidget(QWidget):
 
         self.best_mic = QLabel()
         self.obs = obs
-        self.obs.message_received.connect(self.rx_msg)
 
         if os.name == 'nt':
             default_host_api = 3
@@ -135,11 +134,6 @@ class MicVoterWidget(QWidget):
                     layout.add(mic.enabled, i + 2, 6)
                 
             layout.add(QLabel(), 1)
-
-    def rx_msg(self, message):
-        if 'sources' in message:
-            # print('got it')
-            pass
 
     def process_audio(self):
         volumes = {}

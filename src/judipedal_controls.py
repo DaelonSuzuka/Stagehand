@@ -5,10 +5,8 @@ from obs import Sandbox
 
 
 class PedalActions(QWidget):
-    def __init__(self, name, obs, parent=None):
+    def __init__(self, name, parent=None):
         super().__init__(parent=parent)
-        self.obs = obs
-
         self.name = QLabel(name)
         self.status = QLabel('up')
         self.pressed_action = PersistentLineEdit(f'{name}_pressed')
@@ -46,15 +44,12 @@ class PedalActions(QWidget):
 
 @DeviceManager.subscribe_to("judipedals")
 class JudiPedalsControls(QWidget):
-    def __init__(self, parent=None, obs=None):
+    def __init__(self, parent=None):
         super().__init__(parent=parent)
-
-        self.obs = obs
-
-        self.one = PedalActions('one', obs)
-        self.two = PedalActions('two', obs)
-        self.three = PedalActions('three', obs)
-        self.four = PedalActions('four', obs)
+        self.one = PedalActions('one')
+        self.two = PedalActions('two')
+        self.three = PedalActions('three')
+        self.four = PedalActions('four')
 
         self.status = QLabel("No Pedals Connected")
         

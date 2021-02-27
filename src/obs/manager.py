@@ -25,6 +25,7 @@ class ObsManager(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.id = 0
+        self.active = False
 
         self.socket = QWebSocket()
         self.socket.connected.connect(self.connected)
@@ -169,15 +170,12 @@ class ObsManager(QWidget):
         self.socket.sendTextMessage(message)
         self.id += 1
 
-    def get_previous_request_type(self, msg):
-        return self.history[int(msg['message-id'])]['request-type']
-
     def recieve(self, message):
         self.raw_message_received.emit(message)
         msg = json.loads(message)
         self.message_received.emit(msg)
 
-        # process responses
+        # process callbacks
         if 'message-id' in msg:
             if msg['message-id'] in self.callbacks:
                 self.callbacks[msg['message-id']](msg)

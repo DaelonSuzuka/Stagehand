@@ -17,8 +17,8 @@ class MainWindow(BaseMainWindow):
         self.obs = ObsManager(self)
         self.sandbox = Sandbox(self.obs)
 
-        self.pedals = JudiPedalsControls(obs=self.obs)        
-        self.voter = MicVoterWidget(obs=self.obs)
+        self.pedals = JudiPedalsControls()        
+        self.voter = MicVoterWidget()
         self.actions = GenericActionsWidget()
 
         tabs = {
