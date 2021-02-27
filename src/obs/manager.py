@@ -94,7 +94,6 @@ class ObsManager(QWidget):
 
     def open(self):
         address = f'ws://{self.url.text()}:{self.port.text()}'
-        # self.address.setText(address)
         self.socket.open(QUrl(address))
 
     def send(self, payload, callback=None):
@@ -105,7 +104,6 @@ class ObsManager(QWidget):
             self.callbacks[str(self.id)] = callback
 
         message = json.dumps(payload)
-        # self.tx_history_box.append(message)
         self.socket.sendTextMessage(message)
         self.id += 1
 
@@ -114,11 +112,8 @@ class ObsManager(QWidget):
 
     def recieve(self, message):
         self.raw_message_received.emit(message)
-        # self.rx_history_box.append(message)
         msg = json.loads(message)
         self.message_received.emit(msg)
-        # if 'error' in msg:
-        #     print('error:', self.get_previous_request_type(msg))
 
         # process responses
         if 'message-id' in msg:
