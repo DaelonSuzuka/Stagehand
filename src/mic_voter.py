@@ -3,6 +3,7 @@ import numpy as np
 import sounddevice as sd
 from time import time
 import os
+from obs import Sandbox
 
 
 class MicStream:
@@ -77,11 +78,10 @@ class MicStreamWidget(QWidget):
 
 
 class MicVoterWidget(QWidget):
-    def __init__(self, parent=None, obs=None):
+    def __init__(self, parent=None):
         super().__init__(parent=parent)
 
         self.best_mic = QLabel()
-        self.obs = obs
 
         if os.name == 'nt':
             default_host_api = 3
@@ -178,5 +178,5 @@ class MicVoterWidget(QWidget):
             self.best_mic.setText(best_mic.name)
 
             for mic, state in mute.items():
-                mute_request = {"request-type": "SetMute", 'source': mic, 'mute': state}
-                self.obs.send(mute_request)
+                mute_request = f'{{"request-type": "SetMute", "source": "{mic}", "mute": {str(state).lower()}}}'
+                Sandbox().run(mute_request)
