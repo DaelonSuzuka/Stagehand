@@ -41,6 +41,7 @@ class MainWindow(BaseMainWindow):
 
     def init_statusbar(self):
         self.status = BaseToolbar(self, 'statusbar', location='bottom', size=30)
+        self.status.setContextMenuPolicy(Qt.PreventContextMenu)
 
         # settings button
         settings_btn = QToolButton(self.status, icon=qta.icon('fa.gear', color='gray'))
@@ -48,6 +49,7 @@ class MainWindow(BaseMainWindow):
         settings_btn.setMenu(menu)
         settings_btn.setPopupMode(QToolButton.InstantPopup)
         self.status.addWidget(settings_btn)
+        self.status.addSeparator()
         
         # settings popup menu
         menu.addSeparator()
@@ -61,4 +63,5 @@ class MainWindow(BaseMainWindow):
             triggered=self.close))
         
         self.status.add_spacer()
+        self.status.addSeparator()
         self.status.addWidget(self.obs.status_widget)
