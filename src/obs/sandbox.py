@@ -48,16 +48,18 @@ class SandboxEditor(QWidget):
             layout.add(self.editor, 2)
 
     def save(self):
-        name = self.browser.selected_items()[0]
-        self.scripts[name] = self.editor.toPlainText()
-        with open('sandbox/' + name, 'w') as f:
-            f.write(self.scripts[name])
-        self.reload.emit()
+        if items := self.browser.selected_items():
+            name = items[0]
+            self.scripts[name] = self.editor.toPlainText()
+            with open('sandbox/' + name, 'w') as f:
+                f.write(self.scripts[name])
+            self.reload.emit()
 
     def script_changed(self):
-        name = self.browser.selected_items()[0]
-        self.editor.setText(self.scripts[name])
-        self.current_file = 'sandbox/' + name
+        if items := self.browser.selected_items():
+            name = items[0]
+            self.editor.setText(self.scripts[name])
+            self.current_file = 'sandbox/' + name
 
 
 class _Sandbox(QWidget):
