@@ -1,7 +1,6 @@
 # user
 
 'Whiteboard - Thinkpad'
-print(locals())
 
 
 def SaveCurrentScene(location='prev_scene'):
