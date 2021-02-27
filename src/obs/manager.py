@@ -20,10 +20,8 @@ class ObsManager(QWidget):
     message_received = Signal(dict)
     raw_message_received = Signal(str)
 
-    def __init__(self, parent=None, url='localhost', port='4444'):
+    def __init__(self, parent=None):
         super().__init__(parent=parent)
-        self.url = url
-        self.port = port
         self.id = 0
 
         self.socket = QWebSocket()
@@ -37,52 +35,46 @@ class ObsManager(QWidget):
         self.status = QLabel('Not Connected')
         self.status_widget = ObsStatusWidget()
 
-        self.url_box = QLineEdit(placeholderText='localhost')
-        self.port_box = QLineEdit(placeholderText='4444')
-        self.connect_btn = QPushButton('Connect')
-        self.rx_history_box = QTextEdit(readOnly=True)
-        self.tx_history_box = QTextEdit(readOnly=True)
+        self.url = PersistentLineEdit('obs_url', default='localhost')
+        self.port = PersistentLineEdit('obs_port', default='4444')
+        self.connect_btn = QPushButton('Connect', clicked=self.on_connect_btn)
+        self.connect_at_start = PersistentCheckBox('connect_at_start')
+        self.password = PersistentLineEdit('obs_password')
 
-        self.payload_box = QLineEdit(placeholderText='enter command payload')
-        self.payload_box.returnPressed.connect(self.enter)
-        self.send_btn = QPushButton('Send', clicked=self.enter)
-
-        self.open()
+        if self.connect_at_start.checkState() == Qt.Checked:
+            self.open()
 
         with CVBoxLayout(self, align='top') as layout:
             with layout.hbox(align='left'):
                 layout.add(QLabel('Status:'))
                 layout.add(self.status)
             with layout.hbox(align='left'):
-                layout.add(QLabel('Address:'))
-                layout.add(self.url_box)
-                layout.add(QLabel('Port:'))
-                layout.add(self.port_box)
-                layout.add(self.connect_btn)
+                layout.add(QLabel('Connect on Startup:'))
+                layout.add(self.connect_at_start)
+            with layout.hbox(align='left'):
+                layout.add(QLabel('Password:'))
+                layout.add(self.password)
                 layout.add(QLabel(), 1)
             with layout.hbox(align='left'):
-                layout.add(QLabel('Payload:'))
-                layout.add(self.payload_box)
-                layout.add(self.send_btn)
+                layout.add(QLabel('Address:'))
+                layout.add(self.url)
+                layout.add(QLabel('Port:'))
+                layout.add(self.port)
+                layout.add(self.connect_btn)
+                layout.add(QLabel(), 1)
 
-            # with layout.hbox():
-            #     with layout.vbox():
-            #         layout.add(QLabel('TX History:'))
-            #         layout.add(self.tx_history_box)
-            #     with layout.vbox():
-            #         layout.add(QLabel('RX History:'))
-            #         layout.add(self.rx_history_box)
-
-    def enter(self):
-        try:
-            payload = json.loads(self.payload_box.text())
-            self.send(payload)
-        except:
-            pass
+    def on_connect_btn(self):
+        if self.connect_btn.text() == 'Connect':
+            self.open()
+        else:
+            self.socket.close()
 
     def connected(self):
         self.status.setText('Connected')
         self.status_widget.setText('Connected')
+        self.connect_btn.setText('Disconnect')
+        self.url.setEnabled(False)
+        self.port.setEnabled(False)
 
         def auth_cb(msg):
             if msg['authRequired']:
@@ -90,23 +82,18 @@ class ObsManager(QWidget):
                 pass
             else:
                 self.active = True
-                # self.send(requests.GetVersion())
-                # self.send(requests.GetSceneList())
-                # self.send(requests.GetSourcesList())
-                # self.send(requests.ListOutputs())
 
         self.send(requests.GetAuthRequired(), auth_cb)
 
     def disconnected(self):
         self.status.setText('Not Connected')
         self.status_widget.setText('Not Connected')
+        self.connect_btn.setText('Connect')
+        self.url.setEnabled(True)
+        self.port.setEnabled(True)
 
-    def open(self, url=None, port=None):
-        if url:
-            self.url = url
-        if port:
-            self.port = port
-        address = f'ws://{self.url}:{self.port}'
+    def open(self):
+        address = f'ws://{self.url.text()}:{self.port.text()}'
         # self.address.setText(address)
         self.socket.open(QUrl(address))
 
