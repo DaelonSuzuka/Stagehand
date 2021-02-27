@@ -3,6 +3,7 @@ from main_window import MainWindow
 from devices import DeviceManager
 import qtawesome as qta
 from appdirs import AppDirs
+from pathlib import Path
 
 
 class Application(BaseApplication):
@@ -14,7 +15,18 @@ class Application(BaseApplication):
 
         icon = QIcon(qta.icon('fa.circle','fa5s.video', options=[{'color':'gray'}, {'scale_factor':0.5, 'color':'white'}]))
         self.setWindowIcon(icon)
-        
+
+        self.device_manager = DeviceManager(self)
+
+        # create window
+        self.window = MainWindow()
+        self.window.show()
+
+    def closeEvent(self, event):
+        self.device_manager.close()
+        return super().closeEvent(event)
+
+    def init_app_tray(self):
         tray = QSystemTrayIcon()
         tray_icon = QIcon(qta.icon('fa5s.video', color='white'))
         tray.setIcon(tray_icon)
@@ -28,16 +40,6 @@ class Application(BaseApplication):
         tray.setContextMenu(menu)
         self.tray = tray
 
-        self.device_manager = DeviceManager(self)
-
-        # create window
-        self.window = MainWindow()
-        self.window.show()
-
-    def closeEvent(self, event):
-        self.device_manager.close()
-        return super().closeEvent(event)
-
     def init_app_info(self):
         self.setOrganizationName("DaelonCo")
         self.setOrganizationDomain("DaelonCo")
@@ -45,6 +47,10 @@ class Application(BaseApplication):
         self.setApplicationVersion("v0.1")
 
         self.dirs = AppDirs('Stagehand', 'DaelonCo')
+        self.config_dir = self.dirs.user_config_dir
+
+        # make sure config dir exists
+        Path(self.config_dir).mkdir(parents=True, exist_ok=True)
 
 
 def run():    
