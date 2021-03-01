@@ -18,7 +18,11 @@ class MainWindow(BaseMainWindow):
         self.device_controls = DeviceControlsDockWidget(self)
         
         self.obs = ObsManager(self)
-        self.sandbox = Sandbox(self.obs)
+        self.sandbox = Sandbox(self.obs, self)
+        if not self.restoreDockWidget(self.sandbox.editor_dock):
+            self.addDockWidget(self.sandbox.editor_dock.starting_area, self.sandbox.editor_dock)
+        if not self.restoreDockWidget(self.sandbox.tools_dock):
+            self.addDockWidget(self.sandbox.tools_dock.starting_area, self.sandbox.tools_dock)
 
         self.pedals = PedalActionsWidget(self)        
         self.voter = MicVoterWidget(self)
@@ -31,7 +35,6 @@ class MainWindow(BaseMainWindow):
             'Actions': self.actions,
             'Web Actions': self.web_actions,
             'Pedal Actions': self.pedals,
-            'Sandbox': self.sandbox,
         }
 
         self.tabs = PersistentTabWidget('main_tabs', tabs=tabs)
@@ -58,6 +61,8 @@ class MainWindow(BaseMainWindow):
         
         # settings popup menu
         menu.addSeparator()
+        menu.addAction(self.sandbox.tools_dock.toggleViewAction())
+        menu.addAction(self.sandbox.editor_dock.toggleViewAction())
         menu.addAction(self.device_controls.toggleViewAction())
 
         menu.addSeparator()

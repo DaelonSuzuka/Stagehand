@@ -61,6 +61,68 @@ class SandboxEditor(QWidget):
             self.current_file = 'sandbox/' + name
 
 
+class SandboxEditorDockWidget(QDockWidget):
+    def __init__(self, widget=None, parent=None):
+        super().__init__('Sandbox Editor', parent=parent)
+        self.setObjectName('Sandbox_Editor')
+
+        self.setWidget(widget)
+
+        # self.setAllowedAreas(Qt.BottomDockWidgetArea)
+        self.setFeatures(QDockWidget.DockWidgetClosable | QDockWidget.DockWidgetMovable | QDockWidget.DockWidgetFloatable)
+
+        self.starting_area = Qt.RightDockWidgetArea
+
+        self.closeEvent = lambda x: self.hide()
+
+    def toggleViewAction(self):
+        action = super().toggleViewAction()
+        action.setShortcut('Ctrl+E')
+        return action
+
+
+class SandboxToolsDockWidget(QDockWidget):
+    def __init__(self, widget=None, parent=None):
+        super().__init__('Sandbox Tools', parent=parent)
+        self.setObjectName('Sandbox_Tools')
+
+        self.setWidget(widget)
+
+        # self.setAllowedAreas(Qt.BottomDockWidgetArea)
+        self.setFeatures(QDockWidget.DockWidgetClosable | QDockWidget.DockWidgetMovable | QDockWidget.DockWidgetFloatable)
+
+        self.starting_area = Qt.BottomDockWidgetArea
+
+        self.closeEvent = lambda x: self.hide()
+
+    def toggleViewAction(self):
+        action = super().toggleViewAction()
+        action.setShortcut('Ctrl+T')
+        return action
+
+
+
+class SandboxTools(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+
+        self.scenes = QListWidget()
+        self.sources = QListWidget()
+        self.output = QTextEdit()
+
+        with CHBoxLayout(self) as layout:
+            with layout.hbox() as layout:
+                with layout.vbox() as layout:
+                    layout.add(QLabel('Scenes:'))
+                    layout.add(self.scenes)
+                with layout.vbox() as layout:
+                    layout.add(QLabel('Sources:'))
+                    layout.add(self.sources)
+            with layout.vbox() as layout:
+                layout.add(QLabel('Output:'))
+                layout.add(self.output)
+
+
 class _Sandbox(QWidget):
     def __init__(self, obs, parent=None):
         super().__init__(parent=parent)
@@ -68,30 +130,39 @@ class _Sandbox(QWidget):
         
         self.editor = SandboxEditor()
         self.editor.reload.connect(self.reload_environment)
+
+        self.tools = SandboxTools()
         self.error = QLabel()
 
         self.reload_environment()
 
-        with CVBoxLayout(self) as layout:
-            layout.add(self.editor, 1)
-            layout.add(self.error)
+        self.editor_dock = SandboxEditorDockWidget(self.editor, self)
+        self.tools_dock = SandboxToolsDockWidget(self.tools, self)
 
     def reset_environment(self):
         self._data = {}
         self._globals = {
             'send': self.obs.send,
             'requests': requests,
-            'save': self.save, 
-            'load': self.load, 
+            'save': self._save, 
+            'load': self._load, 
             'data': self._data, 
+            'print': self._print, 
         }
         self._locals = {
         }
 
-    def save(self, name, value):
+    def _print(self, *args):
+        s = ''
+        for arg in args:
+            s += str(arg)
+        self.tools.output.append(s + '\n')
+        
+
+    def _save(self, name, value):
         self._data[name] = value
 
-    def load(self, name):
+    def _load(self, name):
         return self._data[name]
 
     def reload_environment(self):
@@ -123,8 +194,8 @@ class _Sandbox(QWidget):
 sandbox = None
 
 
-def Sandbox(obs=None):
+def Sandbox(obs=None, parent=None):
     global sandbox
     if sandbox is None:
-        sandbox = _Sandbox(obs)
+        sandbox = _Sandbox(obs, parent)
     return sandbox
