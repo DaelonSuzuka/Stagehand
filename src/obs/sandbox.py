@@ -43,9 +43,9 @@ class SandboxEditor(QWidget):
         self.current_file = ''
         self.script_changed()
 
-        with CHBoxLayout(self) as layout:
-            layout.add(self.browser)
-            layout.add(self.editor, 2)
+        with CPersistentSplitter('sandbox_splitter', self) as splitter:
+            splitter.add(self.browser, 1)
+            splitter.add(self.editor, 4)
 
     def save(self):
         if items := self.browser.selected_items():
