@@ -24,14 +24,14 @@ def format(color, style=''):
 # Syntax styles that can be shared by all languages
 
 STYLES = {
-    'keyword': format([200, 120, 50], 'bold'),
+    'keyword': format('blue'),
     'operator': format([150, 150, 150]),
-    'brace': format('darkGray'),
-    'defclass': format([220, 220, 255], 'bold'),
-    'string': format([20, 110, 100]),
-    'string2': format([30, 120, 110]),
-    'comment': format([128, 128, 128]),
-    'self': format([150, 85, 140], 'italic'),
+    'brace': format('black'),
+    'defclass': format([68, 201, 144], 'bold'),
+    'string': format([206, 114, 59]),
+    'string2': format([206, 114, 59]),
+    'comment': format('green'),
+    'self': format([150, 85, 140]),
     'numbers': format([100, 150, 190]),
 }
 
