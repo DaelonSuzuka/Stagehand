@@ -1,6 +1,6 @@
 from qt import *
 from devices import DeviceControlsDockWidget
-from judipedal_controls import JudiPedalsControls
+from pedal_actions import PedalActionsWidget
 from mic_voter import MicVoterWidget
 from obs import ObsManager, Sandbox
 import qtawesome as qta
@@ -18,7 +18,7 @@ class MainWindow(BaseMainWindow):
         self.obs = ObsManager(self)
         self.sandbox = Sandbox(self.obs)
 
-        self.pedals = JudiPedalsControls(self)        
+        self.pedals = PedalActionsWidget(self)        
         self.voter = MicVoterWidget(self)
         self.actions = GenericActionsWidget(self)
         self.web_actions = WebInterfaceManager(self)
@@ -27,9 +27,9 @@ class MainWindow(BaseMainWindow):
             'OBS Manager': self.obs,
             'Mic Voter': self.voter,
             'Actions': self.actions,
-            'Pedals': self.pedals,
-            'Sandbox': self.sandbox,
             'Web Actions': self.web_actions,
+            'Pedal Actions': self.pedals,
+            'Sandbox': self.sandbox,
         }
 
         self.tabs = PersistentTabWidget('main_tabs', tabs=tabs)

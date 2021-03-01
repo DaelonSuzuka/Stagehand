@@ -43,7 +43,7 @@ class PedalActions(QWidget):
 
 
 @DeviceManager.subscribe_to("judipedals")
-class JudiPedalsControls(QWidget):
+class PedalActionsWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.one = PedalActions('one')
