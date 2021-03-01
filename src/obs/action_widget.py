@@ -30,6 +30,7 @@ class ActionWidget(QWidget):
     def reset(self):
         self.label.setText(self.name)
         self.action.clear()
+        QSettings().setValue(f'{self.name}_label', self.name)
 
     def run(self):
         Sandbox().run(self.action.text())
