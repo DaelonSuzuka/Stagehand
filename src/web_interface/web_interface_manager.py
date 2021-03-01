@@ -4,6 +4,7 @@ from qt import *
 from devices import SubscriptionManager
 import threading
 from obs import ActionWidget
+import socket
 
 
 # disable flask logging
@@ -39,17 +40,32 @@ class WebInterfaceManager(QWidget):
         self.flask = threading.Thread(name='Web App', target=start_flask, daemon=True)
         self.flask.start()
 
-        url = 'localhost:5000'
-        self.flask_url = QLabel(f'<a href="{url}">{url}</a>')
-        self.flask_url.setTextInteractionFlags(Qt.TextBrowserInteraction)
+        url = 'http://localhost:5000'
+        self.local_link = QLabel(f'<a href="{url}">{url}</a>')
+        self.local_link.setTextInteractionFlags(Qt.TextBrowserInteraction)
+        self.local_link.setOpenExternalLinks(True)
+
+        # hack to get local ip address
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        url = f'http://{s.getsockname()[0]}:5000'
+        s.close()
+
+        self.lan_link = QLabel(f'<a href="{url}">{url}</a>')
+        self.lan_link.setTextInteractionFlags(Qt.TextBrowserInteraction)
+        self.lan_link.setOpenExternalLinks(True)
 
         self.actions = {i: ActionWidget(f'Web Action {i}', self.rename_buttons) for i in range(1, 13)}
 
         with CVBoxLayout(self) as layout:
             with layout.hbox():
-                layout.add(QLabel('Web Actions URL:'))
-                layout.add(self.flask_url)
+                layout.add(QLabel('Local Link:'))
+                layout.add(self.local_link)
+                layout.add(QLabel())
+                layout.add(QLabel('LAN Link:'))
+                layout.add(self.lan_link)
                 layout.add(QLabel(), 1)
+            layout.add(QLabel())
 
             layout.add(HLine())    
             
