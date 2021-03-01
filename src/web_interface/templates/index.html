@@ -53,15 +53,30 @@
 <body style="background-color: #1F1E1F; color:white;">
     <style>
         canvas {
+            background-color: #1F1E1F;
             overflow-y: auto;
         }
-        button {
-            font-family: Helvetica;
-            background-color: #3A393A;
-            color: white;
-            width: 24%;
-            height: 24%;
-            font-size: 20px;
+
+        @media (min-width: 600px) {
+            button {
+                font-family: Helvetica;
+                background-color: #3A393A;
+                color: white;
+                height: 250px;
+                width: 250px;
+                font-size:30px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            button {
+                font-family: Helvetica;
+                background-color: #3A393A;
+                color: white;
+                width: 150px;
+                height: 150px;
+                font-size: 20px;
+            }
         }
     </style>
 
