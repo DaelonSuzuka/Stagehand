@@ -19,7 +19,6 @@ class CodeEditor(QTextEdit):
         font.setFamily("Courier");
         font.setStyleHint(QFont.Monospace);
         font.setFixedPitch(True);
-        font.setPointSize(10);
         self.setFont(font)
         
         self.setTabStopWidth(QFontMetricsF(font).width(' ') * 4)
