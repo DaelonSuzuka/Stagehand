@@ -29,12 +29,17 @@ class MainWindow(BaseMainWindow):
         self.actions = GenericActionsWidget(self)
         self.web_actions = WebInterfaceManager(self)
 
+        def scroll(widget):
+            scroll = QScrollArea(parent=self)
+            scroll.setWidget(widget)
+            return scroll
+
         tabs = {
             'OBS Manager': self.obs,
-            'Mic Voter': self.voter,
-            'Actions': self.actions,
-            'Web Actions': self.web_actions,
-            'Pedal Actions': self.pedals,
+            'Mic Voter': scroll(self.voter),
+            'Actions': scroll(self.actions),
+            'Web Actions': scroll(self.web_actions),
+            'Pedal Actions': scroll(self.pedals),
         }
 
         self.tabs = PersistentTabWidget('main_tabs', tabs=tabs)
