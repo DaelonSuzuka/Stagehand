@@ -1,45 +1,6 @@
 from qt import *
 from devices import DeviceManager
-import json
-from obs import Sandbox, ActionWidget
-
-
-class PedalActions(QWidget):
-    def __init__(self, name, parent=None):
-        super().__init__(parent=parent)
-        self.name = QLabel(name)
-        self.status = QLabel('up')
-        self.pressed_action = PersistentLineEdit(f'{name}_pressed')
-        self.released_action = PersistentLineEdit(f'{name}_released')
-        self.run_pressed = QPushButton('Run', clicked=self.pressed)
-        self.run_released = QPushButton('Run', clicked=self.released)
-
-        with CVBoxLayout(self) as layout:
-            with layout.hbox(align='left'):
-                layout.add(QLabel('Pedal:'))
-                layout.add(self.name)
-                layout.add(QLabel(), 1)
-                layout.add(QLabel('Status:'))
-                layout.add(self.status)
-                
-            with layout.hbox():
-                with layout.vbox():
-                    layout.add(QLabel('Pressed:'))
-                    layout.add(QLabel('Released:'))
-                with layout.vbox():
-                    layout.add(self.pressed_action)
-                    layout.add(self.released_action)
-                with layout.vbox():
-                    layout.add(self.run_pressed)
-                    layout.add(self.run_released)
-
-    def pressed(self):
-        self.status.setText('down')
-        Sandbox().run(self.pressed_action.text())
-
-    def released(self):
-        self.status.setText('up')
-        Sandbox().run(self.released_action.text())
+from obs import ActionWidget
 
 
 @DeviceManager.subscribe_to("judipedals")
