@@ -38,11 +38,11 @@ class PedalActionsWidget(QWidget):
         device.signals.button_released.connect(self.button_released)
 
     def button_pressed(self, button):
-        number = int(button)
+        number = int(button) - 1
         self.press[number].run()
         self.state[number].setText('down')
 
     def button_released(self, button):
-        number = int(button)
+        number = int(button) - 1
         self.release[number].run()
         self.state[number].setText('up')
