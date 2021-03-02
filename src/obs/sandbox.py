@@ -67,12 +67,8 @@ class SandboxEditorDockWidget(QDockWidget):
         self.setObjectName('Sandbox_Editor')
 
         self.setWidget(widget)
-
-        # self.setAllowedAreas(Qt.BottomDockWidgetArea)
         self.setFeatures(QDockWidget.DockWidgetClosable | QDockWidget.DockWidgetMovable | QDockWidget.DockWidgetFloatable)
-
         self.starting_area = Qt.RightDockWidgetArea
-
         self.closeEvent = lambda x: self.hide()
 
     def toggleViewAction(self):
@@ -87,12 +83,8 @@ class SandboxToolsDockWidget(QDockWidget):
         self.setObjectName('Sandbox_Tools')
 
         self.setWidget(widget)
-
-        # self.setAllowedAreas(Qt.BottomDockWidgetArea)
         self.setFeatures(QDockWidget.DockWidgetClosable | QDockWidget.DockWidgetMovable | QDockWidget.DockWidgetFloatable)
-
         self.starting_area = Qt.BottomDockWidgetArea
-
         self.closeEvent = lambda x: self.hide()
 
     def toggleViewAction(self):
@@ -101,25 +93,36 @@ class SandboxToolsDockWidget(QDockWidget):
         return action
 
 
-
 class SandboxTools(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
 
         self.scenes = QListWidget()
+        self.refresh_scenes = QPushButton('Refresh')
         self.sources = QListWidget()
-        self.output = QTextEdit()
+        self.refresh_sources = QPushButton('Refresh')
+        self.output = QTextEdit(readOnly=True)
+        self.clear_output = QPushButton('Clear', clicked=self.output.clear)
 
         with CHBoxLayout(self) as layout:
             with layout.hbox() as layout:
                 with layout.vbox() as layout:
-                    layout.add(QLabel('Scenes:'))
+                    with layout.hbox(margins=(0,0,0,0)) as layout:
+                        layout.add(QLabel('Scenes:'))
+                        layout.add(QLabel(), 1)
+                        layout.add(self.refresh_scenes)
                     layout.add(self.scenes)
                 with layout.vbox() as layout:
-                    layout.add(QLabel('Sources:'))
+                    with layout.hbox(margins=(0,0,0,0)) as layout:
+                        layout.add(QLabel('Sources:'))
+                        layout.add(QLabel(), 1)
+                        layout.add(self.refresh_sources)
                     layout.add(self.sources)
             with layout.vbox() as layout:
-                layout.add(QLabel('Output:'))
+                with layout.hbox(margins=(0,0,0,0)) as layout:
+                    layout.add(QLabel('Output:'))
+                    layout.add(QLabel(), 1)
+                    layout.add(self.clear_output)
                 layout.add(self.output)
 
 

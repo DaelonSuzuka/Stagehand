@@ -1,7 +1,7 @@
 from qt import *
 from devices import DeviceManager
 import json
-from obs import Sandbox
+from obs import Sandbox, ActionWidget
 
 
 class PedalActions(QWidget):
@@ -46,25 +46,30 @@ class PedalActions(QWidget):
 class PedalActionsWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
-        self.one = PedalActions('one')
-        self.two = PedalActions('two')
-        self.three = PedalActions('three')
-        self.four = PedalActions('four')
+        # self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+        self.press = [ActionWidget(f'Pedal {i} Pressed') for i in range(1, 5)]
+        self.release = [ActionWidget(f'Pedal {i} Released') for i in range(1, 5)]
+        self.state = [QLabel('up') for i in range(1, 5)]
 
         self.status = QLabel("No Pedals Connected")
         
         with CVBoxLayout(self, align='top') as layout:
             with layout.hbox(align='left'):
-                layout.add(QLabel('Status:'))
+                layout.add(QLabel('Device Status:'))
                 layout.add(self.status)
+
+            layout.add(QLabel())
             layout.add(HLine())
-            layout.add(self.one)
-            layout.add(HLine())
-            layout.add(self.two)
-            layout.add(HLine())
-            layout.add(self.three)
-            layout.add(HLine())
-            layout.add(self.four)
+
+            for i in range(4):
+                with layout.hbox(align='left'):
+                    layout.add(QLabel(f'Pedal {i+1} Status:'))
+                    layout.add(self.state[i])
+                layout.add(self.press[i])
+                layout.add(self.release[i])
+
+            layout.add(QLabel(), 1)
 
     def connected(self, device):
         self.status.setText('Pedals Connected')
@@ -72,21 +77,11 @@ class PedalActionsWidget(QWidget):
         device.signals.button_released.connect(self.button_released)
 
     def button_pressed(self, button):
-        if button == '1':
-            self.one.pressed()
-        if button == '2':
-            self.two.pressed()
-        if button == '3':
-            self.three.pressed()
-        if button == '4':
-            self.four.pressed()
+        number = int(button)
+        self.press[number].run()
+        self.state[number].setText('down')
 
     def button_released(self, button):
-        if button == '1':
-            self.one.released()
-        if button == '2':
-            self.two.released()
-        if button == '3':
-            self.three.released()
-        if button == '4':
-            self.four.released()
+        number = int(button)
+        self.release[number].run()
+        self.state[number].setText('up')

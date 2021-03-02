@@ -107,12 +107,13 @@ class MicVoterWidget(QWidget):
                 layout.add(QLabel('Best Mic:'))
                 layout.add(self.best_mic)
                 layout.add(QLabel(), 1)
+            layout.add(QLabel())
+            with layout.hbox():
                 layout.add(QLabel('Switch Threshold:'))
                 layout.add(self.change_threshold)
                 layout.add(QLabel('Rate Limit:'))
                 layout.add(self.rate_limit)
-
-            layout.add(QLabel())
+                layout.add(QLabel(), 1)
             layout.add(QLabel())
 
             with layout.grid() as layout:

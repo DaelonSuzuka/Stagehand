@@ -30,7 +30,10 @@ class MainWindow(BaseMainWindow):
         self.web_actions = WebInterfaceManager(self)
 
         def scroll(widget):
+            return widget
             scroll = QScrollArea(parent=self)
+            scroll.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+            scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
             scroll.setWidget(widget)
             return scroll
 

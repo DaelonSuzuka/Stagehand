@@ -7,6 +7,6 @@ class GenericActionsWidget(QWidget):
         super().__init__(parent=parent)
 
         with CVBoxLayout(self) as layout:
-            for i in range(1, 8):
+            for i in range(1, 13):
                 layout.add(ActionWidget(f'Action {i}'))
             layout.add(QLabel(), 1)
