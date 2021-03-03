@@ -42,7 +42,7 @@ class MicStream:
         # IIR low pass filter
         self.amplitude = self.amplitude - (self.beta * self.amplitude - raw)
         # convert to integer
-        self.volume = min(int(self.amplitude * self.gain), 50)
+        self.volume = min(int(self.amplitude * self.gain), 30)
         return self.volume
 
 
@@ -55,6 +55,8 @@ class MicStreamWidget(QWidget):
         self.device = sd.query_devices(device)
         self.name = self.device['name']
         self.title = QLabel(self.name)
+        self.title.setFixedWidth(250)
+        self.title.setToolTip(self.name)
         self.enabled = PersistentCheckBox(f'enabled:{self.name}', changed=self.on_check)
         self.obs_name = PersistentLineEdit(f'obs_name:{self.name}')
         self.meter = QLabel()
