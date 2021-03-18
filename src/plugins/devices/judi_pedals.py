@@ -1,4 +1,4 @@
-from devices import SerialDevice, JudiStandardMixin
+from codex import SerialDevice, JudiStandardMixin
 from qt import *
 
 

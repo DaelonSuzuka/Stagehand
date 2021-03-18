@@ -1,6 +1,6 @@
 from qt import *
 from main_window import MainWindow
-from devices import DeviceManager
+from codex import DeviceManager
 import qtawesome as qta
 from appdirs import AppDirs
 from pathlib import Path

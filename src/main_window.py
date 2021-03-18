@@ -1,5 +1,5 @@
 from qt import *
-from devices import DeviceControlsDockWidget
+from codex import DeviceControlsDockWidget
 from pedal_actions import PedalActionsWidget
 from mic_voter import MicVoterWidget
 from obs import ObsManager, Sandbox
