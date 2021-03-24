@@ -18,11 +18,11 @@ debug: venv
 
 # build an one folder bundle 
 bundle: venv
-	$(VENV_PYINSTALLER) -y bundle.py
+	$(VENV_PYINSTALLER) -y bundle.spec
 
 # build a single file executable
 exe: venv
-	$(VENV_PYINSTALLER) -y onefile.py
+	$(VENV_PYINSTALLER) -y onefile.spec
 
 # export variables for InnoSetup
 include installer.mk
