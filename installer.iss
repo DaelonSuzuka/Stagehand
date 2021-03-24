@@ -2,12 +2,12 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 ; Grab our project settings from environment variables
-#define MyAppName GetEnv('InnoAppName')
-#define MyAppVersion GetEnv('InnoAppVersion')
-#define MyAppPublisher GetEnv('InnoAppPublisher')
-#define MyAppExeName GetEnv('InnoAppExeName')
-#define MyAppIconName GetEnv('InnoAppIconName')
-#define MyAppId GetEnv('InnoAppId')
+#define MyAppName GetEnv('AppName')
+#define MyAppVersion GetEnv('AppVersion')
+#define MyAppPublisher GetEnv('AppPublisher')
+#define MyAppExeName GetEnv('AppExeName')
+#define MyAppIconName GetEnv('AppIconName')
+#define MyAppId GetEnv('AppId')
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
