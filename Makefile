@@ -6,7 +6,7 @@
 MAKEFLAGS += -s
 
 # **************************************************************************** #
-# Targets
+# Development Targets
 
 # run the application using the main venv
 run: venv
@@ -16,7 +16,21 @@ run: venv
 debug: venv
 	$(VENV_PYTHON) -m pdb src/main.py
 
-# build an one folder bundle 
+# **************************************************************************** #
+# Release Targets
+
+.PHONY: build
+build: venv
+	$(VENV_PYINSTALLER) -y bundle.spec
+
+zip: venv
+	$(PYTHON) zip_bundle.py
+
+build_full: venv
+	$(VENV_PYINSTALLER) -y bundle.spec
+	iscc "installer.iss"
+
+# build a one folder bundle 
 bundle: venv
 	$(VENV_PYINSTALLER) -y bundle.spec
 
@@ -32,9 +46,10 @@ export
 installer: venv
 	iscc "installer.iss"
 
-# remove pyinstaller's output
+# remove the various build outputs
 clean:
-	echo cleaning build 
+	$(RM) build
+	$(RM) dist
 
 # **************************************************************************** #
 # python venv settings
@@ -46,12 +61,14 @@ ifeq ($(OS),Windows_NT)
 	PYTHON := python
 	VENV_PYTHON := $(VENV)\$(PYTHON)
 	VENV_PYINSTALLER := $(VENV)\pyinstaller
+	RM := rd /s /q 
 else
 	VENV_DIR := $(VENV_NAME)
 	VENV := $(VENV_DIR)/bin
 	PYTHON := python3
 	VENV_PYTHON := $(VENV)/$(PYTHON)
 	VENV_PYINSTALLER := $(VENV)\pyinstaller
+	RM := rm -rf 
 endif
 
 # Add this as a requirement to any make target that relies on the venv
@@ -86,11 +103,7 @@ update_venv: venv
 
 # deletes the venv
 clean_venv:
-ifeq ($(OS),Windows_NT)
-	rd /s /q $(VENV_DIR)
-else
-	rm -rf $(VENV_DIR)
-endif
+	$(RM) $(VENV_DIR)
 
 # deletes the venv and rebuilds it
 reset_venv: clean_venv venv
