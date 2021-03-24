@@ -6,9 +6,16 @@
 MAKEFLAGS += -s
 
 # **************************************************************************** #
+
+# load the project variables
+include project.mk
+# export them for InnoSetup
+export
+
+# **************************************************************************** #
 # Development Targets
 
-# run the application using the main venv
+# run the application
 run: venv
 	$(VENV_PYTHON) src/main.py
 
@@ -17,33 +24,25 @@ debug: venv
 	$(VENV_PYTHON) -m pdb src/main.py
 
 # **************************************************************************** #
-# Release Targets
-
-.PHONY: build
-build: venv
-	$(VENV_PYINSTALLER) -y bundle.spec
-
-zip: venv
-	$(PYTHON) zip_bundle.py
-
-build_full: venv
-	$(VENV_PYINSTALLER) -y bundle.spec
-	iscc "installer.iss"
+# Build Targets
 
 # build a one folder bundle 
 bundle: venv
 	$(VENV_PYINSTALLER) -y bundle.spec
 
-# build a single file executable
-exe: venv
-	$(VENV_PYINSTALLER) -y onefile.spec
+# run the bundled exe
+run_bundle:
+	dist/Stagehand/Stagehand.exe
 
-# export variables for InnoSetup
-include installer.mk
-export
+# **************************************************************************** #
+# Release Targets
+
+# wrap the bundle into a zip file
+zip:
+	$(PYTHON) -m zipfile -c dist/Stagehand-$(AppVersion)-portable.zip dist/Stagehand/
 
 # build an installer with InnoSetup
-installer: venv
+installer:
 	iscc "installer.iss"
 
 # remove the various build outputs
@@ -81,21 +80,21 @@ $(VENV_DIR):
 	$(VENV_PYTHON) -m pip install --upgrade pip
 	$(VENV_PYTHON) -m pip install -r requirements.txt
 
-# If the first argument is "venv_install"...
-ifeq (venv_install,$(firstword $(MAKECMDGOALS)))
-  # use the rest as arguments for "venv_install"
+# If the first argument is "pip"...
+ifeq (pip,$(firstword $(MAKECMDGOALS)))
+  # use the rest as arguments for "pip"
   RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
   # ...and turn them into do-nothing targets
   $(eval $(RUN_ARGS):;@:)
 endif
 
-# install a package to the venv
-pip_install: venv
-	$(VENV_PYTHON) -m pip install $(RUN_ARGS)
+# forward pip commands to the venv
+pip: venv
+	$(VENV_PYTHON) -m pip $(RUN_ARGS)
 
-# print the installed packages
-pip_freeze: venv
-	$(VENV_PYTHON) -m pip freeze
+# update requirements.txt to match the state of the venv
+freeze_reqs: venv
+	$(VENV_PYTHON) -m pip freeze > requirements.txt
 
 # try to update the venv - expirimental feature, don't rely on it
 update_venv: venv
