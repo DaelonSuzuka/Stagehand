@@ -18,13 +18,17 @@ debug: venv
 
 # build an one folder bundle 
 bundle: venv
-	$(VENV_PYINSTALLER) -y bundle.spec
+	$(VENV_PYINSTALLER) -y bundle.py
 
 # build a single file executable
 exe: venv
-	$(VENV_PYINSTALLER) -y onefile.spec
+	$(VENV_PYINSTALLER) -y onefile.py
 
-# build an installer with inno
+# export variables for InnoSetup
+include installer.mk
+export
+
+# build an installer with InnoSetup
 installer: venv
 	iscc "installer.iss"
 
