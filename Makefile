@@ -60,6 +60,26 @@ $(VENV_DIR):
 	$(VENV_PYTHON) -m pip install --upgrade pip
 	$(VENV_PYTHON) -m pip install -r requirements.txt
 
+# If the first argument is "venv_install"...
+ifeq (venv_install,$(firstword $(MAKECMDGOALS)))
+  # use the rest as arguments for "venv_install"
+  RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  # ...and turn them into do-nothing targets
+  $(eval $(RUN_ARGS):;@:)
+endif
+
+# install a package to the venv
+pip_install: venv
+	$(VENV_PYTHON) -m pip install $(RUN_ARGS)
+
+# print the installed packages
+pip_freeze: venv
+	$(VENV_PYTHON) -m pip freeze
+
+# try to update the venv - expirimental feature, don't rely on it
+update_venv: venv
+	$(VENV_PYTHON) -m pip install -r requirements.txt
+
 # deletes the venv
 clean_venv:
 ifeq ($(OS),Windows_NT)
