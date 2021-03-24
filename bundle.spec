@@ -6,7 +6,10 @@ a = Analysis(
     ['src/main.py'],
     pathex=['./src'],
     binaries=[],
-    datas=[('resources/stagehand.ico', 'resources')],
+    datas=[
+        ('resources/stagehand.ico', 'resources'),
+        ('sandbox/*', 'sandbox'),
+    ],
     hiddenimports=[],
     hookspath=[],
     runtime_hooks=[],
