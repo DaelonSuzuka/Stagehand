@@ -18,7 +18,7 @@ PySide2==5.15.2
 pywin32-ctypes==0.2.0
 QtAwesome==1.0.2
 QtPy==1.9.0
-qtstrap==0.0.2
+qtstrap==0.0.3
 shiboken2==5.15.2
 sounddevice==0.4.1
 Werkzeug==1.0.1
