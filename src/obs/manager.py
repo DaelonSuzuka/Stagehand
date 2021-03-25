@@ -1,4 +1,4 @@
-from qt import *
+from qtstrap import *
 import json
 from obs import requests
 import base64

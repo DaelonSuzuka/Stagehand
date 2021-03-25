@@ -1,6 +1,6 @@
 import json
 from obs import requests
-from qt import *
+from qtstrap import *
 from .highlighter import PythonHighlighter
 from pathlib import Path
 

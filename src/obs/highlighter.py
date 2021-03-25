@@ -1,4 +1,4 @@
-from qt import *
+from qtstrap import *
 
 
 def format(color, style=''):

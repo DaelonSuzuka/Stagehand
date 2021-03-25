@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 from urllib.parse import urlparse
-from qt import *
+from qtstrap import *
 from codex import SubscriptionManager
 import threading
 from obs import ActionWidget

@@ -1,4 +1,4 @@
-from qt import *
+from qtstrap import *
 import numpy as np
 import sounddevice as sd
 from time import time

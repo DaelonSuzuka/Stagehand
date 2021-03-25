@@ -1,4 +1,4 @@
-from qt import *
+from qtstrap import *
 from codex import DeviceControlsDockWidget
 from pedal_actions import PedalActionsWidget
 from mic_voter import MicVoterWidget
