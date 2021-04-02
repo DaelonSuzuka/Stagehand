@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template_string
 from urllib.parse import urlparse
 from qtstrap import *
 from qtpy.QtWebSockets import *
@@ -7,6 +7,7 @@ from codex import SubscriptionManager
 import threading
 from obs import ActionWidget
 import socket
+from .web_template import web_template
 
 
 # disable flask logging
@@ -20,7 +21,7 @@ def start_flask():
 
     @app.route("/")
     def nothing():
-        return render_template('index.html')
+        return render_template_string(web_template)
 
     app.run(host='0.0.0.0', debug=True, use_reloader=False)
 
