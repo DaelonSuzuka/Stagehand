@@ -2,6 +2,14 @@
 
 Stagehand is a collection of tools that help automate and streamline your OBS experience.
 
+# Features
+
+## Microphone Voter
+
+![voter in action](images/voter_in_action.gif)
+
+## Sandbox Engine
+
 # Installation
 
 Stagehand is developed primarily on Windows 10, and has been lightly tested on Ubuntu 20.04. In theory, there's no reason it won't also work on MacOS, but I don't currently have plans to support Macs. 
@@ -16,17 +24,9 @@ make run
 
 Ubuntu 20.04 (and presumably other distros) don't have portaudio installed by default. The python audio library I use(`sounddevice`) includes a copy of portaudio on Windows, but on Linux (and Mac), you'll have to install portaudio using your package manager.
 
-# Usage
-
-todo
-
-# Features
-
-## Microphone Voter
-## Sandbox Engine
-
 # Roadmap
-todo
+
+- Multiple 
 
 # Contributing
 
