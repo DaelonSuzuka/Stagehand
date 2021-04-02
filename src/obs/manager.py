@@ -1,4 +1,5 @@
 from qtstrap import *
+from qtpy.QtWebSockets import *
 import json
 from obs import requests
 import base64
