@@ -9,14 +9,12 @@ Stagehand is developed primarily on Windows 10, and has been lightly tested on U
 Binary releases are coming soon. Stagehand is also perfectly happy to execute from source. Simply clone the repo and run it as follows:
 
 ```bash
-git clone --recursive git@github.com:DaelonSuzuka/Stagehand.git
+git clone git@github.com:DaelonSuzuka/Stagehand.git
 cd Stagehand
 make run
 ```
 
 Ubuntu 20.04 (and presumably other distros) don't have portaudio installed by default. The python audio library I use(`sounddevice`) includes a copy of portaudio on Windows, but on Linux (and Mac), you'll have to install portaudio using your package manager.
-
-Please also note the `--recursive` flag. Stagehand includes some libraries using git submodules, and those submodules are not downloaded automatically. 
 
 # Usage
 
