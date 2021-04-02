@@ -22,3 +22,6 @@ log.db
 
 # Microsoft stupidity
 debug.log
+
+.portable
+settings.ini
