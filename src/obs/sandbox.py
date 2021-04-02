@@ -3,7 +3,7 @@ from obs import requests
 from qtstrap import *
 from .highlighter import PythonHighlighter
 from pathlib import Path
-from pyautogui import press, hotkey
+# from pyautogui import press, hotkey
 
 
 class ScriptBrowser(PersistentTreeWidget):
@@ -224,8 +224,8 @@ class _Sandbox(QWidget):
             'load': self._load, 
             'data': self._data, 
             'print': self._print,
-            'press': press,
-            'hotkey': hotkey,
+            # 'press': press,
+            # 'hotkey': hotkey,
         }
         self._locals = {
         }
