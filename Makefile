@@ -8,9 +8,20 @@ MAKEFLAGS += -s
 # **************************************************************************** #
 
 # load the project variables
-include project.mk
+ifneq (,$(wildcard src/app_info.py))
+include src/app_info.py
+
+# remove extra quotes
+AppName := $(patsubst "%",%,$(AppName))
+AppVersion := $(patsubst "%",%,$(AppVersion))
+AppPublisher := $(patsubst "%",%,$(AppPublisher))
+AppExeName := $(patsubst "%",%,$(AppExeName))
+AppIconName := $(patsubst "%",%,$(AppIconName))
+AppId := $(patsubst "%",%,$(AppId))
+
 # export them for InnoSetup
 export
+endif
 
 # **************************************************************************** #
 # Development Targets
@@ -26,20 +37,28 @@ debug: venv
 # **************************************************************************** #
 # Build Targets
 
+beep:
+	echo $(AppName)
+	echo $(AppVersion)
+
 # build a one folder bundle 
 bundle: venv
 	$(VENV_PYINSTALLER) -y bundle.spec
 
-# run the bundled exe
+# run the bundled executable
 run_bundle:
-	dist/Stagehand/Stagehand.exe
+ifeq ($(OS),Windows_NT)
+	dist/$(AppName)/$(AppName).exe
+else
+	dist/$(AppName)/$(AppName)
+endif
 
 # **************************************************************************** #
 # Release Targets
 
 # wrap the bundle into a zip file
 zip:
-	$(PYTHON) -m zipfile -c dist/Stagehand-$(AppVersion)-portable.zip dist/Stagehand/
+	$(PYTHON) -m zipfile -c dist/$(AppName)-$(AppVersion)-portable.zip dist/$(AppName)/
 
 # build an installer with InnoSetup
 installer:
@@ -47,8 +66,8 @@ installer:
 
 # remove the various build outputs
 clean:
-	$(RM) build
-	$(RM) dist
+	-@ $(RM) build
+	-@ $(RM) dist
 
 # **************************************************************************** #
 # python venv settings
@@ -66,7 +85,7 @@ else
 	VENV := $(VENV_DIR)/bin
 	PYTHON := python3
 	VENV_PYTHON := $(VENV)/$(PYTHON)
-	VENV_PYINSTALLER := $(VENV)\pyinstaller
+	VENV_PYINSTALLER := $(VENV)/pyinstaller
 	RM := rm -rf 
 endif
 

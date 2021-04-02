@@ -11,7 +11,6 @@ from web_interface import WebInterfaceManager
 class MainWindow(BaseMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
-        self.setObjectName("MainWindow")
 
         set_font_options(self, {'setPointSize': 12})
 
