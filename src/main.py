@@ -9,7 +9,6 @@ from pathlib import Path
 class Application(BaseApplication):
     def __init__(self) -> None:
         super().__init__()
-        self.init_app_dirs()
         
         # self.setQuitOnLastWindowClosed(False)
 
@@ -39,13 +38,6 @@ class Application(BaseApplication):
         menu.addAction(self.quit_action)
         tray.setContextMenu(menu)
         self.tray = tray
-
-    def init_app_dirs(self):
-        self.dirs = AppDirs('Stagehand', 'DaelonCo')
-        self.config_dir = self.dirs.user_config_dir
-
-        # make sure config dir exists
-        Path(self.config_dir).mkdir(parents=True, exist_ok=True)
 
 
 def run():    
