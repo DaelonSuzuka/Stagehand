@@ -6,6 +6,7 @@ from obs import ObsManager, Sandbox
 import qtawesome as qta
 from generic_actions import GenericActionsWidget
 from web_interface import WebInterfaceManager
+from about import AboutDialog
 
 
 class MainWindow(BaseMainWindow):
@@ -14,6 +15,7 @@ class MainWindow(BaseMainWindow):
 
         set_font_options(self, {'setPointSize': 12})
 
+        self.about = AboutDialog(self)
         self.device_controls = DeviceControlsDockWidget(self)
         
         self.obs = ObsManager(self)
@@ -73,7 +75,9 @@ class MainWindow(BaseMainWindow):
         menu.addAction(self.device_controls.toggleViewAction())
 
         menu.addSeparator()
-            
+        menu.addAction(self.about.show_action())
+        
+        menu.addSeparator()
         menu.addAction(QAction('&Exit', menu, 
             shortcut='Ctrl+Q', 
             statusTip='Exit application',
