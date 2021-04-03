@@ -88,11 +88,15 @@ class ObsManager(QWidget):
         self.url.setEnabled(False)
         self.port.setEnabled(False)
         self.password.setEnabled(False)
+        self.show_password.setEnabled(False)
+        self.show_password.setChecked(False)
+        self.password.setEchoMode(QLineEdit.Password)
 
     def unlock(self):
         self.url.setEnabled(True)
         self.port.setEnabled(True)
         self.password.setEnabled(True)
+        self.show_password.setEnabled(True)
 
     def set_status(self, status):
         if status == 'active':
