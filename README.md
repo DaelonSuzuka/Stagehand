@@ -4,8 +4,8 @@ Stagehand is a collection of tools that help automate and streamline your OBS ex
 
 # Features
 
-## OBS Websocket
-![OBS Websocket Controls](images/obs_screen.png)
+## OBS Manager
+![OBS Websocket Controls](images/obs_manager.png)
 
 ## Microphone Voter
 
