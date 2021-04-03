@@ -26,10 +26,19 @@ def start_flask():
     app.run(host='0.0.0.0', debug=True, use_reloader=False)
 
 
+def get_ip():
+    # this is a dirty hack to get our current machine's IP address
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    ip = s.getsockname()[0]
+    s.close()
+    return ip
+
+
 @SubscriptionManager.subscribe
 class WebInterfaceManager(QWidget):
     def __init__(self, parent=None):
-        super().__init__(parent)
+        super().__init__(parent=parent)
 
         self.server = QWebSocketServer('flask', QWebSocketServer.NonSecureMode)
         self.server.newConnection.connect(self.on_new_connection)
@@ -43,20 +52,8 @@ class WebInterfaceManager(QWidget):
         self.flask = threading.Thread(name='Web App', target=start_flask, daemon=True)
         self.flask.start()
 
-        url = 'http://localhost:5000'
-        self.local_link = QLabel(f'<a href="{url}">{url}</a>')
-        self.local_link.setTextInteractionFlags(Qt.TextBrowserInteraction)
-        self.local_link.setOpenExternalLinks(True)
-
-        # hack to get local ip address
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(("8.8.8.8", 80))
-        url = f'http://{s.getsockname()[0]}:5000'
-        s.close()
-
-        self.lan_link = QLabel(f'<a href="{url}">{url}</a>')
-        self.lan_link.setTextInteractionFlags(Qt.TextBrowserInteraction)
-        self.lan_link.setOpenExternalLinks(True)
+        self.local_link = LinkLabel(both='http://localhost:5000')
+        self.lan_link = LinkLabel(both=f'http://{get_ip()}:5000')
 
         self.actions = {i: ActionWidget(f'Web Action {i}', self.rename_buttons) for i in range(1, 13)}
 
