@@ -25,6 +25,7 @@ class MainWindow(BaseMainWindow):
         if not self.restoreDockWidget(self.sandbox.tools_dock):
             self.addDockWidget(self.sandbox.tools_dock.starting_area, self.sandbox.tools_dock)
 
+        # self.load_settings()
         self.pedals = PedalActionsWidget(self)        
         self.voter = MicVoterWidget(self)
         self.actions = GenericActionsWidget(self)
@@ -100,22 +101,20 @@ class MainWindow(BaseMainWindow):
         if self.minimize_to_tray.isChecked():
             event.ignore()
             self.hide()
+        else:
+            super().closeEvent(event)
 
     def init_tray_stuff(self):
         self.tray_icon = QSystemTrayIcon(self)
         icon = QIcon(qta.icon('fa.circle','fa5s.video', options=[{'color':'gray'}, {'scale_factor':0.5, 'color':'white'}]))
         self.tray_icon.setIcon(icon)
 
-        show_action = QAction("Show", self, triggered=self.show)
-        quit_action = QAction("Exit", self, triggered=self.hide)
-        hide_action = QAction("Hide", self, triggered=qApp.quit)
-
         self.tray_menu = QMenu()
-        self.tray_menu.addAction(show_action)
-        self.tray_menu.addAction(hide_action)
-        self.tray_menu.addAction(quit_action)
-
+        self.tray_menu.addAction(QAction("Stagehand", self, enabled=False))
+        self.tray_menu.addAction(QAction("Open", self, triggered=self.show))
+        self.tray_menu.addAction(QAction("Quit", self, triggered=qApp.quit))
         self.tray_icon.setContextMenu(self.tray_menu)
+
         self.tray_icon.show()
 
         self.minimize_to_tray = PersistentCheckableAction(
