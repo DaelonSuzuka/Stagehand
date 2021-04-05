@@ -54,20 +54,27 @@ class MainWindow(BaseMainWindow):
             shortcut = QShortcut(f'Ctrl+{i + 1}', self, activated=lambda i=i: self.tabs.setCurrentIndex(i))
             self.tab_shortcuts.append(shortcut)
 
+        self.init_tray_stuff()
         self.init_statusbar()
 
     def init_statusbar(self):
         self.status = BaseToolbar(self, 'statusbar', location='bottom', size=30)
         self.status.setContextMenuPolicy(Qt.PreventContextMenu)
+        
+        self.status.addWidget(self.init_settings_btn())
+        self.status.addSeparator()
+        
+        self.status.add_spacer()
+        # self.status.addWidget(self.minimize_to_tray)
+        self.status.addSeparator()
+        self.status.addWidget(self.obs.status_widget)
 
-        # settings button
+    def init_settings_btn(self):
         settings_btn = QToolButton(self.status, icon=qta.icon('fa.gear', color='gray'))
         menu = QMenu(settings_btn)
         settings_btn.setMenu(menu)
         settings_btn.setPopupMode(QToolButton.InstantPopup)
-        self.status.addWidget(settings_btn)
-        self.status.addSeparator()
-        
+
         # settings popup menu
         menu.addSeparator()
         menu.addAction(self.sandbox.tools_dock.toggleViewAction())
@@ -76,13 +83,42 @@ class MainWindow(BaseMainWindow):
 
         menu.addSeparator()
         menu.addAction(self.about.show_action())
+
+        menu.addSeparator()
+        menu.addAction(self.minimize_to_tray)
         
         menu.addSeparator()
         menu.addAction(QAction('&Exit', menu, 
             shortcut='Ctrl+Q', 
             statusTip='Exit application',
-            triggered=self.close))
-        
-        self.status.add_spacer()
-        self.status.addSeparator()
-        self.status.addWidget(self.obs.status_widget)
+            triggered=qApp.quit)
+        )
+
+        return settings_btn
+
+    def closeEvent(self, event):
+        if self.minimize_to_tray.isChecked():
+            event.ignore()
+            self.hide()
+
+    def init_tray_stuff(self):
+        self.tray_icon = QSystemTrayIcon(self)
+        icon = QIcon(qta.icon('fa.circle','fa5s.video', options=[{'color':'gray'}, {'scale_factor':0.5, 'color':'white'}]))
+        self.tray_icon.setIcon(icon)
+
+        show_action = QAction("Show", self, triggered=self.show)
+        quit_action = QAction("Exit", self, triggered=self.hide)
+        hide_action = QAction("Hide", self, triggered=qApp.quit)
+
+        self.tray_menu = QMenu()
+        self.tray_menu.addAction(show_action)
+        self.tray_menu.addAction(hide_action)
+        self.tray_menu.addAction(quit_action)
+
+        self.tray_icon.setContextMenu(self.tray_menu)
+        self.tray_icon.show()
+
+        self.minimize_to_tray = PersistentCheckableAction(
+            'mainwindow/minimize_to_tray', 
+            'Minimize to tray'
+        )
