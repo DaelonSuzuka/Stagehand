@@ -3,12 +3,7 @@ from obs import requests
 from qtstrap import *
 from .highlighter import PythonHighlighter
 from pathlib import Path
-
-try:
-    from pyautogui import press, hotkey
-    pyautogui_available = True
-except:
-    pyautogui_available = False
+from pynput.keyboard import Key, Controller
 
 
 class ScriptBrowser(PersistentTreeWidget):
@@ -205,6 +200,7 @@ class _Sandbox(QWidget):
         self.editor = SandboxEditor()
         self.editor.reload.connect(self.reload_environment)
         self.tools = SandboxTools()
+        self.keyboard = Controller()
 
         def GetSceneList(cb):
             def collect_names(message):
@@ -229,19 +225,23 @@ class _Sandbox(QWidget):
             'load': self._load, 
             'data': self._data, 
             'print': self._print,
+            'Key': Key,
+            'key': self._key,
             'press': self._press,
-            'hotkey': self._hotkey,
+            'release': self._release,
         }
         self._locals = {
         }
 
-    def _press(self, *args):
-        if pyautogui_available:
-            press(*args)
+    def _key(self, key):
+        self.keyboard.press(key)
+        self.keyboard.release(key)
 
-    def _hotkey(self, *args):
-        if pyautogui_available:
-            hotkey(*args)
+    def _press(self, key):
+        self.keyboard.press(key)
+
+    def _release(self, key):
+        self.keyboard.release(key)
 
     def _print(self, *args):
         s = ''
