@@ -3,7 +3,12 @@ from obs import requests
 from qtstrap import *
 from .highlighter import PythonHighlighter
 from pathlib import Path
-# from pyautogui import press, hotkey
+
+try:
+    from pyautogui import press, hotkey
+    pyautogui_available = True
+except:
+    pyautogui_available = False
 
 
 class ScriptBrowser(PersistentTreeWidget):
@@ -224,18 +229,25 @@ class _Sandbox(QWidget):
             'load': self._load, 
             'data': self._data, 
             'print': self._print,
-            # 'press': press,
-            # 'hotkey': hotkey,
+            'press': self._press,
+            'hotkey': self._hotkey,
         }
         self._locals = {
         }
+
+    def _press(self, *args):
+        if pyautogui_available:
+            press(*args)
+
+    def _hotkey(self, *args):
+        if pyautogui_available:
+            hotkey(*args)
 
     def _print(self, *args):
         s = ''
         for arg in args:
             s += str(arg)
         self.tools.output.append(s + '\n')
-        
 
     def _save(self, name, value):
         self._data[name] = value
