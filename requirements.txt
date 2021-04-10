@@ -22,7 +22,7 @@ PySide2==5.15.2
 pywin32-ctypes==0.2.0
 QtAwesome==1.0.2
 QtPy==1.9.0
-qtstrap==0.0.12
+qtstrap==0.0.16
 regex==2021.3.17
 shiboken2==5.15.2
 six==1.15.0
