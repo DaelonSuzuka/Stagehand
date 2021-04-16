@@ -9,11 +9,30 @@ from web_interface import WebInterfaceManager
 from about import AboutDialog
 
 
+class FontSizeMenu(QMenu):
+    def __init__(self, parent=None, default=12):
+        super().__init__(parent=parent)
+        self.setTitle('Font Size')
+
+        self.default_size = default
+        self.font_size = QSettings().value('font_size', self.default_size)
+        self.set_font_size(self.font_size)
+
+        self.addAction(QAction('+', self, triggered=lambda: self.set_font_size(self.font_size + 2)))
+        self.addAction(QAction('-', self, triggered=lambda: self.set_font_size(self.font_size - 2)))
+        self.addAction(QAction('Reset', self, triggered=lambda: self.set_font_size(self.default_size)))
+
+    def set_font_size(self, size):
+        set_font_options(self.parent(), {'setPointSize': size})
+        self.font_size = size
+        QSettings().setValue('font_size', size)
+
+
 class MainWindow(BaseMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
 
-        set_font_options(self, {'setPointSize': 12})
+        self.font_menu = FontSizeMenu(self)
 
         self.about = AboutDialog(self)
         self.device_controls = DeviceControlsDockWidget(self)
@@ -81,6 +100,9 @@ class MainWindow(BaseMainWindow):
         menu.addAction(self.sandbox.tools_dock.toggleViewAction())
         menu.addAction(self.sandbox.editor_dock.toggleViewAction())
         menu.addAction(self.device_controls.toggleViewAction())
+
+        menu.addSeparator()
+        menu.addMenu(self.font_menu)
 
         menu.addSeparator()
         menu.addAction(self.about.show_action())
