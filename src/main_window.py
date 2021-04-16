@@ -77,6 +77,11 @@ class MainWindow(BaseMainWindow):
         self.init_tray_stuff()
         self.init_statusbar()
 
+        qApp.updater.update_found.connect(self.display_update_available)
+
+    def display_update_available(self):
+        self.tray_icon.showMessage('An update is available.', 'an update is available')
+
     def init_statusbar(self):
         self.status = BaseToolbar(self, 'statusbar', location='bottom', size=30)
         self.status.setContextMenuPolicy(Qt.PreventContextMenu)
@@ -105,10 +110,11 @@ class MainWindow(BaseMainWindow):
         menu.addMenu(self.font_menu)
 
         menu.addSeparator()
-        menu.addAction(self.about.show_action())
+        menu.addAction(self.minimize_to_tray)
 
         menu.addSeparator()
-        menu.addAction(self.minimize_to_tray)
+        menu.addAction(qApp.updater.check_for_updates_action())
+        menu.addAction(self.about.show_action())
         
         menu.addSeparator()
         menu.addAction(QAction('&Exit', menu, 

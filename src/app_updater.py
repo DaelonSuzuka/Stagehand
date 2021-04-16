@@ -4,11 +4,15 @@ import json
 
 
 class ApplicationUpdater(QObject):
+    update_found = Signal()
+
     def __init__(self) -> None:
         super().__init__()
 
         self.request_manager = QNetworkAccessManager(self)
         self.request_manager.finished.connect(self.replyRecieved)
+
+        self.update_available = False
 
     def check_latest(self):
         url = OPTIONS.app_info.AppReleaseUrl
@@ -22,5 +26,10 @@ class ApplicationUpdater(QObject):
             current_version = float(OPTIONS.app_info.AppVersion)
 
             if remote_version > current_version:
-                print('There is an update available')
+                self.update_available = True
+                self.update_found.emit()
 
+    def check_for_updates_action(self):
+        action = QAction('Check for Updates', self)
+        action.triggered.connect(self.check_latest)
+        return (action)
