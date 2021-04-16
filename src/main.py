@@ -4,6 +4,7 @@ from codex import DeviceManager
 import qtawesome as qta
 from appdirs import AppDirs
 from pathlib import Path
+from app_updater import ApplicationUpdater
 
 
 class Application(BaseApplication):
@@ -12,6 +13,9 @@ class Application(BaseApplication):
 
         icon = QIcon(qta.icon('fa.circle','fa5s.video', options=[{'color':'gray'}, {'scale_factor':0.5, 'color':'white'}]))
         self.setWindowIcon(icon)
+
+        self.updater = ApplicationUpdater()
+        self.updater.check_latest()
 
         self.device_manager = DeviceManager(self)
 
