@@ -23,14 +23,16 @@ class FontSizeMenu(QMenu):
         self.addAction(QAction('Reset', self, triggered=lambda: self.set_font_size(self.default_size)))
 
     def set_font_size(self, size):
-        set_font_options(self.parent(), {'setPointSize': size})
-        self.font_size = size
+        set_font_options(self.parent(), {'setPointSize': int(size)})
+        self.font_size = int(size)
         QSettings().setValue('font_size', size)
 
 
 class MainWindow(BaseMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
+
+        self.force_close = False
 
         self.font_menu = FontSizeMenu(self)
 
@@ -44,7 +46,8 @@ class MainWindow(BaseMainWindow):
         if not self.restoreDockWidget(self.sandbox.tools_dock):
             self.addDockWidget(self.sandbox.tools_dock.starting_area, self.sandbox.tools_dock)
 
-        # self.load_settings()
+        self.load_settings()
+
         self.pedals = PedalActionsWidget(self)        
         self.voter = MicVoterWidget(self)
         self.actions = GenericActionsWidget(self)
@@ -118,18 +121,25 @@ class MainWindow(BaseMainWindow):
         
         menu.addSeparator()
         menu.addAction(QAction('&Exit', menu, 
-            shortcut='Ctrl+Q', 
+            shortcut='Ctrl+Q',
             statusTip='Exit application',
-            triggered=qApp.quit)
+            triggered=self._close)
         )
 
         return settings_btn
 
+    def _close(self):
+        self.force_close = True
+        self.close()
+
     def closeEvent(self, event):
-        if self.minimize_to_tray.isChecked():
+        self.save_settings()
+
+        if not self.force_close and self.minimize_to_tray.isChecked():
             event.ignore()
             self.hide()
         else:
+            self.tray_icon.hide()
             super().closeEvent(event)
 
     def init_tray_stuff(self):

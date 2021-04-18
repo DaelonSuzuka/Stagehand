@@ -22,6 +22,7 @@ class ObsStatusWidget(QWidget):
 class ObsManager(QWidget):
     message_received = Signal(dict)
     raw_message_received = Signal(str)
+    socket_connected = Signal()
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
@@ -104,6 +105,7 @@ class ObsManager(QWidget):
             self.status.setText('Connected')
             self.status_widget.setText('Connected')
             self.connect_btn.setText('Disconnect')
+            self.socket_connected.emit()
 
         elif status == 'inactive':
             self.active = False

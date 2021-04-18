@@ -9,8 +9,14 @@ class PedalActionsWidget(QWidget):
         super().__init__(parent=parent)
         # self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
-        self.press = [ActionWidget(f'Pedal {i} Pressed') for i in range(1, 5)]
-        self.release = [ActionWidget(f'Pedal {i} Released') for i in range(1, 5)]
+        default = {f'Pedal {i} Pressed': ActionWidget.default_data(f'Pedal {i} Pressed') for i in range(1, 5)}
+        prev_presses = QSettings().value('pedal_actions/presses', default)
+        self.press = [ActionWidget(data=data, changed=self.save_actions) for _, data in prev_presses.items()]
+
+        default = {f'Pedal {i} Released': ActionWidget.default_data(f'Pedal {i} Released') for i in range(1, 5)}
+        prev_releases = QSettings().value('pedal_actions/releases', default)
+        self.release = [ActionWidget(data=data, changed=self.save_actions) for _, data in prev_releases.items()]
+
         self.state = [QLabel('up') for i in range(1, 5)]
 
         self.status = QLabel("No Pedals Connected")
@@ -46,3 +52,10 @@ class PedalActionsWidget(QWidget):
         number = int(button) - 1
         self.release[number].run()
         self.state[number].setText('up')
+
+    def save_actions(self):
+        data = {action.name: action.to_dict() for action in self.press}
+        QSettings().setValue('pedal_actions/presses', data)
+
+        data = {action.name: action.to_dict() for action in self.release}
+        QSettings().setValue('pedal_actions/releases', data)

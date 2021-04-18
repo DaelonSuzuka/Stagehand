@@ -1,3 +1,6 @@
+def SetScene(scene_name):
+    return({"request-type":"SetCurrentScene","scene-name":scene_name})
+
 def GetSceneList():
     return {"request-type": 'GetSceneList'}
 

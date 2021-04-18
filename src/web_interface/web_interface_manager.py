@@ -55,7 +55,13 @@ class WebInterfaceManager(QWidget):
         self.local_link = LinkLabel(both='http://localhost:5000')
         self.lan_link = LinkLabel(both=f'http://{get_ip()}:5000')
 
-        self.actions = {i: ActionWidget(f'Web Action {i}', self.rename_buttons) for i in range(1, 13)}
+        default = {f'Web Action {i}': ActionWidget.default_data(f'Web Action {i}') for i in range(1, 13)}
+        prev_data = QSettings().value('web_actions', default)
+
+        self.actions = {}
+        for i in range(1, 13):
+            name = f'Web Action {i}'
+            self.actions[name] = ActionWidget(data=prev_data[name], changed=self.rename_buttons)
 
         with CVBoxLayout(self) as layout:
             with layout.hbox():
@@ -75,9 +81,10 @@ class WebInterfaceManager(QWidget):
             layout.add(QLabel(), 1)
 
     def rename_buttons(self):
+        self.save_actions()
         for client in self.clients:
             for i, action in self.actions.items():
-                client.sendTextMessage(f'{{"command":"rename", "number":"{i}", "name":"{action.label.text()}"}}')
+                client.sendTextMessage(f'{{"command":"rename", "number":"{i[len("Web Action "):]}", "name":"{action.label.text()}"}}')
 
     def on_new_connection(self):
         socket = self.server.nextPendingConnection()
@@ -89,3 +96,8 @@ class WebInterfaceManager(QWidget):
     def processTextMessage(self, message):
         if int(message) in self.actions:
             self.actions[int(message)].run()
+
+    def save_actions(self):
+        data = {name: action.to_dict() for name, action in self.actions.items()}
+
+        QSettings().setValue('web_actions', data)
