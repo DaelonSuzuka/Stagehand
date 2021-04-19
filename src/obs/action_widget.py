@@ -1,6 +1,7 @@
 from qtstrap import *
 from obs import Sandbox
 from editor import CodeEditor
+import qtawesome as qta
 
 
 class ActionEditorDialog(QDialog):
@@ -22,7 +23,8 @@ class ActionEditorDialog(QDialog):
         self.reset = QPushButton('Reset', clicked=self.on_reset)
         self.cancel = QPushButton('Cancel', clicked=self.reject)
         self.ok = QPushButton('Ok', clicked=self.accept)
-        self.run = QPushButton('Run', clicked=lambda: Sandbox().run(self.editor.toPlainText(), self.set_error))
+        self.run = QPushButton('', clicked=lambda: Sandbox().run(self.editor.toPlainText(), self.set_error))
+        self.run.setIcon(QIcon(qta.icon('mdi.play-circle-outline')))
 
         with CVBoxLayout(self) as layout:
             with layout.hbox() as layout:
@@ -71,8 +73,11 @@ class ActionWidget(QWidget):
         self.action = QLineEdit(text=action)
         self.action.textChanged.connect(self.on_change)
 
-        self.run_btn = QPushButton('Run', clicked=self.run)
-        self.edit_btn = QPushButton('Edit', clicked=self.open_editor)
+        self.run_btn = QPushButton('', clicked=self.run)
+        self.run_btn.setIcon(QIcon(qta.icon('fa5.play-circle')))
+        
+        self.edit_btn = QPushButton('', clicked=self.open_editor)
+        self.edit_btn.setIcon(QIcon(qta.icon('fa5.edit')))
 
         self.on_change()
 
