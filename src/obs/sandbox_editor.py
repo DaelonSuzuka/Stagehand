@@ -127,7 +127,7 @@ class SandboxEditor(QWidget):
         self.current_file = ''
         self.script_changed()
 
-        with CPersistentSplitter('sandbox_splitter', self) as splitter:
+        with PersistentCSplitter('sandbox_splitter', self) as splitter:
             with splitter.add(CVBoxLayout(margins=(0,0,0,0)), 1) as layout:
                 layout.add(self.browser)
             with splitter.add(CVBoxLayout(margins=(0,0,0,0)), 4) as layout:
