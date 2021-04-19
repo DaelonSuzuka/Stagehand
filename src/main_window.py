@@ -1,12 +1,12 @@
 from qtstrap import *
 from codex import DeviceControlsDockWidget
-from pedal_actions import PedalActionsWidget
 from mic_voter import MicVoterWidget
 from obs import ObsManager, Sandbox
 import qtawesome as qta
 from generic_actions import GenericActionsWidget
 from web_interface import WebInterfaceManager
 from about import AboutDialog
+from input_devices import InputDeviceManager
 
 
 class FontSizeMenu(QMenu):
@@ -48,10 +48,10 @@ class MainWindow(BaseMainWindow):
 
         self.load_settings()
 
-        self.pedals = PedalActionsWidget(self)        
         self.voter = MicVoterWidget(self)
         self.actions = GenericActionsWidget(self)
         self.web_actions = WebInterfaceManager(self)
+        self.input_devices = InputDeviceManager(self)
 
         def scroll(widget):
             return widget
@@ -66,7 +66,7 @@ class MainWindow(BaseMainWindow):
             'Mic Voter': scroll(self.voter),
             'Actions': scroll(self.actions),
             'Web Actions': scroll(self.web_actions),
-            'Pedal Actions': scroll(self.pedals),
+            'Input Devices': scroll(self.input_devices),
         }
 
         self.tabs = PersistentTabWidget('main_tabs', tabs=tabs)

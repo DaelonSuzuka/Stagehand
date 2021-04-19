@@ -16,8 +16,8 @@ class Signals(QObject):
         }
 
 
-class JudiPedals(JudiStandardMixin, SerialDevice):
-    profile_name = "judipedals"
+class Stomp5(JudiStandardMixin, SerialDevice):
+    profile_name = "Stomp 5"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

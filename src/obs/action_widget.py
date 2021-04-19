@@ -52,10 +52,43 @@ class ActionEditorDialog(QDialog):
         self.label.setText(self.name)
 
 
+class ActionWidgetGroup(QObject):
+    action_changed = Signal()
+
+    def __init__(self, name, parent=None):
+        super().__init__(parent=parent)
+        self.name = name
+        self.actions = []
+        self.load()
+
+    def register(self, action):
+        self.actions.append(action)
+        action.changed.connect(self.on_action_change)
+
+        if action.name in self.prev_data:
+            print(self.prev_data[action.name])
+
+    def on_action_change(self):
+        self.save()
+        self.action_changed.emit()
+
+    def load(self):
+        self.prev_data = QSettings().value(self.name, {})
+
+    def save(self):
+        QSettings().setValue(self.name, self.get_data())
+
+    def get_data(self):
+        data = {}
+        for action in self.actions:
+            data[action.name] = action.to_dict()
+        return data
+
+
 class ActionWidget(QWidget):
     changed = Signal(str)
 
-    def __init__(self, name='', data=None, changed=None, parent=None):
+    def __init__(self, name='', group=None, data=None, changed=None, parent=None):
         super().__init__(parent=parent)
 
         self.name = name
@@ -65,6 +98,9 @@ class ActionWidget(QWidget):
             self.name = data['name']
             label = data['label']
             action = data['action']
+
+        if group:
+            group.register(self)
 
         self.label = LabelEdit(label, changed=self.on_change)
         
