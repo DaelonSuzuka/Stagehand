@@ -16,7 +16,7 @@ Pygments==2.8.1
 PyInquirer==1.0.3
 pyinstaller==4.2
 pyinstaller-hooks-contrib==2021.1
-pynput==1.7.3
+pynput==1.6.8
 pyserial==3.5
 PySide2==5.15.2
 pywin32-ctypes==0.2.0
