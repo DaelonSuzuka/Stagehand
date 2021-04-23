@@ -65,10 +65,9 @@ class ActionWidgetGroup(QObject):
 
     def register(self, action):
         self.actions.append(action)
-        action.changed.connect(self.on_action_change)
-
         if action.name in self.prev_data:
-            print(self.prev_data[action.name])
+            action.set_data(self.prev_data[action.name])
+        action.changed.connect(self.on_action_change)
 
     def on_action_change(self):
         self.save()
@@ -96,18 +95,19 @@ class ActionWidget(QWidget):
         self.name = name
         label = name
         action = ''
+
         if data:
             self.name = data['name']
             label = data['label']
             action = data['action']
 
-        if group:
-            group.register(self)
-
         self.label = LabelEdit(label, changed=self.on_change)
         
         self.action = QLineEdit(text=action)
         self.action.textChanged.connect(self.on_change)
+
+        if group:
+            group.register(self)
 
         self.run_btn = QPushButton('', clicked=self.run)
         self.run_btn.setIcon(QIcon(qta.icon('fa5.play-circle')))
@@ -140,6 +140,10 @@ class ActionWidget(QWidget):
             'label': self.label.text(),
             'action': self.action.text(),
         }
+
+    def set_data(self, data):
+        self.label.setText(data['label'])
+        self.action.setText(data['action'])
 
     def on_change(self):
         self.action.setEnabled('\n' not in self.action.text())
