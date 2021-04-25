@@ -1,12 +1,12 @@
 from qtstrap import *
 from codex import DeviceControlsDockWidget
-from mic_voter import MicVoterWidget
-from obs import ObsManager, Sandbox
+from .mic_voter import MicVoterWidget
+from .obs import ObsManager, Sandbox
 import qtawesome as qta
-from generic_actions import GenericActionsWidget
-from web_interface import WebInterfaceManager
-from about import AboutDialog
-from input_devices import InputDeviceManager
+from .generic_actions import GenericActionsWidget
+from .web_interface import WebInterfaceManager
+from .about import AboutDialog
+from .input_devices import InputDeviceManager
 
 
 class FontSizeMenu(QMenu):

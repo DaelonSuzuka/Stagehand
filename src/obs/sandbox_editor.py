@@ -1,5 +1,5 @@
 from qtstrap import *
-from editor import CodeEditor
+from qtstrap.extras import code_editor
 
 
 class ScriptBrowser(QTreeWidget):
@@ -115,26 +115,27 @@ class SandboxEditor(QWidget):
         self.obs = obs
 
         self.scripts = {}
-        for name in [f.as_posix() for f in Path('./sandbox').rglob('*.py')]:
+        self.scripts_path = Path(OPTIONS.APPLICATION_PATH / 'sandbox')
+
+        for name in [f for f in self.scripts_path.rglob('*.py')]:
             with open(name) as f:
-                self.scripts[name[8:]] = f.read()
+                self.scripts[name.parts[-1]] = f.read()
 
         self.browser = ScriptBrowser(changed=self.script_changed)
-        self.editor = CodeEditor()
+        self.editor = code_editor.CodeEditor()
         self.editor.textChanged.connect(self.save)
         self.error = QLabel()
         
         self.current_file = ''
         self.script_changed()
 
-        with PersistentCSplitter('sandbox_splitter', self) as splitter:
-            with splitter.add(CVBoxLayout(margins=(0,0,0,0)), 1) as layout:
-                layout.add(self.browser)
-            with splitter.add(CVBoxLayout(margins=(0,0,0,0)), 4) as layout:
-                layout.add(self.editor)
-                layout.add(self.error)
-
-        splitter.restore_state()
+        with CVBoxLayout(self) as layout:
+            with layout.split(name='sandbox_splitter'):
+                with layout.vbox(margins=(0,0,0,0)):
+                    layout.add(self.browser)
+                with layout.vbox(margins=(0,0,0,0)):
+                    layout.add(self.editor)
+                    layout.add(self.error)
 
     @Slot()
     def set_error(self, error):
@@ -144,7 +145,7 @@ class SandboxEditor(QWidget):
         if items := self.browser.selected_items():
             name = items[0]
             self.scripts[name] = self.editor.toPlainText()
-            with open('sandbox/' + name, 'w') as f:
+            with open(self.scripts_path / name, 'w') as f:
                 f.write(self.scripts[name])
             self.reload.emit(self.set_error)
 

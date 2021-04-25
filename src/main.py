@@ -1,10 +1,10 @@
 from qtstrap import *
-from main_window import MainWindow
+from .main_window import MainWindow
 from codex import DeviceManager
 import qtawesome as qta
 from appdirs import AppDirs
 from pathlib import Path
-from app_updater import ApplicationUpdater
+from .app_updater import ApplicationUpdater
 
 
 class Application(BaseApplication):

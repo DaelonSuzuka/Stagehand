@@ -1,6 +1,6 @@
 from qtstrap import *
 from codex import DeviceManager
-from obs import ActionWidget, ActionWidgetGroup
+from .obs import ActionWidget, ActionWidgetGroup
 
 
 class PedalActions(QWidget):

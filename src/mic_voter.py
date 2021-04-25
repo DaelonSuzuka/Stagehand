@@ -3,7 +3,7 @@ import numpy as np
 import sounddevice as sd
 from time import time
 import os
-from obs import Sandbox
+from .obs import Sandbox
 
 
 class MicStream:

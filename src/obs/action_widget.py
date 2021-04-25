@@ -1,6 +1,6 @@
 from qtstrap import *
-from obs import Sandbox
-from editor import CodeEditor
+from qtstrap.extras import code_editor
+from . import Sandbox
 import qtawesome as qta
 
 

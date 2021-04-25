@@ -1,5 +1,5 @@
 from qtstrap import *
-from obs import ActionWidget
+from .obs import ActionWidget
 
 
 class GenericActionsWidget(QWidget):

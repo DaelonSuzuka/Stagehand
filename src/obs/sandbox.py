@@ -1,6 +1,6 @@
-import json
-from obs import requests
 from qtstrap import *
+import json
+from . import requests
 from pathlib import Path
 from pynput.keyboard import Key, Controller
 from .sandbox_tools import SandboxTools
