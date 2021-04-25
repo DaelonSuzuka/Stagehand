@@ -1,0 +1,26 @@
+
+body {
+    background-color: #1F1E1F;
+}
+
+button {
+    font-family: Helvetica;
+    background-color: #3A393A;
+    color: white;
+}
+
+@media (min-width: 600px) {
+    button {
+        height: 250px;
+        width: 250px;
+        font-size: 30px;
+    }
+}
+
+@media (max-width: 600px) {
+    button {
+        width: 150px;
+        height: 150px;
+        font-size: 20px;
+    }
+}

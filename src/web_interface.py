@@ -1,13 +1,13 @@
-from flask import Flask, render_template_string
+from flask import Flask, render_template
 from urllib.parse import urlparse
 from qtstrap import *
 from qtpy.QtWebSockets import *
 from qtpy.QtNetwork import *
 from codex import SubscriptionManager
 import threading
-from obs import ActionWidget
+from .obs import ActionWidget, ActionWidgetGroup
 import socket
-from .web_template import web_template
+import json
 
 
 # disable flask logging
@@ -17,11 +17,19 @@ log.setLevel(logging.ERROR)
 
 
 def start_flask():
-    app = Flask(__name__)
+    template_path = Path(OPTIONS.APPLICATION_PATH / 'plugins' / 'web_pages')
+    static_path = Path(template_path / 'static').as_posix()
+    app = Flask(__name__, template_folder=template_path, static_folder=static_path)
 
     @app.route("/")
-    def nothing():
-        return render_template_string(web_template)
+    def home():
+        return render_template('index.html')
+
+    @app.route("/<page>")
+    def others(page):
+        if f'{page}.html' in [f.parts[-1] for f in template_path.rglob('*.html')]:
+            return render_template(f'{page}.html')
+        return render_template('404.html')
 
     app.run(host='0.0.0.0', debug=True, use_reloader=False)
 
@@ -55,13 +63,12 @@ class WebInterfaceManager(QWidget):
         self.local_link = LinkLabel(both='http://localhost:5000')
         self.lan_link = LinkLabel(both=f'http://{get_ip()}:5000')
 
-        default = {f'Web Action {i}': ActionWidget.default_data(f'Web Action {i}') for i in range(1, 13)}
-        prev_data = QSettings().value('web_actions', default)
+        self.group = ActionWidgetGroup(f'web_actions/actions', self)
 
         self.actions = {}
         for i in range(1, 13):
             name = f'Web Action {i}'
-            self.actions[name] = ActionWidget(data=prev_data[name], changed=self.rename_buttons)
+            self.actions[name] = ActionWidget(name, self.group, changed=self.rename_buttons)
 
         with CVBoxLayout(self) as layout:
             with layout.hbox():
@@ -72,16 +79,12 @@ class WebInterfaceManager(QWidget):
                 layout.add(self.lan_link)
                 layout.add(QLabel(), 1)
             layout.add(QLabel())
+            layout.add(HLine())
 
-            layout.add(HLine())    
-            
-            for _, action in self.actions.items():
-                layout.add(action)
-
+            layout.add([a for _, a in self.actions.items()])
             layout.add(QLabel(), 1)
 
     def rename_buttons(self):
-        self.save_actions()
         for client in self.clients:
             for i, action in self.actions.items():
                 client.sendTextMessage(f'{{"command":"rename", "number":"{i[len("Web Action "):]}", "name":"{action.label.text()}"}}')
@@ -93,11 +96,12 @@ class WebInterfaceManager(QWidget):
         socket.textMessageReceived.connect(self.processTextMessage)
         self.rename_buttons()
 
-    def processTextMessage(self, message):
-        if int(message) in self.actions:
-            self.actions[int(message)].run()
-
-    def save_actions(self):
-        data = {name: action.to_dict() for name, action in self.actions.items()}
-
-        QSettings().setValue('web_actions', data)
+    def processTextMessage(self, text):
+        try:
+            msg = json.loads(text)
+            if 'command' in msg and msg['command'] == 'click':
+                btn_name = f"Web Action {msg['button']}"
+                if btn_name in self.actions:
+                    self.actions[btn_name].run()
+        except:
+            pass
