@@ -1,5 +1,5 @@
-from codex import SerialDevice, JudiStandardMixin
 from qtstrap import *
+from codex import SerialDevice, JudiStandardMixin
 
 
 class Signals(QObject):
