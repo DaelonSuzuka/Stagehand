@@ -1,25 +1,6 @@
 {
     "name": "Stomp 4",
-    "description": "",
-    "version": "",
-    "keywords": "",
-    "homepage": "",
-    "author": "",
-    "license": "",
-    "contributes": [
-        {
-            "type": "codex-profile",
-            "class": "",
-            "files": [
-                "stomp_4.py"
-            ]
-        },
-        {
-            "type": "codex-profile",
-            "class": "",
-            "files": [
-                "stomp_4.py"
-            ]
-        }
+    "files": [
+        "stomp_4.py"
     ]
 }

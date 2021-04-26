@@ -1,10 +1,12 @@
 from qtstrap import *
 from .main_window import MainWindow
-from codex import DeviceManager
+from codex import DeviceManager, SerialDevice
+import codex
 import qtawesome as qta
 from appdirs import AppDirs
 from pathlib import Path
 from .app_updater import ApplicationUpdater
+from .plugin_loader import load_plugins
 
 
 class Application(BaseApplication):
@@ -24,7 +26,9 @@ class Application(BaseApplication):
         return super().closeEvent(event)
 
 
-def run():    
+def run():
+    load_plugins()
+
     # Create the Qt Application
     app = Application()
 

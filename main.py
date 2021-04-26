@@ -3,5 +3,5 @@ from src.plugin_loader import load_plugins
 
 
 if __name__ == "__main__":
-    # main.run()
-    load_plugins()
+    # load_plugins()
+    main.run()
