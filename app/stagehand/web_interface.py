@@ -17,7 +17,7 @@ log.setLevel(logging.ERROR)
 
 
 def start_flask():
-    template_path = Path(OPTIONS.APPLICATION_PATH / 'plugins' / 'web_pages')
+    template_path = Path(OPTIONS.APPLICATION_PATH / 'web_pages')
     static_path = Path(template_path / 'static').as_posix()
     app = Flask(__name__, template_folder=template_path, static_folder=static_path)
 
