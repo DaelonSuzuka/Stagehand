@@ -2,12 +2,6 @@ from qtstrap import *
 from stagehand.obs import ActionWidget, ActionWidgetGroup
 
 
-Stagehand
-- Makefile
-
-
-
-
 class PedalActions(QWidget):
     def __init__(self, name, group, parent=None):
         super().__init__(parent=parent)
