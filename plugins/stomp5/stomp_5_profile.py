@@ -1,5 +1,6 @@
-from codex import SerialDevice, JudiStandardMixin
 from qtstrap import *
+from codex import SerialDevice, JudiStandardMixin
+from .stomp_5_widget import Stomp5Widget
 
 
 class Signals(QObject):
@@ -16,8 +17,9 @@ class Signals(QObject):
         }
 
 
-class Stomp4(JudiStandardMixin, SerialDevice):
-    profile_name = "Stomp 4"
+class Stomp5(JudiStandardMixin, SerialDevice):
+    profile_name = "Stomp 5"
+    widget = Stomp5Widget
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

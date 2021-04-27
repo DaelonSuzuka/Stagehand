@@ -6,6 +6,7 @@ import sys
 from codex import SerialDevice
 import codex
 import zipimport
+from src.obs import ActionWidget, ActionWidgetGroup
 
 
 plugin_folder = OPTIONS.APPLICATION_PATH / 'plugins'
@@ -19,11 +20,11 @@ class _Plugins:
             # if not plugin.is_dir():
                 # continue
 
+            if plugin.is_dir() and Path(plugin / 'plugin.json').exists():
+                self.load_loose_plugin(plugin)
+
             if plugin.suffix == '.zip':
                 self.load_zip_plugin(plugin)
-
-            # if plugin.is_dir() and Path(plugin / 'plugin.json').exists():
-            #     self.load_loose_plugin(plugin)
 
     def list_all(self):
         return self._plugins
@@ -36,13 +37,10 @@ class _Plugins:
 
     def load_zip_plugin(self, plugin):
         relative = plugin.relative_to(OPTIONS.APPLICATION_PATH)
-        # relative = relative.replace('/','.')
 
-        print('loading zip plugin', relative)
         zip = zipimport.zipimporter(relative.as_posix())
         module = zip.load_module(relative.name.split('.')[0])
         self._plugins[module.__name__.split('.')[-1]] = module
-        setattr(sys.modules[__name__], module.__name__, module)
 
     def load_loose_plugin(self, plugin):
         relative = plugin.relative_to(OPTIONS.APPLICATION_PATH).as_posix()
@@ -50,7 +48,6 @@ class _Plugins:
 
         module = importlib.import_module(relative)
         self._plugins[module.__name__.split('.')[-1]] = module
-        setattr(sys.modules[__name__], module.__name__, module)
 
 
 plugins = None
