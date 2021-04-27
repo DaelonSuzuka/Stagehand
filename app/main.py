@@ -1,4 +1,4 @@
-from src import *
+from stagehand import *
 
 
 if __name__ == "__main__":

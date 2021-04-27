@@ -1,5 +1,11 @@
 from qtstrap import *
-from src.obs import ActionWidget, ActionWidgetGroup
+from stagehand.obs import ActionWidget, ActionWidgetGroup
+
+
+Stagehand
+- Makefile
+
+
 
 
 class PedalActions(QWidget):
@@ -18,14 +24,15 @@ class PedalActions(QWidget):
             layout.add(self.release)
 
 
-class Stomp5Widget(QWidget):
+class Stomp4Widget(QWidget):
     def __init__(self, guid, parent=None):
         super().__init__(parent=parent)
         self.guid = guid
 
         self.group = ActionWidgetGroup(f'input_devices/{guid}', self)
+
         self.pedals = []
-        for i in range(1, 6):
+        for i in range(1, 5):
             self.pedals.append(PedalActions(f'Pedal {i}', self.group))
 
         self.status = QLabel("Not Connected")

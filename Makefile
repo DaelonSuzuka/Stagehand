@@ -28,11 +28,11 @@ endif
 
 # run the application
 run: venv
-	$(VENV_PYTHON) main.py
+	$(VENV_PYTHON) app/main.py
 
 # run the application in pdb
 debug: venv
-	$(VENV_PYTHON) -m pdb main.py
+	$(VENV_PYTHON) -m pdb app/main.py
 
 # **************************************************************************** #
 # Build Targets

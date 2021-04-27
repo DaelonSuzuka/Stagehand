@@ -6,7 +6,6 @@ import sys
 from codex import SerialDevice
 import codex
 import zipimport
-from src.obs import ActionWidget, ActionWidgetGroup
 
 
 plugin_folder = OPTIONS.APPLICATION_PATH / 'plugins'
