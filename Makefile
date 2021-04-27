@@ -7,9 +7,11 @@ MAKEFLAGS += -s
 
 # **************************************************************************** #
 
+APP_INFO = app/app_info.py
+
 # load the project variables
-ifneq (,$(wildcard app_info.py))
-include app_info.py
+ifneq (,$(wildcard $(APP_INFO)))
+include $(APP_INFO)
 
 # remove extra quotes
 AppName := $(patsubst "%",%,$(AppName))
