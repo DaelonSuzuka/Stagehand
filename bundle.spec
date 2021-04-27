@@ -22,6 +22,7 @@ a = Analysis(
         ('app/resources', 'resources'),
         ('app/sandbox', 'sandbox'),
         ('app/web_pages', 'web_pages'),
+        ('app/plugins/*.zip', 'plugins'),
     ],
     hiddenimports=[],
     hookspath=[],

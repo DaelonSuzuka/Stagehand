@@ -39,12 +39,12 @@ debug: venv
 # **************************************************************************** #
 # Build Targets
 
-beep:
-	echo $(AppName)
-	echo $(AppVersion)
+# build all the plugins into zips
+plugins:
+	$(PYTHON) build_plugins.py
 
 # build a one folder bundle 
-bundle: venv
+bundle: venv plugins
 	$(VENV_PYINSTALLER) -y bundle.spec
 
 # run the bundled executable
