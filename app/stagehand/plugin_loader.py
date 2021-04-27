@@ -35,18 +35,23 @@ class _Plugins:
         return key in self._plugins
 
     def load_zip_plugin(self, plugin):
-        relative = plugin.relative_to(OPTIONS.APPLICATION_PATH)
+        plugin_name = plugin.relative_to(OPTIONS.APPLICATION_PATH).as_posix()
+        plugin_name = plugin_name.replace('/','.')
+        plugin_name = plugin_name[:-len('.zip')]
 
-        zip = zipimport.zipimporter(relative.as_posix())
-        module = zip.load_module(relative.name.split('.')[0])
-        self._plugins[module.__name__.split('.')[-1]] = module
+        if plugin_name not in self._plugins:
+            sys.path.append(plugin)
+            
+            module = importlib.import_module(plugin_name)
+            self._plugins[plugin_name] = module
 
     def load_loose_plugin(self, plugin):
-        relative = plugin.relative_to(OPTIONS.APPLICATION_PATH).as_posix()
-        relative = relative.replace('/','.')
+        plugin_name = plugin.relative_to(OPTIONS.APPLICATION_PATH).as_posix()
+        plugin_name = plugin_name.replace('/','.')
 
-        module = importlib.import_module(relative)
-        self._plugins[module.__name__.split('.')[-1]] = module
+        if plugin_name not in self._plugins:
+            module = importlib.import_module(plugin_name)
+            self._plugins[plugin_name] = module
 
 
 plugins = None
