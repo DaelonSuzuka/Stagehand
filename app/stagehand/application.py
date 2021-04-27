@@ -21,21 +21,9 @@ class Application(BaseApplication):
 
         self.device_manager = DeviceManager(self)
 
+        self.window = MainWindow()
+        self.window.show()
+
     def closeEvent(self, event):
         self.device_manager.close()
         return super().closeEvent(event)
-
-
-def run():
-    # Create the Qt Application
-    app = Application()
-
-    # create window
-    window = MainWindow()
-    window.show()
-
-    # Run the main Qt loop
-    app.exec_()
-
-if __name__ == "__main__":
-    run()

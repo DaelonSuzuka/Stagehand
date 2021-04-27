@@ -1,5 +1,5 @@
-from stagehand import *
+from stagehand.application import Application
 
 
 if __name__ == "__main__":
-    main.run()
+    Application().exec_()
