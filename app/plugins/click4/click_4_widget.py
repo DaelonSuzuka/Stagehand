@@ -12,7 +12,9 @@ class PedalActions(QWidget):
 
         with CVBoxLayout(self, margins=(0,0,0,0)) as layout:
             with layout.hbox(align='left'):
-                layout.add(QLabel(f'{self.name} Status:'))
+                layout.add(QLabel(f'{self.name}'))
+                layout.add(QLabel(''), 1)
+                layout.add(QLabel(f'Status:'))
                 layout.add(self.state)
             layout.add(self.press)
             layout.add(self.release)
