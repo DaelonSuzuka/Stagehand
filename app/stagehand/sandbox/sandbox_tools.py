@@ -73,3 +73,9 @@ class SandboxTools(QWidget):
                 self.update_selected_scene(msg['scene-name'])
                 self.update_sources(msg)
                 # self.obs.send(requests.GetSourcesList(), self.update_sources)
+
+    def print(self, *args):
+        s = ''
+        for arg in args:
+            s += str(arg)
+        self.output.append(s)

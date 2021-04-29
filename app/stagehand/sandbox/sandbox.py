@@ -1,6 +1,5 @@
 from qtstrap import *
 import json
-from stagehand.obs import requests
 from pathlib import Path
 from pynput.keyboard import Key, Controller
 from .sandbox_tools import SandboxTools
@@ -39,9 +38,27 @@ class SandboxToolsDockWidget(QDockWidget):
         return action
 
 
+class Obs:
+    def __init__(self, obs):
+        self.obs = obs
+
+    def set_scene(self, name):
+        self.obs.send(payload)
+
+    def send(self, payload, cb=None):
+        self.obs.send(payload, cb)
+
+
 class Keyboard:
     def __init__(self):
         self.controller = Controller()
+
+    def __getattr__(self, name):
+        return getattr(Key, name)
+
+    def key(self, k):
+        self.controller.press(k)
+        self.controller.release(k)
 
     def press(self, key):
         self.controller.press(key)
@@ -53,7 +70,7 @@ class Keyboard:
 class _Sandbox(QWidget):
     def __init__(self, obs, parent=None):
         super().__init__(parent=parent)
-        self.obs = obs
+        self.obs = Obs(obs)
         
         self.editor = SandboxEditor(obs)
         self.editor.reload.connect(self.reload_environment)
@@ -68,23 +85,16 @@ class _Sandbox(QWidget):
     def reset_environment(self):
         self._data = {}
         self._globals = {
-            'send': self.obs.send,
-            'requests': requests,
+            'obs': self.obs,
             'save': self._save, 
             'load': self._load, 
             'data': self._data, 
-            'print': self._print,
-            'obs': None,
+            'print': self.tools.print,
             'keyboard': self.keyboard,
+            'kb': self.keyboard,
         }
         self._locals = {
         }
-
-    def _print(self, *args):
-        s = ''
-        for arg in args:
-            s += str(arg)
-        self.tools.output.append(s)
 
     def _save(self, name, value):
         self._data[name] = value
@@ -135,7 +145,7 @@ class _Sandbox(QWidget):
         if error_cb:
             error_cb(error)
         else:
-            self._print(error)
+            self.tools.print(error)
 
 
 sandbox = None
