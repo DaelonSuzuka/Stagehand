@@ -5,7 +5,7 @@ from qtpy.QtWebSockets import *
 from qtpy.QtNetwork import *
 from codex import SubscriptionManager
 import threading
-from .obs import ActionWidget, ActionWidgetGroup
+from .actions import ActionWidget, ActionWidgetGroup
 import socket
 import json
 

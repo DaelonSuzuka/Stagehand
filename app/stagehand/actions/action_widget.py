@@ -1,89 +1,7 @@
 from qtstrap import *
-from qtstrap.extras import code_editor
-from . import Sandbox
+from stagehand.sandbox import Sandbox
 import qtawesome as qta
-
-
-class ActionEditorDialog(QDialog):
-    reload = Signal(str, Slot)
-
-    def __init__(self, data, parent=None):
-        super().__init__(parent=parent)
-
-        self.setWindowTitle('Action Editor')
-
-        self.name = data['name']
-        self.label = QLineEdit(data['label'])
-        self.editor = CodeEditor()
-        self.editor.setText(data['action'])
-        self.editor.textChanged.connect(lambda: self.reload.emit(self.editor.toPlainText(), self.set_error))
-        self.reload.connect(Sandbox().compile)
-        self.error = QLabel('')
-
-        self.reset = QPushButton('Reset', clicked=self.on_reset)
-        self.cancel = QPushButton('Cancel', clicked=self.reject)
-        self.ok = QPushButton('Ok', clicked=self.accept)
-        self.run = QPushButton('', clicked=lambda: Sandbox().run(self.editor.toPlainText(), self.set_error))
-        self.run.setIcon(QIcon(qta.icon('mdi.play-circle-outline')))
-
-        with CVBoxLayout(self) as layout:
-            with layout.hbox() as layout:
-                layout.add(QLabel('Name:'))
-                layout.add(QLabel(data['name']))
-                layout.add(QLabel(), 1)
-                layout.add(self.reset)
-            with layout.hbox(align='left') as layout:
-                layout.add(QLabel('Label:'))
-                layout.add(self.label)
-                layout.add(QLabel(), 1)
-                layout.add(self.run)
-            layout.add(self.editor)
-            layout.add(self.error)
-            with layout.hbox(align='right') as layout:
-                layout.add(self.cancel)
-                layout.add(self.ok)
-
-        self.editor.setFocus()
-
-    @Slot()
-    def set_error(self, error):
-        self.error.setText(error)
-
-    def on_reset(self):
-        self.editor.setText('')
-        self.label.setText(self.name)
-
-
-class ActionWidgetGroup(QObject):
-    action_changed = Signal()
-
-    def __init__(self, name, parent=None):
-        super().__init__(parent=parent)
-        self.name = name
-        self.actions = []
-        self.load()
-
-    def register(self, action):
-        self.actions.append(action)
-        if action.name in self.prev_data:
-            action.set_data(self.prev_data[action.name])
-        action.changed.connect(self.on_action_change)
-
-    def on_action_change(self):
-        self.save()
-        self.action_changed.emit()
-
-    def load(self):
-        self.prev_data = QSettings().value(self.name, {})
-
-    def save(self):
-        QSettings().setValue(self.name, self.get_data())
-
-    def get_data(self):
-        data = {}
-        for action in self.actions:
-            data[action.name] = action.to_dict()
-        return data
+from .action_editor import ActionEditorDialog
 
 
 class ActionStack(QWidget):
@@ -165,11 +83,8 @@ class ActionWidget(QWidget):
         if group:
             group.register(self)
 
-        self.run_btn = QPushButton('', clicked=self.run)
-        self.run_btn.setIcon(QIcon(qta.icon('fa5.play-circle')))
-        
-        self.edit_btn = QPushButton('', clicked=self.open_editor)
-        self.edit_btn.setIcon(QIcon(qta.icon('fa5.edit')))
+        self.run_btn = QPushButton('', clicked=self.run, icon=QIcon(qta.icon('fa5.play-circle')))
+        self.edit_btn = QPushButton('', clicked=self.open_editor, icon=QIcon(qta.icon('fa5.edit')))
 
         self.on_change()
 

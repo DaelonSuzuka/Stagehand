@@ -1,5 +1,5 @@
 from qtstrap import *
-from stagehand.obs import ActionWidget, ActionWidgetGroup
+from stagehand.actions import ActionWidget, ActionWidgetGroup
 
 
 class PedalActions(QWidget):

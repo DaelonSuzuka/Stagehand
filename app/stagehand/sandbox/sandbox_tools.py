@@ -1,5 +1,5 @@
 from qtstrap import *
-from . import requests
+from stagehand.obs import requests
 
 
 class SandboxTools(QWidget):

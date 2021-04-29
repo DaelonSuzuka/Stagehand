@@ -1,7 +1,8 @@
 from qtstrap import *
 from codex import DeviceControlsDockWidget
 from .mic_voter import MicVoterWidget
-from .obs import ObsManager, Sandbox
+from .obs import ObsManager
+from .sandbox import Sandbox
 import qtawesome as qta
 from .generic_actions import GenericActionsWidget
 from .web_interface import WebInterfaceManager
@@ -49,8 +50,8 @@ class MainWindow(BaseMainWindow):
         self.load_settings()
 
         self.voter = MicVoterWidget(self.obs, self)
-        # self.actions = GenericActionsWidget(self)
-        # self.web_actions = WebInterfaceManager(self)
+        self.actions = GenericActionsWidget(self)
+        self.web_actions = WebInterfaceManager(self)
         self.input_devices = InputDeviceManager(self)
 
         def scroll(widget):
@@ -64,8 +65,8 @@ class MainWindow(BaseMainWindow):
         tabs = {
             'OBS Manager': self.obs,
             'Mic Voter': scroll(self.voter),
-            # 'Actions': scroll(self.actions),
-            # 'Web Actions': scroll(self.web_actions),
+            'Actions': scroll(self.actions),
+            'Web Actions': scroll(self.web_actions),
             'Input Devices': scroll(self.input_devices),
         }
 

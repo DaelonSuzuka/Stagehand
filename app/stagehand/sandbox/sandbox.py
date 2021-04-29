@@ -1,6 +1,6 @@
 from qtstrap import *
 import json
-from . import requests
+from stagehand.obs import requests
 from pathlib import Path
 from pynput.keyboard import Key, Controller
 from .sandbox_tools import SandboxTools
@@ -39,6 +39,17 @@ class SandboxToolsDockWidget(QDockWidget):
         return action
 
 
+class Keyboard:
+    def __init__(self):
+        self.controller = Controller()
+
+    def press(self, key):
+        self.controller.press(key)
+
+    def release(self, key):
+        self.controller.release(key)
+
+
 class _Sandbox(QWidget):
     def __init__(self, obs, parent=None):
         super().__init__(parent=parent)
@@ -47,7 +58,7 @@ class _Sandbox(QWidget):
         self.editor = SandboxEditor(obs)
         self.editor.reload.connect(self.reload_environment)
         self.tools = SandboxTools(obs)
-        self.keyboard = Controller()
+        self.keyboard = Keyboard()
 
         self.reload_environment()
 
@@ -63,23 +74,11 @@ class _Sandbox(QWidget):
             'load': self._load, 
             'data': self._data, 
             'print': self._print,
-            'Key': Key,
-            'key': self._key,
-            'press': self._press,
-            'release': self._release,
+            'obs': None,
+            'keyboard': self.keyboard,
         }
         self._locals = {
         }
-
-    def _key(self, key):
-        self.keyboard.press(key)
-        self.keyboard.release(key)
-
-    def _press(self, key):
-        self.keyboard.press(key)
-
-    def _release(self, key):
-        self.keyboard.release(key)
 
     def _print(self, *args):
         s = ''
