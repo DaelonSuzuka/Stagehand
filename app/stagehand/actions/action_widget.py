@@ -51,7 +51,6 @@ class SandboxAction(QWidget):
         }
 
     def run(self):
-        print(self.to_dict())
         Sandbox().run(self.action.text())
 
 
@@ -66,16 +65,19 @@ class ObsAction(QWidget):
         
         self.value = QComboBox()
         self.value.currentIndexChanged.connect(changed)
+        
+        self.load_values()
 
         with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
             layout.add(self.type)
             layout.add(self.value)
 
-    def load_values(self, value):
+    def load_values(self, value=None):
         self.value.clear()
         if self.type.currentText() == 'set scene':
             def cb(msg):
                 scenes = [s['name'] for s in msg['scenes']]
+                self.value.clear()
                 self.value.addItems(scenes)
                 if value in scenes:
                     self.value.setCurrentText(value)
@@ -130,7 +132,6 @@ class KeyboardAction(QWidget):
         }
 
     def run(self):
-        print(self.to_dict())
         Sandbox().run(f"keyboard.{self.type.currentText()}('{self.value.text()}')")
 
 
