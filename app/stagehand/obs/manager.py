@@ -4,6 +4,7 @@ import json
 from . import requests
 import base64
 import hashlib
+import queue
 
 
 class ObsStatusWidget(QWidget):
@@ -34,6 +35,7 @@ class ObsManager(QWidget):
         self.socket.disconnected.connect(self.disconnected)
         self.socket.textMessageReceived.connect(self.recieve)
 
+        self.queue = queue.Queue()
         self.history = {}
         self.callbacks = {}
 
@@ -106,6 +108,7 @@ class ObsManager(QWidget):
             self.status_widget.setText('Connected')
             self.connect_btn.setText('Disconnect')
             self.socket_connected.emit()
+            self.process_queue()
 
         elif status == 'inactive':
             self.active = False
@@ -152,11 +155,11 @@ class ObsManager(QWidget):
                     elif msg['status'] == 'ok':
                         self.set_status('active')
 
-                self.send(auth_payload, auth_cb2)
+                self._send(auth_payload, auth_cb2)
             else:
                 self.set_status('active')
 
-        self.send(requests.GetAuthRequired(), auth_cb)
+        self._send(requests.GetAuthRequired(), auth_cb)
 
     def disconnected(self):
         self.unlock()
@@ -166,7 +169,7 @@ class ObsManager(QWidget):
         address = f'ws://{self.url.text()}:{self.port.text()}'
         self.socket.open(QUrl(address))
 
-    def send(self, payload, callback=None):
+    def _send(self, payload, callback=None):
         payload['message-id'] = str(self.id)
         self.history[self.id] = payload
 
@@ -176,6 +179,17 @@ class ObsManager(QWidget):
         message = json.dumps(payload)
         self.socket.sendTextMessage(message)
         self.id += 1
+
+    def send(self, payload, callback=None):
+        if self.active:
+            self._send(payload, callback)
+        else:
+            self.queue.put((payload, callback))
+
+    def process_queue(self):
+        while not self.queue.empty():
+            payload, callback = self.queue.get()
+            self._send(payload, callback)
 
     def recieve(self, message):
         self.raw_message_received.emit(message)
