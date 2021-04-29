@@ -2,6 +2,9 @@ from qtstrap import *
 from qtstrap.extras import code_editor
 
 
+script_folder = Path(OPTIONS.APPLICATION_PATH / 'sandbox')
+
+
 class ScriptBrowser(QTreeWidget):
     def __init__(self, *args, changed=None, **kwargs):
         super().__init__(*args, **kwargs)
@@ -69,10 +72,8 @@ class ScriptBrowser(QTreeWidget):
         self.clear()
         self.nodes = {}
 
-        files = [f.as_posix()[8:] for f in Path('./sandbox').rglob('*.py')]
-    
-        for f in files:
-            self.create_node(f)
+        for f in script_folder.rglob('*.py'):
+            self.create_node(f.relative_to(script_folder).as_posix())
 
         self.expandAll()
 
@@ -115,9 +116,8 @@ class SandboxEditor(QWidget):
         self.obs = obs
 
         self.scripts = {}
-        self.scripts_path = Path(OPTIONS.APPLICATION_PATH / 'sandbox')
 
-        for name in [f for f in self.scripts_path.rglob('*.py')]:
+        for name in script_folder.rglob('*.py'):
             with open(name) as f:
                 self.scripts[name.parts[-1]] = f.read()
 
@@ -145,7 +145,7 @@ class SandboxEditor(QWidget):
         if items := self.browser.selected_items():
             name = items[0]
             self.scripts[name] = self.editor.toPlainText()
-            with open(self.scripts_path / name, 'w') as f:
+            with open(script_folder / name, 'w') as f:
                 f.write(self.scripts[name])
             self.reload.emit(self.set_error)
 
