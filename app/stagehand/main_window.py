@@ -48,7 +48,7 @@ class MainWindow(BaseMainWindow):
 
         self.load_settings()
 
-        self.voter = MicVoterWidget(self)
+        self.voter = MicVoterWidget(self.obs, self)
         # self.actions = GenericActionsWidget(self)
         # self.web_actions = WebInterfaceManager(self)
         self.input_devices = InputDeviceManager(self)

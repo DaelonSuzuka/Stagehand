@@ -80,9 +80,10 @@ class MicStreamWidget(QWidget):
 
 
 class MicVoterWidget(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, obs, parent=None):
         super().__init__(parent=parent)
 
+        self.obs = obs
         self.best_mic = QLabel()
 
         if os.name == 'nt':
@@ -181,5 +182,5 @@ class MicVoterWidget(QWidget):
             self.best_mic.setText(best_mic.name)
 
             for mic, state in mute.items():
-                mute_request = f'{{"request-type": "SetMute", "source": "{mic}", "mute": {str(state).lower()}}}'
-                Sandbox().run(mute_request)
+                mute_request = {"request-type": "SetMute", "source": mic, "mute": state}
+                self.obs.send(mute_request)

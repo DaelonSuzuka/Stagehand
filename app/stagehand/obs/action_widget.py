@@ -103,7 +103,7 @@ class ActionStack(QWidget):
         
         self.obs_action = QWidget()
         self.obs_action_type = QComboBox()
-        self.obs_action_type.addItems(['set scene', 'release', 'both'])
+        self.obs_action_type.addItems(['set scene', 'set mute'])
         self.obs_action_value = QComboBox()
         with CHBoxLayout(self.obs_action, margins=(0,0,0,0)) as layout:
             layout.add(self.obs_action_type)
