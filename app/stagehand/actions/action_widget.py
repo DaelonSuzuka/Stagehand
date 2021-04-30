@@ -3,33 +3,29 @@ from stagehand.sandbox import Sandbox
 from stagehand.obs import requests
 import qtawesome as qta
 from .action_editor import ActionEditorDialog
+import abc
 
 
-stack_options = {
-    'sandbox': {
+class ActionStackItem:
+    @abc.abstractmethod
+    def __init__(self, changed) -> None:
+        raise NotImplementedError
 
-    },
-    'obs': {
+    
+    @abc.abstractmethod
+    def from_dict(self, data: dict):
+        raise NotImplementedError
 
-    },
-    'keyboard': {
-        'key': {
+    @abc.abstractmethod
+    def to_dict(self) -> dict:
+        raise NotImplementedError
 
-        },
-        'press': {
-
-        },
-        'release': {
-
-        },
-        'sequence': {
-
-        },
-    },
-}
+    @abc.abstractmethod
+    def run(self) -> None:
+        raise NotImplementedError
 
 
-class SandboxAction(QWidget):
+class SandboxActionWidget(QWidget, ActionStackItem):
     def __init__(self, changed):
         super().__init__()
         
@@ -39,7 +35,7 @@ class SandboxAction(QWidget):
         with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
             layout.add(self.action)
 
-    def from_dict(self, data):
+    def from_dict(self, data: dict):
         try:
             self.action.setText(data['action'])
         except:
@@ -54,103 +50,20 @@ class SandboxAction(QWidget):
         Sandbox().run(self.action.text())
 
 
-class ObsAction(QWidget):
-    def __init__(self, changed):
-        super().__init__()
-
-        self.type = QComboBox()
-        self.type.addItems(['set scene', 'mute', 'unmute'])
-        self.type.currentIndexChanged.connect(changed)
-        self.type.currentIndexChanged.connect(self.load_values)
-        
-        self.value = QComboBox()
-        self.value.currentIndexChanged.connect(changed)
-        
-        self.load_values()
-
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
-            layout.add(self.type)
-            layout.add(self.value)
-
-    def load_values(self, value=None):
-        self.value.clear()
-        if self.type.currentText() == 'set scene':
-            def cb(msg):
-                scenes = [s['name'] for s in msg['scenes']]
-                self.value.clear()
-                self.value.addItems(scenes)
-                if value in scenes:
-                    self.value.setCurrentText(value)
-
-            Sandbox().obs.send(requests.GetSceneList(), cb)
-
-    def from_dict(self, data):
-        try:
-            self.type.setCurrentText(data['type'])
-            self.value.setCurrentText(data['value'])
-            self.load_values(data['value'])
-        except:
-            pass
-
-    def to_dict(self):
-        return {
-            'type': self.type.currentText(),
-            'value': self.value.currentText(),
-        }
-
-    def run(self):
-        if self.type.currentText() == 'set scene':
-            Sandbox().obs.send(requests.SetScene(self.value.currentText()))
-
-
-class KeyboardAction(QWidget):
-    def __init__(self, changed):
-        super().__init__()
-
-        self.type = QComboBox()
-        self.type.addItems(['key', 'press', 'release', 'sequence'])
-        self.type.currentIndexChanged.connect(changed)
-
-        self.value = QLineEdit()
-        self.value.textChanged.connect(changed)
-
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
-            layout.add(self.type)
-            layout.add(self.value)
-
-    def from_dict(self, data):
-        try:
-            self.type.setCurrentText(data['type'])
-            self.value.setText(data['value'])
-        except:
-            pass
-
-    def to_dict(self):
-        return {
-            'type': self.type.currentText(),
-            'value': self.value.text(),
-        }
-
-    def run(self):
-        Sandbox().run(f"keyboard.{self.type.currentText()}('{self.value.text()}')")
-
-
 class ActionStack(QWidget):
     changed = Signal()
+
+    actions = {
+        'sandbox': SandboxActionWidget,
+    }
 
     def __init__(self, changed, action_type='sandbox', action=''):
         super().__init__()
 
-        actions = {
-            'sandbox': SandboxAction,
-            'obs': ObsAction,
-            'keyboard': KeyboardAction,
-        }
-
         self.type = QComboBox()
         self.stack = QStackedWidget()
         
-        for name, action in actions.items():
+        for name, action in self.actions.items():
             self.type.addItem(name)
             self.stack.addWidget(action(changed))
         

@@ -42,8 +42,6 @@ class MainWindow(BaseMainWindow):
         
         self.obs = ObsManager(self)
         self.sandbox = Sandbox(self.obs, self)
-        if not self.restoreDockWidget(self.sandbox.editor_dock):
-            self.addDockWidget(self.sandbox.editor_dock.starting_area, self.sandbox.editor_dock)
         if not self.restoreDockWidget(self.sandbox.tools_dock):
             self.addDockWidget(self.sandbox.tools_dock.starting_area, self.sandbox.tools_dock)
 
@@ -107,7 +105,6 @@ class MainWindow(BaseMainWindow):
         # settings popup menu
         menu.addSeparator()
         menu.addAction(self.sandbox.tools_dock.toggleViewAction())
-        menu.addAction(self.sandbox.editor_dock.toggleViewAction())
         menu.addAction(self.device_controls.toggleViewAction())
 
         menu.addSeparator()

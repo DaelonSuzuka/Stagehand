@@ -17,7 +17,7 @@ class Application(BaseApplication):
         self.setWindowIcon(icon)
 
         self.updater = ApplicationUpdater()
-        self.updater.check_latest()
+        # self.updater.check_latest()
 
         self.device_manager = DeviceManager(self)
 
