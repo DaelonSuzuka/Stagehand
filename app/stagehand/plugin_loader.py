@@ -19,7 +19,7 @@ class _Plugins:
             # if not plugin.is_dir():
                 # continue
 
-            if plugin.is_dir() and Path(plugin / 'plugin.json').exists():
+            if plugin.is_dir() and (Path(plugin / 'plugin.json').exists() or Path(plugin / '__init__.py').exists()):
                 self.load_loose_plugin(plugin)
 
             if plugin.suffix == '.zip':
