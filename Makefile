@@ -44,7 +44,7 @@ plugins:
 	$(PYTHON) build_plugins.py
 
 # build a one folder bundle 
-bundle: venv plugins
+bundle: venv
 	$(VENV_PYINSTALLER) -y bundle.spec
 
 # run the bundled executable
