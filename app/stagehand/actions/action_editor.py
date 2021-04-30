@@ -1,5 +1,7 @@
 from qtstrap import *
-from qtstrap.extras import code_editor
+from qtstrap.extras.code_editor import CodeEditor
+from stagehand.sandbox import Sandbox
+import qtawesome as qta
 
 
 class ActionEditorDialog(QDialog):
