@@ -1,6 +1,7 @@
 from qtstrap import *
 from stagehand.sandbox import Sandbox
 from stagehand.actions import ActionStackItem
+from stagehand.obs import requests
 
 
 class ObsActionWidget(QWidget, ActionStackItem):
