@@ -1,9 +1,0 @@
-{
-    "name": "sandbox_obs_core",
-    "depends-on":[
-
-    ],
-    "files": [
-        "stomp_4.py"
-    ]
-}

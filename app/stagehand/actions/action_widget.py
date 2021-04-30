@@ -11,7 +11,6 @@ class ActionStackItem:
     def __init__(self, changed) -> None:
         raise NotImplementedError
 
-    
     @abc.abstractmethod
     def from_dict(self, data: dict):
         raise NotImplementedError
@@ -89,7 +88,6 @@ class ActionStack(QWidget):
 
     def run(self):
         self.stack.currentWidget().run()
-
 
 
 class ActionWidget(QWidget):

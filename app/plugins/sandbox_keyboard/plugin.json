@@ -1,9 +1,0 @@
-{
-    "name": "sandbox_keyboard",
-    "depends-on":[
-
-    ],
-    "files": [
-        "stomp_4.py"
-    ]
-}

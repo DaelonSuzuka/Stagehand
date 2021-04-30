@@ -1,18 +1,9 @@
 from qtstrap import *
-from stagehand.sandbox import Sandbox, _Sandbox
-from stagehand.actions import ActionStack
-from stagehand.obs import requests
+from stagehand.sandbox import Sandbox
+from stagehand.actions import ActionStackItem
 
 
-class Obs:
-    def set_scene(self, name):
-        Sandbox().obs.send(requests.SetScene(name))
-
-    def send(self, payload, cb=None):
-        Sandbox().obs.send(payload, cb)
-
-
-class ObsActionWidget(QWidget):
+class ObsActionWidget(QWidget, ActionStackItem):
     def __init__(self, changed):
         super().__init__()
 
@@ -59,13 +50,3 @@ class ObsActionWidget(QWidget):
     def run(self):
         if self.type.currentText() == 'set scene':
             Sandbox().obs.send(requests.SetScene(self.value.currentText()))
-
-
-
-
-def install_plugin():
-    ActionStack.actions['obs'] = ObsActionWidget
-    _Sandbox.extensions['obs'] = Obs()
-
-
-install_plugin()
