@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 from stagehand.obs import requests
 from .sandbox_tools import SandboxTools
+import pynput
 
 
 class SandboxToolsDockWidget(QDockWidget):
