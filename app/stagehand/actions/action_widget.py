@@ -30,13 +30,31 @@ class SandboxActionWidget(QWidget, ActionStackItem):
         
         self.action = QLineEdit()
         self.action.textChanged.connect(changed)
+        self.changed = changed
+
+        self.edit_btn = QPushButton('', clicked=self.open_editor, icon=QIcon(qta.icon('fa5.edit')))
 
         with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
             layout.add(self.action)
+            layout.add(self.edit_btn)
+    
+    def open_editor(self, *_):
+        self.data['action'] = self.action.text()
+        self.editor = ActionEditorDialog(self.data, self)
+        self.editor.accepted.connect(self.on_accept)
+        self.editor.open()
+
+    def on_accept(self):
+        text = self.editor.editor.toPlainText()
+        self.action.setText(text)
+        self.action.setDisabled('\n' in text)
+        self.changed()
 
     def from_dict(self, data: dict):
+        self.data = data
         try:
             self.action.setText(data['action'])
+            self.action.setDisabled('\n' in text)
         except:
             pass
 
@@ -124,8 +142,7 @@ class ActionWidget(QWidget):
             group.register(self)
 
         self.run_btn = QPushButton('', clicked=self.run, icon=QIcon(qta.icon('fa5.play-circle')))
-        self.edit_btn = QPushButton('', clicked=self.open_editor, icon=QIcon(qta.icon('fa5.edit')))
-
+        
         self.on_change()
 
         if changed:
@@ -134,7 +151,6 @@ class ActionWidget(QWidget):
         with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
             layout.add(self.label)
             layout.add(self.action, 1)
-            layout.add(self.edit_btn)
             layout.add(self.run_btn)
 
     def to_dict(self):
@@ -149,27 +165,12 @@ class ActionWidget(QWidget):
         self.action.set_data(data)
 
     def on_change(self):
-        # self.action.setEnabled('\n' not in self.action.text())
         self.changed.emit()
-
-    def open_editor(self, _=None):
-        self.editor = ActionEditorDialog(self.to_dict(), self)
-        self.editor.accepted.connect(self.on_accept)
-        self.editor.open()
-
-    def on_accept(self):
-        self.label.setText(self.editor.label.text())
-
-        text = self.editor.editor.toPlainText()
-        # self.action.setText(text)
-
-        self.on_change()
 
     def contextMenuEvent(self, event: PySide2.QtGui.QContextMenuEvent) -> None:
         menu = QMenu()
         menu.addAction(QAction('Run', self, triggered=self.run))
         menu.addAction(QAction('Rename', self, triggered=self.label.start_editing))
-        menu.addAction(QAction('Edit', self, triggered=self.open_editor))
         menu.addAction(QAction('Reset', self, triggered=self.reset))
         menu.exec_(event.globalPos())
 
@@ -181,4 +182,3 @@ class ActionWidget(QWidget):
 
     def run(self):
         self.action.run()
-        # Sandbox().run(self.action.text())
