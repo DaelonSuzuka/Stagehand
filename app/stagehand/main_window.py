@@ -49,7 +49,7 @@ class MainWindow(BaseMainWindow):
 
         self.voter = MicVoterWidget(self)
         self.actions = GenericActionsWidget(self)
-        self.web_actions = WebInterfaceManager(self)
+        # self.web_actions = WebInterfaceManager(self)
         self.input_devices = InputDeviceManager(self)
 
         def scroll(widget):
@@ -64,7 +64,7 @@ class MainWindow(BaseMainWindow):
             'OBS Manager': self.obs,
             'Mic Voter': scroll(self.voter),
             'Actions': scroll(self.actions),
-            'Web Actions': scroll(self.web_actions),
+            # 'Web Actions': scroll(self.web_actions),
             'Input Devices': scroll(self.input_devices),
         }
 
