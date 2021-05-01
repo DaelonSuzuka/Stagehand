@@ -183,4 +183,4 @@ class MicVoterWidget(QWidget):
 
             for mic, state in mute.items():
                 mute_request = {"request-type": "SetMute", "source": mic, "mute": state}
-                self.obs.send(mute_request)
+                Sandbox().obs.send(mute_request)
