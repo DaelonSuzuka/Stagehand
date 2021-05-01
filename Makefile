@@ -39,6 +39,10 @@ debug: venv
 # **************************************************************************** #
 # Build Targets
 
+test:
+	$(VENV_PYTHON) app/plugins/obs_core/gen.py
+
+
 # build all the plugins into zips
 plugins:
 	$(PYTHON) build_plugins.py

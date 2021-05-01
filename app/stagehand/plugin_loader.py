@@ -3,6 +3,7 @@ from pathlib import Path
 import json
 import importlib
 import sys
+import os
 from codex import SerialDevice
 import codex
 import zipimport
@@ -15,15 +16,15 @@ class _Plugins:
     _plugins = {}
 
     def __init__(self):
-        for plugin in plugin_folder.glob('*'):
-            # if not plugin.is_dir():
-                # continue
+        def is_plugin(p):
+            return Path(Path(p) / 'plugin.json').exists() or Path(Path(p) / '__init__.py').exists()
 
-            if plugin.is_dir() and (Path(plugin / 'plugin.json').exists() or Path(plugin / '__init__.py').exists()):
-                self.load_loose_plugin(plugin)
+        plugins = [Path(d[0]) for d in os.walk(plugin_folder) if is_plugin(d[0])]
+        for plugin in plugins:
+            self.load_loose_plugin(plugin)
 
-            if plugin.suffix == '.zip':
-                self.load_zip_plugin(plugin)
+        for plugin in plugin_folder.rglob('*.zip'):
+            self.load_zip_plugin(plugin)
 
     def list_all(self):
         return self._plugins
