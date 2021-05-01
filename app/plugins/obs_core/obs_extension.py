@@ -35,6 +35,13 @@ class ObsExtension:
     def send(self, payload, cb=None):
         send(payload, cb)
 
+    def get_filters(self, source_name, cb=None):
+        payload = {
+            "request-type": 'GetSourceFilters',
+            'sourceName': source_name,
+        }
+        send(payload, cb)
+
     def enable_filter(self, source_name, filter_name, cb=None):
         send({
             "request-type": 'SetSourceFilterVisibility',
