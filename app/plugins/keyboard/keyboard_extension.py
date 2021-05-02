@@ -1,4 +1,5 @@
 from pynput.keyboard import Key, Controller
+from pynput import mouse
 
 
 class KeyboardExtension:
@@ -17,3 +18,29 @@ class KeyboardExtension:
 
     def release(self, key):
         self.controller.release(key)
+
+
+class MouseExtension:
+    def __init__(self):
+        self.controller = mouse.Controller()
+
+    def __getattr__(self, name):
+        return getattr(mouse.Button, name)
+
+    def position (self, x, y):
+        self.controller.position(x, y)
+
+    def move(self, x, y):
+        self.controller.move(x, y)
+
+    def scroll(self, direction, steps):
+        self.controller.scroll(direction, steps)
+
+    def click(self, button, times=1):
+        self.controller.click(button, times)
+
+    def press(self, button):
+        self.controller.press(button)
+
+    def release(self, button):
+        self.controller.release(button)
