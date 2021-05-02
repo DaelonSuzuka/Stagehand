@@ -118,9 +118,7 @@ def collect_returns(data):
     return returns
 
 
-def write_class(f, i, event):
-    w = Writer(f.write)
-
+def write_class(w, i, event):
     # gather class info
     name = i['name']
     description = i['description']
@@ -195,6 +193,24 @@ def write_class(f, i, event):
                     w.line(f"self.dataout['{a['name']}'] = {None}")
             w.line()
 
+        
+        # build payload
+        w.line("def __call__({}):".format(
+            ", ".join(
+                ['self']
+                + [clean_var(a['name']) for a in fields if not a['optional']]
+                + [clean_var(a['name']) + "=None" for a in fields if a['optional']]
+                + ['cb=None']
+            )
+        ))
+        with w:
+            w.line("payload = {}")
+            w.line(f"payload['request-type'] = '{i['name']}'")
+            for field in fields:
+                w.line(f"payload['{field['original_name']}'] = {field['name']}")
+            w.line("Sandbox().obs.send(payload, cb)")
+            w.line()
+
         # build payload
         w.line("@staticmethod")
         w.line("def payload({}):".format(
@@ -210,7 +226,20 @@ def write_class(f, i, event):
                 w.line(f"payload['{field['original_name']}'] = {field['name']}")
             w.line("return payload")
             w.line()
+        w.line()
 
+
+def build_widget(w, i, event):
+    # gather class info
+    name = i['name']
+    description = i['description']
+
+    fields = collect_fields(i)
+    returns = collect_returns(i)
+
+    # 
+    w.line(f"class {name}Widget(QWidget):")
+    with w:
         def field_widget(field):
             w = "UnimplementedField('[field not implemented]')"
 
@@ -229,56 +258,52 @@ def write_class(f, i, event):
 
             return w
 
-        # widget
-        w.line('class Widget(QWidget):')
+        w.line("def __init__(self, changed=None, parent=None):")
         with w:
-            w.line("def __init__(self, changed=None, parent=None):")
-            with w:
-                w.line("super().__init__(parent=parent)")
-                w.line("self.changed = changed")
-                for field in fields:
-                    w.line(f"self.{field['name']} = {field_widget(field)}")
-                w.line()
-                w.line("with CHBoxLayout(self, margins=(0,0,0,0)) as layout:")
-                with w:
-                    if fields:
-                        for field in fields:
-                            w.line(f"layout.add(self.{field['name']})")
-                    else:
-                        w.line("layout.add(QLabel('[ request has no fields ]'))")
+            w.line("super().__init__(parent=parent)")
+            w.line("self.changed = changed")
+            for field in fields:
+                w.line(f"self.{field['name']} = {field_widget(field)}")
             w.line()
-
-            w.line("def payload(self):")
+            w.line("with CHBoxLayout(self, margins=(0,0,0,0)) as layout:")
             with w:
-                w.line("payload = {}")
-                w.line(f"payload['request-type'] = '{i['name']}'")
-                for field in fields:
-                    w.line(f"payload['{field['original_name']}'] = self.{field['name']}.get_data()")
-                w.line("return payload")
-            w.line()
-
-            w.line("def refresh(self):")
-            with w:
-                for field in fields:
-                    w.line(f"self.{field['name']}.refresh()")
-                w.line("return")
-            w.line()
-            
-            w.line("def from_dict(self, data):")
-            with w:
-                w.line("self._data = data")
-                for field in fields:
-                    w.line(f"self.{field['name']}.set_data(data['{field['name']}']) ")
-            w.line()
-
-            w.line("def to_dict(self):")
-            with w:
-                w.line("return {")
-                with w:
+                if fields:
                     for field in fields:
-                        w.line(f"'{field['name']}': self.{field['name']}.get_data(),")
-                w.line("}")
-            w.line()
+                        w.line(f"layout.add(self.{field['name']})")
+                else:
+                    w.line("layout.add(QLabel('[ request has no fields ]'))")
+        w.line()
+
+        w.line("def payload(self):")
+        with w:
+            w.line("payload = {}")
+            w.line(f"payload['request-type'] = '{i['name']}'")
+            for field in fields:
+                w.line(f"payload['{field['original_name']}'] = self.{field['name']}.get_data()")
+            w.line("return payload")
+        w.line()
+
+        w.line("def refresh(self):")
+        with w:
+            for field in fields:
+                w.line(f"self.{field['name']}.refresh()")
+            w.line("return")
+        w.line()
+        
+        w.line("def from_dict(self, data):")
+        with w:
+            w.line("self._data = data")
+            for field in fields:
+                w.line(f"self.{field['name']}.set_data(data['{field['name']}']) ")
+        w.line()
+
+        w.line("def to_dict(self):")
+        with w:
+            w.line("return {")
+            with w:
+                for field in fields:
+                    w.line(f"'{field['name']}': self.{field['name']}.get_data(),")
+            w.line("}")
         w.line()
 
 
@@ -288,29 +313,84 @@ def generate_classes():
     data = json.loads(urlopen(import_url).read().decode('utf-8'), object_pairs_hook=OrderedDict)
     print("Download OK. Generating python files...")
 
-    # for event in ['requests', 'events']:
-    for event in ['requests']:
-        if event not in data:
-            raise Exception("Missing {} in data.".format(event))
-        with open(Path(__file__).parent / '{}.py'.format(event), 'w') as f:
-            f.write("from .base_classes import *\n")
-            f.write("from qtstrap import *\n")
-            f.write("\n\n")
+    event = 'requests'
 
-            f.write("categories = [\n")
+    if event not in data:
+        raise Exception("Missing {} in data.".format(event))
+
+    with open(Path(__file__).parent / 'requests.py', 'w') as f:
+        w = Writer(f.write)
+
+        # w.line("from .base_classes import *")
+        w.line("from qtstrap import *")
+        w.line("from stagehand.sandbox import Sandbox")
+        w.line()
+        w.line()
+
+        w.line("categories = [")
+        with w:
             for sec in data[event]:
-                f.write(f"    '{sec}',\n")
-            f.write("]\n")
-            f.write("\n\n")
+                w.line(f"'{sec}',")
+        w.line("]")
+        w.line()
+        w.line()
+        
+        w.line('class BaseRequest:')
+        with w:
+            w.line('def __init__(self):')
+            with w:
+                w.line('pass')
+        w.line()
+        w.line()
 
+        classes = []
+        for sec in data[event]:
+            for i in data[event][sec]:
+                write_class(w, i, event)
+                classes.append(i['name'])
+
+        w.line()
+        w.line()
+        w.line("requests = {")
+        with w:
+            for c in classes:
+                w.line(f"'{c}': {c}(),")
+        w.line("}")
+
+        # print(f"number of incomplete requests: {len(unimplemented_fields)}")
+        # f.write("unimplemented_fields = ")
+        # f.write(json.dumps(unimplemented_fields, indent=4))
+
+    with open(Path(__file__).parent / 'request_widgets.py', 'w') as f:
+        w = Writer(f.write)
+
+        w.line("from .base_classes import *")
+        w.line("from qtstrap import *")
+        w.line("from stagehand.sandbox import Sandbox")
+        w.line()
+        w.line()
+        
+        w.line("categories = [")
+        with w:
             for sec in data[event]:
-                for i in data[event][sec]:
-                    write_class(f, i, event)
+                w.line(f"'{sec}',")
+        w.line("]")
+        w.line()
+        w.line()
 
-            f.write("\n\n")
-            print(f"number of incomplete requests: {len(unimplemented_fields)}")
-            f.write("unimplemented_fields = ")
-            f.write(json.dumps(unimplemented_fields, indent=4))
+        classes = []
+        for sec in data[event]:
+            for i in data[event][sec]:
+                build_widget(w, i, event)
+                classes.append(i['name'])
+                w.line()
+
+        w.line()
+        w.line("widgets = {")
+        with w:
+            for c in classes:
+                w.line(f"'{c}': {c}Widget,")
+        w.line("}")
 
     print("API classes have been generated.")
 

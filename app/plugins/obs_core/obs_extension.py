@@ -1,13 +1,18 @@
 from qtstrap import *
 from stagehand.sandbox import Sandbox
+from .requests import requests
 
 
 # helper function
 def send(payload, cb=None):
-    Sandbox().obs.send(payload, cb)
+    Sandbox()._obs.send(payload, cb)
 
 
 class ObsExtension:
+    
+    def __getattr__(self, name):
+        return requests[name]
+
     def get_source_list(self, cb=None):
         send({"request-type": 'GetSourcesList'}, cb)
 

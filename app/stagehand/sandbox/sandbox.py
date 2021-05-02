@@ -1,7 +1,6 @@
 from qtstrap import *
 import json
 from pathlib import Path
-from stagehand.obs import requests
 from .sandbox_tools import SandboxTools
 import pynput
 
@@ -27,12 +26,15 @@ class _Sandbox(QWidget):
 
     def __init__(self, obs, parent=None):
         super().__init__(parent=parent)
-        self.obs = obs
+        self._obs = obs
         
         self.tools = SandboxTools(obs)
         self.tools_dock = SandboxToolsDockWidget(self.tools, self)
 
         self.reset_environment()
+
+    def __getattr__(self, name):
+        return self.extensions[name]
 
     def reset_environment(self):
         self._data = {}

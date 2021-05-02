@@ -1,5 +1,4 @@
 from qtstrap import *
-from stagehand.obs import requests
 
 
 class SandboxTools(QWidget):
@@ -45,8 +44,9 @@ class SandboxTools(QWidget):
         self.refresh_scenes.clicked.connect(lambda: get_scenes())
     
     def on_connect(self):
-        self.obs.send(requests.GetSceneList(), self.update_scenes)
-        self.obs.send(requests.GetSourcesList(), self.update_sources)
+        pass
+        # self.obs.send(requests.GetSceneList(), self.update_scenes)
+        # self.obs.send(requests.GetSourcesList(), self.update_sources)
 
     def set_scene(self, name):
         self.obs.send(requests.SetScene(name))

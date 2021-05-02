@@ -1,6 +1,5 @@
 from qtstrap import *
 from stagehand.sandbox import Sandbox
-from stagehand.obs import requests
 import qtawesome as qta
 from .action_editor import ActionEditorDialog
 import abc

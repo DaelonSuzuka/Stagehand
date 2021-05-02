@@ -1,7 +1,6 @@
 from qtstrap import *
 from qtpy.QtWebSockets import *
 import json
-from . import requests
 import base64
 import hashlib
 import queue
@@ -159,7 +158,7 @@ class ObsManager(QWidget):
             else:
                 self.set_status('active')
 
-        self._send(requests.GetAuthRequired(), auth_cb)
+        self._send({"request-type": "GetAuthRequired"}, auth_cb)
 
     def disconnected(self):
         self.unlock()

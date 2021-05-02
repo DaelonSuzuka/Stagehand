@@ -1,7 +1,5 @@
-from qtstrap import *
-from stagehand.sandbox import Sandbox, _Sandbox
+from stagehand.sandbox import  _Sandbox
 from stagehand.actions import ActionStack
-from stagehand.obs import requests
 
 from .obs_action import ObsActionWidget
 from .obs_extension import ObsExtension

@@ -1,13 +1,6 @@
 from qtstrap import *
-from .obs_extension import ObsExtension
-
-
-obs = ObsExtension()
-
-
-class BaseRequest:
-    def __init__(self):
-        pass
+from stagehand.sandbox import Sandbox
+from .requests import requests
 
 
 class UnimplementedField(QLabel):
@@ -37,7 +30,8 @@ class SceneSelector(QComboBox):
             if value in scenes:
                 self.setCurrentText(value)
             self.changed()
-        obs.get_scene_list(cb)
+
+        Sandbox().obs.GetSceneList(cb)
 
     def set_data(self, data):
         if data not in [self.itemText(i) for i in range(self.count())]:
@@ -68,7 +62,7 @@ class SourceSelector(QComboBox):
                 self.setCurrentText(value)
             self.changed()
 
-        obs.get_source_list(cb)
+        Sandbox().obs.GetSourcesList(cb)
         
     def set_data(self, data):
         if data not in [self.itemText(i) for i in range(self.count())]:
@@ -101,7 +95,7 @@ class FilterSelector(QComboBox):
                     self.setCurrentText(value)
                 self.changed()
 
-            obs.get_filters(source, cb)
+            Sandbox().obs.GetSourceFilters(source, cb)
 
     def set_data(self, data):
         if data not in [self.itemText(i) for i in range(self.count())]:

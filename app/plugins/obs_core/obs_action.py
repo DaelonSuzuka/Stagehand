@@ -1,25 +1,10 @@
 from qtstrap import *
 from stagehand.sandbox import Sandbox
 from stagehand.actions import ActionStackItem
-# from stagehand.obs import requests
 from .obs_extension import ObsExtension
 from .obs_api import api
-
-
-class FieldBox(QComboBox):
-    def __init__(self, changed=None, parent=None):
-        super().__init__(parent=parent)
-        if changed:
-            self.currentIndexChanged.connect(changed)
-
-
-from .requests import *
-from .base_classes import BaseRequest
-
-requests = {}
-for request in BaseRequest.__subclasses__():
-    if request.fields:
-        requests[request.__name__] = request
+from .requests import requests
+from .request_widgets import widgets
 
 
 class ObsActionWidget(QWidget, ActionStackItem):
@@ -45,7 +30,7 @@ class ObsActionWidget(QWidget, ActionStackItem):
             self.layout().removeWidget(self.request_widget)
             self.request_widget.deleteLater()
             
-        self.request_widget = requests[self.type.currentText()].Widget(self.changed)
+        self.request_widget = widgets[self.type.currentText()](self.changed)
         self.layout().add(self.request_widget, 1)
 
     def from_dict(self, data):
@@ -53,8 +38,9 @@ class ObsActionWidget(QWidget, ActionStackItem):
         try:
             self.type.setCurrentText(data['type'])
             if data['fields']:
-                self.request_widget.from_dict(data['fields'])
-                self.request_widget.refresh()
+                if self.request_widget:
+                    self.request_widget.from_dict(data['fields'])
+                    self.request_widget.refresh()
         except KeyError:
             pass
 
