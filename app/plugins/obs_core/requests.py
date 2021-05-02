@@ -23,31 +23,35 @@ class GetVersion(BaseRequest):
     """Returns the latest version of the plugin and the API.
 
     :Returns:
-       *version*
+        *version*
             type: double
             OBSRemote compatible API version. Fixed to 1.1 for retrocompatibility.
-       *obs_websocket_version*
+        *obs_websocket_version*
             type: String
             obs-websocket plugin version.
-       *obs_studio_version*
+        *obs_studio_version*
             type: String
             OBS Studio program version.
-       *available_requests*
+        *available_requests*
             type: String
             List of available request types, formatted as a comma-separated list string (e.g. : "Method1,Method2,Method3").
-       *supported_image_export_formats*
+        *supported_image_export_formats*
             type: String
             List of supported formats for features that use image export (like the TakeSourceScreenshot request type) formatted as a comma-separated list string
     """
 
-    fields = [
-    ]
-
+    name = 'GetVersion'
     category = 'general'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'GetVersion'
+        self.datain = {}
+        self.datain['version'] = None
+        self.datain['obs-websocket-version'] = None
+        self.datain['obs-studio-version'] = None
+        self.datain['available-requests'] = None
+        self.datain['supported-image-export-formats'] = None
 
     @staticmethod
     def payload():
@@ -55,36 +59,56 @@ class GetVersion(BaseRequest):
         payload['request-type'] = 'GetVersion'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetVersion'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class GetAuthRequired(BaseRequest):
     """Tells the client if authentication is required. If so, returns authentication parameters `challenge`
 and `salt` (see "Authentication" for more information).
 
     :Returns:
-       *authRequired*
+        *authRequired*
             type: boolean
             Indicates whether authentication is required.
-       *challenge*
+        *challenge*
             type: String (optional)
-            
-       *salt*
+
+        *salt*
             type: String (optional)
-            
+
     """
 
-    fields = [
-    ]
-
+    name = 'GetAuthRequired'
     category = 'general'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'GetAuthRequired'
+        self.datain = {}
+        self.datain['authRequired'] = None
+        self.datain['challenge'] = None
+        self.datain['salt'] = None
 
     @staticmethod
     def payload():
@@ -92,30 +116,47 @@ and `salt` (see "Authentication" for more information).
         payload['request-type'] = 'GetAuthRequired'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetAuthRequired'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class Authenticate(BaseRequest):
     """Attempt to authenticate the client to the server.
 
     :Arguments:
-       *auth*
+        *auth*
             type: String
             Response to the auth challenge (see "Authentication" for more information).
     """
 
+    name = 'Authenticate'
+    category = 'general'
     fields = [
         'auth',
     ]
 
-    category = 'general'
-    
-    def __init__(self, auth):
+    def __init__(self):
         super().__init__()
-        self.name = 'Authenticate'
         self.dataout = {}
         self.dataout['auth'] = None
 
@@ -126,32 +167,52 @@ class Authenticate(BaseRequest):
         payload['auth'] = auth
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('auth'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.auth = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.auth)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'Authenticate'
+            payload['auth'] = self.auth.get_data()
+            return payload
+
+        def refresh(self):
+            self.auth.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.auth.set_data(data['auth']) 
+
+        def to_dict(self):
+            return {
+                'auth': self.auth.get_data(),
+            }
+
 
 class SetHeartbeat(BaseRequest):
     """Enable/disable sending of the Heartbeat event
 
     :Arguments:
-       *enable*
+        *enable*
             type: boolean
             Starts/Stops emitting heartbeat messages
     """
 
+    name = 'SetHeartbeat'
+    category = 'general'
     fields = [
         'enable',
     ]
 
-    category = 'general'
-    
-    def __init__(self, enable):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetHeartbeat'
         self.dataout = {}
         self.dataout['enable'] = None
 
@@ -162,67 +223,108 @@ class SetHeartbeat(BaseRequest):
         payload['enable'] = enable
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('enable'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.enable = BoolSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.enable)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetHeartbeat'
+            payload['enable'] = self.enable.get_data()
+            return payload
+
+        def refresh(self):
+            self.enable.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.enable.set_data(data['enable']) 
+
+        def to_dict(self):
+            return {
+                'enable': self.enable.get_data(),
+            }
+
 
 class SetFilenameFormatting(BaseRequest):
     """Set the filename formatting string
 
     :Arguments:
-       *filename_formatting*
+        *filename_formatting*
             type: String
             Filename formatting string to set.
     """
 
+    name = 'SetFilenameFormatting'
+    category = 'general'
     fields = [
         'filename_formatting',
     ]
 
-    category = 'general'
-    
-    def __init__(self, filename_formatting):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetFilenameFormatting'
         self.dataout = {}
-        self.dataout['filename-formatting'] = None
+        self.dataout['filename_formatting'] = None
 
     @staticmethod
     def payload(filename_formatting):
         payload = {}
         payload['request-type'] = 'SetFilenameFormatting'
-        payload['filename_formatting'] = filename_formatting
+        payload['filename-formatting'] = filename_formatting
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('filename_formatting'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.filename_formatting = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.filename_formatting)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetFilenameFormatting'
+            payload['filename-formatting'] = self.filename_formatting.get_data()
+            return payload
+
+        def refresh(self):
+            self.filename_formatting.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.filename_formatting.set_data(data['filename_formatting']) 
+
+        def to_dict(self):
+            return {
+                'filename_formatting': self.filename_formatting.get_data(),
+            }
+
 
 class GetFilenameFormatting(BaseRequest):
     """Get the filename formatting string
 
     :Returns:
-       *filename_formatting*
+        *filename_formatting*
             type: String
             Current filename formatting string.
     """
 
-    fields = [
-    ]
-
+    name = 'GetFilenameFormatting'
     category = 'general'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'GetFilenameFormatting'
+        self.datain = {}
+        self.datain['filename-formatting'] = None
 
     @staticmethod
     def payload():
@@ -230,29 +332,47 @@ class GetFilenameFormatting(BaseRequest):
         payload['request-type'] = 'GetFilenameFormatting'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetFilenameFormatting'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class GetStats(BaseRequest):
     """Get OBS stats (almost the same info as provided in OBS' stats window)
 
     :Returns:
-       *stats*
+        *stats*
             type: OBSStats
             [OBS stats](#obsstats)
     """
 
-    fields = [
-    ]
-
+    name = 'GetStats'
     category = 'general'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'GetStats'
+        self.datain = {}
+        self.datain['stats'] = None
 
     @staticmethod
     def payload():
@@ -260,34 +380,51 @@ class GetStats(BaseRequest):
         payload['request-type'] = 'GetStats'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetStats'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class BroadcastCustomMessage(BaseRequest):
     """Broadcast custom message to all connected WebSocket clients
 
     :Arguments:
-       *realm*
+        *realm*
             type: String
             Identifier to be choosen by the client
-       *data*
+        *data*
             type: Object
             User-defined data
     """
 
+    name = 'BroadcastCustomMessage'
+    category = 'general'
     fields = [
         'realm',
         'data',
     ]
 
-    category = 'general'
-    
-    def __init__(self, realm, data):
+    def __init__(self):
         super().__init__()
-        self.name = 'BroadcastCustomMessage'
         self.dataout = {}
         self.dataout['realm'] = None
         self.dataout['data'] = None
@@ -300,56 +437,90 @@ class BroadcastCustomMessage(BaseRequest):
         payload['data'] = data
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('realm'))
-            layout.add(QLabel('data'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.realm = UnimplementedField('[field not implemented]')
+            self.data = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.realm)
+                layout.add(self.data)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'BroadcastCustomMessage'
+            payload['realm'] = self.realm.get_data()
+            payload['data'] = self.data.get_data()
+            return payload
+
+        def refresh(self):
+            self.realm.refresh()
+            self.data.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.realm.set_data(data['realm']) 
+            self.data.set_data(data['data']) 
+
+        def to_dict(self):
+            return {
+                'realm': self.realm.get_data(),
+                'data': self.data.get_data(),
+            }
+
 
 class GetVideoInfo(BaseRequest):
     """Get basic OBS video information
 
     :Returns:
-       *baseWidth*
+        *baseWidth*
             type: int
             Base (canvas) width
-       *baseHeight*
+        *baseHeight*
             type: int
             Base (canvas) height
-       *outputWidth*
+        *outputWidth*
             type: int
             Output width
-       *outputHeight*
+        *outputHeight*
             type: int
             Output height
-       *scaleType*
+        *scaleType*
             type: String
             Scaling method used if output size differs from base size
-       *fps*
+        *fps*
             type: double
             Frames rendered per second
-       *videoFormat*
+        *videoFormat*
             type: String
             Video color format
-       *colorSpace*
+        *colorSpace*
             type: String
             Color space for YUV
-       *colorRange*
+        *colorRange*
             type: String
             Color range (full or partial)
     """
 
-    fields = [
-    ]
-
+    name = 'GetVideoInfo'
     category = 'general'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'GetVideoInfo'
+        self.datain = {}
+        self.datain['baseWidth'] = None
+        self.datain['baseHeight'] = None
+        self.datain['outputWidth'] = None
+        self.datain['outputHeight'] = None
+        self.datain['scaleType'] = None
+        self.datain['fps'] = None
+        self.datain['videoFormat'] = None
+        self.datain['colorSpace'] = None
+        self.datain['colorRange'] = None
 
     @staticmethod
     def payload():
@@ -357,30 +528,50 @@ class GetVideoInfo(BaseRequest):
         payload['request-type'] = 'GetVideoInfo'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetVideoInfo'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class OpenProjector(BaseRequest):
     """Open a projector window or create a projector on a monitor. Requires OBS v24.0.4 or newer.
 
     :Arguments:
-       *type*
+        *type*
             type: String (Optional)
             Type of projector: `Preview` (default), `Source`, `Scene`, `StudioProgram`, or `Multiview` (case insensitive).
-       *monitor*
+        *monitor*
             type: int (Optional)
             Monitor to open the projector on. If -1 or omitted, opens a window.
-       *geometry*
+        *geometry*
             type: String (Optional)
             Size and position of the projector window (only if monitor is -1). Encoded in Base64 using [Qt's geometry encoding](https://doc.qt.io/qt-5/qwidget.html#saveGeometry). Corresponds to OBS's saved projectors.
-       *name*
+        *name*
             type: String (Optional)
             Name of the source or scene to be displayed (ignored for other projector types).
     """
 
+    name = 'OpenProjector'
+    category = 'general'
     fields = [
         'type',
         'monitor',
@@ -388,11 +579,8 @@ class OpenProjector(BaseRequest):
         'name',
     ]
 
-    category = 'general'
-    
-    def __init__(self, type, monitor, geometry, name):
+    def __init__(self):
         super().__init__()
-        self.name = 'OpenProjector'
         self.dataout = {}
         self.dataout['type'] = None
         self.dataout['monitor'] = None
@@ -409,35 +597,70 @@ class OpenProjector(BaseRequest):
         payload['name'] = name
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('type'))
-            layout.add(QLabel('monitor'))
-            layout.add(QLabel('geometry'))
-            layout.add(QLabel('name'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.type = UnimplementedField('[field not implemented]')
+            self.monitor = UnimplementedField('[field not implemented]')
+            self.geometry = UnimplementedField('[field not implemented]')
+            self.name = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.type)
+                layout.add(self.monitor)
+                layout.add(self.geometry)
+                layout.add(self.name)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'OpenProjector'
+            payload['type'] = self.type.get_data()
+            payload['monitor'] = self.monitor.get_data()
+            payload['geometry'] = self.geometry.get_data()
+            payload['name'] = self.name.get_data()
+            return payload
+
+        def refresh(self):
+            self.type.refresh()
+            self.monitor.refresh()
+            self.geometry.refresh()
+            self.name.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.type.set_data(data['type']) 
+            self.monitor.set_data(data['monitor']) 
+            self.geometry.set_data(data['geometry']) 
+            self.name.set_data(data['name']) 
+
+        def to_dict(self):
+            return {
+                'type': self.type.get_data(),
+                'monitor': self.monitor.get_data(),
+                'geometry': self.geometry.get_data(),
+                'name': self.name.get_data(),
+            }
+
 
 class TriggerHotkeyByName(BaseRequest):
     """Executes hotkey routine, identified by hotkey unique name
 
     :Arguments:
-       *hotkeyName*
+        *hotkeyName*
             type: String
             Unique name of the hotkey, as defined when registering the hotkey (e.g. "ReplayBuffer.Save")
     """
 
+    name = 'TriggerHotkeyByName'
+    category = 'general'
     fields = [
         'hotkeyName',
     ]
 
-    category = 'general'
-    
-    def __init__(self, hotkeyName):
+    def __init__(self):
         super().__init__()
-        self.name = 'TriggerHotkeyByName'
         self.dataout = {}
         self.dataout['hotkeyName'] = None
 
@@ -448,48 +671,56 @@ class TriggerHotkeyByName(BaseRequest):
         payload['hotkeyName'] = hotkeyName
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('hotkeyName'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.hotkeyName = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.hotkeyName)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'TriggerHotkeyByName'
+            payload['hotkeyName'] = self.hotkeyName.get_data()
+            return payload
+
+        def refresh(self):
+            self.hotkeyName.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.hotkeyName.set_data(data['hotkeyName']) 
+
+        def to_dict(self):
+            return {
+                'hotkeyName': self.hotkeyName.get_data(),
+            }
+
 
 class TriggerHotkeyBySequence(BaseRequest):
     """Executes hotkey routine, identified by bound combination of keys. A single key combination might trigger multiple hotkey routines depending on user settings
 
     :Arguments:
-       *keyId*
+        *keyId*
             type: String
             Main key identifier (e.g. `OBS_KEY_A` for key "A"). Available identifiers [here](https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h)
-       *keyModifiers*
+        *keyModifiers*
             type: Object (Optional)
             Optional key modifiers object. False entries can be ommitted
-       *keyModifiers.shift*
-            type: boolean
-            Trigger Shift Key
-       *keyModifiers.alt*
-            type: boolean
-            Trigger Alt Key
-       *keyModifiers.control*
-            type: boolean
-            Trigger Control (Ctrl) Key
-       *keyModifiers.command*
-            type: boolean
-            Trigger Command Key (Mac)
     """
 
+    name = 'TriggerHotkeyBySequence'
+    category = 'general'
     fields = [
         'keyId',
         'keyModifiers',
     ]
 
-    category = 'general'
-    
-    def __init__(self, keyId, keyModifiers):
+    def __init__(self):
         super().__init__()
-        self.name = 'TriggerHotkeyBySequence'
         self.dataout = {}
         self.dataout['keyId'] = None
         self.dataout['keyModifiers'] = None
@@ -502,56 +733,68 @@ class TriggerHotkeyBySequence(BaseRequest):
         payload['keyModifiers'] = keyModifiers
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('keyId'))
-            layout.add(QLabel('keyModifiers'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.keyId = UnimplementedField('[field not implemented]')
+            self.keyModifiers = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.keyId)
+                layout.add(self.keyModifiers)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'TriggerHotkeyBySequence'
+            payload['keyId'] = self.keyId.get_data()
+            payload['keyModifiers'] = self.keyModifiers.get_data()
+            return payload
+
+        def refresh(self):
+            self.keyId.refresh()
+            self.keyModifiers.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.keyId.set_data(data['keyId']) 
+            self.keyModifiers.set_data(data['keyModifiers']) 
+
+        def to_dict(self):
+            return {
+                'keyId': self.keyId.get_data(),
+                'keyModifiers': self.keyModifiers.get_data(),
+            }
+
 
 class ExecuteBatch(BaseRequest):
     """Executes a list of requests sequentially (one-by-one on the same thread).
 
     :Arguments:
-       *requests*
+        *requests*
             type: Array<Object>
             Array of requests to perform. Executed in order.
-       *requests.*.request_type*
-            type: String
-            Request type. Eg. `GetVersion`.
-       *requests.*.message_id*
-            type: String (Optional)
-            ID of the individual request. Can be any string and not required to be unique. Defaults to empty string if not specified.
-       *abortOnFail*
+        *abortOnFail*
             type: boolean (Optional)
             Stop processing batch requests if one returns a failure.
     :Returns:
-       *results*
+        *results*
             type: Array<Object>
             Batch requests results, ordered sequentially.
-       *results.*.message_id*
-            type: String
-            ID of the individual request which was originally provided by the client.
-       *results.*.status*
-            type: String
-            Status response as string. Either `ok` or `error`.
-       *results.*.error*
-            type: String (Optional)
-            Error message accompanying an `error` status.
     """
 
+    name = 'ExecuteBatch'
+    category = 'general'
     fields = [
         'requests',
         'abortOnFail',
     ]
 
-    category = 'general'
-    
-    def __init__(self, requests, abortOnFail):
+    def __init__(self):
         super().__init__()
-        self.name = 'ExecuteBatch'
+        self.datain = {}
+        self.datain['results'] = None
         self.dataout = {}
         self.dataout['requests'] = None
         self.dataout['abortOnFail'] = None
@@ -564,33 +807,58 @@ class ExecuteBatch(BaseRequest):
         payload['abortOnFail'] = abortOnFail
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('requests'))
-            layout.add(QLabel('abortOnFail'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.requests = UnimplementedField('[field not implemented]')
+            self.abortOnFail = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.requests)
+                layout.add(self.abortOnFail)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'ExecuteBatch'
+            payload['requests'] = self.requests.get_data()
+            payload['abortOnFail'] = self.abortOnFail.get_data()
+            return payload
+
+        def refresh(self):
+            self.requests.refresh()
+            self.abortOnFail.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.requests.set_data(data['requests']) 
+            self.abortOnFail.set_data(data['abortOnFail']) 
+
+        def to_dict(self):
+            return {
+                'requests': self.requests.get_data(),
+                'abortOnFail': self.abortOnFail.get_data(),
+            }
+
 
 class Sleep(BaseRequest):
     """Waits for the specified duration. Designed to be used in `ExecuteBatch` operations.
 
     :Arguments:
-       *sleepMillis*
+        *sleepMillis*
             type: int
             Delay in milliseconds to wait before continuing.
     """
 
+    name = 'Sleep'
+    category = 'general'
     fields = [
         'sleepMillis',
     ]
 
-    category = 'general'
-    
-    def __init__(self, sleepMillis):
+    def __init__(self):
         super().__init__()
-        self.name = 'Sleep'
         self.dataout = {}
         self.dataout['sleepMillis'] = None
 
@@ -601,37 +869,57 @@ class Sleep(BaseRequest):
         payload['sleepMillis'] = sleepMillis
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('sleepMillis'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sleepMillis = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sleepMillis)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'Sleep'
+            payload['sleepMillis'] = self.sleepMillis.get_data()
+            return payload
+
+        def refresh(self):
+            self.sleepMillis.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sleepMillis.set_data(data['sleepMillis']) 
+
+        def to_dict(self):
+            return {
+                'sleepMillis': self.sleepMillis.get_data(),
+            }
+
 
 class PlayPauseMedia(BaseRequest):
     """Pause or play a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 Note :Leaving out `playPause` toggles the current pause state
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Source name.
-       *playPause*
+        *playPause*
             type: boolean
             (optional) Whether to pause or play the source. `false` for play, `true` for pause.
     """
 
+    name = 'PlayPauseMedia'
+    category = 'media control'
     fields = [
         'sourceName',
         'playPause',
     ]
 
-    category = 'media control'
-    
-    def __init__(self, sourceName, playPause):
+    def __init__(self):
         super().__init__()
-        self.name = 'PlayPauseMedia'
         self.dataout = {}
         self.dataout['sourceName'] = None
         self.dataout['playPause'] = None
@@ -644,34 +932,58 @@ Note :Leaving out `playPause` toggles the current pause state
         payload['playPause'] = playPause
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-            layout.add(QLabel('playPause'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+            self.playPause = BoolSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+                layout.add(self.playPause)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'PlayPauseMedia'
+            payload['sourceName'] = self.sourceName.get_data()
+            payload['playPause'] = self.playPause.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            self.playPause.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+            self.playPause.set_data(data['playPause']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+                'playPause': self.playPause.get_data(),
+            }
+
 
 class RestartMedia(BaseRequest):
     """Restart a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Source name.
     """
 
+    name = 'RestartMedia'
+    category = 'media control'
     fields = [
         'sourceName',
     ]
 
-    category = 'media control'
-    
-    def __init__(self, sourceName):
+    def __init__(self):
         super().__init__()
-        self.name = 'RestartMedia'
         self.dataout = {}
         self.dataout['sourceName'] = None
 
@@ -682,33 +994,52 @@ class RestartMedia(BaseRequest):
         payload['sourceName'] = sourceName
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'RestartMedia'
+            payload['sourceName'] = self.sourceName.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+            }
+
 
 class StopMedia(BaseRequest):
     """Stop a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Source name.
     """
 
+    name = 'StopMedia'
+    category = 'media control'
     fields = [
         'sourceName',
     ]
 
-    category = 'media control'
-    
-    def __init__(self, sourceName):
+    def __init__(self):
         super().__init__()
-        self.name = 'StopMedia'
         self.dataout = {}
         self.dataout['sourceName'] = None
 
@@ -719,33 +1050,52 @@ class StopMedia(BaseRequest):
         payload['sourceName'] = sourceName
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'StopMedia'
+            payload['sourceName'] = self.sourceName.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+            }
+
 
 class NextMedia(BaseRequest):
     """Skip to the next media item in the playlist. Supports only vlc media source (as of OBS v25.0.8)
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Source name.
     """
 
+    name = 'NextMedia'
+    category = 'media control'
     fields = [
         'sourceName',
     ]
 
-    category = 'media control'
-    
-    def __init__(self, sourceName):
+    def __init__(self):
         super().__init__()
-        self.name = 'NextMedia'
         self.dataout = {}
         self.dataout['sourceName'] = None
 
@@ -756,33 +1106,52 @@ class NextMedia(BaseRequest):
         payload['sourceName'] = sourceName
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'NextMedia'
+            payload['sourceName'] = self.sourceName.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+            }
+
 
 class PreviousMedia(BaseRequest):
     """Go to the previous media item in the playlist. Supports only vlc media source (as of OBS v25.0.8)
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Source name.
     """
 
+    name = 'PreviousMedia'
+    category = 'media control'
     fields = [
         'sourceName',
     ]
 
-    category = 'media control'
-    
-    def __init__(self, sourceName):
+    def __init__(self):
         super().__init__()
-        self.name = 'PreviousMedia'
         self.dataout = {}
         self.dataout['sourceName'] = None
 
@@ -793,38 +1162,59 @@ class PreviousMedia(BaseRequest):
         payload['sourceName'] = sourceName
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'PreviousMedia'
+            payload['sourceName'] = self.sourceName.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+            }
+
 
 class GetMediaDuration(BaseRequest):
     """Get the length of media in milliseconds. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 Note: For some reason, for the first 5 or so seconds that the media is playing, the total duration can be off by upwards of 50ms.
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Source name.
     :Returns:
-       *mediaDuration*
+        *mediaDuration*
             type: int
             The total length of media in milliseconds..
     """
 
+    name = 'GetMediaDuration'
+    category = 'media control'
     fields = [
         'sourceName',
     ]
 
-    category = 'media control'
-    
-    def __init__(self, sourceName):
+    def __init__(self):
         super().__init__()
-        self.name = 'GetMediaDuration'
+        self.datain = {}
+        self.datain['mediaDuration'] = None
         self.dataout = {}
         self.dataout['sourceName'] = None
 
@@ -835,37 +1225,58 @@ Note: For some reason, for the first 5 or so seconds that the media is playing, 
         payload['sourceName'] = sourceName
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetMediaDuration'
+            payload['sourceName'] = self.sourceName.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+            }
+
 
 class GetMediaTime(BaseRequest):
     """Get the current timestamp of media in milliseconds. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Source name.
     :Returns:
-       *timestamp*
+        *timestamp*
             type: int
             The time in milliseconds since the start of the media.
     """
 
+    name = 'GetMediaTime'
+    category = 'media control'
     fields = [
         'sourceName',
     ]
 
-    category = 'media control'
-    
-    def __init__(self, sourceName):
+    def __init__(self):
         super().__init__()
-        self.name = 'GetMediaTime'
+        self.datain = {}
+        self.datain['timestamp'] = None
         self.dataout = {}
         self.dataout['sourceName'] = None
 
@@ -876,37 +1287,56 @@ class GetMediaTime(BaseRequest):
         payload['sourceName'] = sourceName
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetMediaTime'
+            payload['sourceName'] = self.sourceName.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+            }
+
 
 class SetMediaTime(BaseRequest):
     """Set the timestamp of a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Source name.
-       *timestamp*
+        *timestamp*
             type: int
             Milliseconds to set the timestamp to.
     """
 
+    name = 'SetMediaTime'
+    category = 'media control'
     fields = [
         'sourceName',
         'timestamp',
     ]
 
-    category = 'media control'
-    
-    def __init__(self, sourceName, timestamp):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetMediaTime'
         self.dataout = {}
         self.dataout['sourceName'] = None
         self.dataout['timestamp'] = None
@@ -919,39 +1349,63 @@ class SetMediaTime(BaseRequest):
         payload['timestamp'] = timestamp
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-            layout.add(QLabel('timestamp'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+            self.timestamp = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+                layout.add(self.timestamp)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetMediaTime'
+            payload['sourceName'] = self.sourceName.get_data()
+            payload['timestamp'] = self.timestamp.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            self.timestamp.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+            self.timestamp.set_data(data['timestamp']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+                'timestamp': self.timestamp.get_data(),
+            }
+
 
 class ScrubMedia(BaseRequest):
     """Scrub media using a supplied offset. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 Note: Due to processing/network delays, this request is not perfect. The processing rate of this request has also not been tested.
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Source name.
-       *timeOffset*
+        *timeOffset*
             type: int
             Millisecond offset (positive or negative) to offset the current media position.
     """
 
+    name = 'ScrubMedia'
+    category = 'media control'
     fields = [
         'sourceName',
         'timeOffset',
     ]
 
-    category = 'media control'
-    
-    def __init__(self, sourceName, timeOffset):
+    def __init__(self):
         super().__init__()
-        self.name = 'ScrubMedia'
         self.dataout = {}
         self.dataout['sourceName'] = None
         self.dataout['timeOffset'] = None
@@ -964,38 +1418,64 @@ Note: Due to processing/network delays, this request is not perfect. The process
         payload['timeOffset'] = timeOffset
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-            layout.add(QLabel('timeOffset'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+            self.timeOffset = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+                layout.add(self.timeOffset)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'ScrubMedia'
+            payload['sourceName'] = self.sourceName.get_data()
+            payload['timeOffset'] = self.timeOffset.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            self.timeOffset.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+            self.timeOffset.set_data(data['timeOffset']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+                'timeOffset': self.timeOffset.get_data(),
+            }
+
 
 class GetMediaState(BaseRequest):
     """Get the current playing state of a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Source name.
     :Returns:
-       *mediaState*
+        *mediaState*
             type: String
             The media state of the provided source. States: `none`, `playing`, `opening`, `buffering`, `paused`, `stopped`, `ended`, `error`, `unknown`
     """
 
+    name = 'GetMediaState'
+    category = 'media control'
     fields = [
         'sourceName',
     ]
 
-    category = 'media control'
-    
-    def __init__(self, sourceName):
+    def __init__(self):
         super().__init__()
-        self.name = 'GetMediaState'
+        self.datain = {}
+        self.datain['mediaState'] = None
         self.dataout = {}
         self.dataout['sourceName'] = None
 
@@ -1006,41 +1486,52 @@ class GetMediaState(BaseRequest):
         payload['sourceName'] = sourceName
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetMediaState'
+            payload['sourceName'] = self.sourceName.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+            }
+
 
 class GetMediaSourcesList(BaseRequest):
     """List the media state of all media sources (vlc and media source)
 
     :Returns:
-       *mediaSources*
+        *mediaSources*
             type: Array<Object>
             Array of sources
-       *mediaSources.*.sourceName*
-            type: String
-            Unique source name
-       *mediaSources.*.sourceKind*
-            type: String
-            Unique source internal type (a.k.a `ffmpeg_source` or `vlc_source`)
-       *mediaSources.*.mediaState*
-            type: String
-            The current state of media for that source. States: `none`, `playing`, `opening`, `buffering`, `paused`, `stopped`, `ended`, `error`, `unknown`
     """
 
-    fields = [
-    ]
-
+    name = 'GetMediaSourcesList'
     category = 'sources'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'GetMediaSourcesList'
+        self.datain = {}
+        self.datain['mediaSources'] = None
 
     @staticmethod
     def payload():
@@ -1048,37 +1539,57 @@ class GetMediaSourcesList(BaseRequest):
         payload['request-type'] = 'GetMediaSourcesList'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetMediaSourcesList'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class CreateSource(BaseRequest):
     """Create a source and add it as a sceneitem to a scene.
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Source name.
-       *sourceKind*
+        *sourceKind*
             type: String
             Source kind, Eg. `vlc_source`.
-       *sceneName*
+        *sceneName*
             type: String
             Scene to add the new source to.
-       *sourceSettings*
+        *sourceSettings*
             type: Object (optional)
             Source settings data.
-       *setVisible*
+        *setVisible*
             type: boolean (optional)
             Set the created SceneItem as visible or not. Defaults to true
     :Returns:
-       *itemId*
+        *itemId*
             type: int
             ID of the SceneItem in the scene.
     """
 
+    name = 'CreateSource'
+    category = 'sources'
     fields = [
         'sourceName',
         'sourceKind',
@@ -1087,11 +1598,10 @@ class CreateSource(BaseRequest):
         'setVisible',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, sourceName, sourceKind, sceneName, sourceSettings=None, setVisible=None):
+    def __init__(self):
         super().__init__()
-        self.name = 'CreateSource'
+        self.datain = {}
+        self.datain['itemId'] = None
         self.dataout = {}
         self.dataout['sourceName'] = None
         self.dataout['sourceKind'] = None
@@ -1110,46 +1620,76 @@ class CreateSource(BaseRequest):
         payload['setVisible'] = setVisible
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        sceneName = SceneSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-            layout.add(QLabel('sourceKind'))
-            layout.add(sceneName)
-            layout.add(QLabel('sourceSettings'))
-            layout.add(QLabel('setVisible'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+            self.sourceKind = UnimplementedField('[field not implemented]')
+            self.sceneName = SceneSelector(changed, parent=self)
+            self.sourceSettings = UnimplementedField('[field not implemented]')
+            self.setVisible = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+                layout.add(self.sourceKind)
+                layout.add(self.sceneName)
+                layout.add(self.sourceSettings)
+                layout.add(self.setVisible)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'CreateSource'
+            payload['sourceName'] = self.sourceName.get_data()
+            payload['sourceKind'] = self.sourceKind.get_data()
+            payload['sceneName'] = self.sceneName.get_data()
+            payload['sourceSettings'] = self.sourceSettings.get_data()
+            payload['setVisible'] = self.setVisible.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            self.sourceKind.refresh()
+            self.sceneName.refresh()
+            self.sourceSettings.refresh()
+            self.setVisible.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+            self.sourceKind.set_data(data['sourceKind']) 
+            self.sceneName.set_data(data['sceneName']) 
+            self.sourceSettings.set_data(data['sourceSettings']) 
+            self.setVisible.set_data(data['setVisible']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+                'sourceKind': self.sourceKind.get_data(),
+                'sceneName': self.sceneName.get_data(),
+                'sourceSettings': self.sourceSettings.get_data(),
+                'setVisible': self.setVisible.get_data(),
+            }
+
 
 class GetSourcesList(BaseRequest):
     """List all sources available in the running OBS instance
 
     :Returns:
-       *sources*
+        *sources*
             type: Array<Object>
             Array of sources
-       *sources.*.name*
-            type: String
-            Unique source name
-       *sources.*.typeId*
-            type: String
-            Non-unique source internal type (a.k.a kind)
-       *sources.*.type*
-            type: String
-            Source type. Value is one of the following: "input", "filter", "transition", "scene" or "unknown"
     """
 
-    fields = [
-    ]
-
+    name = 'GetSourcesList'
     category = 'sources'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'GetSourcesList'
+        self.datain = {}
+        self.datain['sources'] = None
 
     @staticmethod
     def payload():
@@ -1157,65 +1697,47 @@ class GetSourcesList(BaseRequest):
         payload['request-type'] = 'GetSourcesList'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetSourcesList'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class GetSourceTypesList(BaseRequest):
     """Get a list of all available sources types
 
     :Returns:
-       *types*
+        *types*
             type: Array<Object>
             Array of source types
-       *types.*.typeId*
-            type: String
-            Non-unique internal source type ID
-       *types.*.displayName*
-            type: String
-            Display name of the source type
-       *types.*.type*
-            type: String
-            Type. Value is one of the following: "input", "filter", "transition" or "other"
-       *types.*.defaultSettings*
-            type: Object
-            Default settings of this source type
-       *types.*.caps*
-            type: Object
-            Source type capabilities
-       *types.*.caps.isAsync*
-            type: Boolean
-            True if source of this type provide frames asynchronously
-       *types.*.caps.hasVideo*
-            type: Boolean
-            True if sources of this type provide video
-       *types.*.caps.hasAudio*
-            type: Boolean
-            True if sources of this type provide audio
-       *types.*.caps.canInteract*
-            type: Boolean
-            True if interaction with this sources of this type is possible
-       *types.*.caps.isComposite*
-            type: Boolean
-            True if sources of this type composite one or more sub-sources
-       *types.*.caps.doNotDuplicate*
-            type: Boolean
-            True if sources of this type should not be fully duplicated
-       *types.*.caps.doNotSelfMonitor*
-            type: Boolean
-            True if sources of this type may cause a feedback loop if it's audio is monitored and shouldn't be
     """
 
-    fields = [
-    ]
-
+    name = 'GetSourceTypesList'
     category = 'sources'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'GetSourceTypesList'
+        self.datain = {}
+        self.datain['types'] = None
 
     @staticmethod
     def payload():
@@ -1223,44 +1745,65 @@ class GetSourceTypesList(BaseRequest):
         payload['request-type'] = 'GetSourceTypesList'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetSourceTypesList'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class GetVolume(BaseRequest):
     """Get the volume of the specified source. Default response uses mul format, NOT SLIDER PERCENTAGE.
 
     :Arguments:
-       *source*
+        *source*
             type: String
             Source name.
-       *useDecibel*
+        *useDecibel*
             type: boolean (optional)
             Output volume in decibels of attenuation instead of amplitude/mul.
     :Returns:
-       *name*
+        *name*
             type: String
             Source name.
-       *volume*
+        *volume*
             type: double
             Volume of the source. Between `0.0` and `20.0` if using mul, under `26.0` if using dB.
-       *muted*
+        *muted*
             type: boolean
             Indicates whether the source is muted.
     """
 
+    name = 'GetVolume'
+    category = 'sources'
     fields = [
         'source',
         'useDecibel',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, source, useDecibel=None):
+    def __init__(self):
         super().__init__()
-        self.name = 'GetVolume'
+        self.datain = {}
+        self.datain['name'] = None
+        self.datain['volume'] = None
+        self.datain['muted'] = None
         self.dataout = {}
         self.dataout['source'] = None
         self.dataout['useDecibel'] = None
@@ -1273,41 +1816,66 @@ class GetVolume(BaseRequest):
         payload['useDecibel'] = useDecibel
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('source'))
-            layout.add(QLabel('useDecibel'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.source = SourceSelector(changed, parent=self)
+            self.useDecibel = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.source)
+                layout.add(self.useDecibel)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetVolume'
+            payload['source'] = self.source.get_data()
+            payload['useDecibel'] = self.useDecibel.get_data()
+            return payload
+
+        def refresh(self):
+            self.source.refresh()
+            self.useDecibel.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.source.set_data(data['source']) 
+            self.useDecibel.set_data(data['useDecibel']) 
+
+        def to_dict(self):
+            return {
+                'source': self.source.get_data(),
+                'useDecibel': self.useDecibel.get_data(),
+            }
+
 
 class SetVolume(BaseRequest):
     """Set the volume of the specified source. Default request format uses mul, NOT SLIDER PERCENTAGE.
 
     :Arguments:
-       *source*
+        *source*
             type: String
             Source name.
-       *volume*
+        *volume*
             type: double
             Desired volume. Must be between `0.0` and `20.0` for mul, and under 26.0 for dB. OBS will interpret dB values under -100.0 as Inf. Note: The OBS volume sliders only reach a maximum of 1.0mul/0.0dB, however OBS actually supports larger values.
-       *useDecibel*
+        *useDecibel*
             type: boolean (optional)
             Interperet `volume` data as decibels instead of amplitude/mul.
     """
 
+    name = 'SetVolume'
+    category = 'sources'
     fields = [
         'source',
         'volume',
         'useDecibel',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, source, volume, useDecibel=None):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetVolume'
         self.dataout = {}
         self.dataout['source'] = None
         self.dataout['volume'] = None
@@ -1322,42 +1890,72 @@ class SetVolume(BaseRequest):
         payload['useDecibel'] = useDecibel
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('source'))
-            layout.add(QLabel('volume'))
-            layout.add(QLabel('useDecibel'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.source = SourceSelector(changed, parent=self)
+            self.volume = UnimplementedField('[field not implemented]')
+            self.useDecibel = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.source)
+                layout.add(self.volume)
+                layout.add(self.useDecibel)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetVolume'
+            payload['source'] = self.source.get_data()
+            payload['volume'] = self.volume.get_data()
+            payload['useDecibel'] = self.useDecibel.get_data()
+            return payload
+
+        def refresh(self):
+            self.source.refresh()
+            self.volume.refresh()
+            self.useDecibel.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.source.set_data(data['source']) 
+            self.volume.set_data(data['volume']) 
+            self.useDecibel.set_data(data['useDecibel']) 
+
+        def to_dict(self):
+            return {
+                'source': self.source.get_data(),
+                'volume': self.volume.get_data(),
+                'useDecibel': self.useDecibel.get_data(),
+            }
+
 
 class SetTracks(BaseRequest):
     """Changes whether an audio track is active for a source.
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Source name.
-       *track*
+        *track*
             type: int
             Audio tracks 1-6.
-       *active*
+        *active*
             type: boolean
             Whether audio track is active or not.
     """
 
+    name = 'SetTracks'
+    category = 'sources'
     fields = [
         'sourceName',
         'track',
         'active',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, sourceName, track, active):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetTracks'
         self.dataout = {}
         self.dataout['sourceName'] = None
         self.dataout['track'] = None
@@ -1372,54 +1970,90 @@ class SetTracks(BaseRequest):
         payload['active'] = active
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-            layout.add(QLabel('track'))
-            layout.add(QLabel('active'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+            self.track = UnimplementedField('[field not implemented]')
+            self.active = BoolSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+                layout.add(self.track)
+                layout.add(self.active)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetTracks'
+            payload['sourceName'] = self.sourceName.get_data()
+            payload['track'] = self.track.get_data()
+            payload['active'] = self.active.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            self.track.refresh()
+            self.active.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+            self.track.set_data(data['track']) 
+            self.active.set_data(data['active']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+                'track': self.track.get_data(),
+                'active': self.active.get_data(),
+            }
+
 
 class GetTracks(BaseRequest):
     """Gets whether an audio track is active for a source.
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Source name.
     :Returns:
-       *track1*
+        *track1*
             type: boolean
-            
-       *track2*
+
+        *track2*
             type: boolean
-            
-       *track3*
+
+        *track3*
             type: boolean
-            
-       *track4*
+
+        *track4*
             type: boolean
-            
-       *track5*
+
+        *track5*
             type: boolean
-            
-       *track6*
+
+        *track6*
             type: boolean
-            
+
     """
 
+    name = 'GetTracks'
+    category = 'sources'
     fields = [
         'sourceName',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, sourceName):
+    def __init__(self):
         super().__init__()
-        self.name = 'GetTracks'
+        self.datain = {}
+        self.datain['track1'] = None
+        self.datain['track2'] = None
+        self.datain['track3'] = None
+        self.datain['track4'] = None
+        self.datain['track5'] = None
+        self.datain['track6'] = None
         self.dataout = {}
         self.dataout['sourceName'] = None
 
@@ -1430,40 +2064,62 @@ class GetTracks(BaseRequest):
         payload['sourceName'] = sourceName
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetTracks'
+            payload['sourceName'] = self.sourceName.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+            }
+
 
 class GetMute(BaseRequest):
     """Get the mute status of a specified source.
 
     :Arguments:
-       *source*
+        *source*
             type: String
             Source name.
     :Returns:
-       *name*
+        *name*
             type: String
             Source name.
-       *muted*
+        *muted*
             type: boolean
             Mute status of the source.
     """
 
+    name = 'GetMute'
+    category = 'sources'
     fields = [
         'source',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, source):
+    def __init__(self):
         super().__init__()
-        self.name = 'GetMute'
+        self.datain = {}
+        self.datain['name'] = None
+        self.datain['muted'] = None
         self.dataout = {}
         self.dataout['source'] = None
 
@@ -1474,36 +2130,56 @@ class GetMute(BaseRequest):
         payload['source'] = source
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('source'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.source = SourceSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.source)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetMute'
+            payload['source'] = self.source.get_data()
+            return payload
+
+        def refresh(self):
+            self.source.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.source.set_data(data['source']) 
+
+        def to_dict(self):
+            return {
+                'source': self.source.get_data(),
+            }
+
 
 class SetMute(BaseRequest):
     """Sets the mute status of a specified source.
 
     :Arguments:
-       *source*
+        *source*
             type: String
             Source name.
-       *mute*
+        *mute*
             type: boolean
             Desired mute status.
     """
 
+    name = 'SetMute'
+    category = 'sources'
     fields = [
         'source',
         'mute',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, source, mute):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetMute'
         self.dataout = {}
         self.dataout['source'] = None
         self.dataout['mute'] = None
@@ -1516,33 +2192,58 @@ class SetMute(BaseRequest):
         payload['mute'] = mute
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('source'))
-            layout.add(QLabel('mute'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.source = SourceSelector(changed, parent=self)
+            self.mute = BoolSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.source)
+                layout.add(self.mute)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetMute'
+            payload['source'] = self.source.get_data()
+            payload['mute'] = self.mute.get_data()
+            return payload
+
+        def refresh(self):
+            self.source.refresh()
+            self.mute.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.source.set_data(data['source']) 
+            self.mute.set_data(data['mute']) 
+
+        def to_dict(self):
+            return {
+                'source': self.source.get_data(),
+                'mute': self.mute.get_data(),
+            }
+
 
 class ToggleMute(BaseRequest):
     """Inverts the mute status of a specified source.
 
     :Arguments:
-       *source*
+        *source*
             type: String
             Source name.
     """
 
+    name = 'ToggleMute'
+    category = 'sources'
     fields = [
         'source',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, source):
+    def __init__(self):
         super().__init__()
-        self.name = 'ToggleMute'
         self.dataout = {}
         self.dataout['source'] = None
 
@@ -1553,36 +2254,58 @@ class ToggleMute(BaseRequest):
         payload['source'] = source
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('source'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.source = SourceSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.source)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'ToggleMute'
+            payload['source'] = self.source.get_data()
+            return payload
+
+        def refresh(self):
+            self.source.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.source.set_data(data['source']) 
+
+        def to_dict(self):
+            return {
+                'source': self.source.get_data(),
+            }
+
 
 class GetSourceActive(BaseRequest):
     """Get the source's active status of a specified source (if it is showing in the final mix).
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Source name.
     :Returns:
-       *sourceActive*
+        *sourceActive*
             type: boolean
             Source active status of the source.
     """
 
+    name = 'GetSourceActive'
+    category = 'sources'
     fields = [
         'sourceName',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, sourceName):
+    def __init__(self):
         super().__init__()
-        self.name = 'GetSourceActive'
+        self.datain = {}
+        self.datain['sourceActive'] = None
         self.dataout = {}
         self.dataout['sourceName'] = None
 
@@ -1593,37 +2316,58 @@ class GetSourceActive(BaseRequest):
         payload['sourceName'] = sourceName
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetSourceActive'
+            payload['sourceName'] = self.sourceName.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+            }
+
 
 class GetAudioActive(BaseRequest):
     """Get the audio's active status of a specified source.
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Source name.
     :Returns:
-       *audioActive*
+        *audioActive*
             type: boolean
             Audio active status of the source.
     """
 
+    name = 'GetAudioActive'
+    category = 'sources'
     fields = [
         'sourceName',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, sourceName):
+    def __init__(self):
         super().__init__()
-        self.name = 'GetAudioActive'
+        self.datain = {}
+        self.datain['audioActive'] = None
         self.dataout = {}
         self.dataout['sourceName'] = None
 
@@ -1634,14 +2378,34 @@ class GetAudioActive(BaseRequest):
         payload['sourceName'] = sourceName
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetAudioActive'
+            payload['sourceName'] = self.sourceName.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+            }
+
 
 class SetSourceName(BaseRequest):
     """
@@ -1649,24 +2413,23 @@ class SetSourceName(BaseRequest):
 Note: If the new name already exists as a source, obs-websocket will return an error.
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Source name.
-       *newName*
+        *newName*
             type: String
             New source name.
     """
 
+    name = 'SetSourceName'
+    category = 'sources'
     fields = [
         'sourceName',
         'newName',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, sourceName, newName):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetSourceName'
         self.dataout = {}
         self.dataout['sourceName'] = None
         self.dataout['newName'] = None
@@ -1679,38 +2442,62 @@ Note: If the new name already exists as a source, obs-websocket will return an e
         payload['newName'] = newName
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-            layout.add(QLabel('newName'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+            self.newName = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+                layout.add(self.newName)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetSourceName'
+            payload['sourceName'] = self.sourceName.get_data()
+            payload['newName'] = self.newName.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            self.newName.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+            self.newName.set_data(data['newName']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+                'newName': self.newName.get_data(),
+            }
+
 
 class SetSyncOffset(BaseRequest):
     """Set the audio sync offset of a specified source.
 
     :Arguments:
-       *source*
+        *source*
             type: String
             Source name.
-       *offset*
+        *offset*
             type: int
             The desired audio sync offset (in nanoseconds).
     """
 
+    name = 'SetSyncOffset'
+    category = 'sources'
     fields = [
         'source',
         'offset',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, source, offset):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetSyncOffset'
         self.dataout = {}
         self.dataout['source'] = None
         self.dataout['offset'] = None
@@ -1723,40 +2510,68 @@ class SetSyncOffset(BaseRequest):
         payload['offset'] = offset
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('source'))
-            layout.add(QLabel('offset'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.source = SourceSelector(changed, parent=self)
+            self.offset = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.source)
+                layout.add(self.offset)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetSyncOffset'
+            payload['source'] = self.source.get_data()
+            payload['offset'] = self.offset.get_data()
+            return payload
+
+        def refresh(self):
+            self.source.refresh()
+            self.offset.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.source.set_data(data['source']) 
+            self.offset.set_data(data['offset']) 
+
+        def to_dict(self):
+            return {
+                'source': self.source.get_data(),
+                'offset': self.offset.get_data(),
+            }
+
 
 class GetSyncOffset(BaseRequest):
     """Get the audio sync offset of a specified source.
 
     :Arguments:
-       *source*
+        *source*
             type: String
             Source name.
     :Returns:
-       *name*
+        *name*
             type: String
             Source name.
-       *offset*
+        *offset*
             type: int
             The audio sync offset (in nanoseconds).
     """
 
+    name = 'GetSyncOffset'
+    category = 'sources'
     fields = [
         'source',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, source):
+    def __init__(self):
         super().__init__()
-        self.name = 'GetSyncOffset'
+        self.datain = {}
+        self.datain['name'] = None
+        self.datain['offset'] = None
         self.dataout = {}
         self.dataout['source'] = None
 
@@ -1767,46 +2582,70 @@ class GetSyncOffset(BaseRequest):
         payload['source'] = source
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('source'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.source = SourceSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.source)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetSyncOffset'
+            payload['source'] = self.source.get_data()
+            return payload
+
+        def refresh(self):
+            self.source.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.source.set_data(data['source']) 
+
+        def to_dict(self):
+            return {
+                'source': self.source.get_data(),
+            }
+
 
 class GetSourceSettings(BaseRequest):
     """Get settings of the specified source
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Source name.
-       *sourceType*
+        *sourceType*
             type: String (optional)
             Type of the specified source. Useful for type-checking if you expect a specific settings schema.
     :Returns:
-       *sourceName*
+        *sourceName*
             type: String
             Source name
-       *sourceType*
+        *sourceType*
             type: String
             Type of the specified source
-       *sourceSettings*
+        *sourceSettings*
             type: Object
             Source settings (varies between source types, may require some probing around).
     """
 
+    name = 'GetSourceSettings'
+    category = 'sources'
     fields = [
         'sourceName',
         'sourceType',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, sourceName, sourceType=None):
+    def __init__(self):
         super().__init__()
-        self.name = 'GetSourceSettings'
+        self.datain = {}
+        self.datain['sourceName'] = None
+        self.datain['sourceType'] = None
+        self.datain['sourceSettings'] = None
         self.dataout = {}
         self.dataout['sourceName'] = None
         self.dataout['sourceType'] = None
@@ -1819,52 +2658,80 @@ class GetSourceSettings(BaseRequest):
         payload['sourceType'] = sourceType
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-            layout.add(QLabel('sourceType'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+            self.sourceType = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+                layout.add(self.sourceType)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetSourceSettings'
+            payload['sourceName'] = self.sourceName.get_data()
+            payload['sourceType'] = self.sourceType.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            self.sourceType.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+            self.sourceType.set_data(data['sourceType']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+                'sourceType': self.sourceType.get_data(),
+            }
+
 
 class SetSourceSettings(BaseRequest):
     """Set settings of the specified source.
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Source name.
-       *sourceType*
+        *sourceType*
             type: String (optional)
             Type of the specified source. Useful for type-checking to avoid settings a set of settings incompatible with the actual source's type.
-       *sourceSettings*
+        *sourceSettings*
             type: Object
             Source settings (varies between source types, may require some probing around).
     :Returns:
-       *sourceName*
+        *sourceName*
             type: String
             Source name
-       *sourceType*
+        *sourceType*
             type: String
             Type of the specified source
-       *sourceSettings*
+        *sourceSettings*
             type: Object
             Updated source settings
     """
 
+    name = 'SetSourceSettings'
+    category = 'sources'
     fields = [
         'sourceName',
         'sourceType',
         'sourceSettings',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, sourceName, sourceSettings, sourceType=None):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetSourceSettings'
+        self.datain = {}
+        self.datain['sourceName'] = None
+        self.datain['sourceType'] = None
+        self.datain['sourceSettings'] = None
         self.dataout = {}
         self.dataout['sourceName'] = None
         self.dataout['sourceSettings'] = None
@@ -1879,120 +2746,162 @@ class SetSourceSettings(BaseRequest):
         payload['sourceSettings'] = sourceSettings
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-            layout.add(QLabel('sourceType'))
-            layout.add(QLabel('sourceSettings'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+            self.sourceType = UnimplementedField('[field not implemented]')
+            self.sourceSettings = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+                layout.add(self.sourceType)
+                layout.add(self.sourceSettings)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetSourceSettings'
+            payload['sourceName'] = self.sourceName.get_data()
+            payload['sourceType'] = self.sourceType.get_data()
+            payload['sourceSettings'] = self.sourceSettings.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            self.sourceType.refresh()
+            self.sourceSettings.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+            self.sourceType.set_data(data['sourceType']) 
+            self.sourceSettings.set_data(data['sourceSettings']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+                'sourceType': self.sourceType.get_data(),
+                'sourceSettings': self.sourceSettings.get_data(),
+            }
+
 
 class GetTextGDIPlusProperties(BaseRequest):
     """Get the current properties of a Text GDI Plus source.
 
     :Arguments:
-       *source*
+        *source*
             type: String
             Source name.
     :Returns:
-       *source*
+        *source*
             type: String
             Source name.
-       *align*
+        *align*
             type: String
             Text Alignment ("left", "center", "right").
-       *bk_color*
+        *bk_color*
             type: int
             Background color.
-       *bk_opacity*
+        *bk_opacity*
             type: int
             Background opacity (0-100).
-       *chatlog*
+        *chatlog*
             type: boolean
             Chat log.
-       *chatlog_lines*
+        *chatlog_lines*
             type: int
             Chat log lines.
-       *color*
+        *color*
             type: int
             Text color.
-       *extents*
+        *extents*
             type: boolean
             Extents wrap.
-       *extents_cx*
+        *extents_cx*
             type: int
             Extents cx.
-       *extents_cy*
+        *extents_cy*
             type: int
             Extents cy.
-       *file*
+        *file*
             type: String
             File path name.
-       *read_from_file*
+        *read_from_file*
             type: boolean
             Read text from the specified file.
-       *font*
+        *font*
             type: Object
             Holds data for the font. Ex: `"font": { "face": "Arial", "flags": 0, "size": 150, "style": "" }`
-       *font.face*
-            type: String
-            Font face.
-       *font.flags*
-            type: int
-            Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8`
-       *font.size*
-            type: int
-            Font text size.
-       *font.style*
-            type: String
-            Font Style (unknown function).
-       *gradient*
+        *gradient*
             type: boolean
             Gradient enabled.
-       *gradient_color*
+        *gradient_color*
             type: int
             Gradient color.
-       *gradient_dir*
+        *gradient_dir*
             type: float
             Gradient direction.
-       *gradient_opacity*
+        *gradient_opacity*
             type: int
             Gradient opacity (0-100).
-       *outline*
+        *outline*
             type: boolean
             Outline.
-       *outline_color*
+        *outline_color*
             type: int
             Outline color.
-       *outline_size*
+        *outline_size*
             type: int
             Outline size.
-       *outline_opacity*
+        *outline_opacity*
             type: int
             Outline opacity (0-100).
-       *text*
+        *text*
             type: String
             Text content to be displayed.
-       *valign*
+        *valign*
             type: String
             Text vertical alignment ("top", "center", "bottom").
-       *vertical*
+        *vertical*
             type: boolean
             Vertical text enabled.
     """
 
+    name = 'GetTextGDIPlusProperties'
+    category = 'sources'
     fields = [
         'source',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, source):
+    def __init__(self):
         super().__init__()
-        self.name = 'GetTextGDIPlusProperties'
+        self.datain = {}
+        self.datain['source'] = None
+        self.datain['align'] = None
+        self.datain['bk_color'] = None
+        self.datain['bk_opacity'] = None
+        self.datain['chatlog'] = None
+        self.datain['chatlog_lines'] = None
+        self.datain['color'] = None
+        self.datain['extents'] = None
+        self.datain['extents_cx'] = None
+        self.datain['extents_cy'] = None
+        self.datain['file'] = None
+        self.datain['read_from_file'] = None
+        self.datain['font'] = None
+        self.datain['gradient'] = None
+        self.datain['gradient_color'] = None
+        self.datain['gradient_dir'] = None
+        self.datain['gradient_opacity'] = None
+        self.datain['outline'] = None
+        self.datain['outline_color'] = None
+        self.datain['outline_size'] = None
+        self.datain['outline_opacity'] = None
+        self.datain['text'] = None
+        self.datain['valign'] = None
+        self.datain['vertical'] = None
         self.dataout = {}
         self.dataout['source'] = None
 
@@ -2003,107 +2912,118 @@ class GetTextGDIPlusProperties(BaseRequest):
         payload['source'] = source
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('source'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.source = SourceSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.source)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetTextGDIPlusProperties'
+            payload['source'] = self.source.get_data()
+            return payload
+
+        def refresh(self):
+            self.source.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.source.set_data(data['source']) 
+
+        def to_dict(self):
+            return {
+                'source': self.source.get_data(),
+            }
+
 
 class SetTextGDIPlusProperties(BaseRequest):
     """Set the current properties of a Text GDI Plus source.
 
     :Arguments:
-       *source*
+        *source*
             type: String
             Name of the source.
-       *align*
+        *align*
             type: String (optional)
             Text Alignment ("left", "center", "right").
-       *bk_color*
+        *bk_color*
             type: int (optional)
             Background color.
-       *bk_opacity*
+        *bk_opacity*
             type: int (optional)
             Background opacity (0-100).
-       *chatlog*
+        *chatlog*
             type: boolean (optional)
             Chat log.
-       *chatlog_lines*
+        *chatlog_lines*
             type: int (optional)
             Chat log lines.
-       *color*
+        *color*
             type: int (optional)
             Text color.
-       *extents*
+        *extents*
             type: boolean (optional)
             Extents wrap.
-       *extents_cx*
+        *extents_cx*
             type: int (optional)
             Extents cx.
-       *extents_cy*
+        *extents_cy*
             type: int (optional)
             Extents cy.
-       *file*
+        *file*
             type: String (optional)
             File path name.
-       *read_from_file*
+        *read_from_file*
             type: boolean (optional)
             Read text from the specified file.
-       *font*
+        *font*
             type: Object (optional)
             Holds data for the font. Ex: `"font": { "face": "Arial", "flags": 0, "size": 150, "style": "" }`
-       *font.face*
-            type: String (optional)
-            Font face.
-       *font.flags*
-            type: int (optional)
-            Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8`
-       *font.size*
-            type: int (optional)
-            Font text size.
-       *font.style*
-            type: String (optional)
-            Font Style (unknown function).
-       *gradient*
+        *gradient*
             type: boolean (optional)
             Gradient enabled.
-       *gradient_color*
+        *gradient_color*
             type: int (optional)
             Gradient color.
-       *gradient_dir*
+        *gradient_dir*
             type: float (optional)
             Gradient direction.
-       *gradient_opacity*
+        *gradient_opacity*
             type: int (optional)
             Gradient opacity (0-100).
-       *outline*
+        *outline*
             type: boolean (optional)
             Outline.
-       *outline_color*
+        *outline_color*
             type: int (optional)
             Outline color.
-       *outline_size*
+        *outline_size*
             type: int (optional)
             Outline size.
-       *outline_opacity*
+        *outline_opacity*
             type: int (optional)
             Outline opacity (0-100).
-       *text*
+        *text*
             type: String (optional)
             Text content to be displayed.
-       *valign*
+        *valign*
             type: String (optional)
             Text vertical alignment ("top", "center", "bottom").
-       *vertical*
+        *vertical*
             type: boolean (optional)
             Vertical text enabled.
-       *render*
+        *render*
             type: boolean (optional)
             Visibility of the scene item.
     """
 
+    name = 'SetTextGDIPlusProperties'
+    category = 'sources'
     fields = [
         'source',
         'align',
@@ -2132,11 +3052,8 @@ class SetTextGDIPlusProperties(BaseRequest):
         'render',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, source, align=None, bk_color=None, bk_opacity=None, chatlog=None, chatlog_lines=None, color=None, extents=None, extents_cx=None, extents_cy=None, file=None, read_from_file=None, font=None, gradient=None, gradient_color=None, gradient_dir=None, gradient_opacity=None, outline=None, outline_color=None, outline_size=None, outline_opacity=None, text=None, valign=None, vertical=None, render=None):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetTextGDIPlusProperties'
         self.dataout = {}
         self.dataout['source'] = None
         self.dataout['align'] = None
@@ -2195,105 +3112,246 @@ class SetTextGDIPlusProperties(BaseRequest):
         payload['render'] = render
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('source'))
-            layout.add(QLabel('align'))
-            layout.add(QLabel('bk_color'))
-            layout.add(QLabel('bk_opacity'))
-            layout.add(QLabel('chatlog'))
-            layout.add(QLabel('chatlog_lines'))
-            layout.add(QLabel('color'))
-            layout.add(QLabel('extents'))
-            layout.add(QLabel('extents_cx'))
-            layout.add(QLabel('extents_cy'))
-            layout.add(QLabel('file'))
-            layout.add(QLabel('read_from_file'))
-            layout.add(QLabel('font'))
-            layout.add(QLabel('gradient'))
-            layout.add(QLabel('gradient_color'))
-            layout.add(QLabel('gradient_dir'))
-            layout.add(QLabel('gradient_opacity'))
-            layout.add(QLabel('outline'))
-            layout.add(QLabel('outline_color'))
-            layout.add(QLabel('outline_size'))
-            layout.add(QLabel('outline_opacity'))
-            layout.add(QLabel('text'))
-            layout.add(QLabel('valign'))
-            layout.add(QLabel('vertical'))
-            layout.add(QLabel('render'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.source = SourceSelector(changed, parent=self)
+            self.align = UnimplementedField('[field not implemented]')
+            self.bk_color = UnimplementedField('[field not implemented]')
+            self.bk_opacity = UnimplementedField('[field not implemented]')
+            self.chatlog = UnimplementedField('[field not implemented]')
+            self.chatlog_lines = UnimplementedField('[field not implemented]')
+            self.color = UnimplementedField('[field not implemented]')
+            self.extents = UnimplementedField('[field not implemented]')
+            self.extents_cx = UnimplementedField('[field not implemented]')
+            self.extents_cy = UnimplementedField('[field not implemented]')
+            self.file = UnimplementedField('[field not implemented]')
+            self.read_from_file = UnimplementedField('[field not implemented]')
+            self.font = UnimplementedField('[field not implemented]')
+            self.gradient = UnimplementedField('[field not implemented]')
+            self.gradient_color = UnimplementedField('[field not implemented]')
+            self.gradient_dir = UnimplementedField('[field not implemented]')
+            self.gradient_opacity = UnimplementedField('[field not implemented]')
+            self.outline = UnimplementedField('[field not implemented]')
+            self.outline_color = UnimplementedField('[field not implemented]')
+            self.outline_size = UnimplementedField('[field not implemented]')
+            self.outline_opacity = UnimplementedField('[field not implemented]')
+            self.text = UnimplementedField('[field not implemented]')
+            self.valign = UnimplementedField('[field not implemented]')
+            self.vertical = UnimplementedField('[field not implemented]')
+            self.render = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.source)
+                layout.add(self.align)
+                layout.add(self.bk_color)
+                layout.add(self.bk_opacity)
+                layout.add(self.chatlog)
+                layout.add(self.chatlog_lines)
+                layout.add(self.color)
+                layout.add(self.extents)
+                layout.add(self.extents_cx)
+                layout.add(self.extents_cy)
+                layout.add(self.file)
+                layout.add(self.read_from_file)
+                layout.add(self.font)
+                layout.add(self.gradient)
+                layout.add(self.gradient_color)
+                layout.add(self.gradient_dir)
+                layout.add(self.gradient_opacity)
+                layout.add(self.outline)
+                layout.add(self.outline_color)
+                layout.add(self.outline_size)
+                layout.add(self.outline_opacity)
+                layout.add(self.text)
+                layout.add(self.valign)
+                layout.add(self.vertical)
+                layout.add(self.render)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetTextGDIPlusProperties'
+            payload['source'] = self.source.get_data()
+            payload['align'] = self.align.get_data()
+            payload['bk_color'] = self.bk_color.get_data()
+            payload['bk_opacity'] = self.bk_opacity.get_data()
+            payload['chatlog'] = self.chatlog.get_data()
+            payload['chatlog_lines'] = self.chatlog_lines.get_data()
+            payload['color'] = self.color.get_data()
+            payload['extents'] = self.extents.get_data()
+            payload['extents_cx'] = self.extents_cx.get_data()
+            payload['extents_cy'] = self.extents_cy.get_data()
+            payload['file'] = self.file.get_data()
+            payload['read_from_file'] = self.read_from_file.get_data()
+            payload['font'] = self.font.get_data()
+            payload['gradient'] = self.gradient.get_data()
+            payload['gradient_color'] = self.gradient_color.get_data()
+            payload['gradient_dir'] = self.gradient_dir.get_data()
+            payload['gradient_opacity'] = self.gradient_opacity.get_data()
+            payload['outline'] = self.outline.get_data()
+            payload['outline_color'] = self.outline_color.get_data()
+            payload['outline_size'] = self.outline_size.get_data()
+            payload['outline_opacity'] = self.outline_opacity.get_data()
+            payload['text'] = self.text.get_data()
+            payload['valign'] = self.valign.get_data()
+            payload['vertical'] = self.vertical.get_data()
+            payload['render'] = self.render.get_data()
+            return payload
+
+        def refresh(self):
+            self.source.refresh()
+            self.align.refresh()
+            self.bk_color.refresh()
+            self.bk_opacity.refresh()
+            self.chatlog.refresh()
+            self.chatlog_lines.refresh()
+            self.color.refresh()
+            self.extents.refresh()
+            self.extents_cx.refresh()
+            self.extents_cy.refresh()
+            self.file.refresh()
+            self.read_from_file.refresh()
+            self.font.refresh()
+            self.gradient.refresh()
+            self.gradient_color.refresh()
+            self.gradient_dir.refresh()
+            self.gradient_opacity.refresh()
+            self.outline.refresh()
+            self.outline_color.refresh()
+            self.outline_size.refresh()
+            self.outline_opacity.refresh()
+            self.text.refresh()
+            self.valign.refresh()
+            self.vertical.refresh()
+            self.render.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.source.set_data(data['source']) 
+            self.align.set_data(data['align']) 
+            self.bk_color.set_data(data['bk_color']) 
+            self.bk_opacity.set_data(data['bk_opacity']) 
+            self.chatlog.set_data(data['chatlog']) 
+            self.chatlog_lines.set_data(data['chatlog_lines']) 
+            self.color.set_data(data['color']) 
+            self.extents.set_data(data['extents']) 
+            self.extents_cx.set_data(data['extents_cx']) 
+            self.extents_cy.set_data(data['extents_cy']) 
+            self.file.set_data(data['file']) 
+            self.read_from_file.set_data(data['read_from_file']) 
+            self.font.set_data(data['font']) 
+            self.gradient.set_data(data['gradient']) 
+            self.gradient_color.set_data(data['gradient_color']) 
+            self.gradient_dir.set_data(data['gradient_dir']) 
+            self.gradient_opacity.set_data(data['gradient_opacity']) 
+            self.outline.set_data(data['outline']) 
+            self.outline_color.set_data(data['outline_color']) 
+            self.outline_size.set_data(data['outline_size']) 
+            self.outline_opacity.set_data(data['outline_opacity']) 
+            self.text.set_data(data['text']) 
+            self.valign.set_data(data['valign']) 
+            self.vertical.set_data(data['vertical']) 
+            self.render.set_data(data['render']) 
+
+        def to_dict(self):
+            return {
+                'source': self.source.get_data(),
+                'align': self.align.get_data(),
+                'bk_color': self.bk_color.get_data(),
+                'bk_opacity': self.bk_opacity.get_data(),
+                'chatlog': self.chatlog.get_data(),
+                'chatlog_lines': self.chatlog_lines.get_data(),
+                'color': self.color.get_data(),
+                'extents': self.extents.get_data(),
+                'extents_cx': self.extents_cx.get_data(),
+                'extents_cy': self.extents_cy.get_data(),
+                'file': self.file.get_data(),
+                'read_from_file': self.read_from_file.get_data(),
+                'font': self.font.get_data(),
+                'gradient': self.gradient.get_data(),
+                'gradient_color': self.gradient_color.get_data(),
+                'gradient_dir': self.gradient_dir.get_data(),
+                'gradient_opacity': self.gradient_opacity.get_data(),
+                'outline': self.outline.get_data(),
+                'outline_color': self.outline_color.get_data(),
+                'outline_size': self.outline_size.get_data(),
+                'outline_opacity': self.outline_opacity.get_data(),
+                'text': self.text.get_data(),
+                'valign': self.valign.get_data(),
+                'vertical': self.vertical.get_data(),
+                'render': self.render.get_data(),
+            }
+
 
 class GetTextFreetype2Properties(BaseRequest):
     """Get the current properties of a Text Freetype 2 source.
 
     :Arguments:
-       *source*
+        *source*
             type: String
             Source name.
     :Returns:
-       *source*
+        *source*
             type: String
             Source name
-       *color1*
+        *color1*
             type: int
             Gradient top color.
-       *color2*
+        *color2*
             type: int
             Gradient bottom color.
-       *custom_width*
+        *custom_width*
             type: int
             Custom width (0 to disable).
-       *drop_shadow*
+        *drop_shadow*
             type: boolean
             Drop shadow.
-       *font*
+        *font*
             type: Object
             Holds data for the font. Ex: `"font": { "face": "Arial", "flags": 0, "size": 150, "style": "" }`
-       *font.face*
-            type: String
-            Font face.
-       *font.flags*
-            type: int
-            Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8`
-       *font.size*
-            type: int
-            Font text size.
-       *font.style*
-            type: String
-            Font Style (unknown function).
-       *from_file*
+        *from_file*
             type: boolean
             Read text from the specified file.
-       *log_mode*
+        *log_mode*
             type: boolean
             Chat log.
-       *outline*
+        *outline*
             type: boolean
             Outline.
-       *text*
+        *text*
             type: String
             Text content to be displayed.
-       *text_file*
+        *text_file*
             type: String
             File path.
-       *word_wrap*
+        *word_wrap*
             type: boolean
             Word wrap.
     """
 
+    name = 'GetTextFreetype2Properties'
+    category = 'sources'
     fields = [
         'source',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, source):
+    def __init__(self):
         super().__init__()
-        self.name = 'GetTextFreetype2Properties'
+        self.datain = {}
+        self.datain['source'] = None
+        self.datain['color1'] = None
+        self.datain['color2'] = None
+        self.datain['custom_width'] = None
+        self.datain['drop_shadow'] = None
+        self.datain['font'] = None
+        self.datain['from_file'] = None
+        self.datain['log_mode'] = None
+        self.datain['outline'] = None
+        self.datain['text'] = None
+        self.datain['text_file'] = None
+        self.datain['word_wrap'] = None
         self.dataout = {}
         self.dataout['source'] = None
 
@@ -2304,68 +3362,79 @@ class GetTextFreetype2Properties(BaseRequest):
         payload['source'] = source
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('source'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.source = SourceSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.source)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetTextFreetype2Properties'
+            payload['source'] = self.source.get_data()
+            return payload
+
+        def refresh(self):
+            self.source.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.source.set_data(data['source']) 
+
+        def to_dict(self):
+            return {
+                'source': self.source.get_data(),
+            }
+
 
 class SetTextFreetype2Properties(BaseRequest):
     """Set the current properties of a Text Freetype 2 source.
 
     :Arguments:
-       *source*
+        *source*
             type: String
             Source name.
-       *color1*
+        *color1*
             type: int (optional)
             Gradient top color.
-       *color2*
+        *color2*
             type: int (optional)
             Gradient bottom color.
-       *custom_width*
+        *custom_width*
             type: int (optional)
             Custom width (0 to disable).
-       *drop_shadow*
+        *drop_shadow*
             type: boolean (optional)
             Drop shadow.
-       *font*
+        *font*
             type: Object (optional)
             Holds data for the font. Ex: `"font": { "face": "Arial", "flags": 0, "size": 150, "style": "" }`
-       *font.face*
-            type: String (optional)
-            Font face.
-       *font.flags*
-            type: int (optional)
-            Font text styling flag. `Bold=1, Italic=2, Bold Italic=3, Underline=5, Strikeout=8`
-       *font.size*
-            type: int (optional)
-            Font text size.
-       *font.style*
-            type: String (optional)
-            Font Style (unknown function).
-       *from_file*
+        *from_file*
             type: boolean (optional)
             Read text from the specified file.
-       *log_mode*
+        *log_mode*
             type: boolean (optional)
             Chat log.
-       *outline*
+        *outline*
             type: boolean (optional)
             Outline.
-       *text*
+        *text*
             type: String (optional)
             Text content to be displayed.
-       *text_file*
+        *text_file*
             type: String (optional)
             File path.
-       *word_wrap*
+        *word_wrap*
             type: boolean (optional)
             Word wrap.
     """
 
+    name = 'SetTextFreetype2Properties'
+    category = 'sources'
     fields = [
         'source',
         'color1',
@@ -2381,11 +3450,8 @@ class SetTextFreetype2Properties(BaseRequest):
         'word_wrap',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, source, color1=None, color2=None, custom_width=None, drop_shadow=None, font=None, from_file=None, log_mode=None, outline=None, text=None, text_file=None, word_wrap=None):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetTextFreetype2Properties'
         self.dataout = {}
         self.dataout['source'] = None
         self.dataout['color1'] = None
@@ -2418,71 +3484,156 @@ class SetTextFreetype2Properties(BaseRequest):
         payload['word_wrap'] = word_wrap
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('source'))
-            layout.add(QLabel('color1'))
-            layout.add(QLabel('color2'))
-            layout.add(QLabel('custom_width'))
-            layout.add(QLabel('drop_shadow'))
-            layout.add(QLabel('font'))
-            layout.add(QLabel('from_file'))
-            layout.add(QLabel('log_mode'))
-            layout.add(QLabel('outline'))
-            layout.add(QLabel('text'))
-            layout.add(QLabel('text_file'))
-            layout.add(QLabel('word_wrap'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.source = SourceSelector(changed, parent=self)
+            self.color1 = UnimplementedField('[field not implemented]')
+            self.color2 = UnimplementedField('[field not implemented]')
+            self.custom_width = UnimplementedField('[field not implemented]')
+            self.drop_shadow = UnimplementedField('[field not implemented]')
+            self.font = UnimplementedField('[field not implemented]')
+            self.from_file = UnimplementedField('[field not implemented]')
+            self.log_mode = UnimplementedField('[field not implemented]')
+            self.outline = UnimplementedField('[field not implemented]')
+            self.text = UnimplementedField('[field not implemented]')
+            self.text_file = UnimplementedField('[field not implemented]')
+            self.word_wrap = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.source)
+                layout.add(self.color1)
+                layout.add(self.color2)
+                layout.add(self.custom_width)
+                layout.add(self.drop_shadow)
+                layout.add(self.font)
+                layout.add(self.from_file)
+                layout.add(self.log_mode)
+                layout.add(self.outline)
+                layout.add(self.text)
+                layout.add(self.text_file)
+                layout.add(self.word_wrap)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetTextFreetype2Properties'
+            payload['source'] = self.source.get_data()
+            payload['color1'] = self.color1.get_data()
+            payload['color2'] = self.color2.get_data()
+            payload['custom_width'] = self.custom_width.get_data()
+            payload['drop_shadow'] = self.drop_shadow.get_data()
+            payload['font'] = self.font.get_data()
+            payload['from_file'] = self.from_file.get_data()
+            payload['log_mode'] = self.log_mode.get_data()
+            payload['outline'] = self.outline.get_data()
+            payload['text'] = self.text.get_data()
+            payload['text_file'] = self.text_file.get_data()
+            payload['word_wrap'] = self.word_wrap.get_data()
+            return payload
+
+        def refresh(self):
+            self.source.refresh()
+            self.color1.refresh()
+            self.color2.refresh()
+            self.custom_width.refresh()
+            self.drop_shadow.refresh()
+            self.font.refresh()
+            self.from_file.refresh()
+            self.log_mode.refresh()
+            self.outline.refresh()
+            self.text.refresh()
+            self.text_file.refresh()
+            self.word_wrap.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.source.set_data(data['source']) 
+            self.color1.set_data(data['color1']) 
+            self.color2.set_data(data['color2']) 
+            self.custom_width.set_data(data['custom_width']) 
+            self.drop_shadow.set_data(data['drop_shadow']) 
+            self.font.set_data(data['font']) 
+            self.from_file.set_data(data['from_file']) 
+            self.log_mode.set_data(data['log_mode']) 
+            self.outline.set_data(data['outline']) 
+            self.text.set_data(data['text']) 
+            self.text_file.set_data(data['text_file']) 
+            self.word_wrap.set_data(data['word_wrap']) 
+
+        def to_dict(self):
+            return {
+                'source': self.source.get_data(),
+                'color1': self.color1.get_data(),
+                'color2': self.color2.get_data(),
+                'custom_width': self.custom_width.get_data(),
+                'drop_shadow': self.drop_shadow.get_data(),
+                'font': self.font.get_data(),
+                'from_file': self.from_file.get_data(),
+                'log_mode': self.log_mode.get_data(),
+                'outline': self.outline.get_data(),
+                'text': self.text.get_data(),
+                'text_file': self.text_file.get_data(),
+                'word_wrap': self.word_wrap.get_data(),
+            }
+
 
 class GetBrowserSourceProperties(BaseRequest):
     """Get current properties for a Browser Source.
 
     :Arguments:
-       *source*
+        *source*
             type: String
             Source name.
     :Returns:
-       *source*
+        *source*
             type: String
             Source name.
-       *is_local_file*
+        *is_local_file*
             type: boolean
             Indicates that a local file is in use.
-       *local_file*
+        *local_file*
             type: String
             file path.
-       *url*
+        *url*
             type: String
             Url.
-       *css*
+        *css*
             type: String
             CSS to inject.
-       *width*
+        *width*
             type: int
             Width.
-       *height*
+        *height*
             type: int
             Height.
-       *fps*
+        *fps*
             type: int
             Framerate.
-       *shutdown*
+        *shutdown*
             type: boolean
             Indicates whether the source should be shutdown when not visible.
     """
 
+    name = 'GetBrowserSourceProperties'
+    category = 'sources'
     fields = [
         'source',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, source):
+    def __init__(self):
         super().__init__()
-        self.name = 'GetBrowserSourceProperties'
+        self.datain = {}
+        self.datain['source'] = None
+        self.datain['is_local_file'] = None
+        self.datain['local_file'] = None
+        self.datain['url'] = None
+        self.datain['css'] = None
+        self.datain['width'] = None
+        self.datain['height'] = None
+        self.datain['fps'] = None
+        self.datain['shutdown'] = None
         self.dataout = {}
         self.dataout['source'] = None
 
@@ -2493,50 +3644,73 @@ class GetBrowserSourceProperties(BaseRequest):
         payload['source'] = source
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('source'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.source = SourceSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.source)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetBrowserSourceProperties'
+            payload['source'] = self.source.get_data()
+            return payload
+
+        def refresh(self):
+            self.source.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.source.set_data(data['source']) 
+
+        def to_dict(self):
+            return {
+                'source': self.source.get_data(),
+            }
+
 
 class SetBrowserSourceProperties(BaseRequest):
     """Set current properties for a Browser Source.
 
     :Arguments:
-       *source*
+        *source*
             type: String
             Name of the source.
-       *is_local_file*
+        *is_local_file*
             type: boolean (optional)
             Indicates that a local file is in use.
-       *local_file*
+        *local_file*
             type: String (optional)
             file path.
-       *url*
+        *url*
             type: String (optional)
             Url.
-       *css*
+        *css*
             type: String (optional)
             CSS to inject.
-       *width*
+        *width*
             type: int (optional)
             Width.
-       *height*
+        *height*
             type: int (optional)
             Height.
-       *fps*
+        *fps*
             type: int (optional)
             Framerate.
-       *shutdown*
+        *shutdown*
             type: boolean (optional)
             Indicates whether the source should be shutdown when not visible.
-       *render*
+        *render*
             type: boolean (optional)
             Visibility of the scene item.
     """
 
+    name = 'SetBrowserSourceProperties'
+    category = 'sources'
     fields = [
         'source',
         'is_local_file',
@@ -2550,11 +3724,8 @@ class SetBrowserSourceProperties(BaseRequest):
         'render',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, source, is_local_file=None, local_file=None, url=None, css=None, width=None, height=None, fps=None, shutdown=None, render=None):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetBrowserSourceProperties'
         self.dataout = {}
         self.dataout['source'] = None
         self.dataout['is_local_file'] = None
@@ -2583,52 +3754,122 @@ class SetBrowserSourceProperties(BaseRequest):
         payload['render'] = render
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('source'))
-            layout.add(QLabel('is_local_file'))
-            layout.add(QLabel('local_file'))
-            layout.add(QLabel('url'))
-            layout.add(QLabel('css'))
-            layout.add(QLabel('width'))
-            layout.add(QLabel('height'))
-            layout.add(QLabel('fps'))
-            layout.add(QLabel('shutdown'))
-            layout.add(QLabel('render'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.source = SourceSelector(changed, parent=self)
+            self.is_local_file = UnimplementedField('[field not implemented]')
+            self.local_file = UnimplementedField('[field not implemented]')
+            self.url = UnimplementedField('[field not implemented]')
+            self.css = UnimplementedField('[field not implemented]')
+            self.width = UnimplementedField('[field not implemented]')
+            self.height = UnimplementedField('[field not implemented]')
+            self.fps = UnimplementedField('[field not implemented]')
+            self.shutdown = UnimplementedField('[field not implemented]')
+            self.render = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.source)
+                layout.add(self.is_local_file)
+                layout.add(self.local_file)
+                layout.add(self.url)
+                layout.add(self.css)
+                layout.add(self.width)
+                layout.add(self.height)
+                layout.add(self.fps)
+                layout.add(self.shutdown)
+                layout.add(self.render)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetBrowserSourceProperties'
+            payload['source'] = self.source.get_data()
+            payload['is_local_file'] = self.is_local_file.get_data()
+            payload['local_file'] = self.local_file.get_data()
+            payload['url'] = self.url.get_data()
+            payload['css'] = self.css.get_data()
+            payload['width'] = self.width.get_data()
+            payload['height'] = self.height.get_data()
+            payload['fps'] = self.fps.get_data()
+            payload['shutdown'] = self.shutdown.get_data()
+            payload['render'] = self.render.get_data()
+            return payload
+
+        def refresh(self):
+            self.source.refresh()
+            self.is_local_file.refresh()
+            self.local_file.refresh()
+            self.url.refresh()
+            self.css.refresh()
+            self.width.refresh()
+            self.height.refresh()
+            self.fps.refresh()
+            self.shutdown.refresh()
+            self.render.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.source.set_data(data['source']) 
+            self.is_local_file.set_data(data['is_local_file']) 
+            self.local_file.set_data(data['local_file']) 
+            self.url.set_data(data['url']) 
+            self.css.set_data(data['css']) 
+            self.width.set_data(data['width']) 
+            self.height.set_data(data['height']) 
+            self.fps.set_data(data['fps']) 
+            self.shutdown.set_data(data['shutdown']) 
+            self.render.set_data(data['render']) 
+
+        def to_dict(self):
+            return {
+                'source': self.source.get_data(),
+                'is_local_file': self.is_local_file.get_data(),
+                'local_file': self.local_file.get_data(),
+                'url': self.url.get_data(),
+                'css': self.css.get_data(),
+                'width': self.width.get_data(),
+                'height': self.height.get_data(),
+                'fps': self.fps.get_data(),
+                'shutdown': self.shutdown.get_data(),
+                'render': self.render.get_data(),
+            }
+
 
 class GetSpecialSources(BaseRequest):
     """Get configured special sources like Desktop Audio and Mic/Aux sources.
 
     :Returns:
-       *desktop_1*
+        *desktop_1*
             type: String (optional)
             Name of the first Desktop Audio capture source.
-       *desktop_2*
+        *desktop_2*
             type: String (optional)
             Name of the second Desktop Audio capture source.
-       *mic_1*
+        *mic_1*
             type: String (optional)
             Name of the first Mic/Aux input source.
-       *mic_2*
+        *mic_2*
             type: String (optional)
             Name of the second Mic/Aux input source.
-       *mic_3*
+        *mic_3*
             type: String (optional)
             NAme of the third Mic/Aux input source.
     """
 
-    fields = [
-    ]
-
+    name = 'GetSpecialSources'
     category = 'sources'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'GetSpecialSources'
+        self.datain = {}
+        self.datain['desktop-1'] = None
+        self.datain['desktop-2'] = None
+        self.datain['mic-1'] = None
+        self.datain['mic-2'] = None
+        self.datain['mic-3'] = None
 
     @staticmethod
     def payload():
@@ -2636,46 +3877,53 @@ class GetSpecialSources(BaseRequest):
         payload['request-type'] = 'GetSpecialSources'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetSpecialSources'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class GetSourceFilters(BaseRequest):
     """List filters applied to a source
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Source name
     :Returns:
-       *filters*
+        *filters*
             type: Array<Object>
             List of filters for the specified source
-       *filters.*.enabled*
-            type: Boolean
-            Filter status (enabled or not)
-       *filters.*.type*
-            type: String
-            Filter type
-       *filters.*.name*
-            type: String
-            Filter name
-       *filters.*.settings*
-            type: Object
-            Filter settings
     """
 
+    name = 'GetSourceFilters'
+    category = 'sources'
     fields = [
         'sourceName',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, sourceName):
+    def __init__(self):
         super().__init__()
-        self.name = 'GetSourceFilters'
+        self.datain = {}
+        self.datain['filters'] = None
         self.dataout = {}
         self.dataout['sourceName'] = None
 
@@ -2686,50 +3934,74 @@ class GetSourceFilters(BaseRequest):
         payload['sourceName'] = sourceName
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetSourceFilters'
+            payload['sourceName'] = self.sourceName.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+            }
+
 
 class GetSourceFilterInfo(BaseRequest):
     """List filters applied to a source
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Source name
-       *filterName*
+        *filterName*
             type: String
             Source filter name
     :Returns:
-       *enabled*
+        *enabled*
             type: Boolean
             Filter status (enabled or not)
-       *type*
+        *type*
             type: String
             Filter type
-       *name*
+        *name*
             type: String
             Filter name
-       *settings*
+        *settings*
             type: Object
             Filter settings
     """
 
+    name = 'GetSourceFilterInfo'
+    category = 'sources'
     fields = [
         'sourceName',
         'filterName',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, sourceName, filterName):
+    def __init__(self):
         super().__init__()
-        self.name = 'GetSourceFilterInfo'
+        self.datain = {}
+        self.datain['enabled'] = None
+        self.datain['type'] = None
+        self.datain['name'] = None
+        self.datain['settings'] = None
         self.dataout = {}
         self.dataout['sourceName'] = None
         self.dataout['filterName'] = None
@@ -2742,35 +4014,61 @@ class GetSourceFilterInfo(BaseRequest):
         payload['filterName'] = filterName
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        filterName = FilterSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-            layout.add(filterName)
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+            self.filterName = FilterSelector(changed, self.sourceName, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+                layout.add(self.filterName)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetSourceFilterInfo'
+            payload['sourceName'] = self.sourceName.get_data()
+            payload['filterName'] = self.filterName.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            self.filterName.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+            self.filterName.set_data(data['filterName']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+                'filterName': self.filterName.get_data(),
+            }
+
 
 class AddFilterToSource(BaseRequest):
     """Add a new filter to a source. Available source types along with their settings properties are available from `GetSourceTypesList`.
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Name of the source on which the filter is added
-       *filterName*
+        *filterName*
             type: String
             Name of the new filter
-       *filterType*
+        *filterType*
             type: String
             Filter type
-       *filterSettings*
+        *filterSettings*
             type: Object
             Filter settings
     """
 
+    name = 'AddFilterToSource'
+    category = 'sources'
     fields = [
         'sourceName',
         'filterName',
@@ -2778,11 +4076,8 @@ class AddFilterToSource(BaseRequest):
         'filterSettings',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, sourceName, filterName, filterType, filterSettings):
+    def __init__(self):
         super().__init__()
-        self.name = 'AddFilterToSource'
         self.dataout = {}
         self.dataout['sourceName'] = None
         self.dataout['filterName'] = None
@@ -2799,41 +4094,74 @@ class AddFilterToSource(BaseRequest):
         payload['filterSettings'] = filterSettings
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        filterName = FilterSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-            layout.add(filterName)
-            layout.add(QLabel('filterType'))
-            layout.add(QLabel('filterSettings'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+            self.filterName = FilterSelector(changed, self.sourceName, parent=self)
+            self.filterType = UnimplementedField('[field not implemented]')
+            self.filterSettings = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+                layout.add(self.filterName)
+                layout.add(self.filterType)
+                layout.add(self.filterSettings)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'AddFilterToSource'
+            payload['sourceName'] = self.sourceName.get_data()
+            payload['filterName'] = self.filterName.get_data()
+            payload['filterType'] = self.filterType.get_data()
+            payload['filterSettings'] = self.filterSettings.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            self.filterName.refresh()
+            self.filterType.refresh()
+            self.filterSettings.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+            self.filterName.set_data(data['filterName']) 
+            self.filterType.set_data(data['filterType']) 
+            self.filterSettings.set_data(data['filterSettings']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+                'filterName': self.filterName.get_data(),
+                'filterType': self.filterType.get_data(),
+                'filterSettings': self.filterSettings.get_data(),
+            }
+
 
 class RemoveFilterFromSource(BaseRequest):
     """Remove a filter from a source
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Name of the source from which the specified filter is removed
-       *filterName*
+        *filterName*
             type: String
             Name of the filter to remove
     """
 
+    name = 'RemoveFilterFromSource'
+    category = 'sources'
     fields = [
         'sourceName',
         'filterName',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, sourceName, filterName):
+    def __init__(self):
         super().__init__()
-        self.name = 'RemoveFilterFromSource'
         self.dataout = {}
         self.dataout['sourceName'] = None
         self.dataout['filterName'] = None
@@ -2846,43 +4174,66 @@ class RemoveFilterFromSource(BaseRequest):
         payload['filterName'] = filterName
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        filterName = FilterSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-            layout.add(filterName)
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+            self.filterName = FilterSelector(changed, self.sourceName, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+                layout.add(self.filterName)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'RemoveFilterFromSource'
+            payload['sourceName'] = self.sourceName.get_data()
+            payload['filterName'] = self.filterName.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            self.filterName.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+            self.filterName.set_data(data['filterName']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+                'filterName': self.filterName.get_data(),
+            }
+
 
 class ReorderSourceFilter(BaseRequest):
     """Move a filter in the chain (absolute index positioning)
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Name of the source to which the filter belongs
-       *filterName*
+        *filterName*
             type: String
             Name of the filter to reorder
-       *newIndex*
+        *newIndex*
             type: Integer
             Desired position of the filter in the chain
     """
 
+    name = 'ReorderSourceFilter'
+    category = 'sources'
     fields = [
         'sourceName',
         'filterName',
         'newIndex',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, sourceName, filterName, newIndex):
+    def __init__(self):
         super().__init__()
-        self.name = 'ReorderSourceFilter'
         self.dataout = {}
         self.dataout['sourceName'] = None
         self.dataout['filterName'] = None
@@ -2897,44 +4248,72 @@ class ReorderSourceFilter(BaseRequest):
         payload['newIndex'] = newIndex
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        filterName = FilterSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-            layout.add(filterName)
-            layout.add(QLabel('newIndex'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+            self.filterName = FilterSelector(changed, self.sourceName, parent=self)
+            self.newIndex = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+                layout.add(self.filterName)
+                layout.add(self.newIndex)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'ReorderSourceFilter'
+            payload['sourceName'] = self.sourceName.get_data()
+            payload['filterName'] = self.filterName.get_data()
+            payload['newIndex'] = self.newIndex.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            self.filterName.refresh()
+            self.newIndex.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+            self.filterName.set_data(data['filterName']) 
+            self.newIndex.set_data(data['newIndex']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+                'filterName': self.filterName.get_data(),
+                'newIndex': self.newIndex.get_data(),
+            }
+
 
 class MoveSourceFilter(BaseRequest):
     """Move a filter in the chain (relative positioning)
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Name of the source to which the filter belongs
-       *filterName*
+        *filterName*
             type: String
             Name of the filter to reorder
-       *movementType*
+        *movementType*
             type: String
             How to move the filter around in the source's filter chain. Either "up", "down", "top" or "bottom".
     """
 
+    name = 'MoveSourceFilter'
+    category = 'sources'
     fields = [
         'sourceName',
         'filterName',
         'movementType',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, sourceName, filterName, movementType):
+    def __init__(self):
         super().__init__()
-        self.name = 'MoveSourceFilter'
         self.dataout = {}
         self.dataout['sourceName'] = None
         self.dataout['filterName'] = None
@@ -2949,44 +4328,72 @@ class MoveSourceFilter(BaseRequest):
         payload['movementType'] = movementType
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        filterName = FilterSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-            layout.add(filterName)
-            layout.add(QLabel('movementType'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+            self.filterName = FilterSelector(changed, self.sourceName, parent=self)
+            self.movementType = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+                layout.add(self.filterName)
+                layout.add(self.movementType)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'MoveSourceFilter'
+            payload['sourceName'] = self.sourceName.get_data()
+            payload['filterName'] = self.filterName.get_data()
+            payload['movementType'] = self.movementType.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            self.filterName.refresh()
+            self.movementType.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+            self.filterName.set_data(data['filterName']) 
+            self.movementType.set_data(data['movementType']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+                'filterName': self.filterName.get_data(),
+                'movementType': self.movementType.get_data(),
+            }
+
 
 class SetSourceFilterSettings(BaseRequest):
     """Update settings of a filter
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Name of the source to which the filter belongs
-       *filterName*
+        *filterName*
             type: String
             Name of the filter to reconfigure
-       *filterSettings*
+        *filterSettings*
             type: Object
             New settings. These will be merged to the current filter settings.
     """
 
+    name = 'SetSourceFilterSettings'
+    category = 'sources'
     fields = [
         'sourceName',
         'filterName',
         'filterSettings',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, sourceName, filterName, filterSettings):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetSourceFilterSettings'
         self.dataout = {}
         self.dataout['sourceName'] = None
         self.dataout['filterName'] = None
@@ -3001,44 +4408,72 @@ class SetSourceFilterSettings(BaseRequest):
         payload['filterSettings'] = filterSettings
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        filterName = FilterSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-            layout.add(filterName)
-            layout.add(QLabel('filterSettings'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+            self.filterName = FilterSelector(changed, self.sourceName, parent=self)
+            self.filterSettings = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+                layout.add(self.filterName)
+                layout.add(self.filterSettings)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetSourceFilterSettings'
+            payload['sourceName'] = self.sourceName.get_data()
+            payload['filterName'] = self.filterName.get_data()
+            payload['filterSettings'] = self.filterSettings.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            self.filterName.refresh()
+            self.filterSettings.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+            self.filterName.set_data(data['filterName']) 
+            self.filterSettings.set_data(data['filterSettings']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+                'filterName': self.filterName.get_data(),
+                'filterSettings': self.filterSettings.get_data(),
+            }
+
 
 class SetSourceFilterVisibility(BaseRequest):
     """Change the visibility/enabled state of a filter
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Source name
-       *filterName*
+        *filterName*
             type: String
             Source filter name
-       *filterEnabled*
+        *filterEnabled*
             type: Boolean
             New filter state
     """
 
+    name = 'SetSourceFilterVisibility'
+    category = 'sources'
     fields = [
         'sourceName',
         'filterName',
         'filterEnabled',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, sourceName, filterName, filterEnabled):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetSourceFilterVisibility'
         self.dataout = {}
         self.dataout['sourceName'] = None
         self.dataout['filterName'] = None
@@ -3050,44 +4485,73 @@ class SetSourceFilterVisibility(BaseRequest):
         payload['request-type'] = 'SetSourceFilterVisibility'
         payload['sourceName'] = sourceName
         payload['filterName'] = filterName
-        payload['filterEnabled'] = bool(filterEnabled)
+        payload['filterEnabled'] = filterEnabled
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        filterName = FilterSelector(changed)
-        filterEnabled = BoolSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-            layout.add(filterName)
-            layout.add(filterEnabled)
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+            self.filterName = FilterSelector(changed, self.sourceName, parent=self)
+            self.filterEnabled = BoolSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+                layout.add(self.filterName)
+                layout.add(self.filterEnabled)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetSourceFilterVisibility'
+            payload['sourceName'] = self.sourceName.get_data()
+            payload['filterName'] = self.filterName.get_data()
+            payload['filterEnabled'] = self.filterEnabled.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            self.filterName.refresh()
+            self.filterEnabled.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+            self.filterName.set_data(data['filterName']) 
+            self.filterEnabled.set_data(data['filterEnabled']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+                'filterName': self.filterName.get_data(),
+                'filterEnabled': self.filterEnabled.get_data(),
+            }
+
 
 class GetAudioMonitorType(BaseRequest):
     """Get the audio monitoring type of the specified source.
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Source name.
     :Returns:
-       *monitorType*
+        *monitorType*
             type: String
             The monitor type in use. Options: `none`, `monitorOnly`, `monitorAndOutput`.
     """
 
+    name = 'GetAudioMonitorType'
+    category = 'sources'
     fields = [
         'sourceName',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, sourceName):
+    def __init__(self):
         super().__init__()
-        self.name = 'GetAudioMonitorType'
+        self.datain = {}
+        self.datain['monitorType'] = None
         self.dataout = {}
         self.dataout['sourceName'] = None
 
@@ -3098,37 +4562,56 @@ class GetAudioMonitorType(BaseRequest):
         payload['sourceName'] = sourceName
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetAudioMonitorType'
+            payload['sourceName'] = self.sourceName.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+            }
+
 
 class SetAudioMonitorType(BaseRequest):
     """Set the audio monitoring type of the specified source.
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Source name.
-       *monitorType*
+        *monitorType*
             type: String
             The monitor type to use. Options: `none`, `monitorOnly`, `monitorAndOutput`.
     """
 
+    name = 'SetAudioMonitorType'
+    category = 'sources'
     fields = [
         'sourceName',
         'monitorType',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, sourceName, monitorType):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetAudioMonitorType'
         self.dataout = {}
         self.dataout['sourceName'] = None
         self.dataout['monitorType'] = None
@@ -3141,41 +4624,68 @@ class SetAudioMonitorType(BaseRequest):
         payload['monitorType'] = monitorType
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-            layout.add(QLabel('monitorType'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+            self.monitorType = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+                layout.add(self.monitorType)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetAudioMonitorType'
+            payload['sourceName'] = self.sourceName.get_data()
+            payload['monitorType'] = self.monitorType.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            self.monitorType.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+            self.monitorType.set_data(data['monitorType']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+                'monitorType': self.monitorType.get_data(),
+            }
+
 
 class GetSourceDefaultSettings(BaseRequest):
     """Get the default settings for a given source type.
 
     :Arguments:
-       *sourceKind*
+        *sourceKind*
             type: String
             Source kind. Also called "source id" in libobs terminology.
     :Returns:
-       *sourceKind*
+        *sourceKind*
             type: String
             Source kind. Same value as the `sourceKind` parameter.
-       *defaultSettings*
+        *defaultSettings*
             type: Object
             Settings object for source.
     """
 
+    name = 'GetSourceDefaultSettings'
+    category = 'sources'
     fields = [
         'sourceKind',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, sourceKind):
+    def __init__(self):
         super().__init__()
-        self.name = 'GetSourceDefaultSettings'
+        self.datain = {}
+        self.datain['sourceKind'] = None
+        self.datain['defaultSettings'] = None
         self.dataout = {}
         self.dataout['sourceKind'] = None
 
@@ -3186,13 +4696,34 @@ class GetSourceDefaultSettings(BaseRequest):
         payload['sourceKind'] = sourceKind
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('sourceKind'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceKind = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceKind)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetSourceDefaultSettings'
+            payload['sourceKind'] = self.sourceKind.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceKind.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceKind.set_data(data['sourceKind']) 
+
+        def to_dict(self):
+            return {
+                'sourceKind': self.sourceKind.get_data(),
+            }
+
 
 class TakeSourceScreenshot(BaseRequest):
     """
@@ -3203,39 +4734,41 @@ Clients can specify `width` and `height` parameters to receive scaled pictures. 
 preserved if only one of these two parameters is specified.
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String (optional)
             Source name. Note: Since scenes are also sources, you can also provide a scene name. If not provided, the currently active scene is used.
-       *embedPictureFormat*
+        *embedPictureFormat*
             type: String (optional)
             Format of the Data URI encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module)
-       *saveToFilePath*
+        *saveToFilePath*
             type: String (optional)
             Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path.
-       *fileFormat*
+        *fileFormat*
             type: String (optional)
             Format to save the image file as (one of the values provided in the `supported-image-export-formats` response field of `GetVersion`). If not specified, tries to guess based on file extension.
-       *compressionQuality*
+        *compressionQuality*
             type: int (optional)
             Compression ratio between -1 and 100 to write the image with. -1 is automatic, 1 is smallest file/most compression, 100 is largest file/least compression. Varies with image type.
-       *width*
+        *width*
             type: int (optional)
             Screenshot width. Defaults to the source's base width.
-       *height*
+        *height*
             type: int (optional)
             Screenshot height. Defaults to the source's base height.
     :Returns:
-       *sourceName*
+        *sourceName*
             type: String
             Source name
-       *img*
+        *img*
             type: String
             Image Data URI (if `embedPictureFormat` was specified in the request)
-       *imageFile*
+        *imageFile*
             type: String
             Absolute path to the saved image file (if `saveToFilePath` was specified in the request)
     """
 
+    name = 'TakeSourceScreenshot'
+    category = 'sources'
     fields = [
         'sourceName',
         'embedPictureFormat',
@@ -3246,11 +4779,12 @@ preserved if only one of these two parameters is specified.
         'height',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, sourceName=None, embedPictureFormat=None, saveToFilePath=None, fileFormat=None, compressionQuality=None, width=None, height=None):
+    def __init__(self):
         super().__init__()
-        self.name = 'TakeSourceScreenshot'
+        self.datain = {}
+        self.datain['sourceName'] = None
+        self.datain['img'] = None
+        self.datain['imageFile'] = None
         self.dataout = {}
         self.dataout['sourceName'] = None
         self.dataout['embedPictureFormat'] = None
@@ -3273,39 +4807,88 @@ preserved if only one of these two parameters is specified.
         payload['height'] = height
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-            layout.add(QLabel('embedPictureFormat'))
-            layout.add(QLabel('saveToFilePath'))
-            layout.add(QLabel('fileFormat'))
-            layout.add(QLabel('compressionQuality'))
-            layout.add(QLabel('width'))
-            layout.add(QLabel('height'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+            self.embedPictureFormat = UnimplementedField('[field not implemented]')
+            self.saveToFilePath = UnimplementedField('[field not implemented]')
+            self.fileFormat = UnimplementedField('[field not implemented]')
+            self.compressionQuality = UnimplementedField('[field not implemented]')
+            self.width = UnimplementedField('[field not implemented]')
+            self.height = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+                layout.add(self.embedPictureFormat)
+                layout.add(self.saveToFilePath)
+                layout.add(self.fileFormat)
+                layout.add(self.compressionQuality)
+                layout.add(self.width)
+                layout.add(self.height)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'TakeSourceScreenshot'
+            payload['sourceName'] = self.sourceName.get_data()
+            payload['embedPictureFormat'] = self.embedPictureFormat.get_data()
+            payload['saveToFilePath'] = self.saveToFilePath.get_data()
+            payload['fileFormat'] = self.fileFormat.get_data()
+            payload['compressionQuality'] = self.compressionQuality.get_data()
+            payload['width'] = self.width.get_data()
+            payload['height'] = self.height.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            self.embedPictureFormat.refresh()
+            self.saveToFilePath.refresh()
+            self.fileFormat.refresh()
+            self.compressionQuality.refresh()
+            self.width.refresh()
+            self.height.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+            self.embedPictureFormat.set_data(data['embedPictureFormat']) 
+            self.saveToFilePath.set_data(data['saveToFilePath']) 
+            self.fileFormat.set_data(data['fileFormat']) 
+            self.compressionQuality.set_data(data['compressionQuality']) 
+            self.width.set_data(data['width']) 
+            self.height.set_data(data['height']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+                'embedPictureFormat': self.embedPictureFormat.get_data(),
+                'saveToFilePath': self.saveToFilePath.get_data(),
+                'fileFormat': self.fileFormat.get_data(),
+                'compressionQuality': self.compressionQuality.get_data(),
+                'width': self.width.get_data(),
+                'height': self.height.get_data(),
+            }
+
 
 class RefreshBrowserSource(BaseRequest):
     """Refreshes the specified browser source.
 
     :Arguments:
-       *sourceName*
+        *sourceName*
             type: String
             Source name.
     """
 
+    name = 'RefreshBrowserSource'
+    category = 'sources'
     fields = [
         'sourceName',
     ]
 
-    category = 'sources'
-    
-    def __init__(self, sourceName):
+    def __init__(self):
         super().__init__()
-        self.name = 'RefreshBrowserSource'
         self.dataout = {}
         self.dataout['sourceName'] = None
 
@@ -3316,32 +4899,52 @@ class RefreshBrowserSource(BaseRequest):
         payload['sourceName'] = sourceName
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sourceName = SourceSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sourceName)
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sourceName = SourceSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sourceName)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'RefreshBrowserSource'
+            payload['sourceName'] = self.sourceName.get_data()
+            return payload
+
+        def refresh(self):
+            self.sourceName.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sourceName.set_data(data['sourceName']) 
+
+        def to_dict(self):
+            return {
+                'sourceName': self.sourceName.get_data(),
+            }
+
 
 class ListOutputs(BaseRequest):
     """List existing outputs
 
     :Returns:
-       *outputs*
+        *outputs*
             type: Array<Output>
             Outputs list
     """
 
-    fields = [
-    ]
-
+    name = 'ListOutputs'
     category = 'outputs'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'ListOutputs'
+        self.datain = {}
+        self.datain['outputs'] = None
 
     @staticmethod
     def payload():
@@ -3349,34 +4952,53 @@ class ListOutputs(BaseRequest):
         payload['request-type'] = 'ListOutputs'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'ListOutputs'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class GetOutputInfo(BaseRequest):
     """Get information about a single output
 
     :Arguments:
-       *outputName*
+        *outputName*
             type: String
             Output name
     :Returns:
-       *outputInfo*
+        *outputInfo*
             type: Output
             Output info
     """
 
+    name = 'GetOutputInfo'
+    category = 'outputs'
     fields = [
         'outputName',
     ]
 
-    category = 'outputs'
-    
-    def __init__(self, outputName):
+    def __init__(self):
         super().__init__()
-        self.name = 'GetOutputInfo'
+        self.datain = {}
+        self.datain['outputInfo'] = None
         self.dataout = {}
         self.dataout['outputName'] = None
 
@@ -3387,13 +5009,34 @@ class GetOutputInfo(BaseRequest):
         payload['outputName'] = outputName
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('outputName'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.outputName = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.outputName)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetOutputInfo'
+            payload['outputName'] = self.outputName.get_data()
+            return payload
+
+        def refresh(self):
+            self.outputName.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.outputName.set_data(data['outputName']) 
+
+        def to_dict(self):
+            return {
+                'outputName': self.outputName.get_data(),
+            }
+
 
 class StartOutput(BaseRequest):
     """
@@ -3401,20 +5044,19 @@ class StartOutput(BaseRequest):
 Note: Controlling outputs is an experimental feature of obs-websocket. Some plugins which add outputs to OBS may not function properly when they are controlled in this way.
 
     :Arguments:
-       *outputName*
+        *outputName*
             type: String
             Output name
     """
 
+    name = 'StartOutput'
+    category = 'outputs'
     fields = [
         'outputName',
     ]
 
-    category = 'outputs'
-    
-    def __init__(self, outputName):
+    def __init__(self):
         super().__init__()
-        self.name = 'StartOutput'
         self.dataout = {}
         self.dataout['outputName'] = None
 
@@ -3425,13 +5067,34 @@ Note: Controlling outputs is an experimental feature of obs-websocket. Some plug
         payload['outputName'] = outputName
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('outputName'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.outputName = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.outputName)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'StartOutput'
+            payload['outputName'] = self.outputName.get_data()
+            return payload
+
+        def refresh(self):
+            self.outputName.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.outputName.set_data(data['outputName']) 
+
+        def to_dict(self):
+            return {
+                'outputName': self.outputName.get_data(),
+            }
+
 
 class StopOutput(BaseRequest):
     """
@@ -3439,24 +5102,23 @@ class StopOutput(BaseRequest):
 Note: Controlling outputs is an experimental feature of obs-websocket. Some plugins which add outputs to OBS may not function properly when they are controlled in this way.
 
     :Arguments:
-       *outputName*
+        *outputName*
             type: String
             Output name
-       *force*
+        *force*
             type: boolean (optional)
             Force stop (default: false)
     """
 
+    name = 'StopOutput'
+    category = 'outputs'
     fields = [
         'outputName',
         'force',
     ]
 
-    category = 'outputs'
-    
-    def __init__(self, outputName, force=None):
+    def __init__(self):
         super().__init__()
-        self.name = 'StopOutput'
         self.dataout = {}
         self.dataout['outputName'] = None
         self.dataout['force'] = None
@@ -3469,68 +5131,114 @@ Note: Controlling outputs is an experimental feature of obs-websocket. Some plug
         payload['force'] = force
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('outputName'))
-            layout.add(QLabel('force'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.outputName = UnimplementedField('[field not implemented]')
+            self.force = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.outputName)
+                layout.add(self.force)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'StopOutput'
+            payload['outputName'] = self.outputName.get_data()
+            payload['force'] = self.force.get_data()
+            return payload
+
+        def refresh(self):
+            self.outputName.refresh()
+            self.force.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.outputName.set_data(data['outputName']) 
+            self.force.set_data(data['force']) 
+
+        def to_dict(self):
+            return {
+                'outputName': self.outputName.get_data(),
+                'force': self.force.get_data(),
+            }
+
 
 class SetCurrentProfile(BaseRequest):
     """Set the currently active profile.
 
     :Arguments:
-       *profile_name*
+        *profile_name*
             type: String
             Name of the desired profile.
     """
 
+    name = 'SetCurrentProfile'
+    category = 'profiles'
     fields = [
         'profile_name',
     ]
 
-    category = 'profiles'
-    
-    def __init__(self, profile_name):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetCurrentProfile'
         self.dataout = {}
-        self.dataout['profile-name'] = None
+        self.dataout['profile_name'] = None
 
     @staticmethod
     def payload(profile_name):
         payload = {}
         payload['request-type'] = 'SetCurrentProfile'
-        payload['profile_name'] = profile_name
+        payload['profile-name'] = profile_name
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('profile_name'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.profile_name = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.profile_name)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetCurrentProfile'
+            payload['profile-name'] = self.profile_name.get_data()
+            return payload
+
+        def refresh(self):
+            self.profile_name.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.profile_name.set_data(data['profile_name']) 
+
+        def to_dict(self):
+            return {
+                'profile_name': self.profile_name.get_data(),
+            }
+
 
 class GetCurrentProfile(BaseRequest):
     """Get the name of the current profile.
 
     :Returns:
-       *profile_name*
+        *profile_name*
             type: String
             Name of the currently active profile.
     """
 
-    fields = [
-    ]
-
+    name = 'GetCurrentProfile'
     category = 'profiles'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'GetCurrentProfile'
+        self.datain = {}
+        self.datain['profile-name'] = None
 
     @staticmethod
     def payload():
@@ -3538,32 +5246,47 @@ class GetCurrentProfile(BaseRequest):
         payload['request-type'] = 'GetCurrentProfile'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetCurrentProfile'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class ListProfiles(BaseRequest):
     """Get a list of available profiles.
 
     :Returns:
-       *profiles*
+        *profiles*
             type: Array<Object>
             List of available profiles.
-       *profiles.*.profile_name*
-            type: String
-            Filter name
     """
 
-    fields = [
-    ]
-
+    name = 'ListProfiles'
     category = 'profiles'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'ListProfiles'
+        self.datain = {}
+        self.datain['profiles'] = None
 
     @staticmethod
     def payload():
@@ -3571,38 +5294,59 @@ class ListProfiles(BaseRequest):
         payload['request-type'] = 'ListProfiles'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'ListProfiles'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class GetRecordingStatus(BaseRequest):
     """Get current recording status.
 
     :Returns:
-       *isRecording*
+        *isRecording*
             type: boolean
             Current recording status.
-       *isRecordingPaused*
+        *isRecordingPaused*
             type: boolean
             Whether the recording is paused or not.
-       *recordTimecode*
+        *recordTimecode*
             type: String (optional)
             Time elapsed since recording started (only present if currently recording).
-       *recordingFilename*
+        *recordingFilename*
             type: String (optional)
             Absolute path to the recording file (only present if currently recording).
     """
 
-    fields = [
-    ]
-
+    name = 'GetRecordingStatus'
     category = 'recording'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'GetRecordingStatus'
+        self.datain = {}
+        self.datain['isRecording'] = None
+        self.datain['isRecordingPaused'] = None
+        self.datain['recordTimecode'] = None
+        self.datain['recordingFilename'] = None
 
     @staticmethod
     def payload():
@@ -3610,25 +5354,41 @@ class GetRecordingStatus(BaseRequest):
         payload['request-type'] = 'GetRecordingStatus'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetRecordingStatus'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class StartStopRecording(BaseRequest):
     """Toggle recording on or off (depending on the current recording state).
 
     """
 
-    fields = [
-    ]
-
+    name = 'StartStopRecording'
     category = 'recording'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'StartStopRecording'
 
     @staticmethod
     def payload():
@@ -3636,11 +5396,29 @@ class StartStopRecording(BaseRequest):
         payload['request-type'] = 'StartStopRecording'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'StartStopRecording'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class StartRecording(BaseRequest):
     """Start recording.
@@ -3648,14 +5426,12 @@ Will return an `error` if recording is already active.
 
     """
 
-    fields = [
-    ]
-
+    name = 'StartRecording'
     category = 'recording'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'StartRecording'
 
     @staticmethod
     def payload():
@@ -3663,11 +5439,29 @@ Will return an `error` if recording is already active.
         payload['request-type'] = 'StartRecording'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'StartRecording'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class StopRecording(BaseRequest):
     """Stop recording.
@@ -3675,14 +5469,12 @@ Will return an `error` if recording is not active.
 
     """
 
-    fields = [
-    ]
-
+    name = 'StopRecording'
     category = 'recording'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'StopRecording'
 
     @staticmethod
     def payload():
@@ -3690,11 +5482,29 @@ Will return an `error` if recording is not active.
         payload['request-type'] = 'StopRecording'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'StopRecording'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class PauseRecording(BaseRequest):
     """Pause the current recording.
@@ -3702,14 +5512,12 @@ Returns an error if recording is not active or already paused.
 
     """
 
-    fields = [
-    ]
-
+    name = 'PauseRecording'
     category = 'recording'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'PauseRecording'
 
     @staticmethod
     def payload():
@@ -3717,11 +5525,29 @@ Returns an error if recording is not active or already paused.
         payload['request-type'] = 'PauseRecording'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'PauseRecording'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class ResumeRecording(BaseRequest):
     """Resume/unpause the current recording (if paused).
@@ -3729,14 +5555,12 @@ Returns an error if recording is not active or not paused.
 
     """
 
-    fields = [
-    ]
-
+    name = 'ResumeRecording'
     category = 'recording'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'ResumeRecording'
 
     @staticmethod
     def payload():
@@ -3744,11 +5568,29 @@ Returns an error if recording is not active or not paused.
         payload['request-type'] = 'ResumeRecording'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'ResumeRecording'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class SetRecordingFolder(BaseRequest):
     """
@@ -3758,55 +5600,75 @@ in progress, the change won't be applied immediately and will be
 effective on the next recording.
 
     :Arguments:
-       *rec_folder*
+        *rec_folder*
             type: String
             Path of the recording folder.
     """
 
+    name = 'SetRecordingFolder'
+    category = 'recording'
     fields = [
         'rec_folder',
     ]
 
-    category = 'recording'
-    
-    def __init__(self, rec_folder):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetRecordingFolder'
         self.dataout = {}
-        self.dataout['rec-folder'] = None
+        self.dataout['rec_folder'] = None
 
     @staticmethod
     def payload(rec_folder):
         payload = {}
         payload['request-type'] = 'SetRecordingFolder'
-        payload['rec_folder'] = rec_folder
+        payload['rec-folder'] = rec_folder
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('rec_folder'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.rec_folder = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.rec_folder)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetRecordingFolder'
+            payload['rec-folder'] = self.rec_folder.get_data()
+            return payload
+
+        def refresh(self):
+            self.rec_folder.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.rec_folder.set_data(data['rec_folder']) 
+
+        def to_dict(self):
+            return {
+                'rec_folder': self.rec_folder.get_data(),
+            }
+
 
 class GetRecordingFolder(BaseRequest):
     """Get the path of  the current recording folder.
 
     :Returns:
-       *rec_folder*
+        *rec_folder*
             type: String
             Path of the recording folder.
     """
 
-    fields = [
-    ]
-
+    name = 'GetRecordingFolder'
     category = 'recording'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'GetRecordingFolder'
+        self.datain = {}
+        self.datain['rec-folder'] = None
 
     @staticmethod
     def payload():
@@ -3814,29 +5676,47 @@ class GetRecordingFolder(BaseRequest):
         payload['request-type'] = 'GetRecordingFolder'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetRecordingFolder'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class GetReplayBufferStatus(BaseRequest):
     """Get the status of the OBS replay buffer.
 
     :Returns:
-       *isReplayBufferActive*
+        *isReplayBufferActive*
             type: boolean
             Current recording status.
     """
 
-    fields = [
-    ]
-
+    name = 'GetReplayBufferStatus'
     category = 'replay buffer'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'GetReplayBufferStatus'
+        self.datain = {}
+        self.datain['isReplayBufferActive'] = None
 
     @staticmethod
     def payload():
@@ -3844,25 +5724,41 @@ class GetReplayBufferStatus(BaseRequest):
         payload['request-type'] = 'GetReplayBufferStatus'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetReplayBufferStatus'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class StartStopReplayBuffer(BaseRequest):
     """Toggle the Replay Buffer on/off (depending on the current state of the replay buffer).
 
     """
 
-    fields = [
-    ]
-
+    name = 'StartStopReplayBuffer'
     category = 'replay buffer'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'StartStopReplayBuffer'
 
     @staticmethod
     def payload():
@@ -3870,11 +5766,29 @@ class StartStopReplayBuffer(BaseRequest):
         payload['request-type'] = 'StartStopReplayBuffer'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'StartStopReplayBuffer'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class StartReplayBuffer(BaseRequest):
     """Start recording into the Replay Buffer.
@@ -3885,14 +5799,12 @@ through obs-websocket.
 
     """
 
-    fields = [
-    ]
-
+    name = 'StartReplayBuffer'
     category = 'replay buffer'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'StartReplayBuffer'
 
     @staticmethod
     def payload():
@@ -3900,11 +5812,29 @@ through obs-websocket.
         payload['request-type'] = 'StartReplayBuffer'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'StartReplayBuffer'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class StopReplayBuffer(BaseRequest):
     """Stop recording into the Replay Buffer.
@@ -3912,14 +5842,12 @@ Will return an `error` if the Replay Buffer is not active.
 
     """
 
-    fields = [
-    ]
-
+    name = 'StopReplayBuffer'
     category = 'replay buffer'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'StopReplayBuffer'
 
     @staticmethod
     def payload():
@@ -3927,11 +5855,29 @@ Will return an `error` if the Replay Buffer is not active.
         payload['request-type'] = 'StopReplayBuffer'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'StopReplayBuffer'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class SaveReplayBuffer(BaseRequest):
     """Flush and save the contents of the Replay Buffer to disk. This is
@@ -3940,14 +5886,12 @@ Will return an `error` if the Replay Buffer is not active.
 
     """
 
-    fields = [
-    ]
-
+    name = 'SaveReplayBuffer'
     category = 'replay buffer'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'SaveReplayBuffer'
 
     @staticmethod
     def payload():
@@ -3955,65 +5899,103 @@ Will return an `error` if the Replay Buffer is not active.
         payload['request-type'] = 'SaveReplayBuffer'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SaveReplayBuffer'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class SetCurrentSceneCollection(BaseRequest):
     """Change the active scene collection.
 
     :Arguments:
-       *sc_name*
+        *sc_name*
             type: String
             Name of the desired scene collection.
     """
 
+    name = 'SetCurrentSceneCollection'
+    category = 'scene collections'
     fields = [
         'sc_name',
     ]
 
-    category = 'scene collections'
-    
-    def __init__(self, sc_name):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetCurrentSceneCollection'
         self.dataout = {}
-        self.dataout['sc-name'] = None
+        self.dataout['sc_name'] = None
 
     @staticmethod
     def payload(sc_name):
         payload = {}
         payload['request-type'] = 'SetCurrentSceneCollection'
-        payload['sc_name'] = sc_name
+        payload['sc-name'] = sc_name
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('sc_name'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sc_name = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sc_name)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetCurrentSceneCollection'
+            payload['sc-name'] = self.sc_name.get_data()
+            return payload
+
+        def refresh(self):
+            self.sc_name.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sc_name.set_data(data['sc_name']) 
+
+        def to_dict(self):
+            return {
+                'sc_name': self.sc_name.get_data(),
+            }
+
 
 class GetCurrentSceneCollection(BaseRequest):
     """Get the name of the current scene collection.
 
     :Returns:
-       *sc_name*
+        *sc_name*
             type: String
             Name of the currently active scene collection.
     """
 
-    fields = [
-    ]
-
+    name = 'GetCurrentSceneCollection'
     category = 'scene collections'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'GetCurrentSceneCollection'
+        self.datain = {}
+        self.datain['sc-name'] = None
 
     @staticmethod
     def payload():
@@ -4021,29 +6003,47 @@ class GetCurrentSceneCollection(BaseRequest):
         payload['request-type'] = 'GetCurrentSceneCollection'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetCurrentSceneCollection'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class ListSceneCollections(BaseRequest):
     """List available scene collections
 
     :Returns:
-       *scene_collections*
+        *scene_collections*
             type: Array<ScenesCollection>
             Scene collections list
     """
 
-    fields = [
-    ]
-
+    name = 'ListSceneCollections'
     category = 'scene collections'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'ListSceneCollections'
+        self.datain = {}
+        self.datain['scene-collections'] = None
 
     @staticmethod
     def payload():
@@ -4051,49 +6051,57 @@ class ListSceneCollections(BaseRequest):
         payload['request-type'] = 'ListSceneCollections'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'ListSceneCollections'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class GetSceneItemList(BaseRequest):
     """Get a list of all scene items in a scene.
 
     :Arguments:
-       *sceneName*
+        *sceneName*
             type: String (optional)
             Name of the scene to get the list of scene items from. Defaults to the current scene if not specified.
     :Returns:
-       *sceneName*
+        *sceneName*
             type: String
             Name of the requested (or current) scene
-       *sceneItems*
+        *sceneItems*
             type: Array<Object>
             Array of scene items
-       *sceneItems.*.itemId*
-            type: int
-            Unique item id of the source item
-       *sceneItems.*.sourceKind*
-            type: String
-            ID if the scene item's source. For example `vlc_source` or `image_source`
-       *sceneItems.*.sourceName*
-            type: String
-            Name of the scene item's source
-       *sceneItems.*.sourceType*
-            type: String
-            Type of the scene item's source. Either `input`, `group`, or `scene`
     """
 
+    name = 'GetSceneItemList'
+    category = 'scene items'
     fields = [
         'sceneName',
     ]
 
-    category = 'scene items'
-    
-    def __init__(self, sceneName=None):
+    def __init__(self):
         super().__init__()
-        self.name = 'GetSceneItemList'
+        self.datain = {}
+        self.datain['sceneName'] = None
+        self.datain['sceneItems'] = None
         self.dataout = {}
         self.dataout['sceneName'] = None
 
@@ -4104,215 +6112,206 @@ class GetSceneItemList(BaseRequest):
         payload['sceneName'] = sceneName
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sceneName = SceneSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sceneName)
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sceneName = SceneSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sceneName)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetSceneItemList'
+            payload['sceneName'] = self.sceneName.get_data()
+            return payload
+
+        def refresh(self):
+            self.sceneName.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sceneName.set_data(data['sceneName']) 
+
+        def to_dict(self):
+            return {
+                'sceneName': self.sceneName.get_data(),
+            }
+
 
 class GetSceneItemProperties(BaseRequest):
     """Gets the scene specific properties of the specified source item.
 Coordinates are relative to the item's parent (the scene or group it belongs to).
 
     :Arguments:
-       *scene_name*
+        *scene_name*
             type: String (optional)
             Name of the scene the scene item belongs to. Defaults to the current scene.
-       *item*
+        *item*
             type: String | Object
             Scene Item name (if this field is a string) or specification (if it is an object).
-       *item.name*
-            type: String (optional)
-            Scene Item name (if the `item` field is an object)
-       *item.id*
-            type: int (optional)
-            Scene Item ID (if the `item` field is an object)
     :Returns:
-       *name*
+        *name*
             type: String
             Scene Item name.
-       *itemId*
+        *itemId*
             type: int
             Scene Item ID.
-       *position.x*
+        *position*
             type: double
             The x position of the source from the left.
-       *position.y*
-            type: double
-            The y position of the source from the top.
-       *position.alignment*
-            type: int
-            The point on the source that the item is manipulated from. The sum of 1=Left or 2=Right, and 4=Top or 8=Bottom, or omit to center on that axis.
-       *rotation*
+        *rotation*
             type: double
             The clockwise rotation of the item in degrees around the point of alignment.
-       *scale.x*
+        *scale*
             type: double
             The x-scale factor of the source.
-       *scale.y*
-            type: double
-            The y-scale factor of the source.
-       *scale.filter*
-            type: String
-            The scale filter of the source. Can be "OBS_SCALE_DISABLE", "OBS_SCALE_POINT", "OBS_SCALE_BICUBIC", "OBS_SCALE_BILINEAR", "OBS_SCALE_LANCZOS" or "OBS_SCALE_AREA".
-       *crop.top*
+        *crop*
             type: int
             The number of pixels cropped off the top of the source before scaling.
-       *crop.right*
-            type: int
-            The number of pixels cropped off the right of the source before scaling.
-       *crop.bottom*
-            type: int
-            The number of pixels cropped off the bottom of the source before scaling.
-       *crop.left*
-            type: int
-            The number of pixels cropped off the left of the source before scaling.
-       *visible*
+        *visible*
             type: bool
             If the source is visible.
-       *muted*
+        *muted*
             type: bool
             If the source is muted.
-       *locked*
+        *locked*
             type: bool
             If the source's transform is locked.
-       *bounds.type*
+        *bounds*
             type: String
             Type of bounding box. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE".
-       *bounds.alignment*
-            type: int
-            Alignment of the bounding box.
-       *bounds.x*
-            type: double
-            Width of the bounding box.
-       *bounds.y*
-            type: double
-            Height of the bounding box.
-       *sourceWidth*
+        *sourceWidth*
             type: int
             Base width (without scaling) of the source
-       *sourceHeight*
+        *sourceHeight*
             type: int
             Base source (without scaling) of the source
-       *width*
+        *width*
             type: double
             Scene item width (base source width multiplied by the horizontal scaling factor)
-       *height*
+        *height*
             type: double
             Scene item height (base source height multiplied by the vertical scaling factor)
-       *parentGroupName*
+        *parentGroupName*
             type: String (optional)
             Name of the item's parent (if this item belongs to a group)
-       *groupChildren*
+        *groupChildren*
             type: Array<SceneItemTransform> (optional)
             List of children (if this item is a group)
     """
 
+    name = 'GetSceneItemProperties'
+    category = 'scene items'
     fields = [
         'scene_name',
         'item',
     ]
 
-    category = 'scene items'
-    
-    def __init__(self, item, scene_name=None):
+    def __init__(self):
         super().__init__()
-        self.name = 'GetSceneItemProperties'
+        self.datain = {}
+        self.datain['name'] = None
+        self.datain['itemId'] = None
+        self.datain['position'] = None
+        self.datain['rotation'] = None
+        self.datain['scale'] = None
+        self.datain['crop'] = None
+        self.datain['visible'] = None
+        self.datain['muted'] = None
+        self.datain['locked'] = None
+        self.datain['bounds'] = None
+        self.datain['sourceWidth'] = None
+        self.datain['sourceHeight'] = None
+        self.datain['width'] = None
+        self.datain['height'] = None
+        self.datain['parentGroupName'] = None
+        self.datain['groupChildren'] = None
         self.dataout = {}
         self.dataout['item'] = None
-        self.dataout['scene-name'] = None
+        self.dataout['scene_name'] = None
 
     @staticmethod
     def payload(item, scene_name=None):
         payload = {}
         payload['request-type'] = 'GetSceneItemProperties'
-        payload['scene_name'] = scene_name
+        payload['scene-name'] = scene_name
         payload['item'] = item
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        scene_name = SceneSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(scene_name)
-            layout.add(QLabel('item'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.scene_name = SceneSelector(changed, parent=self)
+            self.item = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.scene_name)
+                layout.add(self.item)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetSceneItemProperties'
+            payload['scene-name'] = self.scene_name.get_data()
+            payload['item'] = self.item.get_data()
+            return payload
+
+        def refresh(self):
+            self.scene_name.refresh()
+            self.item.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.scene_name.set_data(data['scene_name']) 
+            self.item.set_data(data['item']) 
+
+        def to_dict(self):
+            return {
+                'scene_name': self.scene_name.get_data(),
+                'item': self.item.get_data(),
+            }
+
 
 class SetSceneItemProperties(BaseRequest):
     """Sets the scene specific properties of a source. Unspecified properties will remain unchanged.
 Coordinates are relative to the item's parent (the scene or group it belongs to).
 
     :Arguments:
-       *scene_name*
+        *scene_name*
             type: String (optional)
             Name of the scene the source item belongs to. Defaults to the current scene.
-       *item*
+        *item*
             type: String | Object
             Scene Item name (if this field is a string) or specification (if it is an object).
-       *item.name*
-            type: String (optional)
-            Scene Item name (if the `item` field is an object)
-       *item.id*
-            type: int (optional)
-            Scene Item ID (if the `item` field is an object)
-       *position.x*
+        *position*
             type: double (optional)
             The new x position of the source.
-       *position.y*
-            type: double (optional)
-            The new y position of the source.
-       *position.alignment*
-            type: int (optional)
-            The new alignment of the source.
-       *rotation*
+        *rotation*
             type: double (optional)
             The new clockwise rotation of the item in degrees.
-       *scale.x*
+        *scale*
             type: double (optional)
             The new x scale of the item.
-       *scale.y*
-            type: double (optional)
-            The new y scale of the item.
-       *scale.filter*
-            type: String (optional)
-            The new scale filter of the source. Can be "OBS_SCALE_DISABLE", "OBS_SCALE_POINT", "OBS_SCALE_BICUBIC", "OBS_SCALE_BILINEAR", "OBS_SCALE_LANCZOS" or "OBS_SCALE_AREA".
-       *crop.top*
+        *crop*
             type: int (optional)
             The new amount of pixels cropped off the top of the source before scaling.
-       *crop.bottom*
-            type: int (optional)
-            The new amount of pixels cropped off the bottom of the source before scaling.
-       *crop.left*
-            type: int (optional)
-            The new amount of pixels cropped off the left of the source before scaling.
-       *crop.right*
-            type: int (optional)
-            The new amount of pixels cropped off the right of the source before scaling.
-       *visible*
+        *visible*
             type: bool (optional)
             The new visibility of the source. 'true' shows source, 'false' hides source.
-       *locked*
+        *locked*
             type: bool (optional)
             The new locked status of the source. 'true' keeps it in its current position, 'false' allows movement.
-       *bounds.type*
+        *bounds*
             type: String (optional)
             The new bounds type of the source. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE".
-       *bounds.alignment*
-            type: int (optional)
-            The new alignment of the bounding box. (0-2, 4-6, 8-10)
-       *bounds.x*
-            type: double (optional)
-            The new width of the bounding box.
-       *bounds.y*
-            type: double (optional)
-            The new height of the bounding box.
     """
 
+    name = 'SetSceneItemProperties'
+    category = 'scene items'
     fields = [
         'scene_name',
         'item',
@@ -4325,14 +6324,11 @@ Coordinates are relative to the item's parent (the scene or group it belongs to)
         'bounds',
     ]
 
-    category = 'scene items'
-    
-    def __init__(self, item, scene_name=None, position=None, rotation=None, scale=None, crop=None, visible=None, locked=None, bounds=None):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetSceneItemProperties'
         self.dataout = {}
         self.dataout['item'] = None
-        self.dataout['scene-name'] = None
+        self.dataout['scene_name'] = None
         self.dataout['position'] = None
         self.dataout['rotation'] = None
         self.dataout['scale'] = None
@@ -4345,7 +6341,7 @@ Coordinates are relative to the item's parent (the scene or group it belongs to)
     def payload(item, scene_name=None, position=None, rotation=None, scale=None, crop=None, visible=None, locked=None, bounds=None):
         payload = {}
         payload['request-type'] = 'SetSceneItemProperties'
-        payload['scene_name'] = scene_name
+        payload['scene-name'] = scene_name
         payload['item'] = item
         payload['position'] = position
         payload['rotation'] = rotation
@@ -4356,91 +6352,171 @@ Coordinates are relative to the item's parent (the scene or group it belongs to)
         payload['bounds'] = bounds
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        scene_name = SceneSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(scene_name)
-            layout.add(QLabel('item'))
-            layout.add(QLabel('position'))
-            layout.add(QLabel('rotation'))
-            layout.add(QLabel('scale'))
-            layout.add(QLabel('crop'))
-            layout.add(QLabel('visible'))
-            layout.add(QLabel('locked'))
-            layout.add(QLabel('bounds'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.scene_name = SceneSelector(changed, parent=self)
+            self.item = UnimplementedField('[field not implemented]')
+            self.position = UnimplementedField('[field not implemented]')
+            self.rotation = UnimplementedField('[field not implemented]')
+            self.scale = UnimplementedField('[field not implemented]')
+            self.crop = UnimplementedField('[field not implemented]')
+            self.visible = UnimplementedField('[field not implemented]')
+            self.locked = UnimplementedField('[field not implemented]')
+            self.bounds = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.scene_name)
+                layout.add(self.item)
+                layout.add(self.position)
+                layout.add(self.rotation)
+                layout.add(self.scale)
+                layout.add(self.crop)
+                layout.add(self.visible)
+                layout.add(self.locked)
+                layout.add(self.bounds)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetSceneItemProperties'
+            payload['scene-name'] = self.scene_name.get_data()
+            payload['item'] = self.item.get_data()
+            payload['position'] = self.position.get_data()
+            payload['rotation'] = self.rotation.get_data()
+            payload['scale'] = self.scale.get_data()
+            payload['crop'] = self.crop.get_data()
+            payload['visible'] = self.visible.get_data()
+            payload['locked'] = self.locked.get_data()
+            payload['bounds'] = self.bounds.get_data()
+            return payload
+
+        def refresh(self):
+            self.scene_name.refresh()
+            self.item.refresh()
+            self.position.refresh()
+            self.rotation.refresh()
+            self.scale.refresh()
+            self.crop.refresh()
+            self.visible.refresh()
+            self.locked.refresh()
+            self.bounds.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.scene_name.set_data(data['scene_name']) 
+            self.item.set_data(data['item']) 
+            self.position.set_data(data['position']) 
+            self.rotation.set_data(data['rotation']) 
+            self.scale.set_data(data['scale']) 
+            self.crop.set_data(data['crop']) 
+            self.visible.set_data(data['visible']) 
+            self.locked.set_data(data['locked']) 
+            self.bounds.set_data(data['bounds']) 
+
+        def to_dict(self):
+            return {
+                'scene_name': self.scene_name.get_data(),
+                'item': self.item.get_data(),
+                'position': self.position.get_data(),
+                'rotation': self.rotation.get_data(),
+                'scale': self.scale.get_data(),
+                'crop': self.crop.get_data(),
+                'visible': self.visible.get_data(),
+                'locked': self.locked.get_data(),
+                'bounds': self.bounds.get_data(),
+            }
+
 
 class ResetSceneItem(BaseRequest):
     """Reset a scene item.
 
     :Arguments:
-       *scene_name*
+        *scene_name*
             type: String (optional)
             Name of the scene the scene item belongs to. Defaults to the current scene.
-       *item*
+        *item*
             type: String | Object
             Scene Item name (if this field is a string) or specification (if it is an object).
-       *item.name*
-            type: String (optional)
-            Scene Item name (if the `item` field is an object)
-       *item.id*
-            type: int (optional)
-            Scene Item ID (if the `item` field is an object)
     """
 
+    name = 'ResetSceneItem'
+    category = 'scene items'
     fields = [
         'scene_name',
         'item',
     ]
 
-    category = 'scene items'
-    
-    def __init__(self, item, scene_name=None):
+    def __init__(self):
         super().__init__()
-        self.name = 'ResetSceneItem'
         self.dataout = {}
         self.dataout['item'] = None
-        self.dataout['scene-name'] = None
+        self.dataout['scene_name'] = None
 
     @staticmethod
     def payload(item, scene_name=None):
         payload = {}
         payload['request-type'] = 'ResetSceneItem'
-        payload['scene_name'] = scene_name
+        payload['scene-name'] = scene_name
         payload['item'] = item
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        scene_name = SceneSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(scene_name)
-            layout.add(QLabel('item'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.scene_name = SceneSelector(changed, parent=self)
+            self.item = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.scene_name)
+                layout.add(self.item)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'ResetSceneItem'
+            payload['scene-name'] = self.scene_name.get_data()
+            payload['item'] = self.item.get_data()
+            return payload
+
+        def refresh(self):
+            self.scene_name.refresh()
+            self.item.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.scene_name.set_data(data['scene_name']) 
+            self.item.set_data(data['item']) 
+
+        def to_dict(self):
+            return {
+                'scene_name': self.scene_name.get_data(),
+                'item': self.item.get_data(),
+            }
+
 
 class SetSceneItemRender(BaseRequest):
     """Show or hide a specified source item in a specified scene.
 
     :Arguments:
-       *scene_name*
+        *scene_name*
             type: String (optional)
             Name of the scene the scene item belongs to. Defaults to the currently active scene.
-       *source*
+        *source*
             type: String (optional)
             Scene Item name.
-       *item*
+        *item*
             type: int (optional)
             Scene Item id
-       *render*
+        *render*
             type: boolean
             true = shown ; false = hidden
     """
 
+    name = 'SetSceneItemRender'
+    category = 'scene items'
     fields = [
         'scene_name',
         'source',
@@ -4448,14 +6524,11 @@ class SetSceneItemRender(BaseRequest):
         'render',
     ]
 
-    category = 'scene items'
-    
-    def __init__(self, render, scene_name=None, source=None, item=None):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetSceneItemRender'
         self.dataout = {}
         self.dataout['render'] = None
-        self.dataout['scene-name'] = None
+        self.dataout['scene_name'] = None
         self.dataout['source'] = None
         self.dataout['item'] = None
 
@@ -4463,42 +6536,79 @@ class SetSceneItemRender(BaseRequest):
     def payload(render, scene_name=None, source=None, item=None):
         payload = {}
         payload['request-type'] = 'SetSceneItemRender'
-        payload['scene_name'] = scene_name
+        payload['scene-name'] = scene_name
         payload['source'] = source
         payload['item'] = item
         payload['render'] = render
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        scene_name = SceneSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(scene_name)
-            layout.add(QLabel('source'))
-            layout.add(QLabel('item'))
-            layout.add(QLabel('render'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.scene_name = SceneSelector(changed, parent=self)
+            self.source = SourceSelector(changed, parent=self)
+            self.item = UnimplementedField('[field not implemented]')
+            self.render = BoolSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.scene_name)
+                layout.add(self.source)
+                layout.add(self.item)
+                layout.add(self.render)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetSceneItemRender'
+            payload['scene-name'] = self.scene_name.get_data()
+            payload['source'] = self.source.get_data()
+            payload['item'] = self.item.get_data()
+            payload['render'] = self.render.get_data()
+            return payload
+
+        def refresh(self):
+            self.scene_name.refresh()
+            self.source.refresh()
+            self.item.refresh()
+            self.render.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.scene_name.set_data(data['scene_name']) 
+            self.source.set_data(data['source']) 
+            self.item.set_data(data['item']) 
+            self.render.set_data(data['render']) 
+
+        def to_dict(self):
+            return {
+                'scene_name': self.scene_name.get_data(),
+                'source': self.source.get_data(),
+                'item': self.item.get_data(),
+                'render': self.render.get_data(),
+            }
+
 
 class SetSceneItemPosition(BaseRequest):
     """Sets the coordinates of a specified source item.
 
     :Arguments:
-       *scene_name*
+        *scene_name*
             type: String (optional)
             Name of the scene the scene item belongs to. Defaults to the current scene.
-       *item*
+        *item*
             type: String
             Scene Item name.
-       *x*
+        *x*
             type: double
             X coordinate.
-       *y*
+        *y*
             type: double
             Y coordinate.
     """
 
+    name = 'SetSceneItemPosition'
+    category = 'scene items'
     fields = [
         'scene_name',
         'item',
@@ -4506,60 +6616,94 @@ class SetSceneItemPosition(BaseRequest):
         'y',
     ]
 
-    category = 'scene items'
-    
-    def __init__(self, item, x, y, scene_name=None):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetSceneItemPosition'
         self.dataout = {}
         self.dataout['item'] = None
         self.dataout['x'] = None
         self.dataout['y'] = None
-        self.dataout['scene-name'] = None
+        self.dataout['scene_name'] = None
 
     @staticmethod
     def payload(item, x, y, scene_name=None):
         payload = {}
         payload['request-type'] = 'SetSceneItemPosition'
-        payload['scene_name'] = scene_name
+        payload['scene-name'] = scene_name
         payload['item'] = item
         payload['x'] = x
         payload['y'] = y
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        scene_name = SceneSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(scene_name)
-            layout.add(QLabel('item'))
-            layout.add(QLabel('x'))
-            layout.add(QLabel('y'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.scene_name = SceneSelector(changed, parent=self)
+            self.item = UnimplementedField('[field not implemented]')
+            self.x = UnimplementedField('[field not implemented]')
+            self.y = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.scene_name)
+                layout.add(self.item)
+                layout.add(self.x)
+                layout.add(self.y)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetSceneItemPosition'
+            payload['scene-name'] = self.scene_name.get_data()
+            payload['item'] = self.item.get_data()
+            payload['x'] = self.x.get_data()
+            payload['y'] = self.y.get_data()
+            return payload
+
+        def refresh(self):
+            self.scene_name.refresh()
+            self.item.refresh()
+            self.x.refresh()
+            self.y.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.scene_name.set_data(data['scene_name']) 
+            self.item.set_data(data['item']) 
+            self.x.set_data(data['x']) 
+            self.y.set_data(data['y']) 
+
+        def to_dict(self):
+            return {
+                'scene_name': self.scene_name.get_data(),
+                'item': self.item.get_data(),
+                'x': self.x.get_data(),
+                'y': self.y.get_data(),
+            }
+
 
 class SetSceneItemTransform(BaseRequest):
     """Set the transform of the specified source item.
 
     :Arguments:
-       *scene_name*
+        *scene_name*
             type: String (optional)
             Name of the scene the scene item belongs to. Defaults to the current scene.
-       *item*
+        *item*
             type: String
             Scene Item name.
-       *x_scale*
+        *x_scale*
             type: double
             Width scale factor.
-       *y_scale*
+        *y_scale*
             type: double
             Height scale factor.
-       *rotation*
+        *rotation*
             type: double
             Source item rotation (in degrees).
     """
 
+    name = 'SetSceneItemTransform'
+    category = 'scene items'
     fields = [
         'scene_name',
         'item',
@@ -4568,66 +6712,105 @@ class SetSceneItemTransform(BaseRequest):
         'rotation',
     ]
 
-    category = 'scene items'
-    
-    def __init__(self, item, x_scale, y_scale, rotation, scene_name=None):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetSceneItemTransform'
         self.dataout = {}
         self.dataout['item'] = None
-        self.dataout['x-scale'] = None
-        self.dataout['y-scale'] = None
+        self.dataout['x_scale'] = None
+        self.dataout['y_scale'] = None
         self.dataout['rotation'] = None
-        self.dataout['scene-name'] = None
+        self.dataout['scene_name'] = None
 
     @staticmethod
     def payload(item, x_scale, y_scale, rotation, scene_name=None):
         payload = {}
         payload['request-type'] = 'SetSceneItemTransform'
-        payload['scene_name'] = scene_name
+        payload['scene-name'] = scene_name
         payload['item'] = item
-        payload['x_scale'] = x_scale
-        payload['y_scale'] = y_scale
+        payload['x-scale'] = x_scale
+        payload['y-scale'] = y_scale
         payload['rotation'] = rotation
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        scene_name = SceneSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(scene_name)
-            layout.add(QLabel('item'))
-            layout.add(QLabel('x_scale'))
-            layout.add(QLabel('y_scale'))
-            layout.add(QLabel('rotation'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.scene_name = SceneSelector(changed, parent=self)
+            self.item = UnimplementedField('[field not implemented]')
+            self.x_scale = UnimplementedField('[field not implemented]')
+            self.y_scale = UnimplementedField('[field not implemented]')
+            self.rotation = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.scene_name)
+                layout.add(self.item)
+                layout.add(self.x_scale)
+                layout.add(self.y_scale)
+                layout.add(self.rotation)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetSceneItemTransform'
+            payload['scene-name'] = self.scene_name.get_data()
+            payload['item'] = self.item.get_data()
+            payload['x-scale'] = self.x_scale.get_data()
+            payload['y-scale'] = self.y_scale.get_data()
+            payload['rotation'] = self.rotation.get_data()
+            return payload
+
+        def refresh(self):
+            self.scene_name.refresh()
+            self.item.refresh()
+            self.x_scale.refresh()
+            self.y_scale.refresh()
+            self.rotation.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.scene_name.set_data(data['scene_name']) 
+            self.item.set_data(data['item']) 
+            self.x_scale.set_data(data['x_scale']) 
+            self.y_scale.set_data(data['y_scale']) 
+            self.rotation.set_data(data['rotation']) 
+
+        def to_dict(self):
+            return {
+                'scene_name': self.scene_name.get_data(),
+                'item': self.item.get_data(),
+                'x_scale': self.x_scale.get_data(),
+                'y_scale': self.y_scale.get_data(),
+                'rotation': self.rotation.get_data(),
+            }
+
 
 class SetSceneItemCrop(BaseRequest):
     """Sets the crop coordinates of the specified source item.
 
     :Arguments:
-       *scene_name*
+        *scene_name*
             type: String (optional)
             Name of the scene the scene item belongs to. Defaults to the current scene.
-       *item*
+        *item*
             type: String
             Scene Item name.
-       *top*
+        *top*
             type: int
             Pixel position of the top of the source item.
-       *bottom*
+        *bottom*
             type: int
             Pixel position of the bottom of the source item.
-       *left*
+        *left*
             type: int
             Pixel position of the left of the source item.
-       *right*
+        *right*
             type: int
             Pixel position of the right of the source item.
     """
 
+    name = 'SetSceneItemCrop'
+    category = 'scene items'
     fields = [
         'scene_name',
         'item',
@@ -4637,24 +6820,21 @@ class SetSceneItemCrop(BaseRequest):
         'right',
     ]
 
-    category = 'scene items'
-    
-    def __init__(self, item, top, bottom, left, right, scene_name=None):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetSceneItemCrop'
         self.dataout = {}
         self.dataout['item'] = None
         self.dataout['top'] = None
         self.dataout['bottom'] = None
         self.dataout['left'] = None
         self.dataout['right'] = None
-        self.dataout['scene-name'] = None
+        self.dataout['scene_name'] = None
 
     @staticmethod
     def payload(item, top, bottom, left, right, scene_name=None):
         payload = {}
         payload['request-type'] = 'SetSceneItemCrop'
-        payload['scene_name'] = scene_name
+        payload['scene-name'] = scene_name
         payload['item'] = item
         payload['top'] = top
         payload['bottom'] = bottom
@@ -4662,48 +6842,86 @@ class SetSceneItemCrop(BaseRequest):
         payload['right'] = right
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        scene_name = SceneSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(scene_name)
-            layout.add(QLabel('item'))
-            layout.add(QLabel('top'))
-            layout.add(QLabel('bottom'))
-            layout.add(QLabel('left'))
-            layout.add(QLabel('right'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.scene_name = SceneSelector(changed, parent=self)
+            self.item = UnimplementedField('[field not implemented]')
+            self.top = UnimplementedField('[field not implemented]')
+            self.bottom = UnimplementedField('[field not implemented]')
+            self.left = UnimplementedField('[field not implemented]')
+            self.right = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.scene_name)
+                layout.add(self.item)
+                layout.add(self.top)
+                layout.add(self.bottom)
+                layout.add(self.left)
+                layout.add(self.right)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetSceneItemCrop'
+            payload['scene-name'] = self.scene_name.get_data()
+            payload['item'] = self.item.get_data()
+            payload['top'] = self.top.get_data()
+            payload['bottom'] = self.bottom.get_data()
+            payload['left'] = self.left.get_data()
+            payload['right'] = self.right.get_data()
+            return payload
+
+        def refresh(self):
+            self.scene_name.refresh()
+            self.item.refresh()
+            self.top.refresh()
+            self.bottom.refresh()
+            self.left.refresh()
+            self.right.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.scene_name.set_data(data['scene_name']) 
+            self.item.set_data(data['item']) 
+            self.top.set_data(data['top']) 
+            self.bottom.set_data(data['bottom']) 
+            self.left.set_data(data['left']) 
+            self.right.set_data(data['right']) 
+
+        def to_dict(self):
+            return {
+                'scene_name': self.scene_name.get_data(),
+                'item': self.item.get_data(),
+                'top': self.top.get_data(),
+                'bottom': self.bottom.get_data(),
+                'left': self.left.get_data(),
+                'right': self.right.get_data(),
+            }
+
 
 class DeleteSceneItem(BaseRequest):
     """Deletes a scene item.
 
     :Arguments:
-       *scene*
+        *scene*
             type: String (optional)
             Name of the scene the scene item belongs to. Defaults to the current scene.
-       *item*
+        *item*
             type: Object
             Scene item to delete (required)
-       *item.name*
-            type: String
-            Scene Item name (prefer `id`, including both is acceptable).
-       *item.id*
-            type: int
-            Scene Item ID.
     """
 
+    name = 'DeleteSceneItem'
+    category = 'scene items'
     fields = [
         'scene',
         'item',
     ]
 
-    category = 'scene items'
-    
-    def __init__(self, item, scene=None):
+    def __init__(self):
         super().__init__()
-        self.name = 'DeleteSceneItem'
         self.dataout = {}
         self.dataout['item'] = None
         self.dataout['scene'] = None
@@ -4716,45 +6934,72 @@ class DeleteSceneItem(BaseRequest):
         payload['item'] = item
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('scene'))
-            layout.add(QLabel('item'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.scene = UnimplementedField('[field not implemented]')
+            self.item = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.scene)
+                layout.add(self.item)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'DeleteSceneItem'
+            payload['scene'] = self.scene.get_data()
+            payload['item'] = self.item.get_data()
+            return payload
+
+        def refresh(self):
+            self.scene.refresh()
+            self.item.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.scene.set_data(data['scene']) 
+            self.item.set_data(data['item']) 
+
+        def to_dict(self):
+            return {
+                'scene': self.scene.get_data(),
+                'item': self.item.get_data(),
+            }
+
 
 class AddSceneItem(BaseRequest):
     """Creates a scene item in a scene. In other words, this is how you add a source into a scene.
 
     :Arguments:
-       *sceneName*
+        *sceneName*
             type: String
             Name of the scene to create the scene item in
-       *sourceName*
+        *sourceName*
             type: String
             Name of the source to be added
-       *setVisible*
+        *setVisible*
             type: boolean (optional)
             Whether to make the sceneitem visible on creation or not. Default `true`
     :Returns:
-       *itemId*
+        *itemId*
             type: int
             Numerical ID of the created scene item
     """
 
+    name = 'AddSceneItem'
+    category = 'scene items'
     fields = [
         'sceneName',
         'sourceName',
         'setVisible',
     ]
 
-    category = 'scene items'
-    
-    def __init__(self, sceneName, sourceName, setVisible=None):
+    def __init__(self):
         super().__init__()
-        self.name = 'AddSceneItem'
+        self.datain = {}
+        self.datain['itemId'] = None
         self.dataout = {}
         self.dataout['sceneName'] = None
         self.dataout['sourceName'] = None
@@ -4769,63 +7014,82 @@ class AddSceneItem(BaseRequest):
         payload['setVisible'] = setVisible
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sceneName = SceneSelector(changed)
-        sourceName = SourceSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sceneName)
-            layout.add(sourceName)
-            layout.add(QLabel('setVisible'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sceneName = SceneSelector(changed, parent=self)
+            self.sourceName = SourceSelector(changed, parent=self)
+            self.setVisible = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sceneName)
+                layout.add(self.sourceName)
+                layout.add(self.setVisible)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'AddSceneItem'
+            payload['sceneName'] = self.sceneName.get_data()
+            payload['sourceName'] = self.sourceName.get_data()
+            payload['setVisible'] = self.setVisible.get_data()
+            return payload
+
+        def refresh(self):
+            self.sceneName.refresh()
+            self.sourceName.refresh()
+            self.setVisible.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sceneName.set_data(data['sceneName']) 
+            self.sourceName.set_data(data['sourceName']) 
+            self.setVisible.set_data(data['setVisible']) 
+
+        def to_dict(self):
+            return {
+                'sceneName': self.sceneName.get_data(),
+                'sourceName': self.sourceName.get_data(),
+                'setVisible': self.setVisible.get_data(),
+            }
+
 
 class DuplicateSceneItem(BaseRequest):
     """Duplicates a scene item.
 
     :Arguments:
-       *fromScene*
+        *fromScene*
             type: String (optional)
             Name of the scene to copy the item from. Defaults to the current scene.
-       *toScene*
+        *toScene*
             type: String (optional)
             Name of the scene to create the item in. Defaults to the current scene.
-       *item*
+        *item*
             type: Object
             Scene Item to duplicate from the source scene (required)
-       *item.name*
-            type: String
-            Scene Item name (prefer `id`, including both is acceptable).
-       *item.id*
-            type: int
-            Scene Item ID.
     :Returns:
-       *scene*
+        *scene*
             type: String
             Name of the scene where the new item was created
-       *item*
+        *item*
             type: Object
             New item info
-       *item.id*
-            type: int
-            New item ID
-       *item.name*
-            type: String
-            New item name
     """
 
+    name = 'DuplicateSceneItem'
+    category = 'scene items'
     fields = [
         'fromScene',
         'toScene',
         'item',
     ]
 
-    category = 'scene items'
-    
-    def __init__(self, item, fromScene=None, toScene=None):
+    def __init__(self):
         super().__init__()
-        self.name = 'DuplicateSceneItem'
+        self.datain = {}
+        self.datain['scene'] = None
+        self.datain['item'] = None
         self.dataout = {}
         self.dataout['item'] = None
         self.dataout['fromScene'] = None
@@ -4840,73 +7104,124 @@ class DuplicateSceneItem(BaseRequest):
         payload['item'] = item
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('fromScene'))
-            layout.add(QLabel('toScene'))
-            layout.add(QLabel('item'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.fromScene = UnimplementedField('[field not implemented]')
+            self.toScene = UnimplementedField('[field not implemented]')
+            self.item = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.fromScene)
+                layout.add(self.toScene)
+                layout.add(self.item)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'DuplicateSceneItem'
+            payload['fromScene'] = self.fromScene.get_data()
+            payload['toScene'] = self.toScene.get_data()
+            payload['item'] = self.item.get_data()
+            return payload
+
+        def refresh(self):
+            self.fromScene.refresh()
+            self.toScene.refresh()
+            self.item.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.fromScene.set_data(data['fromScene']) 
+            self.toScene.set_data(data['toScene']) 
+            self.item.set_data(data['item']) 
+
+        def to_dict(self):
+            return {
+                'fromScene': self.fromScene.get_data(),
+                'toScene': self.toScene.get_data(),
+                'item': self.item.get_data(),
+            }
+
 
 class SetCurrentScene(BaseRequest):
     """Switch to the specified scene.
 
     :Arguments:
-       *scene_name*
+        *scene_name*
             type: String
             Name of the scene to switch to.
     """
 
+    name = 'SetCurrentScene'
+    category = 'scenes'
     fields = [
         'scene_name',
     ]
 
-    category = 'scenes'
-    
-    def __init__(self, scene_name):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetCurrentScene'
         self.dataout = {}
-        self.dataout['scene-name'] = None
+        self.dataout['scene_name'] = None
 
     @staticmethod
     def payload(scene_name):
         payload = {}
         payload['request-type'] = 'SetCurrentScene'
-        payload['scene_name'] = scene_name
+        payload['scene-name'] = scene_name
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        scene_name = SceneSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(scene_name)
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.scene_name = SceneSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.scene_name)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetCurrentScene'
+            payload['scene-name'] = self.scene_name.get_data()
+            return payload
+
+        def refresh(self):
+            self.scene_name.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.scene_name.set_data(data['scene_name']) 
+
+        def to_dict(self):
+            return {
+                'scene_name': self.scene_name.get_data(),
+            }
+
 
 class GetCurrentScene(BaseRequest):
     """Get the current scene's name and source items.
 
     :Returns:
-       *name*
+        *name*
             type: String
             Name of the currently active scene.
-       *sources*
+        *sources*
             type: Array<SceneItem>
             Ordered list of the current scene's source items.
     """
 
-    fields = [
-    ]
-
+    name = 'GetCurrentScene'
     category = 'scenes'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'GetCurrentScene'
+        self.datain = {}
+        self.datain['name'] = None
+        self.datain['sources'] = None
 
     @staticmethod
     def payload():
@@ -4914,32 +7229,51 @@ class GetCurrentScene(BaseRequest):
         payload['request-type'] = 'GetCurrentScene'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetCurrentScene'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class GetSceneList(BaseRequest):
     """Get a list of scenes in the currently active profile.
 
     :Returns:
-       *current_scene*
+        *current_scene*
             type: String
             Name of the currently active scene.
-       *scenes*
+        *scenes*
             type: Array<Scene>
             Ordered list of the current profile's scenes (See [GetCurrentScene](#getcurrentscene) for more information).
     """
 
-    fields = [
-    ]
-
+    name = 'GetSceneList'
     category = 'scenes'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'GetSceneList'
+        self.datain = {}
+        self.datain['current-scene'] = None
+        self.datain['scenes'] = None
 
     @staticmethod
     def payload():
@@ -4947,30 +7281,47 @@ class GetSceneList(BaseRequest):
         payload['request-type'] = 'GetSceneList'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetSceneList'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class CreateScene(BaseRequest):
     """Create a new scene scene.
 
     :Arguments:
-       *sceneName*
+        *sceneName*
             type: String
             Name of the scene to create.
     """
 
+    name = 'CreateScene'
+    category = 'scenes'
     fields = [
         'sceneName',
     ]
 
-    category = 'scenes'
-    
-    def __init__(self, sceneName):
+    def __init__(self):
         super().__init__()
-        self.name = 'CreateScene'
         self.dataout = {}
         self.dataout['sceneName'] = None
 
@@ -4981,43 +7332,56 @@ class CreateScene(BaseRequest):
         payload['sceneName'] = sceneName
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sceneName = SceneSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sceneName)
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sceneName = SceneSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sceneName)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'CreateScene'
+            payload['sceneName'] = self.sceneName.get_data()
+            return payload
+
+        def refresh(self):
+            self.sceneName.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sceneName.set_data(data['sceneName']) 
+
+        def to_dict(self):
+            return {
+                'sceneName': self.sceneName.get_data(),
+            }
+
 
 class ReorderSceneItems(BaseRequest):
     """Changes the order of scene items in the requested scene.
 
     :Arguments:
-       *scene*
+        *scene*
             type: String (optional)
             Name of the scene to reorder (defaults to current).
-       *items*
+        *items*
             type: Array<Scene>
             Ordered list of objects with name and/or id specified. Id preferred due to uniqueness per scene
-       *items.*.id*
-            type: int (optional)
-            Id of a specific scene item. Unique on a scene by scene basis.
-       *items.*.name*
-            type: String (optional)
-            Name of a scene item. Sufficiently unique if no scene items share sources within the scene.
     """
 
+    name = 'ReorderSceneItems'
+    category = 'scenes'
     fields = [
         'scene',
         'items',
     ]
 
-    category = 'scenes'
-    
-    def __init__(self, items, scene=None):
+    def __init__(self):
         super().__init__()
-        self.name = 'ReorderSceneItems'
         self.dataout = {}
         self.dataout['items'] = None
         self.dataout['scene'] = None
@@ -5030,41 +7394,66 @@ class ReorderSceneItems(BaseRequest):
         payload['items'] = items
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('scene'))
-            layout.add(QLabel('items'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.scene = UnimplementedField('[field not implemented]')
+            self.items = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.scene)
+                layout.add(self.items)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'ReorderSceneItems'
+            payload['scene'] = self.scene.get_data()
+            payload['items'] = self.items.get_data()
+            return payload
+
+        def refresh(self):
+            self.scene.refresh()
+            self.items.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.scene.set_data(data['scene']) 
+            self.items.set_data(data['items']) 
+
+        def to_dict(self):
+            return {
+                'scene': self.scene.get_data(),
+                'items': self.items.get_data(),
+            }
+
 
 class SetSceneTransitionOverride(BaseRequest):
     """Set a scene to use a specific transition override.
 
     :Arguments:
-       *sceneName*
+        *sceneName*
             type: String
             Name of the scene to switch to.
-       *transitionName*
+        *transitionName*
             type: String
             Name of the transition to use.
-       *transitionDuration*
+        *transitionDuration*
             type: int (Optional)
             Duration in milliseconds of the transition if transition is not fixed. Defaults to the current duration specified in the UI if there is no current override and this value is not given.
     """
 
+    name = 'SetSceneTransitionOverride'
+    category = 'scenes'
     fields = [
         'sceneName',
         'transitionName',
         'transitionDuration',
     ]
 
-    category = 'scenes'
-    
-    def __init__(self, sceneName, transitionName, transitionDuration):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetSceneTransitionOverride'
         self.dataout = {}
         self.dataout['sceneName'] = None
         self.dataout['transitionName'] = None
@@ -5079,35 +7468,64 @@ class SetSceneTransitionOverride(BaseRequest):
         payload['transitionDuration'] = transitionDuration
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sceneName = SceneSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sceneName)
-            layout.add(QLabel('transitionName'))
-            layout.add(QLabel('transitionDuration'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sceneName = SceneSelector(changed, parent=self)
+            self.transitionName = UnimplementedField('[field not implemented]')
+            self.transitionDuration = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sceneName)
+                layout.add(self.transitionName)
+                layout.add(self.transitionDuration)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetSceneTransitionOverride'
+            payload['sceneName'] = self.sceneName.get_data()
+            payload['transitionName'] = self.transitionName.get_data()
+            payload['transitionDuration'] = self.transitionDuration.get_data()
+            return payload
+
+        def refresh(self):
+            self.sceneName.refresh()
+            self.transitionName.refresh()
+            self.transitionDuration.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sceneName.set_data(data['sceneName']) 
+            self.transitionName.set_data(data['transitionName']) 
+            self.transitionDuration.set_data(data['transitionDuration']) 
+
+        def to_dict(self):
+            return {
+                'sceneName': self.sceneName.get_data(),
+                'transitionName': self.transitionName.get_data(),
+                'transitionDuration': self.transitionDuration.get_data(),
+            }
+
 
 class RemoveSceneTransitionOverride(BaseRequest):
     """Remove any transition override on a scene.
 
     :Arguments:
-       *sceneName*
+        *sceneName*
             type: String
             Name of the scene to switch to.
     """
 
+    name = 'RemoveSceneTransitionOverride'
+    category = 'scenes'
     fields = [
         'sceneName',
     ]
 
-    category = 'scenes'
-    
-    def __init__(self, sceneName):
+    def __init__(self):
         super().__init__()
-        self.name = 'RemoveSceneTransitionOverride'
         self.dataout = {}
         self.dataout['sceneName'] = None
 
@@ -5118,40 +7536,62 @@ class RemoveSceneTransitionOverride(BaseRequest):
         payload['sceneName'] = sceneName
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sceneName = SceneSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sceneName)
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sceneName = SceneSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sceneName)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'RemoveSceneTransitionOverride'
+            payload['sceneName'] = self.sceneName.get_data()
+            return payload
+
+        def refresh(self):
+            self.sceneName.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sceneName.set_data(data['sceneName']) 
+
+        def to_dict(self):
+            return {
+                'sceneName': self.sceneName.get_data(),
+            }
+
 
 class GetSceneTransitionOverride(BaseRequest):
     """Get the current scene transition override.
 
     :Arguments:
-       *sceneName*
+        *sceneName*
             type: String
             Name of the scene to switch to.
     :Returns:
-       *transitionName*
+        *transitionName*
             type: String
             Name of the current overriding transition. Empty string if no override is set.
-       *transitionDuration*
+        *transitionDuration*
             type: int
             Transition duration. `-1` if no override is set.
     """
 
+    name = 'GetSceneTransitionOverride'
+    category = 'scenes'
     fields = [
         'sceneName',
     ]
 
-    category = 'scenes'
-    
-    def __init__(self, sceneName):
+    def __init__(self):
         super().__init__()
-        self.name = 'GetSceneTransitionOverride'
+        self.datain = {}
+        self.datain['transitionName'] = None
+        self.datain['transitionDuration'] = None
         self.dataout = {}
         self.dataout['sceneName'] = None
 
@@ -5162,47 +7602,72 @@ class GetSceneTransitionOverride(BaseRequest):
         payload['sceneName'] = sceneName
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        sceneName = SceneSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(sceneName)
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.sceneName = SceneSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.sceneName)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetSceneTransitionOverride'
+            payload['sceneName'] = self.sceneName.get_data()
+            return payload
+
+        def refresh(self):
+            self.sceneName.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.sceneName.set_data(data['sceneName']) 
+
+        def to_dict(self):
+            return {
+                'sceneName': self.sceneName.get_data(),
+            }
+
 
 class GetStreamingStatus(BaseRequest):
     """Get current streaming and recording status.
 
     :Returns:
-       *streaming*
+        *streaming*
             type: boolean
             Current streaming status.
-       *recording*
+        *recording*
             type: boolean
             Current recording status.
-       *recording_paused*
+        *recording_paused*
             type: boolean
             If recording is paused.
-       *preview_only*
+        *preview_only*
             type: boolean
             Always false. Retrocompatibility with OBSRemote.
-       *stream_timecode*
+        *stream_timecode*
             type: String (optional)
             Time elapsed since streaming started (only present if currently streaming).
-       *rec_timecode*
+        *rec_timecode*
             type: String (optional)
             Time elapsed since recording started (only present if currently recording).
     """
 
-    fields = [
-    ]
-
+    name = 'GetStreamingStatus'
     category = 'streaming'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'GetStreamingStatus'
+        self.datain = {}
+        self.datain['streaming'] = None
+        self.datain['recording'] = None
+        self.datain['recording-paused'] = None
+        self.datain['preview-only'] = None
+        self.datain['stream-timecode'] = None
+        self.datain['rec-timecode'] = None
 
     @staticmethod
     def payload():
@@ -5210,25 +7675,41 @@ class GetStreamingStatus(BaseRequest):
         payload['request-type'] = 'GetStreamingStatus'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetStreamingStatus'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class StartStopStreaming(BaseRequest):
     """Toggle streaming on or off (depending on the current stream state).
 
     """
 
-    fields = [
-    ]
-
+    name = 'StartStopStreaming'
     category = 'streaming'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'StartStopStreaming'
 
     @staticmethod
     def payload():
@@ -5236,55 +7717,48 @@ class StartStopStreaming(BaseRequest):
         payload['request-type'] = 'StartStopStreaming'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'StartStopStreaming'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class StartStreaming(BaseRequest):
     """Start streaming.
 Will return an `error` if streaming is already active.
 
     :Arguments:
-       *stream*
+        *stream*
             type: Object (optional)
             Special stream configuration. Note: these won't be saved to OBS' configuration.
-       *stream.type*
-            type: String (optional)
-            If specified ensures the type of stream matches the given type (usually 'rtmp_custom' or 'rtmp_common'). If the currently configured stream type does not match the given stream type, all settings must be specified in the `settings` object or an error will occur when starting the stream.
-       *stream.metadata*
-            type: Object (optional)
-            Adds the given object parameters as encoded query string parameters to the 'key' of the RTMP stream. Used to pass data to the RTMP service about the streaming. May be any String, Numeric, or Boolean field.
-       *stream.settings*
-            type: Object (optional)
-            Settings for the stream.
-       *stream.settings.server*
-            type: String (optional)
-            The publish URL.
-       *stream.settings.key*
-            type: String (optional)
-            The publish key of the stream.
-       *stream.settings.use_auth*
-            type: boolean (optional)
-            Indicates whether authentication should be used when connecting to the streaming server.
-       *stream.settings.username*
-            type: String (optional)
-            If authentication is enabled, the username for the streaming server. Ignored if `use_auth` is not set to `true`.
-       *stream.settings.password*
-            type: String (optional)
-            If authentication is enabled, the password for the streaming server. Ignored if `use_auth` is not set to `true`.
     """
 
+    name = 'StartStreaming'
+    category = 'streaming'
     fields = [
         'stream',
     ]
 
-    category = 'streaming'
-    
-    def __init__(self, stream=None):
+    def __init__(self):
         super().__init__()
-        self.name = 'StartStreaming'
         self.dataout = {}
         self.dataout['stream'] = None
 
@@ -5295,13 +7769,34 @@ Will return an `error` if streaming is already active.
         payload['stream'] = stream
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('stream'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.stream = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.stream)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'StartStreaming'
+            payload['stream'] = self.stream.get_data()
+            return payload
+
+        def refresh(self):
+            self.stream.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.stream.set_data(data['stream']) 
+
+        def to_dict(self):
+            return {
+                'stream': self.stream.get_data(),
+            }
+
 
 class StopStreaming(BaseRequest):
     """Stop streaming.
@@ -5309,14 +7804,12 @@ Will return an `error` if streaming is not active.
 
     """
 
-    fields = [
-    ]
-
+    name = 'StopStreaming'
     category = 'streaming'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'StopStreaming'
 
     @staticmethod
     def payload():
@@ -5324,53 +7817,55 @@ Will return an `error` if streaming is not active.
         payload['request-type'] = 'StopStreaming'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'StopStreaming'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class SetStreamSettings(BaseRequest):
     """Sets one or more attributes of the current streaming server settings. Any options not passed will remain unchanged. Returns the updated settings in response. If 'type' is different than the current streaming service type, all settings are required. Returns the full settings of the stream (the same as GetStreamSettings).
 
     :Arguments:
-       *type*
+        *type*
             type: String
             The type of streaming service configuration, usually `rtmp_custom` or `rtmp_common`.
-       *settings*
+        *settings*
             type: Object
             The actual settings of the stream.
-       *settings.server*
-            type: String (optional)
-            The publish URL.
-       *settings.key*
-            type: String (optional)
-            The publish key.
-       *settings.use_auth*
-            type: boolean (optional)
-            Indicates whether authentication should be used when connecting to the streaming server.
-       *settings.username*
-            type: String (optional)
-            The username for the streaming service.
-       *settings.password*
-            type: String (optional)
-            The password for the streaming service.
-       *save*
+        *save*
             type: boolean
             Persist the settings to disk.
     """
 
+    name = 'SetStreamSettings'
+    category = 'streaming'
     fields = [
         'type',
         'settings',
         'save',
     ]
 
-    category = 'streaming'
-    
-    def __init__(self, type, settings, save):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetStreamSettings'
         self.dataout = {}
         self.dataout['type'] = None
         self.dataout['settings'] = None
@@ -5385,51 +7880,68 @@ class SetStreamSettings(BaseRequest):
         payload['save'] = save
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('type'))
-            layout.add(QLabel('settings'))
-            layout.add(QLabel('save'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.type = UnimplementedField('[field not implemented]')
+            self.settings = UnimplementedField('[field not implemented]')
+            self.save = BoolSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.type)
+                layout.add(self.settings)
+                layout.add(self.save)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetStreamSettings'
+            payload['type'] = self.type.get_data()
+            payload['settings'] = self.settings.get_data()
+            payload['save'] = self.save.get_data()
+            return payload
+
+        def refresh(self):
+            self.type.refresh()
+            self.settings.refresh()
+            self.save.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.type.set_data(data['type']) 
+            self.settings.set_data(data['settings']) 
+            self.save.set_data(data['save']) 
+
+        def to_dict(self):
+            return {
+                'type': self.type.get_data(),
+                'settings': self.settings.get_data(),
+                'save': self.save.get_data(),
+            }
+
 
 class GetStreamSettings(BaseRequest):
     """Get the current streaming server settings.
 
     :Returns:
-       *type*
+        *type*
             type: String
             The type of streaming service configuration. Possible values: 'rtmp_custom' or 'rtmp_common'.
-       *settings*
+        *settings*
             type: Object
             Stream settings object.
-       *settings.server*
-            type: String
-            The publish URL.
-       *settings.key*
-            type: String
-            The publish key of the stream.
-       *settings.use_auth*
-            type: boolean
-            Indicates whether authentication should be used when connecting to the streaming server.
-       *settings.username*
-            type: String
-            The username to use when accessing the streaming server. Only present if `use_auth` is `true`.
-       *settings.password*
-            type: String
-            The password to use when accessing the streaming server. Only present if `use_auth` is `true`.
     """
 
-    fields = [
-    ]
-
+    name = 'GetStreamSettings'
     category = 'streaming'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'GetStreamSettings'
+        self.datain = {}
+        self.datain['type'] = None
+        self.datain['settings'] = None
 
     @staticmethod
     def payload():
@@ -5437,25 +7949,41 @@ class GetStreamSettings(BaseRequest):
         payload['request-type'] = 'GetStreamSettings'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetStreamSettings'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class SaveStreamSettings(BaseRequest):
     """Save the current streaming server settings to disk.
 
     """
 
-    fields = [
-    ]
-
+    name = 'SaveStreamSettings'
     category = 'streaming'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'SaveStreamSettings'
 
     @staticmethod
     def payload():
@@ -5463,30 +7991,47 @@ class SaveStreamSettings(BaseRequest):
         payload['request-type'] = 'SaveStreamSettings'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SaveStreamSettings'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class SendCaptions(BaseRequest):
     """Send the provided text as embedded CEA-608 caption data.
 
     :Arguments:
-       *text*
+        *text*
             type: String
             Captions text
     """
 
+    name = 'SendCaptions'
+    category = 'streaming'
     fields = [
         'text',
     ]
 
-    category = 'streaming'
-    
-    def __init__(self, text):
+    def __init__(self):
         super().__init__()
-        self.name = 'SendCaptions'
         self.dataout = {}
         self.dataout['text'] = None
 
@@ -5497,31 +8042,52 @@ class SendCaptions(BaseRequest):
         payload['text'] = text
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('text'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.text = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.text)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SendCaptions'
+            payload['text'] = self.text.get_data()
+            return payload
+
+        def refresh(self):
+            self.text.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.text.set_data(data['text']) 
+
+        def to_dict(self):
+            return {
+                'text': self.text.get_data(),
+            }
+
 
 class GetStudioModeStatus(BaseRequest):
     """Indicates if Studio Mode is currently enabled.
 
     :Returns:
-       *studio_mode*
+        *studio_mode*
             type: boolean
             Indicates if Studio Mode is enabled.
     """
 
-    fields = [
-    ]
-
+    name = 'GetStudioModeStatus'
     category = 'studio mode'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'GetStudioModeStatus'
+        self.datain = {}
+        self.datain['studio-mode'] = None
 
     @staticmethod
     def payload():
@@ -5529,33 +8095,52 @@ class GetStudioModeStatus(BaseRequest):
         payload['request-type'] = 'GetStudioModeStatus'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetStudioModeStatus'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class GetPreviewScene(BaseRequest):
     """Get the name of the currently previewed scene and its list of sources.
 Will return an `error` if Studio Mode is not enabled.
 
     :Returns:
-       *name*
+        *name*
             type: String
             The name of the active preview scene.
-       *sources*
+        *sources*
             type: Array<SceneItem>
-            
+
     """
 
-    fields = [
-    ]
-
+    name = 'GetPreviewScene'
     category = 'studio mode'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'GetPreviewScene'
+        self.datain = {}
+        self.datain['name'] = None
+        self.datain['sources'] = None
 
     @staticmethod
     def payload():
@@ -5563,106 +8148,155 @@ Will return an `error` if Studio Mode is not enabled.
         payload['request-type'] = 'GetPreviewScene'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetPreviewScene'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class SetPreviewScene(BaseRequest):
     """Set the active preview scene.
 Will return an `error` if Studio Mode is not enabled.
 
     :Arguments:
-       *scene_name*
+        *scene_name*
             type: String
             The name of the scene to preview.
     """
 
+    name = 'SetPreviewScene'
+    category = 'studio mode'
     fields = [
         'scene_name',
     ]
 
-    category = 'studio mode'
-    
-    def __init__(self, scene_name):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetPreviewScene'
         self.dataout = {}
-        self.dataout['scene-name'] = None
+        self.dataout['scene_name'] = None
 
     @staticmethod
     def payload(scene_name):
         payload = {}
         payload['request-type'] = 'SetPreviewScene'
-        payload['scene_name'] = scene_name
+        payload['scene-name'] = scene_name
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        scene_name = SceneSelector(changed)
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(scene_name)
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.scene_name = SceneSelector(changed, parent=self)
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.scene_name)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetPreviewScene'
+            payload['scene-name'] = self.scene_name.get_data()
+            return payload
+
+        def refresh(self):
+            self.scene_name.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.scene_name.set_data(data['scene_name']) 
+
+        def to_dict(self):
+            return {
+                'scene_name': self.scene_name.get_data(),
+            }
+
 
 class TransitionToProgram(BaseRequest):
     """Transitions the currently previewed scene to the main output.
 Will return an `error` if Studio Mode is not enabled.
 
     :Arguments:
-       *with_transition*
+        *with_transition*
             type: Object (optional)
             Change the active transition before switching scenes. Defaults to the active transition.
-       *with_transition.name*
-            type: String
-            Name of the transition.
-       *with_transition.duration*
-            type: int (optional)
-            Transition duration (in milliseconds).
     """
 
+    name = 'TransitionToProgram'
+    category = 'studio mode'
     fields = [
         'with_transition',
     ]
 
-    category = 'studio mode'
-    
-    def __init__(self, with_transition=None):
+    def __init__(self):
         super().__init__()
-        self.name = 'TransitionToProgram'
         self.dataout = {}
-        self.dataout['with-transition'] = None
+        self.dataout['with_transition'] = None
 
     @staticmethod
     def payload(with_transition=None):
         payload = {}
         payload['request-type'] = 'TransitionToProgram'
-        payload['with_transition'] = with_transition
+        payload['with-transition'] = with_transition
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('with_transition'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.with_transition = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.with_transition)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'TransitionToProgram'
+            payload['with-transition'] = self.with_transition.get_data()
+            return payload
+
+        def refresh(self):
+            self.with_transition.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.with_transition.set_data(data['with_transition']) 
+
+        def to_dict(self):
+            return {
+                'with_transition': self.with_transition.get_data(),
+            }
+
 
 class EnableStudioMode(BaseRequest):
     """Enables Studio Mode.
 
     """
 
-    fields = [
-    ]
-
+    name = 'EnableStudioMode'
     category = 'studio mode'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'EnableStudioMode'
 
     @staticmethod
     def payload():
@@ -5670,25 +8304,41 @@ class EnableStudioMode(BaseRequest):
         payload['request-type'] = 'EnableStudioMode'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'EnableStudioMode'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class DisableStudioMode(BaseRequest):
     """Disables Studio Mode.
 
     """
 
-    fields = [
-    ]
-
+    name = 'DisableStudioMode'
     category = 'studio mode'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'DisableStudioMode'
 
     @staticmethod
     def payload():
@@ -5696,25 +8346,41 @@ class DisableStudioMode(BaseRequest):
         payload['request-type'] = 'DisableStudioMode'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'DisableStudioMode'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class ToggleStudioMode(BaseRequest):
     """Toggles Studio Mode (depending on the current state of studio mode).
 
     """
 
-    fields = [
-    ]
-
+    name = 'ToggleStudioMode'
     category = 'studio mode'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'ToggleStudioMode'
 
     @staticmethod
     def payload():
@@ -5722,35 +8388,51 @@ class ToggleStudioMode(BaseRequest):
         payload['request-type'] = 'ToggleStudioMode'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'ToggleStudioMode'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class GetTransitionList(BaseRequest):
     """List of all transitions available in the frontend's dropdown menu.
 
     :Returns:
-       *current_transition*
+        *current_transition*
             type: String
             Name of the currently active transition.
-       *transitions*
+        *transitions*
             type: Array<Object>
             List of transitions.
-       *transitions.*.name*
-            type: String
-            Name of the transition.
     """
 
-    fields = [
-    ]
-
+    name = 'GetTransitionList'
     category = 'transitions'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'GetTransitionList'
+        self.datain = {}
+        self.datain['current-transition'] = None
+        self.datain['transitions'] = None
 
     @staticmethod
     def payload():
@@ -5758,32 +8440,51 @@ class GetTransitionList(BaseRequest):
         payload['request-type'] = 'GetTransitionList'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetTransitionList'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class GetCurrentTransition(BaseRequest):
     """Get the name of the currently selected transition in the frontend's dropdown menu.
 
     :Returns:
-       *name*
+        *name*
             type: String
             Name of the selected transition.
-       *duration*
+        *duration*
             type: int (optional)
             Transition duration (in milliseconds) if supported by the transition.
     """
 
-    fields = [
-    ]
-
+    name = 'GetCurrentTransition'
     category = 'transitions'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'GetCurrentTransition'
+        self.datain = {}
+        self.datain['name'] = None
+        self.datain['duration'] = None
 
     @staticmethod
     def payload():
@@ -5791,66 +8492,103 @@ class GetCurrentTransition(BaseRequest):
         payload['request-type'] = 'GetCurrentTransition'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetCurrentTransition'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class SetCurrentTransition(BaseRequest):
     """Set the active transition.
 
     :Arguments:
-       *transition_name*
+        *transition_name*
             type: String
             The name of the transition.
     """
 
+    name = 'SetCurrentTransition'
+    category = 'transitions'
     fields = [
         'transition_name',
     ]
 
-    category = 'transitions'
-    
-    def __init__(self, transition_name):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetCurrentTransition'
         self.dataout = {}
-        self.dataout['transition-name'] = None
+        self.dataout['transition_name'] = None
 
     @staticmethod
     def payload(transition_name):
         payload = {}
         payload['request-type'] = 'SetCurrentTransition'
-        payload['transition_name'] = transition_name
+        payload['transition-name'] = transition_name
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('transition_name'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.transition_name = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.transition_name)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetCurrentTransition'
+            payload['transition-name'] = self.transition_name.get_data()
+            return payload
+
+        def refresh(self):
+            self.transition_name.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.transition_name.set_data(data['transition_name']) 
+
+        def to_dict(self):
+            return {
+                'transition_name': self.transition_name.get_data(),
+            }
+
 
 class SetTransitionDuration(BaseRequest):
     """Set the duration of the currently selected transition if supported.
 
     :Arguments:
-       *duration*
+        *duration*
             type: int
             Desired duration of the transition (in milliseconds).
     """
 
+    name = 'SetTransitionDuration'
+    category = 'transitions'
     fields = [
         'duration',
     ]
 
-    category = 'transitions'
-    
-    def __init__(self, duration):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetTransitionDuration'
         self.dataout = {}
         self.dataout['duration'] = None
 
@@ -5861,31 +8599,52 @@ class SetTransitionDuration(BaseRequest):
         payload['duration'] = duration
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('duration'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.duration = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.duration)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetTransitionDuration'
+            payload['duration'] = self.duration.get_data()
+            return payload
+
+        def refresh(self):
+            self.duration.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.duration.set_data(data['duration']) 
+
+        def to_dict(self):
+            return {
+                'duration': self.duration.get_data(),
+            }
+
 
 class GetTransitionDuration(BaseRequest):
     """Get the duration of the currently selected transition if supported.
 
     :Returns:
-       *transition_duration*
+        *transition_duration*
             type: int
             Duration of the current transition (in milliseconds).
     """
 
-    fields = [
-    ]
-
+    name = 'GetTransitionDuration'
     category = 'transitions'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'GetTransitionDuration'
+        self.datain = {}
+        self.datain['transition-duration'] = None
 
     @staticmethod
     def payload():
@@ -5893,29 +8652,47 @@ class GetTransitionDuration(BaseRequest):
         payload['request-type'] = 'GetTransitionDuration'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetTransitionDuration'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class GetTransitionPosition(BaseRequest):
     """Get the position of the current transition.
 
     :Returns:
-       *position*
+        *position*
             type: double
             current transition position. This value will be between 0.0 and 1.0. Note: Transition returns 1.0 when not active.
     """
 
-    fields = [
-    ]
-
+    name = 'GetTransitionPosition'
     category = 'transitions'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'GetTransitionPosition'
+        self.datain = {}
+        self.datain['position'] = None
 
     @staticmethod
     def payload():
@@ -5923,34 +8700,53 @@ class GetTransitionPosition(BaseRequest):
         payload['request-type'] = 'GetTransitionPosition'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetTransitionPosition'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class GetTransitionSettings(BaseRequest):
     """Get the current settings of a transition
 
     :Arguments:
-       *transitionName*
+        *transitionName*
             type: String
             Transition name
     :Returns:
-       *transitionSettings*
+        *transitionSettings*
             type: Object
             Current transition settings
     """
 
+    name = 'GetTransitionSettings'
+    category = 'transitions'
     fields = [
         'transitionName',
     ]
 
-    category = 'transitions'
-    
-    def __init__(self, transitionName):
+    def __init__(self):
         super().__init__()
-        self.name = 'GetTransitionSettings'
+        self.datain = {}
+        self.datain['transitionSettings'] = None
         self.dataout = {}
         self.dataout['transitionName'] = None
 
@@ -5961,40 +8757,62 @@ class GetTransitionSettings(BaseRequest):
         payload['transitionName'] = transitionName
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('transitionName'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.transitionName = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.transitionName)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'GetTransitionSettings'
+            payload['transitionName'] = self.transitionName.get_data()
+            return payload
+
+        def refresh(self):
+            self.transitionName.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.transitionName.set_data(data['transitionName']) 
+
+        def to_dict(self):
+            return {
+                'transitionName': self.transitionName.get_data(),
+            }
+
 
 class SetTransitionSettings(BaseRequest):
     """Change the current settings of a transition
 
     :Arguments:
-       *transitionName*
+        *transitionName*
             type: String
             Transition name
-       *transitionSettings*
+        *transitionSettings*
             type: Object
             Transition settings (they can be partial)
     :Returns:
-       *transitionSettings*
+        *transitionSettings*
             type: Object
             Updated transition settings
     """
 
+    name = 'SetTransitionSettings'
+    category = 'transitions'
     fields = [
         'transitionName',
         'transitionSettings',
     ]
 
-    category = 'transitions'
-    
-    def __init__(self, transitionName, transitionSettings):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetTransitionSettings'
+        self.datain = {}
+        self.datain['transitionSettings'] = None
         self.dataout = {}
         self.dataout['transitionName'] = None
         self.dataout['transitionSettings'] = None
@@ -6007,14 +8825,40 @@ class SetTransitionSettings(BaseRequest):
         payload['transitionSettings'] = transitionSettings
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('transitionName'))
-            layout.add(QLabel('transitionSettings'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.transitionName = UnimplementedField('[field not implemented]')
+            self.transitionSettings = UnimplementedField('[field not implemented]')
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.transitionName)
+                layout.add(self.transitionSettings)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetTransitionSettings'
+            payload['transitionName'] = self.transitionName.get_data()
+            payload['transitionSettings'] = self.transitionSettings.get_data()
+            return payload
+
+        def refresh(self):
+            self.transitionName.refresh()
+            self.transitionSettings.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.transitionName.set_data(data['transitionName']) 
+            self.transitionSettings.set_data(data['transitionSettings']) 
+
+        def to_dict(self):
+            return {
+                'transitionName': self.transitionName.get_data(),
+                'transitionSettings': self.transitionSettings.get_data(),
+            }
+
 
 class ReleaseTBar(BaseRequest):
     """Release the T-Bar (like a user releasing their mouse button after moving it).
@@ -6022,14 +8866,12 @@ class ReleaseTBar(BaseRequest):
 
     """
 
-    fields = [
-    ]
-
+    name = 'ReleaseTBar'
     category = 'transitions'
-    
+    fields = []
+
     def __init__(self):
         super().__init__()
-        self.name = 'ReleaseTBar'
 
     @staticmethod
     def payload():
@@ -6037,11 +8879,29 @@ class ReleaseTBar(BaseRequest):
         payload['request-type'] = 'ReleaseTBar'
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(QLabel('[ request has no fields ]'))
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'ReleaseTBar'
+            return payload
+
+        def refresh(self):
+            return
+
+        def from_dict(self, data):
+            self._data = data
+
+        def to_dict(self):
+            return {
+            }
+
 
 class SetTBarPosition(BaseRequest):
     """
@@ -6049,24 +8909,23 @@ class SetTBarPosition(BaseRequest):
 If your code needs to perform multiple successive T-Bar moves (e.g. : in an animation, or in response to a user moving a T-Bar control in your User Interface), set `release` to false and call `ReleaseTBar` later once the animation/interaction is over.
 
     :Arguments:
-       *position*
+        *position*
             type: double
             T-Bar position. This value must be between 0.0 and 1.0.
-       *release*
+        *release*
             type: boolean (optional)
             Whether or not the T-Bar gets released automatically after setting its new position (like a user releasing their mouse button after moving the T-Bar). Call `ReleaseTBar` manually if you set `release` to false. Defaults to true.
     """
 
+    name = 'SetTBarPosition'
+    category = 'transitions'
     fields = [
         'position',
         'release',
     ]
 
-    category = 'transitions'
-    
-    def __init__(self, position, release=None):
+    def __init__(self):
         super().__init__()
-        self.name = 'SetTBarPosition'
         self.dataout = {}
         self.dataout['position'] = None
         self.dataout['release'] = None
@@ -6079,12 +8938,1111 @@ If your code needs to perform multiple successive T-Bar moves (e.g. : in an anim
         payload['release'] = release
         return payload
 
-    @staticmethod
-    def widget(changed):
-        w = QWidget()
-        with CHBoxLayout(w, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('position'))
-            layout.add(QLabel('release'))
-        
-        return w
+    class Widget(QWidget):
+        def __init__(self, changed=None, parent=None):
+            super().__init__(parent=parent)
+            self.changed = changed
+            self.position = UnimplementedField('[field not implemented]')
+            self.release = UnimplementedField('[field not implemented]')
 
+            with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+                layout.add(self.position)
+                layout.add(self.release)
+
+        def payload(self):
+            payload = {}
+            payload['request-type'] = 'SetTBarPosition'
+            payload['position'] = self.position.get_data()
+            payload['release'] = self.release.get_data()
+            return payload
+
+        def refresh(self):
+            self.position.refresh()
+            self.release.refresh()
+            return
+
+        def from_dict(self, data):
+            self._data = data
+            self.position.set_data(data['position']) 
+            self.release.set_data(data['release']) 
+
+        def to_dict(self):
+            return {
+                'position': self.position.get_data(),
+                'release': self.release.get_data(),
+            }
+
+
+
+
+unimplemented_fields = {
+    "Authenticate": [
+        {
+            "original_name": "auth",
+            "name": "auth",
+            "type": "String",
+            "description": "Response to the auth challenge (see \"Authentication\" for more information).",
+            "optional": false
+        }
+    ],
+    "SetFilenameFormatting": [
+        {
+            "original_name": "filename-formatting",
+            "name": "filename_formatting",
+            "type": "String",
+            "description": "Filename formatting string to set.",
+            "optional": false
+        }
+    ],
+    "BroadcastCustomMessage": [
+        {
+            "original_name": "realm",
+            "name": "realm",
+            "type": "String",
+            "description": "Identifier to be choosen by the client",
+            "optional": false
+        },
+        {
+            "original_name": "data",
+            "name": "data",
+            "type": "Object",
+            "description": "User-defined data",
+            "optional": false
+        }
+    ],
+    "OpenProjector": [
+        {
+            "original_name": "type",
+            "name": "type",
+            "type": "String (Optional)",
+            "description": "Type of projector: `Preview` (default), `Source`, `Scene`, `StudioProgram`, or `Multiview` (case insensitive).",
+            "optional": false
+        },
+        {
+            "original_name": "monitor",
+            "name": "monitor",
+            "type": "int (Optional)",
+            "description": "Monitor to open the projector on. If -1 or omitted, opens a window.",
+            "optional": false
+        },
+        {
+            "original_name": "geometry",
+            "name": "geometry",
+            "type": "String (Optional)",
+            "description": "Size and position of the projector window (only if monitor is -1). Encoded in Base64 using [Qt's geometry encoding](https://doc.qt.io/qt-5/qwidget.html#saveGeometry). Corresponds to OBS's saved projectors.",
+            "optional": false
+        },
+        {
+            "original_name": "name",
+            "name": "name",
+            "type": "String (Optional)",
+            "description": "Name of the source or scene to be displayed (ignored for other projector types).",
+            "optional": false
+        }
+    ],
+    "TriggerHotkeyByName": [
+        {
+            "original_name": "hotkeyName",
+            "name": "hotkeyName",
+            "type": "String",
+            "description": "Unique name of the hotkey, as defined when registering the hotkey (e.g. \"ReplayBuffer.Save\")",
+            "optional": false
+        }
+    ],
+    "TriggerHotkeyBySequence": [
+        {
+            "original_name": "keyId",
+            "name": "keyId",
+            "type": "String",
+            "description": "Main key identifier (e.g. `OBS_KEY_A` for key \"A\"). Available identifiers [here](https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h)",
+            "optional": false
+        },
+        {
+            "original_name": "keyModifiers",
+            "name": "keyModifiers",
+            "type": "Object (Optional)",
+            "description": "Optional key modifiers object. False entries can be ommitted",
+            "optional": false
+        }
+    ],
+    "ExecuteBatch": [
+        {
+            "original_name": "requests",
+            "name": "requests",
+            "type": "Array<Object>",
+            "description": "Array of requests to perform. Executed in order.",
+            "optional": false
+        },
+        {
+            "original_name": "abortOnFail",
+            "name": "abortOnFail",
+            "type": "boolean (Optional)",
+            "description": "Stop processing batch requests if one returns a failure.",
+            "optional": false
+        }
+    ],
+    "Sleep": [
+        {
+            "original_name": "sleepMillis",
+            "name": "sleepMillis",
+            "type": "int",
+            "description": "Delay in milliseconds to wait before continuing.",
+            "optional": false
+        }
+    ],
+    "SetMediaTime": [
+        {
+            "original_name": "timestamp",
+            "name": "timestamp",
+            "type": "int",
+            "description": "Milliseconds to set the timestamp to.",
+            "optional": false
+        }
+    ],
+    "ScrubMedia": [
+        {
+            "original_name": "timeOffset",
+            "name": "timeOffset",
+            "type": "int",
+            "description": "Millisecond offset (positive or negative) to offset the current media position.",
+            "optional": false
+        }
+    ],
+    "CreateSource": [
+        {
+            "original_name": "sourceKind",
+            "name": "sourceKind",
+            "type": "String",
+            "description": "Source kind, Eg. `vlc_source`.",
+            "optional": false
+        },
+        {
+            "original_name": "sourceSettings",
+            "name": "sourceSettings",
+            "type": "Object (optional)",
+            "description": "Source settings data.",
+            "optional": true
+        },
+        {
+            "original_name": "setVisible",
+            "name": "setVisible",
+            "type": "boolean (optional)",
+            "description": "Set the created SceneItem as visible or not. Defaults to true",
+            "optional": true
+        }
+    ],
+    "GetVolume": [
+        {
+            "original_name": "useDecibel",
+            "name": "useDecibel",
+            "type": "boolean (optional)",
+            "description": "Output volume in decibels of attenuation instead of amplitude/mul.",
+            "optional": true
+        }
+    ],
+    "SetVolume": [
+        {
+            "original_name": "volume",
+            "name": "volume",
+            "type": "double",
+            "description": "Desired volume. Must be between `0.0` and `20.0` for mul, and under 26.0 for dB. OBS will interpret dB values under -100.0 as Inf. Note: The OBS volume sliders only reach a maximum of 1.0mul/0.0dB, however OBS actually supports larger values.",
+            "optional": false
+        },
+        {
+            "original_name": "useDecibel",
+            "name": "useDecibel",
+            "type": "boolean (optional)",
+            "description": "Interperet `volume` data as decibels instead of amplitude/mul.",
+            "optional": true
+        }
+    ],
+    "SetTracks": [
+        {
+            "original_name": "track",
+            "name": "track",
+            "type": "int",
+            "description": "Audio tracks 1-6.",
+            "optional": false
+        }
+    ],
+    "SetSourceName": [
+        {
+            "original_name": "newName",
+            "name": "newName",
+            "type": "String",
+            "description": "New source name.",
+            "optional": false
+        }
+    ],
+    "SetSyncOffset": [
+        {
+            "original_name": "offset",
+            "name": "offset",
+            "type": "int",
+            "description": "The desired audio sync offset (in nanoseconds).",
+            "optional": false
+        }
+    ],
+    "GetSourceSettings": [
+        {
+            "original_name": "sourceType",
+            "name": "sourceType",
+            "type": "String (optional)",
+            "description": "Type of the specified source. Useful for type-checking if you expect a specific settings schema.",
+            "optional": true
+        }
+    ],
+    "SetSourceSettings": [
+        {
+            "original_name": "sourceType",
+            "name": "sourceType",
+            "type": "String (optional)",
+            "description": "Type of the specified source. Useful for type-checking to avoid settings a set of settings incompatible with the actual source's type.",
+            "optional": true
+        },
+        {
+            "original_name": "sourceSettings",
+            "name": "sourceSettings",
+            "type": "Object",
+            "description": "Source settings (varies between source types, may require some probing around).",
+            "optional": false
+        }
+    ],
+    "SetTextGDIPlusProperties": [
+        {
+            "original_name": "align",
+            "name": "align",
+            "type": "String (optional)",
+            "description": "Text Alignment (\"left\", \"center\", \"right\").",
+            "optional": true
+        },
+        {
+            "original_name": "bk_color",
+            "name": "bk_color",
+            "type": "int (optional)",
+            "description": "Background color.",
+            "optional": true
+        },
+        {
+            "original_name": "bk_opacity",
+            "name": "bk_opacity",
+            "type": "int (optional)",
+            "description": "Background opacity (0-100).",
+            "optional": true
+        },
+        {
+            "original_name": "chatlog",
+            "name": "chatlog",
+            "type": "boolean (optional)",
+            "description": "Chat log.",
+            "optional": true
+        },
+        {
+            "original_name": "chatlog_lines",
+            "name": "chatlog_lines",
+            "type": "int (optional)",
+            "description": "Chat log lines.",
+            "optional": true
+        },
+        {
+            "original_name": "color",
+            "name": "color",
+            "type": "int (optional)",
+            "description": "Text color.",
+            "optional": true
+        },
+        {
+            "original_name": "extents",
+            "name": "extents",
+            "type": "boolean (optional)",
+            "description": "Extents wrap.",
+            "optional": true
+        },
+        {
+            "original_name": "extents_cx",
+            "name": "extents_cx",
+            "type": "int (optional)",
+            "description": "Extents cx.",
+            "optional": true
+        },
+        {
+            "original_name": "extents_cy",
+            "name": "extents_cy",
+            "type": "int (optional)",
+            "description": "Extents cy.",
+            "optional": true
+        },
+        {
+            "original_name": "file",
+            "name": "file",
+            "type": "String (optional)",
+            "description": "File path name.",
+            "optional": true
+        },
+        {
+            "original_name": "read_from_file",
+            "name": "read_from_file",
+            "type": "boolean (optional)",
+            "description": "Read text from the specified file.",
+            "optional": true
+        },
+        {
+            "original_name": "font",
+            "name": "font",
+            "type": "Object (optional)",
+            "description": "Holds data for the font. Ex: `\"font\": { \"face\": \"Arial\", \"flags\": 0, \"size\": 150, \"style\": \"\" }`",
+            "optional": true
+        },
+        {
+            "original_name": "gradient",
+            "name": "gradient",
+            "type": "boolean (optional)",
+            "description": "Gradient enabled.",
+            "optional": true
+        },
+        {
+            "original_name": "gradient_color",
+            "name": "gradient_color",
+            "type": "int (optional)",
+            "description": "Gradient color.",
+            "optional": true
+        },
+        {
+            "original_name": "gradient_dir",
+            "name": "gradient_dir",
+            "type": "float (optional)",
+            "description": "Gradient direction.",
+            "optional": true
+        },
+        {
+            "original_name": "gradient_opacity",
+            "name": "gradient_opacity",
+            "type": "int (optional)",
+            "description": "Gradient opacity (0-100).",
+            "optional": true
+        },
+        {
+            "original_name": "outline",
+            "name": "outline",
+            "type": "boolean (optional)",
+            "description": "Outline.",
+            "optional": true
+        },
+        {
+            "original_name": "outline_color",
+            "name": "outline_color",
+            "type": "int (optional)",
+            "description": "Outline color.",
+            "optional": true
+        },
+        {
+            "original_name": "outline_size",
+            "name": "outline_size",
+            "type": "int (optional)",
+            "description": "Outline size.",
+            "optional": true
+        },
+        {
+            "original_name": "outline_opacity",
+            "name": "outline_opacity",
+            "type": "int (optional)",
+            "description": "Outline opacity (0-100).",
+            "optional": true
+        },
+        {
+            "original_name": "text",
+            "name": "text",
+            "type": "String (optional)",
+            "description": "Text content to be displayed.",
+            "optional": true
+        },
+        {
+            "original_name": "valign",
+            "name": "valign",
+            "type": "String (optional)",
+            "description": "Text vertical alignment (\"top\", \"center\", \"bottom\").",
+            "optional": true
+        },
+        {
+            "original_name": "vertical",
+            "name": "vertical",
+            "type": "boolean (optional)",
+            "description": "Vertical text enabled.",
+            "optional": true
+        },
+        {
+            "original_name": "render",
+            "name": "render",
+            "type": "boolean (optional)",
+            "description": "Visibility of the scene item.",
+            "optional": true
+        }
+    ],
+    "SetTextFreetype2Properties": [
+        {
+            "original_name": "color1",
+            "name": "color1",
+            "type": "int (optional)",
+            "description": "Gradient top color.",
+            "optional": true
+        },
+        {
+            "original_name": "color2",
+            "name": "color2",
+            "type": "int (optional)",
+            "description": "Gradient bottom color.",
+            "optional": true
+        },
+        {
+            "original_name": "custom_width",
+            "name": "custom_width",
+            "type": "int (optional)",
+            "description": "Custom width (0 to disable).",
+            "optional": true
+        },
+        {
+            "original_name": "drop_shadow",
+            "name": "drop_shadow",
+            "type": "boolean (optional)",
+            "description": "Drop shadow.",
+            "optional": true
+        },
+        {
+            "original_name": "font",
+            "name": "font",
+            "type": "Object (optional)",
+            "description": "Holds data for the font. Ex: `\"font\": { \"face\": \"Arial\", \"flags\": 0, \"size\": 150, \"style\": \"\" }`",
+            "optional": true
+        },
+        {
+            "original_name": "from_file",
+            "name": "from_file",
+            "type": "boolean (optional)",
+            "description": "Read text from the specified file.",
+            "optional": true
+        },
+        {
+            "original_name": "log_mode",
+            "name": "log_mode",
+            "type": "boolean (optional)",
+            "description": "Chat log.",
+            "optional": true
+        },
+        {
+            "original_name": "outline",
+            "name": "outline",
+            "type": "boolean (optional)",
+            "description": "Outline.",
+            "optional": true
+        },
+        {
+            "original_name": "text",
+            "name": "text",
+            "type": "String (optional)",
+            "description": "Text content to be displayed.",
+            "optional": true
+        },
+        {
+            "original_name": "text_file",
+            "name": "text_file",
+            "type": "String (optional)",
+            "description": "File path.",
+            "optional": true
+        },
+        {
+            "original_name": "word_wrap",
+            "name": "word_wrap",
+            "type": "boolean (optional)",
+            "description": "Word wrap.",
+            "optional": true
+        }
+    ],
+    "SetBrowserSourceProperties": [
+        {
+            "original_name": "is_local_file",
+            "name": "is_local_file",
+            "type": "boolean (optional)",
+            "description": "Indicates that a local file is in use.",
+            "optional": true
+        },
+        {
+            "original_name": "local_file",
+            "name": "local_file",
+            "type": "String (optional)",
+            "description": "file path.",
+            "optional": true
+        },
+        {
+            "original_name": "url",
+            "name": "url",
+            "type": "String (optional)",
+            "description": "Url.",
+            "optional": true
+        },
+        {
+            "original_name": "css",
+            "name": "css",
+            "type": "String (optional)",
+            "description": "CSS to inject.",
+            "optional": true
+        },
+        {
+            "original_name": "width",
+            "name": "width",
+            "type": "int (optional)",
+            "description": "Width.",
+            "optional": true
+        },
+        {
+            "original_name": "height",
+            "name": "height",
+            "type": "int (optional)",
+            "description": "Height.",
+            "optional": true
+        },
+        {
+            "original_name": "fps",
+            "name": "fps",
+            "type": "int (optional)",
+            "description": "Framerate.",
+            "optional": true
+        },
+        {
+            "original_name": "shutdown",
+            "name": "shutdown",
+            "type": "boolean (optional)",
+            "description": "Indicates whether the source should be shutdown when not visible.",
+            "optional": true
+        },
+        {
+            "original_name": "render",
+            "name": "render",
+            "type": "boolean (optional)",
+            "description": "Visibility of the scene item.",
+            "optional": true
+        }
+    ],
+    "AddFilterToSource": [
+        {
+            "original_name": "filterType",
+            "name": "filterType",
+            "type": "String",
+            "description": "Filter type",
+            "optional": false
+        },
+        {
+            "original_name": "filterSettings",
+            "name": "filterSettings",
+            "type": "Object",
+            "description": "Filter settings",
+            "optional": false
+        }
+    ],
+    "ReorderSourceFilter": [
+        {
+            "original_name": "newIndex",
+            "name": "newIndex",
+            "type": "Integer",
+            "description": "Desired position of the filter in the chain",
+            "optional": false
+        }
+    ],
+    "MoveSourceFilter": [
+        {
+            "original_name": "movementType",
+            "name": "movementType",
+            "type": "String",
+            "description": "How to move the filter around in the source's filter chain. Either \"up\", \"down\", \"top\" or \"bottom\".",
+            "optional": false
+        }
+    ],
+    "SetSourceFilterSettings": [
+        {
+            "original_name": "filterSettings",
+            "name": "filterSettings",
+            "type": "Object",
+            "description": "New settings. These will be merged to the current filter settings.",
+            "optional": false
+        }
+    ],
+    "SetAudioMonitorType": [
+        {
+            "original_name": "monitorType",
+            "name": "monitorType",
+            "type": "String",
+            "description": "The monitor type to use. Options: `none`, `monitorOnly`, `monitorAndOutput`.",
+            "optional": false
+        }
+    ],
+    "GetSourceDefaultSettings": [
+        {
+            "original_name": "sourceKind",
+            "name": "sourceKind",
+            "type": "String",
+            "description": "Source kind. Also called \"source id\" in libobs terminology.",
+            "optional": false
+        }
+    ],
+    "TakeSourceScreenshot": [
+        {
+            "original_name": "embedPictureFormat",
+            "name": "embedPictureFormat",
+            "type": "String (optional)",
+            "description": "Format of the Data URI encoded picture. Can be \"png\", \"jpg\", \"jpeg\" or \"bmp\" (or any other value supported by Qt's Image module)",
+            "optional": true
+        },
+        {
+            "original_name": "saveToFilePath",
+            "name": "saveToFilePath",
+            "type": "String (optional)",
+            "description": "Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path.",
+            "optional": true
+        },
+        {
+            "original_name": "fileFormat",
+            "name": "fileFormat",
+            "type": "String (optional)",
+            "description": "Format to save the image file as (one of the values provided in the `supported-image-export-formats` response field of `GetVersion`). If not specified, tries to guess based on file extension.",
+            "optional": true
+        },
+        {
+            "original_name": "compressionQuality",
+            "name": "compressionQuality",
+            "type": "int (optional)",
+            "description": "Compression ratio between -1 and 100 to write the image with. -1 is automatic, 1 is smallest file/most compression, 100 is largest file/least compression. Varies with image type.",
+            "optional": true
+        },
+        {
+            "original_name": "width",
+            "name": "width",
+            "type": "int (optional)",
+            "description": "Screenshot width. Defaults to the source's base width.",
+            "optional": true
+        },
+        {
+            "original_name": "height",
+            "name": "height",
+            "type": "int (optional)",
+            "description": "Screenshot height. Defaults to the source's base height.",
+            "optional": true
+        }
+    ],
+    "GetOutputInfo": [
+        {
+            "original_name": "outputName",
+            "name": "outputName",
+            "type": "String",
+            "description": "Output name",
+            "optional": false
+        }
+    ],
+    "StartOutput": [
+        {
+            "original_name": "outputName",
+            "name": "outputName",
+            "type": "String",
+            "description": "Output name",
+            "optional": false
+        }
+    ],
+    "StopOutput": [
+        {
+            "original_name": "outputName",
+            "name": "outputName",
+            "type": "String",
+            "description": "Output name",
+            "optional": false
+        },
+        {
+            "original_name": "force",
+            "name": "force",
+            "type": "boolean (optional)",
+            "description": "Force stop (default: false)",
+            "optional": true
+        }
+    ],
+    "SetCurrentProfile": [
+        {
+            "original_name": "profile-name",
+            "name": "profile_name",
+            "type": "String",
+            "description": "Name of the desired profile.",
+            "optional": false
+        }
+    ],
+    "SetRecordingFolder": [
+        {
+            "original_name": "rec-folder",
+            "name": "rec_folder",
+            "type": "String",
+            "description": "Path of the recording folder.",
+            "optional": false
+        }
+    ],
+    "SetCurrentSceneCollection": [
+        {
+            "original_name": "sc-name",
+            "name": "sc_name",
+            "type": "String",
+            "description": "Name of the desired scene collection.",
+            "optional": false
+        }
+    ],
+    "GetSceneItemProperties": [
+        {
+            "original_name": "item",
+            "name": "item",
+            "type": "String | Object",
+            "description": "Scene Item name (if this field is a string) or specification (if it is an object).",
+            "optional": false
+        }
+    ],
+    "SetSceneItemProperties": [
+        {
+            "original_name": "item",
+            "name": "item",
+            "type": "String | Object",
+            "description": "Scene Item name (if this field is a string) or specification (if it is an object).",
+            "optional": false
+        },
+        {
+            "original_name": "position",
+            "name": "position",
+            "type": "double (optional)",
+            "description": "The new x position of the source.",
+            "optional": true
+        },
+        {
+            "original_name": "rotation",
+            "name": "rotation",
+            "type": "double (optional)",
+            "description": "The new clockwise rotation of the item in degrees.",
+            "optional": true
+        },
+        {
+            "original_name": "scale",
+            "name": "scale",
+            "type": "double (optional)",
+            "description": "The new x scale of the item.",
+            "optional": true
+        },
+        {
+            "original_name": "crop",
+            "name": "crop",
+            "type": "int (optional)",
+            "description": "The new amount of pixels cropped off the top of the source before scaling.",
+            "optional": true
+        },
+        {
+            "original_name": "visible",
+            "name": "visible",
+            "type": "bool (optional)",
+            "description": "The new visibility of the source. 'true' shows source, 'false' hides source.",
+            "optional": true
+        },
+        {
+            "original_name": "locked",
+            "name": "locked",
+            "type": "bool (optional)",
+            "description": "The new locked status of the source. 'true' keeps it in its current position, 'false' allows movement.",
+            "optional": true
+        },
+        {
+            "original_name": "bounds",
+            "name": "bounds",
+            "type": "String (optional)",
+            "description": "The new bounds type of the source. Can be \"OBS_BOUNDS_STRETCH\", \"OBS_BOUNDS_SCALE_INNER\", \"OBS_BOUNDS_SCALE_OUTER\", \"OBS_BOUNDS_SCALE_TO_WIDTH\", \"OBS_BOUNDS_SCALE_TO_HEIGHT\", \"OBS_BOUNDS_MAX_ONLY\" or \"OBS_BOUNDS_NONE\".",
+            "optional": true
+        }
+    ],
+    "ResetSceneItem": [
+        {
+            "original_name": "item",
+            "name": "item",
+            "type": "String | Object",
+            "description": "Scene Item name (if this field is a string) or specification (if it is an object).",
+            "optional": false
+        }
+    ],
+    "SetSceneItemRender": [
+        {
+            "original_name": "item",
+            "name": "item",
+            "type": "int (optional)",
+            "description": "Scene Item id",
+            "optional": true
+        }
+    ],
+    "SetSceneItemPosition": [
+        {
+            "original_name": "item",
+            "name": "item",
+            "type": "String",
+            "description": "Scene Item name.",
+            "optional": false
+        },
+        {
+            "original_name": "x",
+            "name": "x",
+            "type": "double",
+            "description": "X coordinate.",
+            "optional": false
+        },
+        {
+            "original_name": "y",
+            "name": "y",
+            "type": "double",
+            "description": "Y coordinate.",
+            "optional": false
+        }
+    ],
+    "SetSceneItemTransform": [
+        {
+            "original_name": "item",
+            "name": "item",
+            "type": "String",
+            "description": "Scene Item name.",
+            "optional": false
+        },
+        {
+            "original_name": "x-scale",
+            "name": "x_scale",
+            "type": "double",
+            "description": "Width scale factor.",
+            "optional": false
+        },
+        {
+            "original_name": "y-scale",
+            "name": "y_scale",
+            "type": "double",
+            "description": "Height scale factor.",
+            "optional": false
+        },
+        {
+            "original_name": "rotation",
+            "name": "rotation",
+            "type": "double",
+            "description": "Source item rotation (in degrees).",
+            "optional": false
+        }
+    ],
+    "SetSceneItemCrop": [
+        {
+            "original_name": "item",
+            "name": "item",
+            "type": "String",
+            "description": "Scene Item name.",
+            "optional": false
+        },
+        {
+            "original_name": "top",
+            "name": "top",
+            "type": "int",
+            "description": "Pixel position of the top of the source item.",
+            "optional": false
+        },
+        {
+            "original_name": "bottom",
+            "name": "bottom",
+            "type": "int",
+            "description": "Pixel position of the bottom of the source item.",
+            "optional": false
+        },
+        {
+            "original_name": "left",
+            "name": "left",
+            "type": "int",
+            "description": "Pixel position of the left of the source item.",
+            "optional": false
+        },
+        {
+            "original_name": "right",
+            "name": "right",
+            "type": "int",
+            "description": "Pixel position of the right of the source item.",
+            "optional": false
+        }
+    ],
+    "DeleteSceneItem": [
+        {
+            "original_name": "scene",
+            "name": "scene",
+            "type": "String (optional)",
+            "description": "Name of the scene the scene item belongs to. Defaults to the current scene.",
+            "optional": true
+        },
+        {
+            "original_name": "item",
+            "name": "item",
+            "type": "Object",
+            "description": "Scene item to delete (required)",
+            "optional": false
+        }
+    ],
+    "AddSceneItem": [
+        {
+            "original_name": "setVisible",
+            "name": "setVisible",
+            "type": "boolean (optional)",
+            "description": "Whether to make the sceneitem visible on creation or not. Default `true`",
+            "optional": true
+        }
+    ],
+    "DuplicateSceneItem": [
+        {
+            "original_name": "fromScene",
+            "name": "fromScene",
+            "type": "String (optional)",
+            "description": "Name of the scene to copy the item from. Defaults to the current scene.",
+            "optional": true
+        },
+        {
+            "original_name": "toScene",
+            "name": "toScene",
+            "type": "String (optional)",
+            "description": "Name of the scene to create the item in. Defaults to the current scene.",
+            "optional": true
+        },
+        {
+            "original_name": "item",
+            "name": "item",
+            "type": "Object",
+            "description": "Scene Item to duplicate from the source scene (required)",
+            "optional": false
+        }
+    ],
+    "ReorderSceneItems": [
+        {
+            "original_name": "scene",
+            "name": "scene",
+            "type": "String (optional)",
+            "description": "Name of the scene to reorder (defaults to current).",
+            "optional": true
+        },
+        {
+            "original_name": "items",
+            "name": "items",
+            "type": "Array<Scene>",
+            "description": "Ordered list of objects with name and/or id specified. Id preferred due to uniqueness per scene",
+            "optional": false
+        }
+    ],
+    "SetSceneTransitionOverride": [
+        {
+            "original_name": "transitionName",
+            "name": "transitionName",
+            "type": "String",
+            "description": "Name of the transition to use.",
+            "optional": false
+        },
+        {
+            "original_name": "transitionDuration",
+            "name": "transitionDuration",
+            "type": "int (Optional)",
+            "description": "Duration in milliseconds of the transition if transition is not fixed. Defaults to the current duration specified in the UI if there is no current override and this value is not given.",
+            "optional": false
+        }
+    ],
+    "StartStreaming": [
+        {
+            "original_name": "stream",
+            "name": "stream",
+            "type": "Object (optional)",
+            "description": "Special stream configuration. Note: these won't be saved to OBS' configuration.",
+            "optional": true
+        }
+    ],
+    "SetStreamSettings": [
+        {
+            "original_name": "type",
+            "name": "type",
+            "type": "String",
+            "description": "The type of streaming service configuration, usually `rtmp_custom` or `rtmp_common`.",
+            "optional": false
+        },
+        {
+            "original_name": "settings",
+            "name": "settings",
+            "type": "Object",
+            "description": "The actual settings of the stream.",
+            "optional": false
+        }
+    ],
+    "SendCaptions": [
+        {
+            "original_name": "text",
+            "name": "text",
+            "type": "String",
+            "description": "Captions text",
+            "optional": false
+        }
+    ],
+    "TransitionToProgram": [
+        {
+            "original_name": "with-transition",
+            "name": "with_transition",
+            "type": "Object (optional)",
+            "description": "Change the active transition before switching scenes. Defaults to the active transition.",
+            "optional": true
+        }
+    ],
+    "SetCurrentTransition": [
+        {
+            "original_name": "transition-name",
+            "name": "transition_name",
+            "type": "String",
+            "description": "The name of the transition.",
+            "optional": false
+        }
+    ],
+    "SetTransitionDuration": [
+        {
+            "original_name": "duration",
+            "name": "duration",
+            "type": "int",
+            "description": "Desired duration of the transition (in milliseconds).",
+            "optional": false
+        }
+    ],
+    "GetTransitionSettings": [
+        {
+            "original_name": "transitionName",
+            "name": "transitionName",
+            "type": "String",
+            "description": "Transition name",
+            "optional": false
+        }
+    ],
+    "SetTransitionSettings": [
+        {
+            "original_name": "transitionName",
+            "name": "transitionName",
+            "type": "String",
+            "description": "Transition name",
+            "optional": false
+        },
+        {
+            "original_name": "transitionSettings",
+            "name": "transitionSettings",
+            "type": "Object",
+            "description": "Transition settings (they can be partial)",
+            "optional": false
+        }
+    ],
+    "SetTBarPosition": [
+        {
+            "original_name": "position",
+            "name": "position",
+            "type": "double",
+            "description": "T-Bar position. This value must be between 0.0 and 1.0.",
+            "optional": false
+        },
+        {
+            "original_name": "release",
+            "name": "release",
+            "type": "boolean (optional)",
+            "description": "Whether or not the T-Bar gets released automatically after setting its new position (like a user releasing their mouse button after moving the T-Bar). Call `ReleaseTBar` manually if you set `release` to false. Defaults to true.",
+            "optional": true
+        }
+    ]
+}

@@ -4,6 +4,7 @@ from stagehand.obs import requests
 import qtawesome as qta
 from .action_editor import ActionEditorDialog
 import abc
+import json
 
 
 class ActionStackItem:
@@ -23,10 +24,14 @@ class ActionStackItem:
     def run(self) -> None:
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def reset(self):
+        pass
+
 
 class SandboxActionWidget(QWidget, ActionStackItem):
-    def __init__(self, changed):
-        super().__init__()
+    def __init__(self, changed, parent=None):
+        super().__init__(parent=parent)
         
         self.action = QLineEdit()
         self.action.textChanged.connect(changed)
@@ -63,8 +68,11 @@ class SandboxActionWidget(QWidget, ActionStackItem):
             'action': self.action.text()
         }
 
+    def reset(self):
+        self.action.clear()
+
     def run(self):
-        Sandbox().run(self.action.text())
+        Sandbox().run(self.action.text(), caller=self.parent())
 
 
 class ActionStack(QWidget):
@@ -106,6 +114,10 @@ class ActionStack(QWidget):
 
     def run(self):
         self.stack.currentWidget().run()
+
+    def reset(self):
+        self.type.setCurrentText('sandbox')
+        self.stack.currentWidget().reset()
 
 
 class ActionWidget(QWidget):
@@ -171,13 +183,22 @@ class ActionWidget(QWidget):
         menu = QMenu()
         menu.addAction(QAction('Run', self, triggered=self.run))
         menu.addAction(QAction('Rename', self, triggered=self.label.start_editing))
+        menu.addAction(QAction('Copy', self, triggered=self.copy))
+        menu.addAction(QAction('Paste', self, triggered=self.paste))
         menu.addAction(QAction('Reset', self, triggered=self.reset))
         menu.exec_(event.globalPos())
 
+    def copy(self):
+        data = self.action.to_dict()
+        QClipboard().setText(json.dumps(data))
+
+    def paste(self):
+        data = QClipboard().text()
+        self.action.set_data(json.loads(data))
+
     def reset(self):
         self.label.setText(self.name)
-        self.action.clear()
-        QSettings().setValue(f'{self.name}_label', self.name)
+        self.action.reset()
         self.on_change()
 
     def run(self):
