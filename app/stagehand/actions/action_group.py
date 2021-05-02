@@ -6,6 +6,7 @@ class ActionWidgetGroup(QObject):
 
     def __init__(self, name, parent=None):
         super().__init__(parent=parent)
+        self.this = parent
         self.name = name
         self.actions = []
         self.load()
@@ -15,6 +16,7 @@ class ActionWidgetGroup(QObject):
         if action.name in self.prev_data:
             action.set_data(self.prev_data[action.name])
         action.changed.connect(self.on_action_change)
+        action.stack.stack.widget(0).this = self.this
 
     def on_action_change(self):
         self.save()

@@ -37,10 +37,11 @@ class _Sandbox(QWidget):
     def reset_environment(self):
         self._data = {}
         self._globals = {
-            'save': self._save, 
-            'load': self._load, 
-            'data': self._data, 
+            'save': self._save,
+            'load': self._load,
+            'data': self._data,
             'print': self.tools.print,
+            'this': None,
             **self.extensions,
         }
         self._locals = {
@@ -64,16 +65,19 @@ class _Sandbox(QWidget):
             error_cb(error)
 
     @Slot()
-    def run(self, text, error_cb=None):
+    def run(self, text, this=None, error_cb=None):
         if text == '':
             return
 
         error = ''
         try:
             code = compile(text, '', 'exec')
+            self._globals['this'] = this
             exec(code, self._globals, self._locals)
         except Exception as e:
             error = str(e)
+
+        self._globals['this'] = None
 
         if error_cb:
             error_cb(error)

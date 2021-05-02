@@ -33,6 +33,7 @@ class SandboxActionWidget(QWidget, ActionStackItem):
     def __init__(self, changed, parent=None):
         super().__init__(parent=parent)
         
+        self.this = None
         self.action = QLineEdit()
         self.action.textChanged.connect(changed)
         self.changed = changed
@@ -72,7 +73,7 @@ class SandboxActionWidget(QWidget, ActionStackItem):
         self.action.clear()
 
     def run(self):
-        Sandbox().run(self.action.text(), caller=self.parent())
+        Sandbox().run(self.action.text(), this=self.this)
 
 
 class ActionStack(QWidget):
@@ -148,7 +149,7 @@ class ActionWidget(QWidget):
                 action_type = data['type']
 
         self.label = LabelEdit(label, changed=self.on_change)
-        self.action = ActionStack(self.on_change, action_type, action)
+        self.stack = ActionStack(self.on_change, action_type, action)
 
         if group:
             group.register(self)
@@ -162,19 +163,19 @@ class ActionWidget(QWidget):
 
         with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
             layout.add(self.label)
-            layout.add(self.action, 1)
+            layout.add(self.stack, 1)
             layout.add(self.run_btn)
 
     def to_dict(self):
         return {
             'name': self.name,
             'label': self.label.text(),
-            **self.action.to_dict()
+            **self.stack.to_dict()
         }
 
     def set_data(self, data):
         self.label.setText(data['label'])
-        self.action.set_data(data)
+        self.stack.set_data(data)
 
     def on_change(self):
         self.changed.emit()
@@ -189,17 +190,17 @@ class ActionWidget(QWidget):
         menu.exec_(event.globalPos())
 
     def copy(self):
-        data = self.action.to_dict()
+        data = self.stack.to_dict()
         QClipboard().setText(json.dumps(data))
 
     def paste(self):
         data = QClipboard().text()
-        self.action.set_data(json.loads(data))
+        self.stack.set_data(json.loads(data))
 
     def reset(self):
         self.label.setText(self.name)
-        self.action.reset()
+        self.stack.reset()
         self.on_change()
 
     def run(self):
-        self.action.run()
+        self.stack.run()
