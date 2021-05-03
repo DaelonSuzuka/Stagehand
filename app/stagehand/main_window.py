@@ -92,7 +92,6 @@ class MainWindow(BaseMainWindow):
         self.status.addSeparator()
         
         self.status.add_spacer()
-        # self.status.addWidget(self.minimize_to_tray)
         self.status.addSeparator()
         self.status.addWidget(self.obs.status_widget)
 
