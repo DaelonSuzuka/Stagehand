@@ -118,7 +118,7 @@ def collect_returns(data):
     return returns
 
 
-def write_class(w, i, event):
+def build_request(w, i, event):
     # gather class info
     name = i['name']
     description = i['description']
@@ -167,13 +167,6 @@ def write_class(w, i, event):
 
         # init method
         w.line("def __init__(self):")
-        # w.line("def __init__({}):".format(
-        #     ", ".join(
-        #         ["self"]
-        #         + [clean_var(a['name']) for a in fields if not a['optional']]
-        #         + [clean_var(a['name']) + "=None" for a in fields if a['optional']]
-        #     )
-        # ))
         with w:
             w.line("super().__init__()")
             # datain
@@ -193,8 +186,7 @@ def write_class(w, i, event):
                     w.line(f"self.dataout['{a['name']}'] = {None}")
             w.line()
 
-        
-        # build payload
+        # send the request by calling
         w.line("def __call__({}):".format(
             ", ".join(
                 ['self']
@@ -226,6 +218,54 @@ def write_class(w, i, event):
                 w.line(f"payload['{field['original_name']}'] = {field['name']}")
             w.line("return payload")
             w.line()
+        w.line()
+
+
+def build_event(w, i, event):
+    # gather class info
+    name = i['name']
+    description = i['description']
+
+    fields = collect_fields(i)
+    returns = collect_returns(i)
+
+    # 
+    w.line(f"class {name}({classname[event]}):")
+    with w:
+        w.line(f'"""{description}')
+        w.line()
+        if fields:
+            w.line(":Arguments:")
+        for field in fields:
+            with w:
+                w.line(f"*{clean_var(field['name'])}*")
+                with w:
+                    w.line(f"type: {field['type']}")
+                    w.line(f"{field['description']}")
+
+        if returns:
+            w.line(":Returns:")
+        for ret in returns:
+            with w:
+                w.line(f"*{clean_var(ret['name'])}*")
+                with w:
+                    w.line(f"type: {ret['type']}")
+                    w.line(f"{ret['description']}")
+
+        w.line('"""')
+
+        w.line() # init method
+        w.line("def __init__(self):")
+        # w.line("def __init__({}):".format(
+        #     ", ".join(
+        #         ["self"]
+        #         + [clean_var(a['name']) for a in fields if not a['optional']]
+        #         + [clean_var(a['name']) + "=None" for a in fields if a['optional']]
+        #     )
+        # ))
+        with w:
+            w.line("super().__init__()")
+        w.line()
         w.line()
 
 
@@ -321,21 +361,11 @@ def generate_classes():
     with open(Path(__file__).parent / 'requests.py', 'w') as f:
         w = Writer(f.write)
 
-        # w.line("from .base_classes import *")
-        w.line("from qtstrap import *")
         w.line("from stagehand.sandbox import Sandbox")
         w.line()
         w.line()
-
-        w.line("categories = [")
-        with w:
-            for sec in data[event]:
-                w.line(f"'{sec}',")
-        w.line("]")
-        w.line()
-        w.line()
         
-        w.line('class BaseRequest:')
+        w.line(f'class {classname[event]}:')
         with w:
             w.line('def __init__(self):')
             with w:
@@ -346,7 +376,7 @@ def generate_classes():
         classes = []
         for sec in data[event]:
             for i in data[event][sec]:
-                write_class(w, i, event)
+                build_request(w, i, event)
                 classes.append(i['name'])
 
         w.line()
@@ -357,24 +387,13 @@ def generate_classes():
                 w.line(f"'{c}': {c}(),")
         w.line("}")
 
-        # print(f"number of incomplete requests: {len(unimplemented_fields)}")
-        # f.write("unimplemented_fields = ")
-        # f.write(json.dumps(unimplemented_fields, indent=4))
-
+    event = 'requests'
     with open(Path(__file__).parent / 'request_widgets.py', 'w') as f:
         w = Writer(f.write)
 
         w.line("from .base_classes import *")
         w.line("from qtstrap import *")
         w.line("from stagehand.sandbox import Sandbox")
-        w.line()
-        w.line()
-        
-        w.line("categories = [")
-        with w:
-            for sec in data[event]:
-                w.line(f"'{sec}',")
-        w.line("]")
         w.line()
         w.line()
 
@@ -390,6 +409,36 @@ def generate_classes():
         with w:
             for c in classes:
                 w.line(f"'{c}': {c}Widget,")
+        w.line("}")
+
+    event = 'events'
+    with open(Path(__file__).parent / 'events.py', 'w') as f:
+        w = Writer(f.write)
+
+        w.line("from stagehand.sandbox import Sandbox")
+        w.line()
+        w.line()
+        
+        w.line(f'class {classname[event]}:')
+        with w:
+            w.line('def __init__(self):')
+            with w:
+                w.line('pass')
+        w.line()
+        w.line()
+
+        classes = []
+        for sec in data[event]:
+            for i in data[event][sec]:
+                build_event(w, i, event)
+                classes.append(i['name'])
+
+        w.line()
+        w.line()
+        w.line("events = {")
+        with w:
+            for c in classes:
+                w.line(f"'{c}': {c}(),")
         w.line("}")
 
     print("API classes have been generated.")

@@ -3,23 +3,6 @@ from qtstrap import *
 from stagehand.sandbox import Sandbox
 
 
-categories = [
-    'general',
-    'media control',
-    'sources',
-    'outputs',
-    'profiles',
-    'recording',
-    'replay buffer',
-    'scene collections',
-    'scene items',
-    'scenes',
-    'streaming',
-    'studio mode',
-    'transitions',
-]
-
-
 class GetVersionWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
