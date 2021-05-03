@@ -21,12 +21,16 @@ class SceneSelector(QComboBox):
         if changed:
             self.currentIndexChanged.connect(changed)
 
+        self.refresh()
+
     def refresh(self):
         def cb(msg):
             scenes = [s['name'] for s in msg['scenes']]
             value = self.currentText()
+            self.blockSignals(True)
             self.clear()
             self.addItems(scenes)
+            self.blockSignals(False)
             if value in scenes:
                 self.setCurrentText(value)
             self.changed()
@@ -52,12 +56,13 @@ class SourceSelector(QComboBox):
         self.refresh()
 
     def refresh(self):
-        print('SourceSelector.refresh')
         def cb(msg):
             sources = [s['name'] for s in msg['sources']]
             value = self.currentText()
+            self.blockSignals(True)
             self.clear()
             self.addItems(sources)
+            self.blockSignals(False)
             if value in sources:
                 self.setCurrentText(value)
             self.changed()
@@ -89,8 +94,10 @@ class FilterSelector(QComboBox):
             def cb(msg):
                 filters = [s['name'] for s in msg['filters']]
                 value = self.currentText()
+                self.blockSignals(True)
                 self.clear()
                 self.addItems(filters)
+                self.blockSignals(False)
                 if value in filters:
                     self.setCurrentText(value)
                 self.changed()
