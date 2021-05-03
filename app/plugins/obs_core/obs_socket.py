@@ -7,9 +7,6 @@ import queue
 
 
 class ObsSocket(QObject):
-    def __init__(self, parent=None):
-        super().__init__(parent=parent)
-
     status_changed = Signal(str)
     message_received = Signal(dict)
     raw_message_received = Signal(str)
