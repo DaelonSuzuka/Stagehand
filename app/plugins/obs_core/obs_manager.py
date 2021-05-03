@@ -1,9 +1,5 @@
 from qtstrap import *
-from qtpy.QtWebSockets import *
-import json
-import base64
-import hashlib
-import queue
+from .obs_socket import ObsSocket
 
 
 class ObsStatusWidget(QWidget):
@@ -26,17 +22,8 @@ class ObsManager(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
-        self.id = 0
-        self.active = False
-
-        self.socket = QWebSocket()
-        self.socket.connected.connect(self.connected)
-        self.socket.disconnected.connect(self.disconnected)
-        self.socket.textMessageReceived.connect(self.recieve)
-
-        self.queue = queue.Queue()
-        self.history = {}
-        self.callbacks = {}
+        self.socket = ObsSocket()
+        self.socket.status_changed.connect(self.set_status)
 
         self.status = QLabel('Not Connected')
         self.status_widget = ObsStatusWidget()
@@ -102,100 +89,22 @@ class ObsManager(QWidget):
 
     def set_status(self, status):
         if status == 'active':
-            self.active = True
             self.status.setText('Connected')
             self.status_widget.setText('Connected')
             self.connect_btn.setText('Disconnect')
-            self.socket_connected.emit()
-            self.process_queue()
 
         elif status == 'inactive':
-            self.active = False
             self.status.setText('Not Connected')
             self.status_widget.setText('Not Connected')
             self.connect_btn.setText('Connect')
 
         elif status == 'failed':
-            self.active = False
             self.status.setText('Authentication Failed')
             self.status_widget.setText('Not Connected')
             self.connect_btn.setText('Connect')
 
-    def connected(self):
-        self.lock()
-
-        def auth_cb(msg):
-            if msg['authRequired']:
-                # apparently this is how you process the challege/response
-                # this is shamelessly lifted from obs-websocket-py:
-                # https://github.com/Elektordi/obs-websocket-py/blob/master/obswebsocket/core.py#L120
-                secret = base64.b64encode(
-                    hashlib.sha256(
-                        (self.password.text() + msg['salt']).encode('utf-8')
-                    ).digest()
-                )
-                auth = base64.b64encode(
-                    hashlib.sha256(
-                        secret + msg['challenge'].encode('utf-8')
-                    ).digest()
-                ).decode('utf-8')
-
-                auth_payload = {
-                    "request-type": "Authenticate",
-                    "auth": auth,
-                }
-
-                def auth_cb2(msg):
-                    if msg['status'] == 'error':
-                        if msg['error'] == 'Authentication Failed.':
-                            self.unlock()
-                            self.set_status('failed')
-
-                    elif msg['status'] == 'ok':
-                        self.set_status('active')
-
-                self._send(auth_payload, auth_cb2)
-            else:
-                self.set_status('active')
-
-        self._send({"request-type": "GetAuthRequired"}, auth_cb)
-
-    def disconnected(self):
-        self.unlock()
-        self.set_status('inactive')
-
     def open(self):
-        address = f'ws://{self.url.text()}:{self.port.text()}'
-        self.socket.open(QUrl(address))
-
-    def _send(self, payload, callback=None):
-        payload['message-id'] = str(self.id)
-        self.history[self.id] = payload
-
-        if callback:
-            self.callbacks[str(self.id)] = callback
-
-        message = json.dumps(payload)
-        self.socket.sendTextMessage(message)
-        self.id += 1
+        self.socket.open(self.url.text(), self.port.text(), self.password.text())
 
     def send(self, payload, callback=None):
-        if self.active:
-            self._send(payload, callback)
-        else:
-            self.queue.put((payload, callback))
-
-    def process_queue(self):
-        while not self.queue.empty():
-            payload, callback = self.queue.get()
-            self._send(payload, callback)
-
-    def recieve(self, message):
-        self.raw_message_received.emit(message)
-        msg = json.loads(message)
-        self.message_received.emit(msg)
-
-        # process callbacks
-        if 'message-id' in msg:
-            if msg['message-id'] in self.callbacks:
-                self.callbacks[msg['message-id']](msg)
+        self.socket.send(payload, callback)
