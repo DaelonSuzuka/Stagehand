@@ -2,7 +2,6 @@ from qtstrap import *
 from stagehand.sandbox import Sandbox
 from stagehand.actions import ActionStackItem
 from .obs_extension import ObsExtension
-from .obs_api import api
 from .requests import requests
 from .request_widgets import widgets
 

@@ -30,7 +30,7 @@ class _Plugins:
         return self._plugins
 
     def __getattr__(self, name):
-        return self._plugins[name]
+        return self._plugins['plugins.' + name]
     
     def __contains__(self, key):
         return key in self._plugins

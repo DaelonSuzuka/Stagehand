@@ -1,13 +1,13 @@
 from qtstrap import *
 from codex import DeviceControlsDockWidget
 from .mic_voter import MicVoterWidget
-from .obs import ObsManager
 from .sandbox import Sandbox
 import qtawesome as qta
 from .generic_actions import GenericActionsWidget
 from .web_interface import WebInterfaceManager
 from .about import AboutDialog
 from .input_devices import InputDeviceManager
+from .plugin_loader import Plugins
 
 
 class FontSizeMenu(QMenu):
@@ -40,7 +40,7 @@ class MainWindow(BaseMainWindow):
         self.about = AboutDialog(self)
         self.device_controls = DeviceControlsDockWidget(self)
         
-        self.obs = ObsManager(self)
+        self.obs = Plugins().obs_core.ObsManager(self)
         self.sandbox = Sandbox(self.obs, self)
         if not self.restoreDockWidget(self.sandbox.tools_dock):
             self.addDockWidget(self.sandbox.tools_dock.starting_area, self.sandbox.tools_dock)
