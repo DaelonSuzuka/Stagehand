@@ -1,7 +1,6 @@
 from qtstrap import *
 from stagehand.sandbox import Sandbox
 from stagehand.actions import ActionStackItem
-from .obs_extension import ObsExtension
 from .requests import requests
 from .request_widgets import widgets
 
@@ -10,8 +9,6 @@ class ObsActionWidget(QWidget, ActionStackItem):
     def __init__(self, changed):
         super().__init__()
         self.changed = changed
-
-        self.obs = ObsExtension()
 
         self.request_widget = None
 
