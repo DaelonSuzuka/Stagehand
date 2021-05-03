@@ -200,7 +200,7 @@ def build_request(w, i, event):
             w.line(f"payload['request-type'] = '{i['name']}'")
             for field in fields:
                 w.line(f"payload['{field['original_name']}'] = {field['name']}")
-            w.line("Sandbox().obs.send(payload, cb)")
+            w.line("ObsSocket().send(payload, cb)")
             w.line()
 
         # build payload
@@ -362,6 +362,7 @@ def generate_classes():
         w = Writer(f.write)
 
         w.line("from stagehand.sandbox import Sandbox")
+        w.line("from .obs_socket import ObsSocket")
         w.line()
         w.line()
         

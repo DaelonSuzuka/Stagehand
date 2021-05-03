@@ -1,4 +1,5 @@
 from stagehand.sandbox import Sandbox
+from .obs_socket import ObsSocket
 
 
 class BaseRequest:
@@ -43,7 +44,7 @@ class GetVersion(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'GetVersion'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -82,7 +83,7 @@ and `salt` (see "Authentication" for more information).
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'GetAuthRequired'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -115,7 +116,7 @@ class Authenticate(BaseRequest):
         payload = {}
         payload['request-type'] = 'Authenticate'
         payload['auth'] = auth
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(auth):
@@ -149,7 +150,7 @@ class SetHeartbeat(BaseRequest):
         payload = {}
         payload['request-type'] = 'SetHeartbeat'
         payload['enable'] = enable
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(enable):
@@ -183,7 +184,7 @@ class SetFilenameFormatting(BaseRequest):
         payload = {}
         payload['request-type'] = 'SetFilenameFormatting'
         payload['filename-formatting'] = filename_formatting
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(filename_formatting):
@@ -214,7 +215,7 @@ class GetFilenameFormatting(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'GetFilenameFormatting'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -244,7 +245,7 @@ class GetStats(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'GetStats'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -283,7 +284,7 @@ class BroadcastCustomMessage(BaseRequest):
         payload['request-type'] = 'BroadcastCustomMessage'
         payload['realm'] = realm
         payload['data'] = data
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(realm, data):
@@ -347,7 +348,7 @@ class GetVideoInfo(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'GetVideoInfo'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -398,7 +399,7 @@ class OpenProjector(BaseRequest):
         payload['monitor'] = monitor
         payload['geometry'] = geometry
         payload['name'] = name
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(type, monitor, geometry, name):
@@ -435,7 +436,7 @@ class TriggerHotkeyByName(BaseRequest):
         payload = {}
         payload['request-type'] = 'TriggerHotkeyByName'
         payload['hotkeyName'] = hotkeyName
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(hotkeyName):
@@ -475,7 +476,7 @@ class TriggerHotkeyBySequence(BaseRequest):
         payload['request-type'] = 'TriggerHotkeyBySequence'
         payload['keyId'] = keyId
         payload['keyModifiers'] = keyModifiers
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(keyId, keyModifiers):
@@ -522,7 +523,7 @@ class ExecuteBatch(BaseRequest):
         payload['request-type'] = 'ExecuteBatch'
         payload['requests'] = requests
         payload['abortOnFail'] = abortOnFail
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(requests, abortOnFail):
@@ -557,7 +558,7 @@ class Sleep(BaseRequest):
         payload = {}
         payload['request-type'] = 'Sleep'
         payload['sleepMillis'] = sleepMillis
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sleepMillis):
@@ -598,7 +599,7 @@ Note :Leaving out `playPause` toggles the current pause state
         payload['request-type'] = 'PlayPauseMedia'
         payload['sourceName'] = sourceName
         payload['playPause'] = playPause
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName, playPause):
@@ -633,7 +634,7 @@ class RestartMedia(BaseRequest):
         payload = {}
         payload['request-type'] = 'RestartMedia'
         payload['sourceName'] = sourceName
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName):
@@ -667,7 +668,7 @@ class StopMedia(BaseRequest):
         payload = {}
         payload['request-type'] = 'StopMedia'
         payload['sourceName'] = sourceName
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName):
@@ -701,7 +702,7 @@ class NextMedia(BaseRequest):
         payload = {}
         payload['request-type'] = 'NextMedia'
         payload['sourceName'] = sourceName
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName):
@@ -735,7 +736,7 @@ class PreviousMedia(BaseRequest):
         payload = {}
         payload['request-type'] = 'PreviousMedia'
         payload['sourceName'] = sourceName
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName):
@@ -776,7 +777,7 @@ Note: For some reason, for the first 5 or so seconds that the media is playing, 
         payload = {}
         payload['request-type'] = 'GetMediaDuration'
         payload['sourceName'] = sourceName
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName):
@@ -816,7 +817,7 @@ class GetMediaTime(BaseRequest):
         payload = {}
         payload['request-type'] = 'GetMediaTime'
         payload['sourceName'] = sourceName
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName):
@@ -856,7 +857,7 @@ class SetMediaTime(BaseRequest):
         payload['request-type'] = 'SetMediaTime'
         payload['sourceName'] = sourceName
         payload['timestamp'] = timestamp
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName, timestamp):
@@ -898,7 +899,7 @@ Note: Due to processing/network delays, this request is not perfect. The process
         payload['request-type'] = 'ScrubMedia'
         payload['sourceName'] = sourceName
         payload['timeOffset'] = timeOffset
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName, timeOffset):
@@ -939,7 +940,7 @@ class GetMediaState(BaseRequest):
         payload = {}
         payload['request-type'] = 'GetMediaState'
         payload['sourceName'] = sourceName
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName):
@@ -970,7 +971,7 @@ class GetMediaSourcesList(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'GetMediaSourcesList'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -1033,7 +1034,7 @@ class CreateSource(BaseRequest):
         payload['sceneName'] = sceneName
         payload['sourceSettings'] = sourceSettings
         payload['setVisible'] = setVisible
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName, sourceKind, sceneName, sourceSettings=None, setVisible=None):
@@ -1068,7 +1069,7 @@ class GetSourcesList(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'GetSourcesList'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -1098,7 +1099,7 @@ class GetSourceTypesList(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'GetSourceTypesList'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -1151,7 +1152,7 @@ class GetVolume(BaseRequest):
         payload['request-type'] = 'GetVolume'
         payload['source'] = source
         payload['useDecibel'] = useDecibel
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(source, useDecibel=None):
@@ -1198,7 +1199,7 @@ class SetVolume(BaseRequest):
         payload['source'] = source
         payload['volume'] = volume
         payload['useDecibel'] = useDecibel
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(source, volume, useDecibel=None):
@@ -1246,7 +1247,7 @@ class SetTracks(BaseRequest):
         payload['sourceName'] = sourceName
         payload['track'] = track
         payload['active'] = active
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName, track, active):
@@ -1308,7 +1309,7 @@ class GetTracks(BaseRequest):
         payload = {}
         payload['request-type'] = 'GetTracks'
         payload['sourceName'] = sourceName
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName):
@@ -1352,7 +1353,7 @@ class GetMute(BaseRequest):
         payload = {}
         payload['request-type'] = 'GetMute'
         payload['source'] = source
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(source):
@@ -1392,7 +1393,7 @@ class SetMute(BaseRequest):
         payload['request-type'] = 'SetMute'
         payload['source'] = source
         payload['mute'] = mute
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(source, mute):
@@ -1427,7 +1428,7 @@ class ToggleMute(BaseRequest):
         payload = {}
         payload['request-type'] = 'ToggleMute'
         payload['source'] = source
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(source):
@@ -1467,7 +1468,7 @@ class GetSourceActive(BaseRequest):
         payload = {}
         payload['request-type'] = 'GetSourceActive'
         payload['sourceName'] = sourceName
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName):
@@ -1507,7 +1508,7 @@ class GetAudioActive(BaseRequest):
         payload = {}
         payload['request-type'] = 'GetAudioActive'
         payload['sourceName'] = sourceName
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName):
@@ -1549,7 +1550,7 @@ Note: If the new name already exists as a source, obs-websocket will return an e
         payload['request-type'] = 'SetSourceName'
         payload['sourceName'] = sourceName
         payload['newName'] = newName
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName, newName):
@@ -1590,7 +1591,7 @@ class SetSyncOffset(BaseRequest):
         payload['request-type'] = 'SetSyncOffset'
         payload['source'] = source
         payload['offset'] = offset
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(source, offset):
@@ -1635,7 +1636,7 @@ class GetSyncOffset(BaseRequest):
         payload = {}
         payload['request-type'] = 'GetSyncOffset'
         payload['source'] = source
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(source):
@@ -1689,7 +1690,7 @@ class GetSourceSettings(BaseRequest):
         payload['request-type'] = 'GetSourceSettings'
         payload['sourceName'] = sourceName
         payload['sourceType'] = sourceType
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName, sourceType=None):
@@ -1750,7 +1751,7 @@ class SetSourceSettings(BaseRequest):
         payload['sourceName'] = sourceName
         payload['sourceType'] = sourceType
         payload['sourceSettings'] = sourceSettings
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName, sourceSettings, sourceType=None):
@@ -1884,7 +1885,7 @@ class GetTextGDIPlusProperties(BaseRequest):
         payload = {}
         payload['request-type'] = 'GetTextGDIPlusProperties'
         payload['source'] = source
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(source):
@@ -2062,7 +2063,7 @@ class SetTextGDIPlusProperties(BaseRequest):
         payload['valign'] = valign
         payload['vertical'] = vertical
         payload['render'] = render
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(source, align=None, bk_color=None, bk_opacity=None, chatlog=None, chatlog_lines=None, color=None, extents=None, extents_cx=None, extents_cy=None, file=None, read_from_file=None, font=None, gradient=None, gradient_color=None, gradient_dir=None, gradient_opacity=None, outline=None, outline_color=None, outline_size=None, outline_opacity=None, text=None, valign=None, vertical=None, render=None):
@@ -2170,7 +2171,7 @@ class GetTextFreetype2Properties(BaseRequest):
         payload = {}
         payload['request-type'] = 'GetTextFreetype2Properties'
         payload['source'] = source
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(source):
@@ -2270,7 +2271,7 @@ class SetTextFreetype2Properties(BaseRequest):
         payload['text'] = text
         payload['text_file'] = text_file
         payload['word_wrap'] = word_wrap
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(source, color1=None, color2=None, custom_width=None, drop_shadow=None, font=None, from_file=None, log_mode=None, outline=None, text=None, text_file=None, word_wrap=None):
@@ -2353,7 +2354,7 @@ class GetBrowserSourceProperties(BaseRequest):
         payload = {}
         payload['request-type'] = 'GetBrowserSourceProperties'
         payload['source'] = source
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(source):
@@ -2441,7 +2442,7 @@ class SetBrowserSourceProperties(BaseRequest):
         payload['fps'] = fps
         payload['shutdown'] = shutdown
         payload['render'] = render
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(source, is_local_file=None, local_file=None, url=None, css=None, width=None, height=None, fps=None, shutdown=None, render=None):
@@ -2497,7 +2498,7 @@ class GetSpecialSources(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'GetSpecialSources'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -2536,7 +2537,7 @@ class GetSourceFilters(BaseRequest):
         payload = {}
         payload['request-type'] = 'GetSourceFilters'
         payload['sourceName'] = sourceName
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName):
@@ -2594,7 +2595,7 @@ class GetSourceFilterInfo(BaseRequest):
         payload['request-type'] = 'GetSourceFilterInfo'
         payload['sourceName'] = sourceName
         payload['filterName'] = filterName
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName, filterName):
@@ -2647,7 +2648,7 @@ class AddFilterToSource(BaseRequest):
         payload['filterName'] = filterName
         payload['filterType'] = filterType
         payload['filterSettings'] = filterSettings
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName, filterName, filterType, filterSettings):
@@ -2690,7 +2691,7 @@ class RemoveFilterFromSource(BaseRequest):
         payload['request-type'] = 'RemoveFilterFromSource'
         payload['sourceName'] = sourceName
         payload['filterName'] = filterName
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName, filterName):
@@ -2737,7 +2738,7 @@ class ReorderSourceFilter(BaseRequest):
         payload['sourceName'] = sourceName
         payload['filterName'] = filterName
         payload['newIndex'] = newIndex
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName, filterName, newIndex):
@@ -2785,7 +2786,7 @@ class MoveSourceFilter(BaseRequest):
         payload['sourceName'] = sourceName
         payload['filterName'] = filterName
         payload['movementType'] = movementType
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName, filterName, movementType):
@@ -2833,7 +2834,7 @@ class SetSourceFilterSettings(BaseRequest):
         payload['sourceName'] = sourceName
         payload['filterName'] = filterName
         payload['filterSettings'] = filterSettings
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName, filterName, filterSettings):
@@ -2881,7 +2882,7 @@ class SetSourceFilterVisibility(BaseRequest):
         payload['sourceName'] = sourceName
         payload['filterName'] = filterName
         payload['filterEnabled'] = filterEnabled
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName, filterName, filterEnabled):
@@ -2923,7 +2924,7 @@ class GetAudioMonitorType(BaseRequest):
         payload = {}
         payload['request-type'] = 'GetAudioMonitorType'
         payload['sourceName'] = sourceName
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName):
@@ -2963,7 +2964,7 @@ class SetAudioMonitorType(BaseRequest):
         payload['request-type'] = 'SetAudioMonitorType'
         payload['sourceName'] = sourceName
         payload['monitorType'] = monitorType
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName, monitorType):
@@ -3008,7 +3009,7 @@ class GetSourceDefaultSettings(BaseRequest):
         payload = {}
         payload['request-type'] = 'GetSourceDefaultSettings'
         payload['sourceKind'] = sourceKind
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceKind):
@@ -3097,7 +3098,7 @@ preserved if only one of these two parameters is specified.
         payload['compressionQuality'] = compressionQuality
         payload['width'] = width
         payload['height'] = height
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName=None, embedPictureFormat=None, saveToFilePath=None, fileFormat=None, compressionQuality=None, width=None, height=None):
@@ -3137,7 +3138,7 @@ class RefreshBrowserSource(BaseRequest):
         payload = {}
         payload['request-type'] = 'RefreshBrowserSource'
         payload['sourceName'] = sourceName
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName):
@@ -3168,7 +3169,7 @@ class ListOutputs(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'ListOutputs'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -3207,7 +3208,7 @@ class GetOutputInfo(BaseRequest):
         payload = {}
         payload['request-type'] = 'GetOutputInfo'
         payload['outputName'] = outputName
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(outputName):
@@ -3243,7 +3244,7 @@ Note: Controlling outputs is an experimental feature of obs-websocket. Some plug
         payload = {}
         payload['request-type'] = 'StartOutput'
         payload['outputName'] = outputName
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(outputName):
@@ -3285,7 +3286,7 @@ Note: Controlling outputs is an experimental feature of obs-websocket. Some plug
         payload['request-type'] = 'StopOutput'
         payload['outputName'] = outputName
         payload['force'] = force
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(outputName, force=None):
@@ -3320,7 +3321,7 @@ class SetCurrentProfile(BaseRequest):
         payload = {}
         payload['request-type'] = 'SetCurrentProfile'
         payload['profile-name'] = profile_name
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(profile_name):
@@ -3351,7 +3352,7 @@ class GetCurrentProfile(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'GetCurrentProfile'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -3381,7 +3382,7 @@ class ListProfiles(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'ListProfiles'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -3423,7 +3424,7 @@ class GetRecordingStatus(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'GetRecordingStatus'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -3447,7 +3448,7 @@ class StartStopRecording(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'StartStopRecording'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -3472,7 +3473,7 @@ Will return an `error` if recording is already active.
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'StartRecording'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -3497,7 +3498,7 @@ Will return an `error` if recording is not active.
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'StopRecording'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -3522,7 +3523,7 @@ Returns an error if recording is not active or already paused.
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'PauseRecording'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -3547,7 +3548,7 @@ Returns an error if recording is not active or not paused.
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'ResumeRecording'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -3584,7 +3585,7 @@ effective on the next recording.
         payload = {}
         payload['request-type'] = 'SetRecordingFolder'
         payload['rec-folder'] = rec_folder
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(rec_folder):
@@ -3615,7 +3616,7 @@ class GetRecordingFolder(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'GetRecordingFolder'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -3645,7 +3646,7 @@ class GetReplayBufferStatus(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'GetReplayBufferStatus'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -3669,7 +3670,7 @@ class StartStopReplayBuffer(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'StartStopReplayBuffer'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -3697,7 +3698,7 @@ through obs-websocket.
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'StartReplayBuffer'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -3722,7 +3723,7 @@ Will return an `error` if the Replay Buffer is not active.
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'StopReplayBuffer'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -3748,7 +3749,7 @@ Will return an `error` if the Replay Buffer is not active.
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'SaveReplayBuffer'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -3781,7 +3782,7 @@ class SetCurrentSceneCollection(BaseRequest):
         payload = {}
         payload['request-type'] = 'SetCurrentSceneCollection'
         payload['sc-name'] = sc_name
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sc_name):
@@ -3812,7 +3813,7 @@ class GetCurrentSceneCollection(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'GetCurrentSceneCollection'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -3842,7 +3843,7 @@ class ListSceneCollections(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'ListSceneCollections'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -3885,7 +3886,7 @@ class GetSceneItemList(BaseRequest):
         payload = {}
         payload['request-type'] = 'GetSceneItemList'
         payload['sceneName'] = sceneName
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sceneName=None):
@@ -3992,7 +3993,7 @@ Coordinates are relative to the item's parent (the scene or group it belongs to)
         payload['request-type'] = 'GetSceneItemProperties'
         payload['scene-name'] = scene_name
         payload['item'] = item
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(item, scene_name=None):
@@ -4076,7 +4077,7 @@ Coordinates are relative to the item's parent (the scene or group it belongs to)
         payload['visible'] = visible
         payload['locked'] = locked
         payload['bounds'] = bounds
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(item, scene_name=None, position=None, rotation=None, scale=None, crop=None, visible=None, locked=None, bounds=None):
@@ -4124,7 +4125,7 @@ class ResetSceneItem(BaseRequest):
         payload['request-type'] = 'ResetSceneItem'
         payload['scene-name'] = scene_name
         payload['item'] = item
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(item, scene_name=None):
@@ -4177,7 +4178,7 @@ class SetSceneItemRender(BaseRequest):
         payload['source'] = source
         payload['item'] = item
         payload['render'] = render
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(render, scene_name=None, source=None, item=None):
@@ -4232,7 +4233,7 @@ class SetSceneItemPosition(BaseRequest):
         payload['item'] = item
         payload['x'] = x
         payload['y'] = y
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(item, x, y, scene_name=None):
@@ -4293,7 +4294,7 @@ class SetSceneItemTransform(BaseRequest):
         payload['x-scale'] = x_scale
         payload['y-scale'] = y_scale
         payload['rotation'] = rotation
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(item, x_scale, y_scale, rotation, scene_name=None):
@@ -4361,7 +4362,7 @@ class SetSceneItemCrop(BaseRequest):
         payload['bottom'] = bottom
         payload['left'] = left
         payload['right'] = right
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(item, top, bottom, left, right, scene_name=None):
@@ -4406,7 +4407,7 @@ class DeleteSceneItem(BaseRequest):
         payload['request-type'] = 'DeleteSceneItem'
         payload['scene'] = scene
         payload['item'] = item
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(item, scene=None):
@@ -4459,7 +4460,7 @@ class AddSceneItem(BaseRequest):
         payload['sceneName'] = sceneName
         payload['sourceName'] = sourceName
         payload['setVisible'] = setVisible
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sceneName, sourceName, setVisible=None):
@@ -4517,7 +4518,7 @@ class DuplicateSceneItem(BaseRequest):
         payload['fromScene'] = fromScene
         payload['toScene'] = toScene
         payload['item'] = item
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(item, fromScene=None, toScene=None):
@@ -4553,7 +4554,7 @@ class SetCurrentScene(BaseRequest):
         payload = {}
         payload['request-type'] = 'SetCurrentScene'
         payload['scene-name'] = scene_name
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(scene_name):
@@ -4588,7 +4589,7 @@ class GetCurrentScene(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'GetCurrentScene'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -4622,7 +4623,7 @@ class GetSceneList(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'GetSceneList'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -4655,7 +4656,7 @@ class CreateScene(BaseRequest):
         payload = {}
         payload['request-type'] = 'CreateScene'
         payload['sceneName'] = sceneName
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sceneName):
@@ -4695,7 +4696,7 @@ class ReorderSceneItems(BaseRequest):
         payload['request-type'] = 'ReorderSceneItems'
         payload['scene'] = scene
         payload['items'] = items
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(items, scene=None):
@@ -4742,7 +4743,7 @@ class SetSceneTransitionOverride(BaseRequest):
         payload['sceneName'] = sceneName
         payload['transitionName'] = transitionName
         payload['transitionDuration'] = transitionDuration
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sceneName, transitionName, transitionDuration):
@@ -4778,7 +4779,7 @@ class RemoveSceneTransitionOverride(BaseRequest):
         payload = {}
         payload['request-type'] = 'RemoveSceneTransitionOverride'
         payload['sceneName'] = sceneName
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sceneName):
@@ -4822,7 +4823,7 @@ class GetSceneTransitionOverride(BaseRequest):
         payload = {}
         payload['request-type'] = 'GetSceneTransitionOverride'
         payload['sceneName'] = sceneName
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sceneName):
@@ -4873,7 +4874,7 @@ class GetStreamingStatus(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'GetStreamingStatus'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -4897,7 +4898,7 @@ class StartStopStreaming(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'StartStopStreaming'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -4931,7 +4932,7 @@ Will return an `error` if streaming is already active.
         payload = {}
         payload['request-type'] = 'StartStreaming'
         payload['stream'] = stream
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(stream=None):
@@ -4957,7 +4958,7 @@ Will return an `error` if streaming is not active.
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'StopStreaming'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -5002,7 +5003,7 @@ class SetStreamSettings(BaseRequest):
         payload['type'] = type
         payload['settings'] = settings
         payload['save'] = save
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(type, settings, save):
@@ -5039,7 +5040,7 @@ class GetStreamSettings(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'GetStreamSettings'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -5063,7 +5064,7 @@ class SaveStreamSettings(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'SaveStreamSettings'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -5096,7 +5097,7 @@ class SendCaptions(BaseRequest):
         payload = {}
         payload['request-type'] = 'SendCaptions'
         payload['text'] = text
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(text):
@@ -5127,7 +5128,7 @@ class GetStudioModeStatus(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'GetStudioModeStatus'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -5162,7 +5163,7 @@ Will return an `error` if Studio Mode is not enabled.
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'GetPreviewScene'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -5196,7 +5197,7 @@ Will return an `error` if Studio Mode is not enabled.
         payload = {}
         payload['request-type'] = 'SetPreviewScene'
         payload['scene-name'] = scene_name
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(scene_name):
@@ -5231,7 +5232,7 @@ Will return an `error` if Studio Mode is not enabled.
         payload = {}
         payload['request-type'] = 'TransitionToProgram'
         payload['with-transition'] = with_transition
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(with_transition=None):
@@ -5256,7 +5257,7 @@ class EnableStudioMode(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'EnableStudioMode'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -5280,7 +5281,7 @@ class DisableStudioMode(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'DisableStudioMode'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -5304,7 +5305,7 @@ class ToggleStudioMode(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'ToggleStudioMode'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -5338,7 +5339,7 @@ class GetTransitionList(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'GetTransitionList'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -5372,7 +5373,7 @@ class GetCurrentTransition(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'GetCurrentTransition'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -5405,7 +5406,7 @@ class SetCurrentTransition(BaseRequest):
         payload = {}
         payload['request-type'] = 'SetCurrentTransition'
         payload['transition-name'] = transition_name
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(transition_name):
@@ -5439,7 +5440,7 @@ class SetTransitionDuration(BaseRequest):
         payload = {}
         payload['request-type'] = 'SetTransitionDuration'
         payload['duration'] = duration
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(duration):
@@ -5470,7 +5471,7 @@ class GetTransitionDuration(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'GetTransitionDuration'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -5500,7 +5501,7 @@ class GetTransitionPosition(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'GetTransitionPosition'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -5539,7 +5540,7 @@ class GetTransitionSettings(BaseRequest):
         payload = {}
         payload['request-type'] = 'GetTransitionSettings'
         payload['transitionName'] = transitionName
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(transitionName):
@@ -5585,7 +5586,7 @@ class SetTransitionSettings(BaseRequest):
         payload['request-type'] = 'SetTransitionSettings'
         payload['transitionName'] = transitionName
         payload['transitionSettings'] = transitionSettings
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(transitionName, transitionSettings):
@@ -5612,7 +5613,7 @@ class ReleaseTBar(BaseRequest):
     def __call__(self, cb=None):
         payload = {}
         payload['request-type'] = 'ReleaseTBar'
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload():
@@ -5653,7 +5654,7 @@ If your code needs to perform multiple successive T-Bar moves (e.g. : in an anim
         payload['request-type'] = 'SetTBarPosition'
         payload['position'] = position
         payload['release'] = release
-        Sandbox().obs.send(payload, cb)
+        ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(position, release=None):

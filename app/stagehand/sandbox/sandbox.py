@@ -24,11 +24,9 @@ class SandboxToolsDockWidget(QDockWidget):
 class _Sandbox(QWidget):
     extensions = {}
 
-    def __init__(self, obs, parent=None):
-        super().__init__(parent=parent)
-        self._obs = obs
-        
-        self.tools = SandboxTools(obs)
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)        
+        self.tools = SandboxTools()
         self.tools_dock = SandboxToolsDockWidget(self.tools, self)
 
         self.reset_environment()
@@ -90,8 +88,8 @@ class _Sandbox(QWidget):
 sandbox = None
 
 
-def Sandbox(obs=None, parent=None):
+def Sandbox(parent=None):
     global sandbox
     if sandbox is None:
-        sandbox = _Sandbox(obs, parent)
+        sandbox = _Sandbox(parent)
     return sandbox

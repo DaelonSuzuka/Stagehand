@@ -41,7 +41,7 @@ class MainWindow(BaseMainWindow):
         self.device_controls = DeviceControlsDockWidget(self)
         
         self.obs = Plugins().obs_core.ObsManager(self)
-        self.sandbox = Sandbox(self.obs, self)
+        self.sandbox = Sandbox(self)
         if not self.restoreDockWidget(self.sandbox.tools_dock):
             self.addDockWidget(self.sandbox.tools_dock.starting_area, self.sandbox.tools_dock)
 

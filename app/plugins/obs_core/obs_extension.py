@@ -8,4 +8,4 @@ class ObsExtension:
         return requests[name]
 
     def send(self, payload, cb=None):
-        Sandbox()._obs.send(payload, cb)
+        ObsSocket().send(payload, cb)

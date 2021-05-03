@@ -6,7 +6,7 @@ import hashlib
 import queue
 
 
-class ObsSocket(QObject):
+class _ObsSocket(QObject):
     status_changed = Signal(str)
     message_received = Signal(dict)
     raw_message_received = Signal(str)
@@ -114,3 +114,13 @@ class ObsSocket(QObject):
         if 'message-id' in msg:
             if msg['message-id'] in self.callbacks:
                 self.callbacks[msg['message-id']](msg)
+
+
+socket = None
+
+
+def ObsSocket(parent=None):
+    global socket
+    if socket is None:
+        socket = _ObsSocket(parent)
+    return socket
