@@ -1,6 +1,7 @@
 from qtstrap import *
 from stagehand.sandbox import Sandbox
 from .requests import requests
+from .obs_socket import ObsSocket
 
 
 class ObsExtension:
