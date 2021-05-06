@@ -8,7 +8,7 @@ from .keyboard_extension import KeyboardExtension, MouseExtension
 from .keyboard_action import KeyboardAction
 
 
-def install_plugin():
+def install_plugin(plugin_manager):
     ActionStack.actions['keyboard'] = KeyboardAction
 
     keyboard = KeyboardExtension()
@@ -17,6 +17,3 @@ def install_plugin():
 
     mouse = MouseExtension()
     _Sandbox.extensions['mouse'] = mouse
-
-
-install_plugin()

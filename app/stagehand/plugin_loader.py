@@ -4,18 +4,36 @@ import json
 import importlib
 import sys
 import os
-from codex import SerialDevice
 import codex
 import zipimport
+
+from stagehand.sandbox import _Sandbox
+from stagehand.actions import ActionStack
 
 
 plugin_folder = OPTIONS.APPLICATION_PATH / 'plugins'
 
 
-class _Plugins:
+def singleton(class_):
+    instances = {}
+    def getinstance(*args, **kwargs):
+        if class_ not in instances:
+            instances[class_] = class_(*args, **kwargs)
+        return instances[class_]
+    return getinstance
+
+
+@singleton
+class Plugins():
     _plugins = {}
 
     def __init__(self):
+        # print('init: ', self)
+        
+        self.plugin_widgets = {}
+        self.sidebar_widgets = {}
+        self.statusbar_widgets = {}
+
         def is_plugin(p):
             return Path(Path(p) / 'plugin.json').exists() or Path(Path(p) / '__init__.py').exists()
 
@@ -28,6 +46,21 @@ class _Plugins:
 
     def list_all(self):
         return self._plugins
+
+    def register_sandbox_extension(self, name, extension):
+        _Sandbox.extensions[name] = extension
+
+    def register_action_type(self, name, action):
+        ActionStack.actions[name] = action
+
+    def register_widget(self, name, widget):
+        self.plugin_widgets[name] = widget
+
+    def register_sidebar_widget(self, name, widget):
+        self.sidebar_widgets[name] = widget
+
+    def register_statusbar_widget(self, name, widget):
+        self.statusbar_widgets[name] = widget
 
     def __getattr__(self, name):
         return self._plugins['plugins.' + name]
@@ -54,15 +87,19 @@ class _Plugins:
             module = importlib.import_module(plugin_name)
             self._plugins[plugin_name] = module
 
-
-plugins = None
-
-
-def Plugins():
-    global plugins
-    if plugins is None:
-        plugins = _Plugins()
-    return plugins
+            if hasattr(module, 'install_plugin'):
+                module.install_plugin(self)
 
 
-Plugins()
+# plugins = None
+
+
+# def Plugins():
+#     global plugins
+#     if plugins is None:
+#         print('making new plugins')
+#         plugins = _Plugins()
+#     return plugins
+
+
+# Plugins()
