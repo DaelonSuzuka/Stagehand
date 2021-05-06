@@ -1,10 +1,8 @@
 from qtstrap import *
 from codex import DeviceControlsDockWidget
-from .mic_voter import MicVoterWidget
 from .sandbox import Sandbox
 import qtawesome as qta
 from .generic_actions import GenericActionsWidget
-from .web_interface import WebInterfaceManager
 from .about import AboutDialog
 from .input_devices import InputDeviceManager
 from .plugin_loader import Plugins
@@ -40,16 +38,15 @@ class MainWindow(BaseMainWindow):
         self.about = AboutDialog(self)
         self.device_controls = DeviceControlsDockWidget(self)
         
-        self.obs = Plugins().obs_core.ObsManager(self)
         self.sandbox = Sandbox(self)
         if not self.restoreDockWidget(self.sandbox.tools_dock):
             self.addDockWidget(self.sandbox.tools_dock.starting_area, self.sandbox.tools_dock)
 
         self.load_settings()
 
-        self.voter = MicVoterWidget(self)
+        self.plugin_widgets = {name: widget for name, widget in Plugins().plugin_widgets.items()}
+
         self.actions = GenericActionsWidget(self)
-        # self.web_actions = WebInterfaceManager(self)
         self.input_devices = InputDeviceManager(self)
 
         def scroll(widget):
@@ -60,15 +57,15 @@ class MainWindow(BaseMainWindow):
             scroll.setWidget(widget)
             return scroll
 
+        self.tab_order = QSettings().value('mainwindow/tab_order', [])
+
         tabs = {
-            'OBS Manager': self.obs,
-            'Mic Voter': scroll(self.voter),
+            **self.plugin_widgets,
             'Actions': scroll(self.actions),
-            # 'Web Actions': scroll(self.web_actions),
             'Input Devices': scroll(self.input_devices),
         }
 
-        self.tabs = PersistentTabWidget('main_tabs', tabs=tabs)
+        self.tabs = PersistentTabWidget('main_tabs', tabs=tabs, movable=True)
         self.setCentralWidget(self.tabs)
 
         self.tab_shortcuts = []
@@ -78,22 +75,32 @@ class MainWindow(BaseMainWindow):
 
         self.init_tray_stuff()
         self.init_statusbar()
+        self.init_sidebar()
 
         qApp.updater.update_found.connect(self.display_update_available)
 
     def display_update_available(self):
         self.tray_icon.showMessage('An update is available.', 'an update is available')
 
+    def init_sidebar(self):
+        self.sidebar = BaseToolbar(self, 'sidebar', location='left', size=30)
+        self.sidebar.setContextMenuPolicy(Qt.PreventContextMenu)
+
+        self.sidebar.add_spacer()
+        self.sidebar.addSeparator()
+        self.sidebar.addWidget(self.init_settings_btn())
+
     def init_statusbar(self):
         self.status = BaseToolbar(self, 'statusbar', location='bottom', size=30)
         self.status.setContextMenuPolicy(Qt.PreventContextMenu)
-        
-        self.status.addWidget(self.init_settings_btn())
-        self.status.addSeparator()
-        
+
+
         self.status.add_spacer()
-        self.status.addSeparator()
-        self.status.addWidget(self.obs.status_widget)
+        for name, widget in Plugins().statusbar_widgets.items():
+
+            self.status.addSeparator()
+            # self.status.addWidget(self.obs.status_widget)
+            self.status.addWidget(widget)
 
     def init_settings_btn(self):
         settings_btn = QToolButton(self.status, icon=qta.icon('fa.gear', color='gray'))
@@ -138,6 +145,7 @@ class MainWindow(BaseMainWindow):
         else:
             self.tray_icon.hide()
             super().closeEvent(event)
+            qApp.quit()
 
     def init_tray_stuff(self):
         self.tray_icon = QSystemTrayIcon(self)

@@ -54,6 +54,7 @@ class MicStreamWidget(QWidget):
 
         self.device = sd.query_devices(device)
         self.name = self.device['name']
+
         self.title = QLabel(self.name)
         self.title.setFixedWidth(250)
         self.title.setToolTip(self.name)
@@ -80,10 +81,9 @@ class MicStreamWidget(QWidget):
 
 
 class MicVoterWidget(QWidget):
-    def __init__(self, obs, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent=parent)
 
-        self.obs = obs
         self.best_mic = QLabel()
 
         if os.name == 'nt':
@@ -105,7 +105,6 @@ class MicVoterWidget(QWidget):
         self.change_threshold = PersistentLineEdit('change_threshold', default='5')
 
         with CVBoxLayout(self, align='top') as layout:
-            
             with layout.hbox(align='left'):
                 layout.add(QLabel('Best Mic:'))
                 layout.add(self.best_mic)
