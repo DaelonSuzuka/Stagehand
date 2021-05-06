@@ -27,9 +27,7 @@ def singleton(class_):
 class Plugins():
     _plugins = {}
 
-    def __init__(self):
-        # print('init: ', self)
-        
+    def __init__(self):        
         self.plugin_widgets = {}
         self.sidebar_widgets = {}
         self.statusbar_widgets = {}
