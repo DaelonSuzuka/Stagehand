@@ -5,7 +5,7 @@ from qtpy.QtWebSockets import *
 from qtpy.QtNetwork import *
 from codex import SubscriptionManager
 import threading
-from .actions import ActionWidget, ActionWidgetGroup
+from stagehand.actions import ActionWidget, ActionWidgetGroup
 import socket
 import json
 
@@ -17,7 +17,8 @@ log.setLevel(logging.ERROR)
 
 
 def start_flask():
-    template_path = Path(OPTIONS.APPLICATION_PATH / 'web_pages')
+    template_path = Path(Path(__file__).parent / 'pages')
+    print(template_path)
     static_path = Path(template_path / 'static').as_posix()
     app = Flask(__name__, template_folder=template_path, static_folder=static_path)
 
