@@ -25,7 +25,7 @@ class _Sandbox(QWidget):
     extensions = {}
 
     def __init__(self, parent=None):
-        super().__init__(parent=parent)        
+        super().__init__(parent=parent)
         self.tools = SandboxTools()
         self.tools_dock = SandboxToolsDockWidget(self.tools, self)
 
