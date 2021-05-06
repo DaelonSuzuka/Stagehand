@@ -155,8 +155,11 @@ class MicVoterWidget(QWidget):
         
         need_to_change = False
         for _, vol in volumes.items():
-            if vol > float(self.change_threshold.text()):
-                need_to_change = True
+            try:
+                if vol > float(self.change_threshold.text()):
+                    need_to_change = True
+            except ValueError:
+                return
 
         if not need_to_change:
             return
