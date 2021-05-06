@@ -1,29 +1,27 @@
 from qtstrap import *
-from .main_window import MainWindow
 from codex import DeviceManager, SerialDevice
 import codex
 import qtawesome as qta
-from appdirs import AppDirs
-from pathlib import Path
 from .app_updater import ApplicationUpdater
 from .plugin_loader import Plugins
 
 
-class Application(BaseApplication):
-    def __init__(self) -> None:
-        super().__init__()
+def get_application():
 
-        icon = QIcon(qta.icon('fa.circle','fa5s.video', options=[{'color':'gray'}, {'scale_factor':0.5, 'color':'white'}]))
-        self.setWindowIcon(icon)
+    Plugins()
 
-        self.updater = ApplicationUpdater()
-        # self.updater.check_latest()
+    app = QApplication.instance()
+    
+    install_ctrlc_handler(app)
+    install_app_info(app)
 
-        self.device_manager = DeviceManager(self)
+    # icon = QIcon(qta.icon('fa.circle','fa5s.video', options=[{'color':'gray'}, {'scale_factor':0.5, 'color':'white'}]))
+    # app.setWindowIcon(icon)
 
-        self.window = MainWindow()
-        self.window.show()
+    app.updater = ApplicationUpdater()
+    app.updater.check_latest()
 
-    def closeEvent(self, event):
-        self.device_manager.close()
-        return super().closeEvent(event)
+    app.device_manager = DeviceManager(app)
+    app.aboutToQuit.connect(lambda: app.device_manager.close())
+
+    return app
