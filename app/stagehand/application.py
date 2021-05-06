@@ -7,13 +7,12 @@ from .plugin_loader import Plugins
 
 
 def get_application():
-
-    Plugins()
-
     app = QApplication.instance()
-    
+
     install_ctrlc_handler(app)
     install_app_info(app)
+    
+    Plugins()
 
     # icon = QIcon(qta.icon('fa.circle','fa5s.video', options=[{'color':'gray'}, {'scale_factor':0.5, 'color':'white'}]))
     # app.setWindowIcon(icon)
