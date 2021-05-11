@@ -8,7 +8,7 @@ import codex
 import zipimport
 
 from stagehand.sandbox import _Sandbox
-from stagehand.actions import ActionStack
+from stagehand.actions import ActionStack, TriggerStack
 
 
 plugin_folder = OPTIONS.APPLICATION_PATH / 'plugins'
@@ -23,14 +23,39 @@ def singleton(class_):
     return getinstance
 
 
+class Registrar:
+    def __init__(self, plugins):
+        self.plugins = plugins
+    
+    def sandbox_extension(self, name, extension):
+        _Sandbox.extensions[name] = extension
+
+    def action(self, name, action):
+        ActionStack.actions[name] = action
+
+    def trigger(self, name, trigger):
+        TriggerStack.triggers[name] = trigger
+
+    def widget(self, name, widget):
+        self.plugins.plugin_widgets[name] = widget
+
+    def sidebar_widget(self, name, widget):
+        self.plugins.sidebar_widgets[name] = widget
+
+    def statusbar_widget(self, name, widget):
+        self.plugins.statusbar_widgets[name] = widget
+
+
 @singleton
 class Plugins():
     _plugins = {}
 
-    def __init__(self):        
+    def __init__(self):
         self.plugin_widgets = {}
         self.sidebar_widgets = {}
         self.statusbar_widgets = {}
+
+        self.register = Registrar(self)
 
         def is_plugin(p):
             return Path(Path(p) / 'plugin.json').exists() or Path(Path(p) / '__init__.py').exists()

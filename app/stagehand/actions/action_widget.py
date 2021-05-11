@@ -2,6 +2,7 @@ from qtstrap import *
 from stagehand.sandbox import Sandbox
 import qtawesome as qta
 from .action_editor import ActionEditorDialog
+from .trigger_widget import TriggerStack
 import abc
 import json
 
@@ -132,7 +133,7 @@ class ActionWidget(QWidget):
 
         return ActionWidget()
 
-    def __init__(self, name='', group=None, data=None, changed=None, parent=None):
+    def __init__(self, name='', group=None, trigger=False, data=None, changed=None, parent=None):
         super().__init__(parent=parent)
 
         self.name = name
@@ -149,6 +150,7 @@ class ActionWidget(QWidget):
 
         self.label = LabelEdit(label, changed=self.on_change)
         self.stack = ActionStack(self.on_change, action_type, action)
+        self.trigger = TriggerStack(self.on_change)
 
         if group:
             group.register(self)
@@ -162,6 +164,8 @@ class ActionWidget(QWidget):
 
         with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
             layout.add(self.label)
+            if trigger:
+                layout.add(self.trigger)
             layout.add(self.stack, 1)
             layout.add(self.run_btn)
 
@@ -169,12 +173,15 @@ class ActionWidget(QWidget):
         return {
             'name': self.name,
             'label': self.label.text(),
-            **self.stack.to_dict()
+            **self.stack.to_dict(),
+            'trigger': self.trigger.to_dict(), 
         }
 
     def set_data(self, data):
         self.label.setText(data['label'])
         self.stack.set_data(data)
+        if 'trigger' in data:
+            self.trigger.set_data(data['trigger'])
 
     def on_change(self):
         self.changed.emit()

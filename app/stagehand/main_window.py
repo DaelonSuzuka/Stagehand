@@ -3,6 +3,7 @@ from codex import DeviceControlsDockWidget
 from .sandbox import Sandbox
 import qtawesome as qta
 from .generic_actions import GenericActionsWidget
+from .trigger_actions import TriggerActionsWidget
 from .about import AboutDialog
 from .input_devices import InputDeviceManager
 from .plugin_loader import Plugins
@@ -47,6 +48,7 @@ class MainWindow(BaseMainWindow):
         self.plugin_widgets = {name: widget for name, widget in Plugins().plugin_widgets.items()}
 
         self.actions = GenericActionsWidget(self)
+        self.triggers = TriggerActionsWidget(self)
         self.input_devices = InputDeviceManager(self)
 
         def scroll(widget):
@@ -62,6 +64,7 @@ class MainWindow(BaseMainWindow):
         tabs = {
             **self.plugin_widgets,
             'Actions': scroll(self.actions),
+            'Triggers': scroll(self.triggers),
             'Input Devices': scroll(self.input_devices),
         }
 
