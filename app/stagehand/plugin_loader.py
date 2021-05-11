@@ -14,15 +14,6 @@ from stagehand.actions import ActionStack, TriggerStack
 plugin_folder = OPTIONS.APPLICATION_PATH / 'plugins'
 
 
-def singleton(class_):
-    instances = {}
-    def getinstance(*args, **kwargs):
-        if class_ not in instances:
-            instances[class_] = class_(*args, **kwargs)
-        return instances[class_]
-    return getinstance
-
-
 class Registrar:
     def __init__(self, plugins):
         self.plugins = plugins
@@ -112,17 +103,3 @@ class Plugins():
 
             if hasattr(module, 'install_plugin'):
                 module.install_plugin(self)
-
-
-# plugins = None
-
-
-# def Plugins():
-#     global plugins
-#     if plugins is None:
-#         print('making new plugins')
-#         plugins = _Plugins()
-#     return plugins
-
-
-# Plugins()
