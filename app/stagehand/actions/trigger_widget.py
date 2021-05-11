@@ -21,7 +21,9 @@ class TriggerStackItem:
 
 
 class SandboxTriggerWidget(QWidget, TriggerStackItem):
-    def __init__(self, changed, parent=None):
+    triggered = Signal()
+
+    def __init__(self, changed, run, parent=None):
         super().__init__(parent=parent)
 
         self.trigger = QLineEdit()
@@ -49,7 +51,7 @@ class TriggerStack(QWidget):
         'sandbox': SandboxTriggerWidget,
     }
 
-    def __init__(self, changed, trigger_type='sandbox', trigger='', parent=None):
+    def __init__(self, changed, run, trigger_type='sandbox', trigger='', parent=None):
         super().__init__(parent=parent)
 
         self.type = QComboBox()
@@ -57,7 +59,7 @@ class TriggerStack(QWidget):
 
         for name, trigger in self.triggers.items():
             self.type.addItem(name)
-            self.stack.addWidget(trigger(changed))
+            self.stack.addWidget(trigger(changed, run))
 
         self.type.currentIndexChanged.connect(changed)
         self.type.currentIndexChanged.connect(self.stack.setCurrentIndex)

@@ -150,7 +150,7 @@ class ActionWidget(QWidget):
 
         self.label = LabelEdit(label, changed=self.on_change)
         self.action_stack = ActionStack(self.on_change, action_type, action)
-        self.trigger_stack = TriggerStack(self.on_change, parent=self)
+        self.trigger_stack = TriggerStack(self.on_change, run=self.run, parent=self)
 
         self.custom_trigger_action = QAction('Custom Trigger', self, triggered=self.on_change, checkable=True)
         if trigger:
@@ -167,9 +167,9 @@ class ActionWidget(QWidget):
             self.changed.connect(changed)
 
         with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
-            layout.add(self.label)
-            layout.add(self.trigger_stack)
-            layout.add(self.action_stack, 1)
+            layout.add(self.label, 1)
+            layout.add(self.trigger_stack, 2)
+            layout.add(self.action_stack, 3)
             layout.add(self.run_btn)
 
     def to_dict(self):
