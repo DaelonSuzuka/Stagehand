@@ -149,8 +149,12 @@ class ActionWidget(QWidget):
                 action_type = data['type']
 
         self.label = LabelEdit(label, changed=self.on_change)
-        self.stack = ActionStack(self.on_change, action_type, action)
-        self.trigger = TriggerStack(self.on_change)
+        self.action_stack = ActionStack(self.on_change, action_type, action)
+        self.trigger_stack = TriggerStack(self.on_change, parent=self)
+
+        self.custom_trigger_action = QAction('Custom Trigger', self, triggered=self.on_change, checkable=True)
+        if trigger:
+            self.custom_trigger_action.setChecked(True)
 
         if group:
             group.register(self)
@@ -164,26 +168,26 @@ class ActionWidget(QWidget):
 
         with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
             layout.add(self.label)
-            if trigger:
-                layout.add(self.trigger)
-            layout.add(self.stack, 1)
+            layout.add(self.trigger_stack)
+            layout.add(self.action_stack, 1)
             layout.add(self.run_btn)
 
     def to_dict(self):
         return {
             'name': self.name,
             'label': self.label.text(),
-            **self.stack.to_dict(),
-            'trigger': self.trigger.to_dict(), 
+            **self.action_stack.to_dict(),
+            'trigger': self.trigger_stack.to_dict(), 
         }
 
     def set_data(self, data):
         self.label.setText(data['label'])
-        self.stack.set_data(data)
+        self.action_stack.set_data(data)
         if 'trigger' in data:
-            self.trigger.set_data(data['trigger'])
+            self.trigger_stack.set_data(data['trigger'])
 
     def on_change(self):
+        self.trigger_stack.setVisible(self.custom_trigger_action.isChecked())
         self.changed.emit()
 
     def contextMenuEvent(self, event: PySide2.QtGui.QContextMenuEvent) -> None:
@@ -192,21 +196,27 @@ class ActionWidget(QWidget):
         menu.addAction(QAction('Rename', self, triggered=self.label.start_editing))
         menu.addAction(QAction('Copy', self, triggered=self.copy))
         menu.addAction(QAction('Paste', self, triggered=self.paste))
+        menu.addAction(self.custom_trigger_action)
         menu.addAction(QAction('Reset', self, triggered=self.reset))
         menu.exec_(event.globalPos())
 
     def copy(self):
-        data = self.stack.to_dict()
+        data = {
+            **self.action_stack.to_dict(),
+            'trigger': self.trigger_stack.to_dict(), 
+        }
         QClipboard().setText(json.dumps(data))
 
     def paste(self):
         data = QClipboard().text()
-        self.stack.set_data(json.loads(data))
+        self.action_stack.set_data(json.loads(data))
+        if 'trigger' in data:
+            self.trigger_stack.set_data(data['trigger'])
 
     def reset(self):
         self.label.setText(self.name)
-        self.stack.reset()
+        self.action_stack.reset()
         self.on_change()
 
     def run(self):
-        self.stack.run()
+        self.action_stack.run()
