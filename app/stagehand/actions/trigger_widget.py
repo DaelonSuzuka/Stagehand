@@ -49,8 +49,8 @@ class TriggerStack(QWidget):
         'sandbox': SandboxTriggerWidget,
     }
 
-    def __init__(self, changed, trigger_type='sandbox', trigger=''):
-        super().__init__()
+    def __init__(self, changed, trigger_type='sandbox', trigger='', parent=None):
+        super().__init__(parent=parent)
 
         self.type = QComboBox()
         self.stack = QStackedWidget()
