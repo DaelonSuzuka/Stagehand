@@ -1,7 +1,7 @@
 from qtstrap import *
 from stagehand.sandbox import Sandbox
 from stagehand.actions import TriggerStackItem
-from .pynput.keyboard import Listener, Key, KeyCode
+from .pynput.keyboard import Listener, Key, KeyCode, HotKey
 
 
 @singleton
@@ -15,6 +15,9 @@ class ListenerObject(QObject):
 
         self.listener = Listener(on_press=self.on_press, on_release=self.on_release)
         self.listener.start()
+
+    def canonical(self, key):
+        return self.listener.canonical(key)
 
     def on_press(self, key):
         if key not in self.pressed_keys:
@@ -34,39 +37,57 @@ class KeyboardTrigger(QWidget, TriggerStackItem):
         super().__init__()
         
         self.triggered.connect(run)
+        
+        # self.hotkey = HotKey()
 
         self.type = QComboBox()
-        self.type.addItems(['press', 'release', 'sequence'])
+        self.type.addItems(['press', 'release', 'hotkey'])
         self.type.currentIndexChanged.connect(changed)
 
-        listener = ListenerObject()
-        listener.press.connect(self.on_press)
-        listener.release.connect(self.on_release)
+        self.listener = ListenerObject()
+        self.listener.press.connect(self.on_press)
+        self.listener.release.connect(self.on_release)
 
         self.value = QLineEdit()
         self.value.textChanged.connect(changed)
+        self.value.textChanged.connect(self.on_change)
 
         with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
             layout.add(self.type)
             layout.add(self.value)
 
+    def on_change(self, text):
+        if self.type.currentText() == 'hotkey':
+            try:
+                self.hotkey = HotKey(HotKey.parse(text), self.on_hotkey)
+            except:
+                self.hotkey = None
+
+    def on_hotkey(self):
+        print('go')
+        self.triggered.emit()
+
     def on_press(self, key):
         if self.value.hasFocus() or not self.isVisible():
             return
+
         if self.type.currentText() == 'press':
             if key == KeyCode.from_char(self.value.text()):
                 self.triggered.emit()
-        elif self.type.currentText() == 'sequence':
-            pass
+        elif self.type.currentText() == 'hotkey':
+            if self.hotkey:
+                self.hotkey.press(self.listener.canonical(key))
 
     def on_release(self, key):
         if self.value.hasFocus() or not self.isVisible():
             return
+
         if self.type.currentText() == 'release':
             if key == KeyCode.from_char(self.value.text()):
                 self.triggered.emit()
-        elif self.type.currentText() == 'sequence':
-            pass                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+        elif self.type.currentText() == 'hotkey':
+            if self.hotkey:
+                self.hotkey.release(self.listener.canonical(key))
 
     def from_dict(self, data):
         try:

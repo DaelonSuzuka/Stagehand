@@ -114,6 +114,7 @@ class ActionStack(QWidget):
         }
 
     def run(self):
+        print('run')
         self.stack.currentWidget().run()
 
     def reset(self):
@@ -148,18 +149,21 @@ class ActionWidget(QWidget):
             if 'type' in data:
                 action_type = data['type']
 
+        self.filter_btn = QPushButton('', icon=QIcon(qta.icon('mdi.filter-menu-outline')), parent=self)
+        self.run_btn = QPushButton('', clicked=self.run, icon=QIcon(qta.icon('fa5.play-circle')))
+
         self.label = LabelEdit(label, changed=self.on_change)
         self.action_stack = ActionStack(self.on_change, action_type, action)
         self.trigger_stack = TriggerStack(self.on_change, run=self.run, parent=self)
 
-        self.custom_trigger_action = QAction('Custom Trigger', self, triggered=self.on_change, checkable=True)
+        self.trigger_enabled = QAction('Custom Trigger', self, triggered=self.on_change, checkable=True)
+        self.filter_enabled = QAction('Filter Enabled', self, triggered=self.on_change, checkable=True)
         if trigger:
-            self.custom_trigger_action.setChecked(True)
+            self.trigger_enabled.setChecked(True)
+            self.filter_enabled.setChecked(True)
 
         if group:
             group.register(self)
-
-        self.run_btn = QPushButton('', clicked=self.run, icon=QIcon(qta.icon('fa5.play-circle')))
         
         self.on_change()
 
@@ -167,9 +171,10 @@ class ActionWidget(QWidget):
             self.changed.connect(changed)
 
         with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
-            layout.add(self.label, 1)
-            layout.add(self.trigger_stack, 2)
-            layout.add(self.action_stack, 3)
+            layout.add(self.label)
+            layout.add(self.trigger_stack, 3)
+            layout.add(self.filter_btn)
+            layout.add(self.action_stack, 6)
             layout.add(self.run_btn)
 
     def to_dict(self):
@@ -177,17 +182,24 @@ class ActionWidget(QWidget):
             'name': self.name,
             'label': self.label.text(),
             **self.action_stack.to_dict(),
-            'trigger': self.trigger_stack.to_dict(), 
+            'trigger_enabled': self.trigger_enabled.isChecked(),
+            'trigger': self.trigger_stack.to_dict(),
+            'filter_enabled': self.filter_enabled.isChecked(),
         }
 
     def set_data(self, data):
         self.label.setText(data['label'])
         self.action_stack.set_data(data)
+        if 'trigger_enabled' in data:
+            self.trigger_enabled.setChecked(data['trigger_enabled'])
         if 'trigger' in data:
             self.trigger_stack.set_data(data['trigger'])
+        if 'filter_enabled' in data:
+            self.filter_enabled.setChecked(data['filter_enabled'])
 
     def on_change(self):
-        self.trigger_stack.setVisible(self.custom_trigger_action.isChecked())
+        self.filter_btn.setVisible(self.filter_enabled.isChecked())
+        self.trigger_stack.setVisible(self.trigger_enabled.isChecked())
         self.changed.emit()
 
     def contextMenuEvent(self, event: PySide2.QtGui.QContextMenuEvent) -> None:
@@ -196,7 +208,8 @@ class ActionWidget(QWidget):
         menu.addAction(QAction('Rename', self, triggered=self.label.start_editing))
         menu.addAction(QAction('Copy', self, triggered=self.copy))
         menu.addAction(QAction('Paste', self, triggered=self.paste))
-        menu.addAction(self.custom_trigger_action)
+        menu.addAction(self.filter_enabled)
+        menu.addAction(self.trigger_enabled)
         menu.addAction(QAction('Reset', self, triggered=self.reset))
         menu.exec_(event.globalPos())
 

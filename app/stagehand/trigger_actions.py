@@ -6,7 +6,7 @@ class TriggerActionsWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
 
-        self.group = ActionWidgetGroup('generic_actions', self)
+        self.group = ActionWidgetGroup('trigger_actions', self)
 
         self.actions = []
         for i in range(4):
