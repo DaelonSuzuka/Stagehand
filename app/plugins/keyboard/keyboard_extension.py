@@ -14,9 +14,9 @@ class KeyboardExtension:
     def __getattr__(self, name):
         return getattr(Key, name)
 
-    def key(self, k):
-        self.controller.press(k)
-        self.controller.release(k)
+    def tap(self, key):
+        self.controller.press(key)
+        self.controller.release(key)
 
     def press(self, key):
         self.controller.press(key)
@@ -32,7 +32,7 @@ class MouseExtension:
     def __getattr__(self, name):
         return getattr(mouse.Button, name)
 
-    def position (self, x, y):
+    def position(self, x, y):
         self.controller.position(x, y)
 
     def move(self, x, y):
