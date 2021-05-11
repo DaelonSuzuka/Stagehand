@@ -693,7 +693,7 @@ class Listener(AbstractListener):
         :return: a key
         :rtype: Key or KeyCode
         """
-        from pynput.keyboard import Key, KeyCode, _NORMAL_MODIFIERS
+        from . import Key, KeyCode, _NORMAL_MODIFIERS
         if isinstance(key, KeyCode) and key.char is not None:
             return KeyCode.from_char(key.char.lower())
         elif isinstance(key, Key) and key.value in _NORMAL_MODIFIERS:
