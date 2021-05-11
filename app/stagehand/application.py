@@ -18,7 +18,7 @@ def get_application():
     # app.setWindowIcon(icon)
 
     app.updater = ApplicationUpdater()
-    app.updater.check_latest()
+    # app.updater.check_latest()
 
     app.device_manager = DeviceManager(app)
     app.aboutToQuit.connect(lambda: app.device_manager.close())
