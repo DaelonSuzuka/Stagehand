@@ -2,7 +2,6 @@ from qtstrap import *
 import json
 from pathlib import Path
 from .sandbox_tools import SandboxTools
-import pynput
 
 
 class SandboxToolsDockWidget(QDockWidget):
