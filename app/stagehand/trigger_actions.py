@@ -9,8 +9,8 @@ class TriggerActionsWidget(QWidget):
         self.group = ActionWidgetGroup('generic_actions', self)
 
         self.actions = []
-        for i in range(1, 3):
-            action = ActionWidget(f'Action {i}', trigger=True, group=self.group)
+        for i in range(4):
+            action = ActionWidget(f'Action {i + 1}', trigger=True, group=self.group)
             self.actions.append(action)
 
         with CVBoxLayout(self) as layout:
