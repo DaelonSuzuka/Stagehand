@@ -1,5 +1,10 @@
-from pynput.keyboard import Key, Controller
-from pynput import mouse
+import sys
+from pathlib import Path
+
+sys.path.append(Path(__file__).parent)
+
+from .pynput.keyboard import Key, Controller
+from .pynput import mouse
 
 
 class KeyboardExtension:
