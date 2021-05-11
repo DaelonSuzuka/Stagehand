@@ -149,8 +149,7 @@ class MainWindow(BaseMainWindow):
 
     def init_tray_stuff(self):
         self.tray_icon = QSystemTrayIcon(self)
-        icon = QIcon(qta.icon('fa.circle','fa5s.video', options=[{'color':'gray'}, {'scale_factor':0.5, 'color':'white'}]))
-        self.tray_icon.setIcon(icon)
+        self.tray_icon.setIcon(QIcon(OPTIONS.app_info.AppIconName))
 
         self.tray_menu = QMenu()
         self.tray_menu.addAction(QAction("Stagehand", self, enabled=False))
