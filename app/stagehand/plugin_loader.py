@@ -49,7 +49,7 @@ class Plugins():
         self.register = Registrar(self)
 
         def is_plugin(p):
-            return Path(Path(p) / 'plugin.json').exists() or Path(Path(p) / '__init__.py').exists()
+            return Path(Path(p) / 'plugin.json').exists()
 
         plugins = [Path(d[0]) for d in os.walk(plugin_folder) if is_plugin(d[0])]
         for plugin in plugins:
