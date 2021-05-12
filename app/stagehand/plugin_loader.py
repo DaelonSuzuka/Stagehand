@@ -58,24 +58,6 @@ class Plugins():
         for plugin in plugin_folder.rglob('*.zip'):
             self.load_zip_plugin(plugin)
 
-    def list_all(self):
-        return self._plugins
-
-    def register_sandbox_extension(self, name, extension):
-        _Sandbox.extensions[name] = extension
-
-    def register_action_type(self, name, action):
-        ActionStack.actions[name] = action
-
-    def register_widget(self, name, widget):
-        self.plugin_widgets[name] = widget
-
-    def register_sidebar_widget(self, name, widget):
-        self.sidebar_widgets[name] = widget
-
-    def register_statusbar_widget(self, name, widget):
-        self.statusbar_widgets[name] = widget
-
     def __getattr__(self, name):
         return self._plugins['plugins.' + name]
     
@@ -98,6 +80,9 @@ class Plugins():
         plugin_name = plugin_name.replace('/','.')
 
         if plugin_name not in self._plugins:
+            if Path(plugin / 'packages').exists():
+                sys.path.append(plugin / 'packages')
+
             module = importlib.import_module(plugin_name)
             self._plugins[plugin_name] = module
 

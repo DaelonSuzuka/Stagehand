@@ -75,8 +75,8 @@ class DiscordAction(QWidget, ActionStackItem):
 
 
 def install_plugin(plugin_manager):
-    plugin_manager.register_action_type('discord', DiscordAction)
+    plugin_manager.register.action('discord', DiscordAction)
 
-    plugin_manager.register_sandbox_extension('discord', DiscordExtension())
+    plugin_manager.register.sandbox_extension('discord', DiscordExtension())
 
-    plugin_manager.register_widget('Discord', DiscordWidget())
+    plugin_manager.register.widget('Discord', DiscordWidget())
