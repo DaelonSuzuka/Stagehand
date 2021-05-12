@@ -27,7 +27,7 @@ The keyboard implementation for *Windows*.
 import contextlib
 import ctypes
 import enum
-import six
+from ... import six
 
 from ctypes import wintypes
 

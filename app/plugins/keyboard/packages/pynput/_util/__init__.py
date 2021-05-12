@@ -29,9 +29,9 @@ import functools
 import sys
 import threading
 
-import six
+from ... import six
 
-from six.moves import queue
+from ...six.moves import queue
 
 
 class AbstractListener(threading.Thread):

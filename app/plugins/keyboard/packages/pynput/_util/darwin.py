@@ -25,7 +25,7 @@ Utility functions and classes for the *Darwin* backend.
 import contextlib
 import ctypes
 import ctypes.util
-import six
+from ... import six
 
 import objc
 import CoreFoundation

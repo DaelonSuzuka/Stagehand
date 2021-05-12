@@ -29,7 +29,7 @@ import enum
 import threading
 import unicodedata
 
-import six
+from ... import six
 
 from .._util import AbstractListener
 from .. import _logger
