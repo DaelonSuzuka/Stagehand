@@ -3,8 +3,8 @@ from pathlib import Path
 
 sys.path.append(Path(__file__).parent)
 
-from .pynput.keyboard import Key, Controller
-from .pynput import mouse
+from .packages.pynput.keyboard import Key, Controller
+from .packages.pynput import mouse
 
 
 class KeyboardExtension:

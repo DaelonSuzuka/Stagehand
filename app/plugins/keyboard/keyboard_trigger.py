@@ -1,7 +1,7 @@
 from qtstrap import *
 from stagehand.sandbox import Sandbox
 from stagehand.actions import TriggerStackItem
-from .pynput.keyboard import Listener, Key, KeyCode, HotKey
+from .packages.pynput.keyboard import Listener, Key, KeyCode, HotKey
 
 
 @singleton
