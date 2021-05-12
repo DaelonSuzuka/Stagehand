@@ -8,7 +8,7 @@ import codex
 import zipimport
 
 from stagehand.sandbox import _Sandbox
-from stagehand.actions import ActionStack, TriggerStack
+from stagehand.actions import ActionStack, TriggerStack, FilterStack
 
 
 plugin_folder = OPTIONS.APPLICATION_PATH / 'plugins'
@@ -26,6 +26,9 @@ class Registrar:
 
     def trigger(self, name, trigger):
         TriggerStack.triggers[name] = trigger
+
+    def filter(self, name, filter):
+        FilterStack.filters[name] = filter
 
     def widget(self, name, widget):
         self.plugins.plugin_widgets[name] = widget
