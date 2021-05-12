@@ -23,7 +23,12 @@ a = Analysis(
         ('app/sandbox', 'sandbox'),
         ('app/plugins', 'plugins'),
     ],
-    hiddenimports=[],
+    hiddenimports=[
+        'numpy',
+        'sounddevice',
+        'flask',
+        'qtpy.QtWebSockets',
+    ],
     hookspath=[],
     runtime_hooks=[],
     excludes=[],
@@ -50,7 +55,7 @@ exe = EXE(
     strip=False,
     upx=False,
     icon=icon_file,
-    console=False 
+    console=True 
 )
 
 coll = COLLECT(
