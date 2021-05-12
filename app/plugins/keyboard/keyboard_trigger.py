@@ -13,6 +13,7 @@ class ListenerObject(QObject):
         self.pressed_keys = set()
 
         self.listener = Listener(on_press=self.on_press, on_release=self.on_release)
+        qApp.aboutToQuit.connect(self.listener.stop)
         self.listener.start()
 
     def canonical(self, key):
