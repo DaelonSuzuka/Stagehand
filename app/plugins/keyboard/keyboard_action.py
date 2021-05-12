@@ -8,7 +8,7 @@ class KeyboardAction(QWidget, ActionStackItem):
         super().__init__()
 
         self.type = QComboBox()
-        self.type.addItems(['tap', 'press', 'release', 'sequence'])
+        self.type.addItems(['tap', 'press', 'release', 'type'])
         self.type.currentIndexChanged.connect(changed)
 
         self.value = QLineEdit()

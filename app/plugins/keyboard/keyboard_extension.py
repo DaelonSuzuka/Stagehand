@@ -24,6 +24,9 @@ class KeyboardExtension:
     def release(self, key):
         self.controller.release(key)
 
+    def type(self, string):
+        self.controller.type(string)
+
 
 class MouseExtension:
     def __init__(self):
