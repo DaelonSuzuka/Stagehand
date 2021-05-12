@@ -1,5 +1,4 @@
 from qtstrap import *
-from stagehand.sandbox import Sandbox
 from stagehand.actions import TriggerStackItem
 from .packages.pynput.keyboard import Listener, Key, KeyCode, HotKey
 
@@ -37,8 +36,6 @@ class KeyboardTrigger(QWidget, TriggerStackItem):
         super().__init__()
         
         self.triggered.connect(run)
-        
-        # self.hotkey = HotKey()
 
         self.type = QComboBox()
         self.type.addItems(['press', 'release', 'hotkey'])
@@ -64,7 +61,6 @@ class KeyboardTrigger(QWidget, TriggerStackItem):
                 self.hotkey = None
 
     def on_hotkey(self):
-        print('go')
         self.triggered.emit()
 
     def on_press(self, key):
