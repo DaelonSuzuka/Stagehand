@@ -2,7 +2,7 @@ from qtstrap import *
 from stagehand.sandbox import Sandbox
 import qtawesome as qta
 from .action_editor import ActionEditorDialog
-from .trigger_widget import TriggerStack
+from .action_trigger import TriggerStack
 import abc
 import json
 
