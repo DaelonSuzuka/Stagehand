@@ -16,12 +16,11 @@ class ActiveWindowFilter(QWidget, FilterStackItem):
             layout.add(self.window)
 
     def refresh(self):
-        selection = self.window.currentText()
-        self.window.blockSignals(True)
-        self.window.clear()
-        self.window.addItems(getAllWindowTitles())
-        self.window.setCurrentText(selection)
-        self.window.blockSignals(False)
+        with SignalBlocker(self.window):
+            selection = self.window.currentText()
+            self.window.clear()
+            self.window.addItems(getAllWindowTitles())
+            self.window.setCurrentText(selection)
 
     def check(self) -> bool:
         return self.window.currentText() == getForegroundWindowTitle()
