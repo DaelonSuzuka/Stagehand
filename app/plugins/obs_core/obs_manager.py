@@ -1,5 +1,6 @@
 from qtstrap import *
 from .obs_socket import ObsSocket
+from pathlib import Path
 
 
 class ObsStatusWidget(QWidget):
@@ -27,6 +28,7 @@ class ObsManager(QWidget):
 
         self.status = QLabel('Not Connected')
         self.status_widget = ObsStatusWidget()
+        self.sidebar_widget = QPushButton(iconSize=QSize(40, 40), icon=QIcon(str(Path(__file__).parent / 'obs.png')), flat=True)
 
         self.url = PersistentLineEdit('obs_url', default='localhost', fixedWidth=75)
         self.port = PersistentLineEdit('obs_port', default='4444', fixedWidth=50)

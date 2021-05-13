@@ -7,22 +7,20 @@ import threading
 from stagehand.actions import ActionWidget, ActionWidgetGroup
 import socket
 import json
+import qtawesome as qta
 
 
-# disable flask console output
+# disable flask logging
 import logging
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
+# disable flask console output
 import click
-
-
 def secho(text, file=None, nl=None, err=None, color=None, **styles):
     pass
-
 def echo(text, file=None, nl=None, err=None, color=None, **styles):
     pass
-
 click.echo = echo
 click.secho = secho
 
@@ -70,6 +68,8 @@ class WebInterfaceManager(QWidget):
 
         self.flask = threading.Thread(name='Web App', target=start_flask, daemon=True)
         self.flask.start()
+        
+        self.sidebar_widget = QPushButton(iconSize=QSize(40, 40), icon=qta.icon('mdi.web'), flat=True)
 
         self.local_link = LinkLabel(both='http://localhost:5000')
         self.lan_link = LinkLabel(both=f'http://{get_ip()}:5000')

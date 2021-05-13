@@ -9,5 +9,5 @@ def install_plugin(plugin_manager):
 
     widget = ObsManager()
     plugin_manager.register.widget('OBS Manager', widget)
-    # plugin_manager.register.sidebar_widget('OBS', widget.sidebar_widget)
+    plugin_manager.register.sidebar_widget('OBS', widget.sidebar_widget)
     plugin_manager.register.statusbar_widget('OBS', widget.status_widget)

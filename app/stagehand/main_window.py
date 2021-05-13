@@ -86,23 +86,23 @@ class MainWindow(BaseMainWindow):
         self.tray_icon.showMessage('An update is available.', 'an update is available')
 
     def init_sidebar(self):
-        self.sidebar = BaseToolbar(self, 'sidebar', location='left', size=30)
+        self.sidebar = BaseToolbar(self, 'sidebar', location='left', size=40)
         self.sidebar.setContextMenuPolicy(Qt.PreventContextMenu)
+
+        for name, widget in Plugins().sidebar_widgets.items():
+            self.sidebar.addWidget(widget)
 
         self.sidebar.add_spacer()
         self.sidebar.addSeparator()
         self.sidebar.addWidget(self.init_settings_btn())
 
     def init_statusbar(self):
-        self.status = BaseToolbar(self, 'statusbar', location='bottom', size=30)
+        self.status = BaseToolbar(self, 'statusbar', location='bottom', size=10)
         self.status.setContextMenuPolicy(Qt.PreventContextMenu)
-
 
         self.status.add_spacer()
         for name, widget in Plugins().statusbar_widgets.items():
-
             self.status.addSeparator()
-            # self.status.addWidget(self.obs.status_widget)
             self.status.addWidget(widget)
 
     def init_settings_btn(self):
