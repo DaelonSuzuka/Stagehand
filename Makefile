@@ -36,6 +36,10 @@ run: venv
 debug: venv
 	$(VENV_PYTHON) -m pdb app/main.py
 
+# open the qtawesome icon browser
+qta: venv
+	$(VENV)/qta-browser
+
 # **************************************************************************** #
 # Build Targets
 
