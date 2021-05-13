@@ -201,6 +201,8 @@ class ActionFilter(QWidget):
             f.deleteLater()
 
     def check_filters(self) -> bool:
+        if not self.enabled.isChecked():
+            return True
         return all([f.check() for f in self.filters])
 
     def set_data(self, data):
