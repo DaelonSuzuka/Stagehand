@@ -87,14 +87,12 @@ class Action(QWidget):
         super().__init__()
 
         self.type = QComboBox()
-        # self.stack = QStackedWidget()
         self.action = SandboxAction(changed)
         self._changed = changed
         self.data = None
         
         for name, action in self.actions.items():
             self.type.addItem(name)
-            # self.stack.addWidget(action(changed))
         
         self.type.currentIndexChanged.connect(changed)
         self.type.currentIndexChanged.connect(self.type_changed)
@@ -104,7 +102,6 @@ class Action(QWidget):
         with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
             layout.add(self.type)
             layout.add(self.action_box, 1)
-            # layout.add(self.stack)
 
     def type_changed(self):
         if self.action:
@@ -122,7 +119,6 @@ class Action(QWidget):
 
         self.type.setCurrentText(data['action_type'])
         self.type_changed()
-        # self.stack.currentWidget().from_dict(data)
 
     def to_dict(self):
         return  {
