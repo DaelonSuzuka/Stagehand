@@ -127,11 +127,11 @@ class Action(QWidget):
         }
 
     def run(self):
-        self.stack.currentWidget().run()
+        self.action.run()
 
     def reset(self):
         self.type.setCurrentText('sandbox')
-        self.stack.currentWidget().reset()
+        self.action.reset()
 
 
 class ActionWidget(QWidget):
@@ -164,12 +164,12 @@ class ActionWidget(QWidget):
         self.run_btn = QPushButton('', clicked=self.run, icon=QIcon(qta.icon('fa5.play-circle')))
 
         self.label = LabelEdit(label, changed=self.on_change)
-        self.action_stack = Action(self.on_change, action_type, action)
-        self.trigger_stack = ActionTrigger(self.on_change, run=self.run, parent=self)
+        self.action = Action(self.on_change, action_type, action)
+        self.trigger = ActionTrigger(self.on_change, run=self.run, parent=self)
         self.filter = ActionFilter(self.on_change, parent=self)
 
         if trigger:
-            self.trigger_stack.enabled.setChecked(True)
+            self.trigger.enabled.setChecked(True)
             self.filter.enabled.setChecked(True)
 
         if group:
@@ -181,30 +181,30 @@ class ActionWidget(QWidget):
         with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
             layout.add(self.label)
             layout.add(VLine())
-            layout.add(self.trigger_stack, 1)
+            layout.add(self.trigger, 1)
             layout.add(self.filter)
-            layout.add(self.action_stack, 2)
+            layout.add(self.action, 2)
             layout.add(self.run_btn)
 
     def to_dict(self):
         return {
             'name': self.name,
             'label': self.label.text(),
-            **self.action_stack.to_dict(),
-            **self.trigger_stack.to_dict(),
+            **self.action.to_dict(),
+            **self.trigger.to_dict(),
             **self.filter.to_dict(),
         }
 
     def set_data(self, data):
         self.label.setText(data['label'])
-        self.action_stack.set_data(data)
-        self.trigger_stack.set_data(data)
+        self.action.set_data(data)
+        self.trigger.set_data(data)
         self.filter.set_data(data)
         self.on_change()
 
     def on_change(self):
         self.filter.setVisible(self.filter.enabled.isChecked())
-        self.trigger_stack.setVisible(self.trigger_stack.enabled.isChecked())
+        self.trigger.setVisible(self.trigger.enabled.isChecked())
         self.changed.emit()
 
     def contextMenuEvent(self, event: PySide2.QtGui.QContextMenuEvent) -> None:
@@ -213,32 +213,32 @@ class ActionWidget(QWidget):
         menu.addAction(QAction('Rename', self, triggered=self.label.start_editing))
         menu.addAction(QAction('Copy', self, triggered=self.copy))
         menu.addAction(QAction('Paste', self, triggered=self.paste))
-        menu.addAction(self.trigger_stack.enabled)
+        menu.addAction(self.trigger.enabled)
         menu.addAction(self.filter.enabled)
         menu.addAction(QAction('Reset', self, triggered=self.reset))
         menu.exec_(event.globalPos())
 
     def copy(self):
         data = {
-            **self.action_stack.to_dict(),
-            **self.trigger_stack.to_dict(),
+            **self.action.to_dict(),
+            **self.trigger.to_dict(),
             **self.filter.to_dict(),
         }
         QClipboard().setText(json.dumps(data))
 
     def paste(self):
         data = json.loads(QClipboard().text())
-        self.action_stack.set_data(data)
-        self.trigger_stack.set_data(data)
+        self.action.set_data(data)
+        self.trigger.set_data(data)
         self.filter.set_data(data)
 
     def reset(self):
         self.label.setText(self.name)
-        self.action_stack.reset()
-        self.trigger_stack.reset()
+        self.action.reset()
+        self.trigger.reset()
         self.filter.reset()
         self.on_change()
 
     def run(self):
         if self.filter.check_filters():
-            self.action_stack.run()
+            self.action.run()
