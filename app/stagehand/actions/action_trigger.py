@@ -78,8 +78,8 @@ class ActionTrigger(QWidget):
         self.trigger_box = CHBoxLayout(margins=(0,0,0,0))
 
         with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
-            layout.add(self.type, 1)
-            layout.add(self.trigger_box)
+            layout.add(self.type)
+            layout.add(self.trigger_box, 1)
             layout.add(VLine())
 
     def show_menu(self, pos) -> None:

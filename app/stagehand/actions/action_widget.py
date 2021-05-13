@@ -181,9 +181,9 @@ class ActionWidget(QWidget):
         with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
             layout.add(self.label)
             layout.add(VLine())
-            layout.add(self.trigger_stack, 3)
+            layout.add(self.trigger_stack, 1)
             layout.add(self.filter)
-            layout.add(self.action_stack, 6)
+            layout.add(self.action_stack, 2)
             layout.add(self.run_btn)
 
     def to_dict(self):
