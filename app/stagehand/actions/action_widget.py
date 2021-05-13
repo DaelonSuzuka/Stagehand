@@ -201,8 +201,8 @@ class ActionWidget(QWidget):
         menu.addAction(QAction('Rename', self, triggered=self.label.start_editing))
         menu.addAction(QAction('Copy', self, triggered=self.copy))
         menu.addAction(QAction('Paste', self, triggered=self.paste))
-        menu.addAction(self.filter.enabled)
         menu.addAction(self.trigger_stack.enabled)
+        menu.addAction(self.filter.enabled)
         menu.addAction(QAction('Reset', self, triggered=self.reset))
         menu.exec_(event.globalPos())
 
