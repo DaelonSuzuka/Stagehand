@@ -10,6 +10,10 @@ import json
 
 
 # disable flask console output
+import logging
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
+
 import click
 
 
