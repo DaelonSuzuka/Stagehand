@@ -9,15 +9,22 @@ import socket
 import json
 
 
-# disable flask logging
-import logging
-log = logging.getLogger('werkzeug')
-log.setLevel(logging.ERROR)
+# disable flask console output
+import click
+
+
+def secho(text, file=None, nl=None, err=None, color=None, **styles):
+    pass
+
+def echo(text, file=None, nl=None, err=None, color=None, **styles):
+    pass
+
+click.echo = echo
+click.secho = secho
 
 
 def start_flask():
     template_path = Path(Path(__file__).parent / 'pages')
-    print(template_path)
     static_path = Path(template_path / 'static').as_posix()
     app = Flask(__name__, template_folder=template_path, static_folder=static_path)
 
@@ -51,10 +58,11 @@ class WebInterfaceManager(QWidget):
         self.server.newConnection.connect(self.on_new_connection)
         self.clients = []
 
-        if self.server.listen(address=QHostAddress.Any, port=5001):
-            print(f"Device server listening at: {self.server.serverAddress().toString()}:{str(self.server.serverPort())}")
-        else:
-            print('Failed to start device server.')
+        self.server.listen(address=QHostAddress.Any, port=5001)
+        # if self.server.listen(address=QHostAddress.Any, port=5001):
+        #     print(f"Device server listening at: {self.server.serverAddress().toString()}:{str(self.server.serverPort())}")
+        # else:
+        #     print('Failed to start device server.')
 
         self.flask = threading.Thread(name='Web App', target=start_flask, daemon=True)
         self.flask.start()
