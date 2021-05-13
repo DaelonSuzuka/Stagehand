@@ -3,7 +3,6 @@ from urllib.parse import urlparse
 from qtstrap import *
 from qtpy.QtWebSockets import *
 from qtpy.QtNetwork import *
-from codex import SubscriptionManager
 import threading
 from stagehand.actions import ActionWidget, ActionWidgetGroup
 import socket
@@ -44,7 +43,6 @@ def get_ip():
     return ip
 
 
-@SubscriptionManager.subscribe
 class WebInterfaceManager(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
