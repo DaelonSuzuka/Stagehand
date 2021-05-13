@@ -8,7 +8,7 @@ import codex
 import zipimport
 
 from stagehand.sandbox import _Sandbox
-from stagehand.actions import ActionStack, TriggerStack, FilterStack
+from stagehand.actions import Action, ActionTrigger, FilterStack
 
 
 plugin_folder = OPTIONS.APPLICATION_PATH / 'plugins'
@@ -22,10 +22,10 @@ class Registrar:
         _Sandbox.extensions[name] = extension
 
     def action(self, name, action):
-        ActionStack.actions[name] = action
+        Action.actions[name] = action
 
     def trigger(self, name, trigger):
-        TriggerStack.triggers[name] = trigger
+        ActionTrigger.triggers[name] = trigger
 
     def filter(self, name, filter):
         FilterStack.filters[name] = filter

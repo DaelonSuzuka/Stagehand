@@ -2,13 +2,13 @@ from qtstrap import *
 from stagehand.sandbox import Sandbox
 import qtawesome as qta
 from .action_editor import ActionEditorDialog
-from .action_trigger import TriggerStack
+from .action_trigger import ActionTrigger
 from .action_filter import FilterStack, ActionFilter
 import abc
 import json
 
 
-class ActionStackItem:
+class ActionItem:
     @abc.abstractmethod
     def __init__(self, changed) -> None:
         raise NotImplementedError
@@ -29,7 +29,7 @@ class ActionStackItem:
         pass
 
 
-class SandboxActionWidget(QWidget, ActionStackItem):
+class SandboxAction(QWidget, ActionItem):
     def __init__(self, changed, parent=None):
         super().__init__(parent=parent)
         
@@ -76,45 +76,61 @@ class SandboxActionWidget(QWidget, ActionStackItem):
         Sandbox().run(self.action.text(), this=self.this)
 
 
-class ActionStack(QWidget):
+class Action(QWidget):
     changed = Signal()
 
     actions = {
-        'sandbox': SandboxActionWidget,
+        'sandbox': SandboxAction,
     }
 
     def __init__(self, changed, action_type='sandbox', action=''):
         super().__init__()
 
         self.type = QComboBox()
-        self.stack = QStackedWidget()
+        # self.stack = QStackedWidget()
+        self.action = SandboxAction(changed)
+        self._changed = changed
+        self.data = None
         
         for name, action in self.actions.items():
             self.type.addItem(name)
-            self.stack.addWidget(action(changed))
+            # self.stack.addWidget(action(changed))
         
         self.type.currentIndexChanged.connect(changed)
-        self.type.currentIndexChanged.connect(self.stack.setCurrentIndex)
+        self.type.currentIndexChanged.connect(self.type_changed)
+
+        self.action_box = CHBoxLayout(margins=(0,0,0,0))
 
         with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
             layout.add(self.type)
-            layout.add(self.stack)
+            layout.add(self.action_box, 1)
+            # layout.add(self.stack)
+
+    def type_changed(self):
+        if self.action:
+            self.action.deleteLater()
+            self.action = None
+        self.action = self.actions[self.type.currentText()](self._changed)
+        if self.data:
+            self.action.from_dict(self.data)
+        self.action_box.add(self.action)
 
     def set_data(self, data):
+        self.data = data
         if 'action_type' not in data:
             data['action_type'] = 'sandbox'
 
         self.type.setCurrentText(data['action_type'])
-        self.stack.currentWidget().from_dict(data)
+        self.type_changed()
+        # self.stack.currentWidget().from_dict(data)
 
     def to_dict(self):
-        return {
+        return  {
             'action_type': self.type.currentText(),
-            **self.stack.currentWidget().to_dict(),
+            **self.action.to_dict(),
         }
 
     def run(self):
-        print('run')
         self.stack.currentWidget().run()
 
     def reset(self):
@@ -152,8 +168,8 @@ class ActionWidget(QWidget):
         self.run_btn = QPushButton('', clicked=self.run, icon=QIcon(qta.icon('fa5.play-circle')))
 
         self.label = LabelEdit(label, changed=self.on_change)
-        self.action_stack = ActionStack(self.on_change, action_type, action)
-        self.trigger_stack = TriggerStack(self.on_change, run=self.run, parent=self)
+        self.action_stack = Action(self.on_change, action_type, action)
+        self.trigger_stack = ActionTrigger(self.on_change, run=self.run, parent=self)
         self.filter = ActionFilter(self.on_change, parent=self)
 
         if trigger:

@@ -1,5 +1,5 @@
 from qtstrap import *
-from stagehand.actions import TriggerStackItem
+from stagehand.actions import TriggerItem
 from .packages.pynput.keyboard import Listener, Key, KeyCode, HotKey
 
 
@@ -30,7 +30,7 @@ class ListenerObject(QObject):
             self.release.emit(key)
 
 
-class KeyboardTrigger(QWidget, TriggerStackItem):
+class KeyboardTrigger(QWidget, TriggerItem):
     triggered = Signal()
 
     def __init__(self, changed, run):

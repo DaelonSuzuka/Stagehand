@@ -1,5 +1,5 @@
 from qtstrap import *
-from stagehand.actions import ActionStackItem
+from stagehand.actions import ActionItem
 # import discord
 import asyncio
 
@@ -60,7 +60,7 @@ class DiscordWidget(QWidget):
 
 
 
-class DiscordAction(QWidget, ActionStackItem):
+class DiscordAction(QWidget, ActionItem):
     def __init__(self, changed):
         super().__init__()
 

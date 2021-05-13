@@ -3,7 +3,7 @@ import abc
 import json
 
 
-class TriggerStackItem:
+class TriggerItem:
     @abc.abstractmethod
     def __init__(self, changed) -> None:
         raise NotImplementedError
@@ -20,7 +20,7 @@ class TriggerStackItem:
         pass
 
 
-class SandboxTriggerWidget(QWidget, TriggerStackItem):
+class SandboxTrigger(QWidget, TriggerItem):
     triggered = Signal()
 
     def __init__(self, changed, run, parent=None):
@@ -45,18 +45,22 @@ class SandboxTriggerWidget(QWidget, TriggerStackItem):
         }
 
 
-class TriggerStack(QWidget):
+class ActionTrigger(QWidget):
     changed = Signal()
 
     triggers = {
-        'sandbox': SandboxTriggerWidget,
+        'sandbox': SandboxTrigger,
     }
 
     def __init__(self, changed, run, trigger_type='sandbox', trigger='', parent=None):
         super().__init__(parent=parent)
 
         self.type = QComboBox()
-        self.stack = QStackedWidget()
+
+        self.trigger = SandboxTrigger(changed, run)
+        self._changed = changed
+        self._run = run
+        self.data = None
 
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.show_menu)
@@ -67,14 +71,15 @@ class TriggerStack(QWidget):
 
         for name, trigger in self.triggers.items():
             self.type.addItem(name)
-            self.stack.addWidget(trigger(changed, run))
 
         self.type.currentIndexChanged.connect(changed)
-        self.type.currentIndexChanged.connect(self.stack.setCurrentIndex)
+        self.type.currentIndexChanged.connect(self.type_changed)
+
+        self.trigger_box = CHBoxLayout(margins=(0,0,0,0))
 
         with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
-            layout.add(self.type)
-            layout.add(self.stack)
+            layout.add(self.type, 1)
+            layout.add(self.trigger_box)
             layout.add(VLine())
 
     def show_menu(self, pos) -> None:
@@ -83,6 +88,15 @@ class TriggerStack(QWidget):
         menu.addAction(QAction('Paste Trigger', self, triggered=self.paste))
         menu.addAction(QAction('Reset Trigger', self, triggered=self.reset))
         menu.exec_(self.mapToGlobal(pos))
+
+    def type_changed(self):
+        if self.trigger:
+            self.trigger.deleteLater()
+            self.trigger = None
+        self.trigger = self.triggers[self.type.currentText()](self._changed, self._run)
+        if self.data:
+            self.trigger.from_dict(self.data['trigger'])
+        self.trigger_box.add(self.trigger)
 
     def copy(self):
         data = json.dumps(self.to_dict())
@@ -94,15 +108,15 @@ class TriggerStack(QWidget):
 
     def reset(self):
         self.type.setCurrentText('sandbox')
-        self.stack.currentWidget().reset()
 
     def set_data(self, data):
         if 'trigger' in data:
+            self.data = data
             if 'trigger_type' not in data['trigger']:
                 data['trigger']['trigger_type'] = 'sandbox'
             self.type.setCurrentText(data['trigger']['trigger_type'])
-
-            self.stack.currentWidget().from_dict(data['trigger'])
+            
+            self.type_changed()
 
             if 'enabled' in data['trigger']:
                 self.enabled.setChecked(data['trigger']['enabled'])
@@ -112,6 +126,6 @@ class TriggerStack(QWidget):
             'trigger': {
                 'enabled': self.enabled.isChecked(),
                 'trigger_type': self.type.currentText(),
-                **self.stack.currentWidget().to_dict(),
+                **self.trigger.to_dict(),
             }
         }

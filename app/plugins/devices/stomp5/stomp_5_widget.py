@@ -43,8 +43,9 @@ class Stomp5Widget(QWidget):
 
     def connect_device(self, device):
         self.status.setText('Connected')
-        device.signals.button_pressed.connect(self.button_pressed)
-        device.signals.button_released.connect(self.button_released)
+        self.adapter = device.signals.adapter()
+        self.adapter.button_pressed.connect(self.button_pressed)
+        self.adapter.button_released.connect(self.button_released)
 
     def button_pressed(self, button):
         number = int(button) - 1

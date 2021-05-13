@@ -1,9 +1,9 @@
 from qtstrap import *
 from stagehand.sandbox import Sandbox
-from stagehand.actions import ActionStackItem
+from stagehand.actions import ActionItem
 
 
-class KeyboardAction(QWidget, ActionStackItem):
+class KeyboardAction(QWidget, ActionItem):
     def __init__(self, changed):
         super().__init__()
 
