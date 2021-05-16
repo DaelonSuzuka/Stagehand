@@ -4,6 +4,8 @@ from .windows import getAllWindowTitles, getForegroundWindowTitle
 
 
 class ActiveWindowFilter(QWidget, FilterStackItem):
+    name = 'active window'
+
     def __init__(self, changed, parent=None) -> None:
         super().__init__(parent=parent)
 

@@ -4,6 +4,14 @@ import json
 
 
 class TriggerItem:
+    @classmethod
+    def get_subclasses(cls):
+        return {c.name: c for c in cls.__subclasses__()}
+
+    @classmethod
+    def get_item(cls, name):
+        return cls.get_subclasses()[name]
+
     @abc.abstractmethod
     def __init__(self, changed) -> None:
         raise NotImplementedError
@@ -21,6 +29,7 @@ class TriggerItem:
 
 
 class SandboxTrigger(QWidget, TriggerItem):
+    name = 'sandbox'
     triggered = Signal()
 
     def __init__(self, changed, run, parent=None):
@@ -48,10 +57,6 @@ class SandboxTrigger(QWidget, TriggerItem):
 class ActionTrigger(QWidget):
     changed = Signal()
 
-    triggers = {
-        'sandbox': SandboxTrigger,
-    }
-
     def __init__(self, changed, run, trigger_type='sandbox', trigger='', parent=None):
         super().__init__(parent=parent)
 
@@ -69,8 +74,11 @@ class ActionTrigger(QWidget):
 
         self.enabled = QAction('Custom Trigger', self, triggered=changed, checkable=True)
 
-        for name, trigger in self.triggers.items():
-            self.type.addItem(name)
+        for trigger in TriggerItem.__subclasses__():
+            self.type.addItem(trigger.name)
+
+        # for name, trigger in self.triggers.items():
+        #     self.type.addItem(name)
 
         self.type.currentIndexChanged.connect(changed)
         self.type.currentIndexChanged.connect(self.type_changed)
@@ -93,7 +101,8 @@ class ActionTrigger(QWidget):
         if self.trigger:
             self.trigger.deleteLater()
             self.trigger = None
-        self.trigger = self.triggers[self.type.currentText()](self._changed, self._run)
+        trigger = TriggerItem.get_item(self.type.currentText())
+        self.trigger = trigger(self._changed, self._run)
         if self.data:
             self.trigger.from_dict(self.data['trigger'])
         self.trigger_box.add(self.trigger)

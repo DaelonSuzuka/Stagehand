@@ -5,6 +5,7 @@ from codex import SubscriptionManager
 
 @SubscriptionManager.subscribe
 class Stomp5Trigger(QWidget, TriggerItem):
+    name = 'Stomp 5'
     triggered = Signal()
 
     def __init__(self, changed, run):

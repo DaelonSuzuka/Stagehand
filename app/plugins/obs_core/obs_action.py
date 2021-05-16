@@ -6,6 +6,8 @@ from .request_widgets import widgets
 
 
 class ObsActionWidget(QWidget, ActionItem):
+    name = 'obs'
+
     def __init__(self, changed):
         super().__init__()
         self.changed = changed

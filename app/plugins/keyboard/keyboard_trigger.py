@@ -31,6 +31,7 @@ class ListenerObject(QObject):
 
 
 class KeyboardTrigger(QWidget, TriggerItem):
+    name = 'keyboard'
     triggered = Signal()
 
     def __init__(self, changed, run):

@@ -9,6 +9,14 @@ import json
 
 
 class ActionItem:
+    @classmethod
+    def get_subclasses(cls):
+        return {c.name: c for c in cls.__subclasses__()}
+
+    @classmethod
+    def get_item(cls, name):
+        return cls.get_subclasses()[name]
+
     @abc.abstractmethod
     def __init__(self, changed) -> None:
         raise NotImplementedError
@@ -30,6 +38,8 @@ class ActionItem:
 
 
 class SandboxAction(QWidget, ActionItem):
+    name = 'sandbox'
+
     def __init__(self, changed, parent=None):
         super().__init__(parent=parent)
         
@@ -79,10 +89,6 @@ class SandboxAction(QWidget, ActionItem):
 class Action(QWidget):
     changed = Signal()
 
-    actions = {
-        'sandbox': SandboxAction,
-    }
-
     def __init__(self, changed, action_type='sandbox', action=''):
         super().__init__()
 
@@ -91,8 +97,8 @@ class Action(QWidget):
         self._changed = changed
         self.data = None
         
-        for name, action in self.actions.items():
-            self.type.addItem(name)
+        for action in ActionItem.__subclasses__():
+            self.type.addItem(action.name)
         
         self.type.currentIndexChanged.connect(changed)
         self.type.currentIndexChanged.connect(self.type_changed)
@@ -107,7 +113,7 @@ class Action(QWidget):
         if self.action:
             self.action.deleteLater()
             self.action = None
-        self.action = self.actions[self.type.currentText()](self._changed)
+        self.action = ActionItem.get_item(self.type.currentText())(self._changed)
         if self.data:
             self.action.from_dict(self.data)
         self.action_box.add(self.action)

@@ -6,6 +6,14 @@ from stagehand.sandbox import Sandbox
 
 
 class FilterStackItem:
+    @classmethod
+    def get_subclasses(cls):
+        return {c.name: c for c in cls.__subclasses__()}
+
+    @classmethod
+    def get_item(cls, name):
+        return cls.get_subclasses()[name]
+
     @abc.abstractmethod
     def __init__(self, changed) -> None:
         raise NotImplementedError
@@ -27,6 +35,8 @@ class FilterStackItem:
 
 
 class SandboxFilterWidget(QWidget, FilterStackItem):
+    name = 'sandbox'
+
     def __init__(self, changed, parent=None) -> None:
         super().__init__(parent=parent)
 
@@ -52,10 +62,6 @@ class SandboxFilterWidget(QWidget, FilterStackItem):
 class FilterStack(QWidget):
     changed = Signal()
 
-    filters = {
-        'sandbox': SandboxFilterWidget,
-    }
-
     def __init__(self, changed=lambda: ..., filter_type='sandbox', filter='', parent=None) -> None:
         super().__init__(parent=parent)
 
@@ -64,8 +70,8 @@ class FilterStack(QWidget):
         self.remove = QPushButton('X', clicked=self.on_remove)
 
         self.pls_delete = False
-
-        for name, filter in self.filters.items():
+        
+        for name, filter in FilterStackItem.get_subclasses().items():
             self.type.addItem(name)
             self.stack.addWidget(filter(changed, parent=self))
 

@@ -4,6 +4,8 @@ from stagehand.actions import ActionItem
 
 
 class KeyboardAction(QWidget, ActionItem):
+    name = 'keyboard'
+
     def __init__(self, changed):
         super().__init__()
 

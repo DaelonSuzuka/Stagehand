@@ -61,6 +61,8 @@ class DiscordWidget(QWidget):
 
 
 class DiscordAction(QWidget, ActionItem):
+    name = 'discord'
+
     def __init__(self, changed):
         super().__init__()
 
@@ -75,8 +77,6 @@ class DiscordAction(QWidget, ActionItem):
 
 
 def install_plugin(plugin_manager):
-    plugin_manager.register.action('discord', DiscordAction)
-
     plugin_manager.register.sandbox_extension('discord', DiscordExtension())
 
     plugin_manager.register.widget('Discord', DiscordWidget())
