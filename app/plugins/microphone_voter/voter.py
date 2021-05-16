@@ -20,7 +20,10 @@ class MicStream:
             self.name = self.device['name']
 
     def set_gain(self, gain):
-        self.gain = float(gain)
+        try:
+            self.gain = float(gain)
+        except ValueError:
+            pass
 
     def set_beta(self, beta):
         self.beta = float(beta)
