@@ -46,6 +46,7 @@ class JoystickScanner(QObject):
                     if n.startswith('button'):
                         self.signals.button.emit(int(n[len('button '):]), new_state[n])
 
+
 @singleton
 class JoystickListener(QObject):
     def __init__(self):
@@ -106,7 +107,8 @@ class JoystickTrigger(QWidget, TriggerItem):
         with SignalBlocker(self.source):
             selection = self.source.currentText()
             self.source.clear()
-            self.source.addItems(get_joystick_sources(self.joystick.currentText()))
+            if sources := get_joystick_sources(self.joystick.currentText()):
+                self.source.addItems(sources)
             self.source.setCurrentText(selection)
 
         if self.joystick.currentText() != self.prev_joystick:
