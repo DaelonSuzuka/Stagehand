@@ -18,12 +18,8 @@ class SidebarButton(QPushButton):
         self.setEnabled(False)
 
 
-class StagehandWidget(QWidget): ...
-
-
-from .generic_actions import GenericActionsWidget
-from .trigger_actions import TriggerActionsWidget
-from .input_devices import InputDeviceManager
+class StagehandWidget(QWidget):
+    ...
 
 
 class FontSizeMenu(QMenu):
@@ -53,6 +49,10 @@ class MainWindow(BaseMainWindow):
 
         self.font_menu = FontSizeMenu(self)
 
+        # hack
+        from . import generic_actions
+        from . import input_devices
+
         self.about = AboutDialog(self)
         self.device_controls = DeviceControlsDockWidget(self)
         
@@ -63,9 +63,6 @@ class MainWindow(BaseMainWindow):
         self.load_settings()
 
         self.stack = QStackedWidget()
-
-        # icon name for action manager
-        'ei.th-list'
 
         self.widgets = []
         for widget in StagehandWidget.__subclasses__():
@@ -79,6 +76,7 @@ class MainWindow(BaseMainWindow):
         self.init_statusbar()
         self.init_sidebar()
 
+        # restore active widget
         prev_widget = QSettings().value('mainwindow/active_widget', 0)
         self.stack.widget(prev_widget).sidebar_button.click()
 

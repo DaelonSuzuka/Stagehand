@@ -16,16 +16,18 @@ class InputDeviceManager(StagehandWidget):
 
         self.sidebar_button = SidebarButton(target=self, icon=qta.icon('fa5s.tasks'))
 
-        self.known_devices_list = QListWidget(self)
+        self.known_devices_list = QListWidget(self, fixedWidth=150)
+        self.widget_stack = QStackedWidget()
+        self.known_devices_list.currentRowChanged.connect(self.widget_stack.setCurrentIndex)
+        
         for _, d in self.known_devices.items():
             self.known_devices_list.addItem(f"{d['profile_name']} - {d['guid']}")
 
         with CHBoxLayout(self) as layout:
-            with layout.vbox(1):
+            with layout.vbox():
                 layout.add(QLabel("Known Devices:"))
                 layout.add(self.known_devices_list)
-            with layout.vbox(1):
-                layout.add(QLabel('wat'))
+            layout.add(self.widget_stack, 1)
 
         for guid, device in self.known_devices.items():
             self.create_widget(guid, device['profile_name'])
@@ -36,10 +38,7 @@ class InputDeviceManager(StagehandWidget):
             if hasattr(profile, 'widget'):
                 widget = profile.widget(guid, self.parent)
                 self.widgets[guid] = widget
-                # if hasattr(self.parent, 'tabs'):
-                #     self.parent.tabs.addTab(widget, profile_name)
-                # else:
-                #     self.parent.plugin_widgets[profile_name] = widget
+                self.widget_stack.addWidget(widget)
 
     def device_added(self, device):
         if device.guid not in self.known_devices:
