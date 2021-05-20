@@ -1,5 +1,6 @@
 from qtstrap import *
 from .obs_socket import ObsSocket
+from stagehand.main_window import StagehandWidget, SidebarButton
 from pathlib import Path
 
 
@@ -16,7 +17,7 @@ class ObsStatusWidget(QWidget):
         self.status.setText(text)
 
 
-class ObsManager(QWidget):
+class ObsManager(StagehandWidget):
     message_received = Signal(dict)
     raw_message_received = Signal(str)
     socket_connected = Signal()
@@ -28,7 +29,9 @@ class ObsManager(QWidget):
 
         self.status = QLabel('Not Connected')
         self.status_widget = ObsStatusWidget()
-        self.sidebar_widget = QPushButton(iconSize=QSize(40, 40), icon=QIcon(str(Path(__file__).parent / 'obs.png')), flat=True)
+
+        icon = QIcon(str(Path(__file__).parent / 'obs.png'))
+        self.sidebar_button = SidebarButton(target=self, icon=icon)
 
         self.url = PersistentLineEdit('obs_url', default='localhost', fixedWidth=75)
         self.port = PersistentLineEdit('obs_port', default='4444', fixedWidth=50)
