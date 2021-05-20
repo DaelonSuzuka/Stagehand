@@ -77,7 +77,3 @@ class DiscordAction(QWidget, ActionItem):
 
     def to_dict(self):
         return {}
-
-
-def install_plugin(plugin_manager):
-    plugin_manager.register.widget('Discord', DiscordWidget())

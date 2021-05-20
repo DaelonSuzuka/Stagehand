@@ -11,31 +11,11 @@ import zipimport
 plugin_folder = OPTIONS.APPLICATION_PATH / 'plugins'
 
 
-class Registrar:
-    def __init__(self, plugins):
-        self.plugins = plugins
-
-    def widget(self, name, widget):
-        self.plugins.plugin_widgets[name] = widget
-
-    def sidebar_widget(self, name, widget):
-        self.plugins.sidebar_widgets[name] = widget
-
-    def statusbar_widget(self, name, widget):
-        self.plugins.statusbar_widgets[name] = widget
-
-
 @singleton
 class Plugins():
     _plugins = {}
 
     def __init__(self):
-        self.plugin_widgets = {}
-        self.sidebar_widgets = {}
-        self.statusbar_widgets = {}
-
-        self.register = Registrar(self)
-
         def is_plugin(p):
             return Path(Path(p) / 'plugin.json').exists()
 
@@ -73,8 +53,5 @@ class Plugins():
             try:
                 module = importlib.import_module(plugin_name)
                 self._plugins[plugin_name] = module
-
-                if hasattr(module, 'install_plugin'):
-                    module.install_plugin(self)
             except:
                 pass
