@@ -76,11 +76,15 @@ class MainWindow(BaseMainWindow):
         self.init_statusbar()
         self.init_sidebar()
 
+        prev_widget = QSettings().value('mainwindow/active_widget', 0)
+        self.stack.widget(prev_widget).sidebar_button.click()
+
         qApp.updater.update_found.connect(self.display_update_available)
 
     def set_widget(self, widget):
         enable_children(self.sidebar)
         self.stack.setCurrentWidget(widget)
+        QSettings().setValue('mainwindow/active_widget', self.stack.currentIndex())
 
     def display_update_available(self):
         self.tray_icon.showMessage('An update is available.', 'an update is available')
