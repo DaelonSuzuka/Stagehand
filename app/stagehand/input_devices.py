@@ -1,8 +1,38 @@
 from qtstrap import *
 from codex import DeviceManager
-from .actions import ActionWidget, ActionWidgetGroup
+from .actions import ActionWidget, ActionWidgetGroup, TriggerItem
 from stagehand.main_window import StagehandWidget, SidebarButton
 import qtawesome as qta
+
+
+class DeviceTrigger(QWidget, TriggerItem):
+    name = 'device'
+    triggered = Signal()
+
+    def __init__(self, changed, run, parent=None):
+        super().__init__(parent=parent)
+
+        self.trigger = QLineEdit()
+        self.trigger.textChanged.connect(changed)
+
+        self.device = QComboBox()
+        self.event_ = QComboBox()
+        
+        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+            layout.add(self.device)
+            layout.add(self.event_)
+
+    def reset(self):
+        self.trigger.clear()
+        
+    def from_dict(self, data: dict):
+        if 'trigger' in data:
+            self.trigger.setText(data['trigger'])
+
+    def to_dict(self):
+        return {
+            'trigger': self.trigger.text()
+        }
 
 
 @DeviceManager.subscribe
