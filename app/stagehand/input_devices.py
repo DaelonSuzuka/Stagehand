@@ -14,7 +14,7 @@ class InputDeviceManager(StagehandWidget):
         self.known_devices = QSettings().value(f'input_devices/known_devices', {})
         self.widgets = {}
 
-        self.sidebar_button = SidebarButton(target=self, icon=qta.icon('fa5s.tasks'))
+        self.sidebar_button = SidebarButton(target=self, icon=qta.icon('mdi.format-list-text'))
 
         self.known_devices_list = QListWidget(self, fixedWidth=150)
         self.widget_stack = QStackedWidget()

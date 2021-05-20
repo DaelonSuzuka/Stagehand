@@ -21,7 +21,7 @@ class ActionsContainer(StagehandWidget):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         
-        self.sidebar_button = SidebarButton(target=self, icon=qta.icon('ei.th-list'))
+        self.sidebar_button = SidebarButton(target=self, icon=qta.icon('mdi.format-list-checkbox'))
 
         self.widgets = []
         self.widget_list = QListWidget(fixedWidth=150)
