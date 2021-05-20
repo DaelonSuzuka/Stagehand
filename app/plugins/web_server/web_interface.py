@@ -5,6 +5,7 @@ from qtpy.QtWebSockets import *
 from qtpy.QtNetwork import *
 import threading
 from stagehand.actions import ActionWidget, ActionWidgetGroup
+from stagehand.main_window import StagehandWidget, SidebarButton
 import socket
 import json
 import qtawesome as qta
@@ -51,20 +52,41 @@ def get_ip():
     s.close()
     return ip
 
+@singleton
+class SocketListener(QObject):
+    new_connection = Signal()
+    message_recieved = Signal(str)
 
-class WebInterfaceManager(QWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent=parent)
-
-        self.server = QWebSocketServer('flask', QWebSocketServer.NonSecureMode)
-        self.server.newConnection.connect(self.on_new_connection)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.clients = []
-
+        
+        self.server = QWebSocketServer('flask', QWebSocketServer.NonSecureMode)
         self.server.listen(address=QHostAddress.Any, port=5001)
+        
         # if self.server.listen(address=QHostAddress.Any, port=5001):
         #     print(f"Device server listening at: {self.server.serverAddress().toString()}:{str(self.server.serverPort())}")
         # else:
         #     print('Failed to start device server.')
+        
+        self.server.newConnection.connect(self.on_new_connection)
+
+    def on_new_connection(self):
+        socket = self.server.nextPendingConnection()
+        self.clients.append(socket)
+        socket.textMessageReceived.connect(self.message_recieved.emit)
+        self.new_connection.emit()
+
+
+class WebInterfaceManager(StagehandWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+
+        self.sidebar_button = SidebarButton(target=self, icon=qta.icon('mdi.web'))
+
+        self.socket = SocketListener()
+        self.socket.new_connection.connect(self.rename_buttons)
+        self.socket.message_recieved.connect(self.processTextMessage)
 
         self.flask = threading.Thread(name='Web App', target=start_flask, daemon=True)
         self.flask.start()
@@ -96,16 +118,9 @@ class WebInterfaceManager(QWidget):
             layout.add(QLabel(), 1)
 
     def rename_buttons(self):
-        for client in self.clients:
+        for client in self.socket.clients:
             for i, action in self.actions.items():
                 client.sendTextMessage(f'{{"command":"rename", "number":"{i[len("Web Action "):]}", "name":"{action.label.text()}"}}')
-
-    def on_new_connection(self):
-        socket = self.server.nextPendingConnection()
-        self.clients.append(socket)
-        
-        socket.textMessageReceived.connect(self.processTextMessage)
-        self.rename_buttons()
 
     def processTextMessage(self, text):
         try:
