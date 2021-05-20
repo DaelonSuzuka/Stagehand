@@ -1,5 +1,6 @@
 from qtstrap import *
 from stagehand.actions import ActionItem
+from stagehand.sandbox import SandboxExtension
 # import discord
 import asyncio
 
@@ -25,7 +26,9 @@ import asyncio
 #             await asyncio.sleep(60) # task runs every 60 seconds
 
 
-class DiscordExtension:
+class DiscordExtension(SandboxExtension):
+    name = 'discord'
+
     def __init__(self):
         pass
 
@@ -77,6 +80,4 @@ class DiscordAction(QWidget, ActionItem):
 
 
 def install_plugin(plugin_manager):
-    plugin_manager.register.sandbox_extension('discord', DiscordExtension())
-
     plugin_manager.register.widget('Discord', DiscordWidget())

@@ -4,6 +4,10 @@ from pathlib import Path
 from .sandbox_tools import SandboxTools
 
 
+class SandboxExtension:
+    pass
+
+
 class SandboxToolsDockWidget(QDockWidget):
     def __init__(self, widget=None, parent=None):
         super().__init__('Sandbox Tools', parent=parent)
@@ -27,6 +31,14 @@ class _Sandbox(QWidget):
         super().__init__(parent=parent)
         self.tools = SandboxTools()
         self.tools_dock = SandboxToolsDockWidget(self.tools, self)
+
+        for ext in SandboxExtension.__subclasses__():
+            e = ext()
+            if isinstance(ext.name, list):
+                for name in ext.name:
+                    self.extensions[name] = e
+            else:
+                self.extensions[ext.name] = e
 
         self.reset_environment()
 

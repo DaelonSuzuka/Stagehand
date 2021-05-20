@@ -1,10 +1,12 @@
 from qtstrap import *
-from stagehand.sandbox import Sandbox
+from stagehand.sandbox import Sandbox, SandboxExtension
 from .requests import requests
 from .obs_socket import ObsSocket
 
 
-class ObsExtension:
+class ObsExtension(SandboxExtension):
+    name = 'obs'
+
     def __getattr__(self, name):
         return requests[name]
 

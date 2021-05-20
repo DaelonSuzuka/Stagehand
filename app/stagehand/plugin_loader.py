@@ -7,8 +7,6 @@ import os
 import codex
 import zipimport
 
-from stagehand.sandbox import _Sandbox
-
 
 plugin_folder = OPTIONS.APPLICATION_PATH / 'plugins'
 
@@ -16,9 +14,6 @@ plugin_folder = OPTIONS.APPLICATION_PATH / 'plugins'
 class Registrar:
     def __init__(self, plugins):
         self.plugins = plugins
-    
-    def sandbox_extension(self, name, extension):
-        _Sandbox.extensions[name] = extension
 
     def widget(self, name, widget):
         self.plugins.plugin_widgets[name] = widget

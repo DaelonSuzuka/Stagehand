@@ -4,8 +4,6 @@ from .obs_manager import ObsManager
 
 
 def install_plugin(plugin_manager):
-    plugin_manager.register.sandbox_extension('obs', ObsExtension())
-
     widget = ObsManager()
     plugin_manager.register.widget('OBS Manager', widget)
     plugin_manager.register.sidebar_widget('OBS', widget.sidebar_widget)

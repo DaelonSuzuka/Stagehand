@@ -1,13 +1,13 @@
 import sys
 from pathlib import Path
-
-sys.path.append(Path(__file__).parent)
-
+from stagehand.sandbox import SandboxExtension
 from .packages.pynput.keyboard import Key, Controller
 from .packages.pynput import mouse
 
 
-class KeyboardExtension:
+class KeyboardExtension(SandboxExtension):
+    name = ['keyboard', 'kb']
+
     def __init__(self):
         self.controller = Controller()
 
@@ -28,7 +28,9 @@ class KeyboardExtension:
         self.controller.type(string)
 
 
-class MouseExtension:
+class MouseExtension(SandboxExtension):
+    name = 'mouse'
+
     def __init__(self):
         self.controller = mouse.Controller()
 
