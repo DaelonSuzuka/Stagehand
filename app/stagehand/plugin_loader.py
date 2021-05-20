@@ -70,9 +70,11 @@ class Plugins():
         if plugin_name not in self._plugins:
             if Path(plugin / 'packages').exists():
                 sys.path.append(plugin / 'packages')
+            try:
+                module = importlib.import_module(plugin_name)
+                self._plugins[plugin_name] = module
 
-            module = importlib.import_module(plugin_name)
-            self._plugins[plugin_name] = module
-
-            if hasattr(module, 'install_plugin'):
-                module.install_plugin(self)
+                if hasattr(module, 'install_plugin'):
+                    module.install_plugin(self)
+            except:
+                pass
