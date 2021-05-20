@@ -9,7 +9,7 @@ class ObsStatusWidget(QWidget):
         super().__init__(parent=parent)
         self.status = QLabel('Not Connected')
 
-        with CHBoxLayout(self) as layout:
+        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
             layout.add(QLabel('OBS Status:'))
             layout.add(self.status)
 
