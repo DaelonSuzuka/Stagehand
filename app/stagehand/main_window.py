@@ -64,6 +64,9 @@ class MainWindow(BaseMainWindow):
 
         self.stack = QStackedWidget()
 
+        # icon name for action manager
+        'ei.th-list'
+
         self.widgets = []
         for widget in StagehandWidget.__subclasses__():
             w = widget(self)
