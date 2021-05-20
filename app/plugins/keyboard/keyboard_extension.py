@@ -1,5 +1,3 @@
-import sys
-from pathlib import Path
 from stagehand.sandbox import SandboxExtension
 from .packages.pynput.keyboard import Key, Controller
 from .packages.pynput import mouse
