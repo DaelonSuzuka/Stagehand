@@ -1,16 +1,20 @@
 from qtstrap import *
 from codex import DeviceManager
 from .actions import ActionWidget, ActionWidgetGroup
+from stagehand.main_window import StagehandWidget, SidebarButton
+import qtawesome as qta
 
 
 @DeviceManager.subscribe
-class InputDeviceManager(QWidget):
+class InputDeviceManager(StagehandWidget):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.parent = parent
 
         self.known_devices = QSettings().value(f'input_devices/known_devices', {})
         self.widgets = {}
+
+        self.sidebar_button = SidebarButton(target=self, icon=qta.icon('fa5s.tasks'))
 
         self.known_devices_list = QListWidget(self)
         for _, d in self.known_devices.items():
@@ -32,10 +36,10 @@ class InputDeviceManager(QWidget):
             if hasattr(profile, 'widget'):
                 widget = profile.widget(guid, self.parent)
                 self.widgets[guid] = widget
-                if hasattr(self.parent, 'tabs'):
-                    self.parent.tabs.addTab(widget, profile_name)
-                else:
-                    self.parent.plugin_widgets[profile_name] = widget
+                # if hasattr(self.parent, 'tabs'):
+                #     self.parent.tabs.addTab(widget, profile_name)
+                # else:
+                #     self.parent.plugin_widgets[profile_name] = widget
 
     def device_added(self, device):
         if device.guid not in self.known_devices:

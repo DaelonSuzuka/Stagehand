@@ -2,11 +2,27 @@ from qtstrap import *
 from codex import DeviceControlsDockWidget
 from .sandbox import Sandbox
 import qtawesome as qta
-from .generic_actions import GenericActionsWidget
-from .trigger_actions import TriggerActionsWidget
 from .about import AboutDialog
-from .input_devices import InputDeviceManager
-from .plugin_loader import Plugins
+# from .generic_actions import GenericActionsWidget
+# from .trigger_actions import TriggerActionsWidget
+# from .input_devices import InputDeviceManager
+
+
+class SidebarButton(QPushButton):
+    def __init__(self, *args, target=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setIconSize(QSize(40, 40))
+        self.setFlat(True)
+        self.target = target
+        self.clicked.connect(self.on_click)
+
+    def on_click(self):
+        self.parent().parent().set_widget(self.target)
+        self.setEnabled(False)
+
+
+class StagehandWidget(QWidget): ...
+
 
 
 class FontSizeMenu(QMenu):
@@ -45,42 +61,30 @@ class MainWindow(BaseMainWindow):
 
         self.load_settings()
 
-        self.plugin_widgets = {name: widget for name, widget in Plugins().plugin_widgets.items()}
+        self.stack = QStackedWidget()
 
-        self.actions = GenericActionsWidget(self)
-        self.triggers = TriggerActionsWidget(self)
-        self.input_devices = InputDeviceManager(self)
+        # This is a hack to control the order of sidebar buttons
+        from .generic_actions import GenericActionsWidget
+        from .trigger_actions import TriggerActionsWidget
+        from .input_devices import InputDeviceManager
 
-        def scroll(widget):
-            return widget
-            scroll = QScrollArea(parent=self)
-            scroll.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-            scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-            scroll.setWidget(widget)
-            return scroll
+        self.widgets = []
+        for widget in StagehandWidget.__subclasses__():
+            w = widget(self)
+            self.widgets.append(w)
+            self.stack.addWidget(w)
 
-        self.tab_order = QSettings().value('mainwindow/tab_order', [])
-
-        tabs = {
-            **self.plugin_widgets,
-            'Actions': scroll(self.actions),
-            'Triggers': scroll(self.triggers),
-            'Input Devices': scroll(self.input_devices),
-        }
-
-        self.tabs = PersistentTabWidget('main_tabs', tabs=tabs, movable=True)
-        self.setCentralWidget(self.tabs)
-
-        self.tab_shortcuts = []
-        for i in range(10):
-            shortcut = QShortcut(f'Ctrl+{i + 1}', self, activated=lambda i=i: self.tabs.setCurrentIndex(i))
-            self.tab_shortcuts.append(shortcut)
+        self.setCentralWidget(self.stack)
 
         self.init_tray_stuff()
         self.init_statusbar()
         self.init_sidebar()
 
         qApp.updater.update_found.connect(self.display_update_available)
+
+    def set_widget(self, widget):
+        enable_children(self.sidebar)
+        self.stack.setCurrentWidget(widget)
 
     def display_update_available(self):
         self.tray_icon.showMessage('An update is available.', 'an update is available')
@@ -89,21 +93,22 @@ class MainWindow(BaseMainWindow):
         self.sidebar = BaseToolbar(self, 'sidebar', location='left', size=40)
         self.sidebar.setContextMenuPolicy(Qt.PreventContextMenu)
 
-        for name, widget in Plugins().sidebar_widgets.items():
-            self.sidebar.addWidget(widget)
-
-        self.sidebar.add_spacer()
-        self.sidebar.addSeparator()
-        self.sidebar.addWidget(self.init_settings_btn())
+        for w in self.widgets:
+            if hasattr(w, 'sidebar_button'):
+                self.sidebar.addWidget(w.sidebar_button)
 
     def init_statusbar(self):
-        self.status = BaseToolbar(self, 'statusbar', location='bottom', size=10)
+        self.status = BaseToolbar(self, 'statusbar', location='bottom', size=30)
         self.status.setContextMenuPolicy(Qt.PreventContextMenu)
-
+        
+        self.status.addWidget(self.init_settings_btn())
         self.status.add_spacer()
-        for name, widget in Plugins().statusbar_widgets.items():
-            self.status.addSeparator()
-            self.status.addWidget(widget)
+        
+        for w in self.widgets:
+            if hasattr(w, 'status_widget'):
+                self.status.addWidget(w.status_widget)
+
+        self.status.addWidget(QLabel())
 
     def init_settings_btn(self):
         settings_btn = QToolButton(self.status, icon=qta.icon('fa.gear', color='gray'))
