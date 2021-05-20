@@ -15,6 +15,8 @@ class ActionWidgetGroup(QObject):
         self.actions.append(action)
         if action.name in self.prev_data:
             action.set_data(self.prev_data[action.name])
+        else:
+            action.set_data(action.to_dict())
         action.changed.connect(self.on_action_change)
         # action.action_stack.stack.widget(0).this = self.this
 
