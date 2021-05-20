@@ -3,9 +3,6 @@ from codex import DeviceControlsDockWidget
 from .sandbox import Sandbox
 import qtawesome as qta
 from .about import AboutDialog
-# from .generic_actions import GenericActionsWidget
-# from .trigger_actions import TriggerActionsWidget
-# from .input_devices import InputDeviceManager
 
 
 class SidebarButton(QPushButton):
@@ -23,6 +20,10 @@ class SidebarButton(QPushButton):
 
 class StagehandWidget(QWidget): ...
 
+
+from .generic_actions import GenericActionsWidget
+from .trigger_actions import TriggerActionsWidget
+from .input_devices import InputDeviceManager
 
 
 class FontSizeMenu(QMenu):
@@ -62,11 +63,6 @@ class MainWindow(BaseMainWindow):
         self.load_settings()
 
         self.stack = QStackedWidget()
-
-        # This is a hack to control the order of sidebar buttons
-        from .generic_actions import GenericActionsWidget
-        from .trigger_actions import TriggerActionsWidget
-        from .input_devices import InputDeviceManager
 
         self.widgets = []
         for widget in StagehandWidget.__subclasses__():
