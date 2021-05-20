@@ -18,7 +18,7 @@ class ActionWidgetGroup(QObject):
         else:
             action.set_data(action.to_dict())
         action.changed.connect(self.on_action_change)
-        # action.action_stack.stack.widget(0).this = self.this
+        action.action.this = self.this
 
     def on_action_change(self):
         self.save()

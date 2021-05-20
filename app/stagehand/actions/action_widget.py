@@ -43,7 +43,7 @@ class SandboxAction(QWidget, ActionItem):
     def __init__(self, changed, parent=None):
         super().__init__(parent=parent)
         
-        self.this = None
+        self.parent = parent
         self.action = QLineEdit()
         self.action.textChanged.connect(changed)
         self.changed = changed
@@ -83,7 +83,7 @@ class SandboxAction(QWidget, ActionItem):
         self.action.clear()
 
     def run(self):
-        Sandbox().run(self.action.text(), this=self.this)
+        Sandbox().run(self.action.text(), this=self.parent.this)
 
 
 class Action(QWidget):
@@ -93,9 +93,10 @@ class Action(QWidget):
         super().__init__()
 
         self.type = QComboBox()
-        self.action = SandboxAction(changed)
+        self.action = SandboxAction(changed, self)
         self._changed = changed
         self.data = None
+        self.this = None
         
         for action in ActionItem.__subclasses__():
             self.type.addItem(action.name)
@@ -113,7 +114,7 @@ class Action(QWidget):
         if self.action:
             self.action.deleteLater()
             self.action = None
-        self.action = ActionItem.get_item(self.type.currentText())(self._changed)
+        self.action = ActionItem.get_item(self.type.currentText())(self._changed, self)
         if self.data:
             self.action.from_dict(self.data)
         self.action_box.add(self.action)
