@@ -71,9 +71,9 @@ class FilterStack(QWidget):
 
         self.pls_delete = False
         
-        for name, filter in FilterStackItem.get_subclasses().items():
+        for name, filt in FilterStackItem.get_subclasses().items():
             self.type.addItem(name)
-            self.stack.addWidget(filter(changed, parent=self))
+            self.stack.addWidget(filt(changed, parent=self))
 
         self.type.currentIndexChanged.connect(changed)
         self.type.currentIndexChanged.connect(self.stack.setCurrentIndex)
