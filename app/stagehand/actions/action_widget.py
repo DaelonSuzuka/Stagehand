@@ -83,7 +83,8 @@ class SandboxAction(QWidget, ActionItem):
         self.action.clear()
 
     def run(self):
-        Sandbox().run(self.action.text(), this=self.parent.this)
+        # Sandbox().run(self.action.text(), this=self.parent.this)
+        Sandbox().run(self.action.text())
 
 
 class Action(QWidget):
