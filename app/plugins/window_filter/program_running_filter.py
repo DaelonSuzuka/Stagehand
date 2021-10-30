@@ -1,15 +1,27 @@
 from qtstrap import *
 from stagehand.actions import FilterStackItem
-from .packages import psutil
+import subprocess
 
 
+last_update = TimeStamp()
+prev_names = set()
+
+
+# this function uses a timestamp based cache to get around the fact that checking all processes
+# is EXTREMELY slow using psutil (1.2+ seconds!) and fairly slow using tasklist(.5 seconds)
 def get_process_names():
+    global prev_names
     names = set()
 
-    for proc in psutil.process_iter(attrs=None, ad_value=None):
-        names.add(proc.name())
+    if prev_names and last_update.time_since() < 10:
+        return prev_names
 
-    return sorted(names)
+    s = subprocess.check_output('tasklist /nh', shell=True).decode()
+    for line in s.split('\n'):
+        names.add(line.split(' ')[0])
+
+    prev_names = sorted(names)
+    return prev_names
 
 
 class ProgramRunningFilter(QWidget, FilterStackItem):
@@ -37,7 +49,7 @@ class ProgramRunningFilter(QWidget, FilterStackItem):
             names = get_process_names()
             if selection not in names:
                 names.insert(0, selection)
-            self.process.addItems(get_process_names())
+            self.process.addItems(names)
             self.process.setCurrentText(selection)
 
     def check(self) -> bool:
