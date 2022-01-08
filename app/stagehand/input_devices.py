@@ -35,6 +35,31 @@ class DeviceTrigger(QWidget, TriggerItem):
         }
 
 
+class InputDeviceList(QListWidget):
+    device_removed = Signal(str)
+
+    def __init__(self, *args, on_remove=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if on_remove:
+            self.device_removed.connect(on_remove)
+
+    def contextMenuEvent(self, event):
+        remove = QAction("Remove Device", self, triggered=self.remove_device)
+        menu = QMenu('', self)
+        menu.addAction(remove)
+        menu.exec_(event.globalPos())
+
+    def add_device(self, device):
+        item = QListWidgetItem(f"{device['profile_name']} - {device['guid']}")
+        item.guid = device['guid']
+        self.addItem(item)
+
+    def remove_device(self):
+        item = self.selectedItems()[0]
+        self.device_removed.emit(item.guid)
+        self.takeItem(self.row(item))
+
+
 @DeviceManager.subscribe
 class InputDeviceManager(StagehandWidget):
     def __init__(self, parent=None):
@@ -46,12 +71,12 @@ class InputDeviceManager(StagehandWidget):
 
         self.sidebar_button = SidebarButton(target=self, icon=qta.icon('mdi.format-list-text'))
 
-        self.known_devices_list = QListWidget(self, fixedWidth=150)
+        self.known_devices_list = InputDeviceList(self, on_remove=self.remove_widget, fixedWidth=150)
         self.widget_stack = QStackedWidget()
         self.known_devices_list.currentRowChanged.connect(self.widget_stack.setCurrentIndex)
         
         for _, d in self.known_devices.items():
-            self.known_devices_list.addItem(f"{d['profile_name']} - {d['guid']}")
+            self.known_devices_list.add_device(d)
 
         with CHBoxLayout(self) as layout:
             with layout.vbox():
@@ -70,10 +95,18 @@ class InputDeviceManager(StagehandWidget):
                 self.widgets[guid] = widget
                 self.widget_stack.addWidget(widget)
 
+    def remove_widget(self, guid):
+        if guid in self.known_devices:
+            self.known_devices.pop(guid)
+            self.widget_stack.removeWidget(self.widgets.pop(guid))
+        
+            QSettings().setValue(f'input_devices/known_devices', self.known_devices)
+
     def device_added(self, device):
         if device.guid not in self.known_devices:
             self.known_devices[device.guid] = device.description
             self.create_widget(device.guid, device.profile_name)
+            self.known_devices_list.add_device(device.description)
 
             QSettings().setValue(f'input_devices/known_devices', self.known_devices)
         
