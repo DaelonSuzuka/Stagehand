@@ -48,7 +48,7 @@ class CodeLine(CodeEditor):
         self.textChanged.connect(changed)
 
         words = [
-            //
+            #
         ]
 
         self.completer = QCompleter(words, self)
@@ -82,6 +82,31 @@ class CodeLine(CodeEditor):
         if event.key() in [Qt.Key_Enter, Qt.Key_Return]:
             event.accept()
             return
+
+        braces = {
+            '"': '"',
+            "'": "'",
+            '{': '}',
+            '(': ')',
+            '<': '>',
+            '[': ']',
+            '|': '|',
+            '`': '`',
+        }
+
+        cur = self.textCursor()
+        if cur.hasSelection():
+            if event.text() in braces:
+                start = cur.selectionStart()
+                end = cur.selectionEnd()
+                cur.clearSelection()
+                cur.setPosition(end)
+                cur.insertText(braces[event.text()])
+                cur.setPosition(start)
+                cur.insertText(event.text())
+                cur.movePosition(QTextCursor.WordRight, QTextCursor.KeepAnchor)
+                self.setTextCursor(cur)
+                return
 
         super().keyPressEvent(event)
 
