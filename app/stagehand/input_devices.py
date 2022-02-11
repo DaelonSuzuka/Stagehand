@@ -78,11 +78,13 @@ class InputDeviceManager(StagehandWidget):
         for _, d in self.known_devices.items():
             self.known_devices_list.add_device(d)
 
-        with CHBoxLayout(self) as layout:
-            with layout.vbox():
+        with PersistentCSplitter('input_devices_splitter', self) as split:
+            split.setOrientation(Qt.Horizontal)
+            with CVBoxLayout() as layout:
+                split.add(layout, 1)
                 layout.add(QLabel("Known Devices:"))
                 layout.add(self.known_devices_list)
-            layout.add(self.widget_stack, 1)
+            split.add(self.widget_stack, 1)
 
         for guid, device in self.known_devices.items():
             self.create_widget(guid, device['profile_name'])
@@ -112,4 +114,3 @@ class InputDeviceManager(StagehandWidget):
         
         if device.guid in self.widgets:
             self.widgets[device.guid].connect_device(device)
-            
