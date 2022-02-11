@@ -28,10 +28,10 @@ class ActiveWindowFilter(QWidget, FilterStackItem):
     def check(self) -> bool:
         return self.window.currentText() == getForegroundWindowTitle()
     
-    def from_dict(self, data: dict) -> None:
+    def set_data(self, data: dict) -> None:
         self.window.setCurrentText(data['type'])
 
-    def to_dict(self) -> dict:
+    def get_data(self) -> dict:
         return {
             'type': self.window.currentText(),
         }

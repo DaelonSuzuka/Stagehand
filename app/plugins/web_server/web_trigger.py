@@ -33,13 +33,13 @@ class WebTrigger(QWidget, TriggerItem):
         except:
             pass
 
-    def from_dict(self, data):
+    def set_data(self, data):
         try:
             self.action.setCurrentText(data['action'])
         except:
             pass
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'action': self.action.currentText(),
         }

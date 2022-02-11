@@ -131,7 +131,7 @@ class JoystickTrigger(QWidget, TriggerItem):
         if f'button {button}' == self.source.currentText():
             self.triggered.emit()
 
-    def from_dict(self, data):
+    def set_data(self, data):
         try:
             self.joystick.setCurrentText(data['joystick'])
             self.source.setCurrentText(data['source'])
@@ -140,7 +140,7 @@ class JoystickTrigger(QWidget, TriggerItem):
         except:
             pass
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'joystick': self.joystick.currentText(),
             'source': self.source.currentText(),

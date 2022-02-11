@@ -17,11 +17,11 @@ class TriggerItem:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def from_dict(self, data: dict):
+    def set_data(self, data: dict):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def to_dict(self) -> dict:
+    def get_data(self) -> dict:
         raise NotImplementedError
 
     def reset(self):
@@ -45,11 +45,11 @@ class SandboxTrigger(QWidget, TriggerItem):
     def reset(self):
         self.trigger.clear()
         
-    def from_dict(self, data: dict):
+    def set_data(self, data: dict):
         if 'trigger' in data:
             self.trigger.setText(data['trigger'])
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'trigger': self.trigger.text()
         }
@@ -106,11 +106,11 @@ class ActionTrigger(QWidget):
         trigger_class = TriggerItem.get_item(self.type.currentText())
         self.trigger = trigger_class(self._changed, self._run, self.owner)
         if self.data:
-            self.trigger.from_dict(self.data['trigger'])
+            self.trigger.set_data(self.data['trigger'])
         self.trigger_box.add(self.trigger)
 
     def copy(self):
-        data = json.dumps(self.to_dict())
+        data = json.dumps(self.get_data())
         QClipboard().setText(data)
 
     def paste(self):
@@ -132,11 +132,11 @@ class ActionTrigger(QWidget):
             if 'enabled' in data['trigger']:
                 self.enabled.setChecked(data['trigger']['enabled'])
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'trigger': {
                 'enabled': self.enabled.isChecked(),
                 'trigger_type': self.type.currentText(),
-                **self.trigger.to_dict(),
+                **self.trigger.get_data(),
             }
         }

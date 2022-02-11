@@ -19,11 +19,11 @@ class FilterStackItem:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def from_dict(self, data: dict) -> None:
+    def set_data(self, data: dict) -> None:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def to_dict(self) -> dict:
+    def get_data(self) -> dict:
         raise NotImplementedError
 
     def reset(self) -> None:
@@ -51,10 +51,10 @@ class SandboxFilterWidget(QWidget, FilterStackItem):
         Sandbox().eval(self.filter.text())
         return True
 
-    def from_dict(self, data: dict) -> None:
+    def set_data(self, data: dict) -> None:
         self.filter.setText(data['filter'])
 
-    def to_dict(self) -> dict:
+    def get_data(self) -> dict:
         return {
             'filter': self.filter.text()
         }
@@ -99,12 +99,12 @@ class FilterStack(QWidget):
             data['filter_type'] = 'sandbox'
 
         self.type.setCurrentText(data['filter_type'])
-        self.stack.currentWidget().from_dict(data)
+        self.stack.currentWidget().set_data(data)
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'filter_type': self.type.currentText(),
-            **self.stack.currentWidget().to_dict(),
+            **self.stack.currentWidget().get_data(),
         }
 
 
@@ -167,7 +167,7 @@ class ActionFilter(QWidget):
             layout.add(VLine())
 
     def open_editor(self, *_):
-        self.data['filter'] = self.to_dict()['filter']
+        self.data['filter'] = self.get_data()['filter']
         self.editor.set_data(self.data)
 
         if self.filters == []:
@@ -186,7 +186,7 @@ class ActionFilter(QWidget):
         menu.exec_(event.globalPos())
 
     def copy(self):
-        data = json.dumps(self.to_dict())
+        data = json.dumps(self.get_data())
         QClipboard().setText(data)
 
     def paste(self):
@@ -233,10 +233,10 @@ class ActionFilter(QWidget):
 
         self.number_of_filters.setText(str(len(self.filters)))
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'filter': {
                 'enabled': self.enabled.isChecked(),
-                'filters': [f.to_dict() for f in self.filters if not f.pls_delete],
+                'filters': [f.get_data() for f in self.filters if not f.pls_delete],
             }
         }

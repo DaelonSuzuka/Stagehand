@@ -16,7 +16,7 @@ class ActionWidgetGroup(QObject):
         if action.name in self.prev_data:
             action.set_data(self.prev_data[action.name])
         else:
-            action.set_data(action.to_dict())
+            action.set_data(action.get_data())
         action.changed.connect(self.on_action_change)
         action.action.this = self.this
 
@@ -33,5 +33,5 @@ class ActionWidgetGroup(QObject):
     def get_data(self):
         data = {}
         for action in self.actions:
-            data[action.name] = action.to_dict()
+            data[action.name] = action.get_data()
         return data

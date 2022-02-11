@@ -33,25 +33,25 @@ class ObsAction(QWidget, ActionItem):
         self.request_widget = widgets[self.type.currentText()](self.changed)
         self.layout().add(self.request_widget, 1)
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self.data = data
         try:
             self.type.setCurrentText(data['type'])
             if data['fields']:
                 if self.request_widget:
-                    self.request_widget.from_dict(data['fields'])
+                    self.request_widget.set_data(data['fields'])
                     self.request_widget.refresh()
         except KeyError:
             pass
 
-    def to_dict(self):
+    def get_data(self):
         data = {
             'type': self.type.currentText(),
             'fields': {},
         }
 
         if self.request_widget:
-            data['fields'] = self.request_widget.to_dict()
+            data['fields'] = self.request_widget.get_data()
 
         return data
 

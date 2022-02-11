@@ -88,14 +88,14 @@ class KeyboardTrigger(QWidget, TriggerItem):
             if self.hotkey:
                 self.hotkey.release(self.listener.canonical(key))
 
-    def from_dict(self, data):
+    def set_data(self, data):
         try:
             self.type.setCurrentText(data['type'])
             self.value.setText(data['value'])
         except:
             pass
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'type': self.type.currentText(),
             'value': self.value.text(),

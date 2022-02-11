@@ -26,11 +26,11 @@ class DeviceTrigger(QWidget, TriggerItem):
     def reset(self):
         self.trigger.clear()
         
-    def from_dict(self, data: dict):
+    def set_data(self, data: dict):
         if 'trigger' in data:
             self.trigger.setText(data['trigger'])
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'trigger': self.trigger.text()
         }

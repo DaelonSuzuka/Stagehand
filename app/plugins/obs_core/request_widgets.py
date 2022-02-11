@@ -19,10 +19,10 @@ class GetVersionWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -43,10 +43,10 @@ class GetAuthRequiredWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -70,11 +70,11 @@ class AuthenticateWidget(QWidget):
         self.auth.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.auth.set_data(data['auth']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'auth': self.auth.get_data(),
         }
@@ -99,11 +99,11 @@ class SetHeartbeatWidget(QWidget):
         self.enable.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.enable.set_data(data['enable']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'enable': self.enable.get_data(),
         }
@@ -128,11 +128,11 @@ class SetFilenameFormattingWidget(QWidget):
         self.filename_formatting.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.filename_formatting.set_data(data['filename_formatting']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'filename_formatting': self.filename_formatting.get_data(),
         }
@@ -154,10 +154,10 @@ class GetFilenameFormattingWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -178,10 +178,10 @@ class GetStatsWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -209,12 +209,12 @@ class BroadcastCustomMessageWidget(QWidget):
         self.data.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.realm.set_data(data['realm']) 
         self.data.set_data(data['data']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'realm': self.realm.get_data(),
             'data': self.data.get_data(),
@@ -237,10 +237,10 @@ class GetVideoInfoWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -276,14 +276,14 @@ class OpenProjectorWidget(QWidget):
         self.name.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.type.set_data(data['type']) 
         self.monitor.set_data(data['monitor']) 
         self.geometry.set_data(data['geometry']) 
         self.name.set_data(data['name']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'type': self.type.get_data(),
             'monitor': self.monitor.get_data(),
@@ -311,11 +311,11 @@ class TriggerHotkeyByNameWidget(QWidget):
         self.hotkeyName.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.hotkeyName.set_data(data['hotkeyName']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'hotkeyName': self.hotkeyName.get_data(),
         }
@@ -344,12 +344,12 @@ class TriggerHotkeyBySequenceWidget(QWidget):
         self.keyModifiers.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.keyId.set_data(data['keyId']) 
         self.keyModifiers.set_data(data['keyModifiers']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'keyId': self.keyId.get_data(),
             'keyModifiers': self.keyModifiers.get_data(),
@@ -379,12 +379,12 @@ class ExecuteBatchWidget(QWidget):
         self.abortOnFail.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.requests.set_data(data['requests']) 
         self.abortOnFail.set_data(data['abortOnFail']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'requests': self.requests.get_data(),
             'abortOnFail': self.abortOnFail.get_data(),
@@ -410,11 +410,11 @@ class SleepWidget(QWidget):
         self.sleepMillis.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sleepMillis.set_data(data['sleepMillis']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sleepMillis': self.sleepMillis.get_data(),
         }
@@ -443,12 +443,12 @@ class PlayPauseMediaWidget(QWidget):
         self.playPause.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
         self.playPause.set_data(data['playPause']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
             'playPause': self.playPause.get_data(),
@@ -474,11 +474,11 @@ class RestartMediaWidget(QWidget):
         self.sourceName.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
         }
@@ -503,11 +503,11 @@ class StopMediaWidget(QWidget):
         self.sourceName.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
         }
@@ -532,11 +532,11 @@ class NextMediaWidget(QWidget):
         self.sourceName.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
         }
@@ -561,11 +561,11 @@ class PreviousMediaWidget(QWidget):
         self.sourceName.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
         }
@@ -590,11 +590,11 @@ class GetMediaDurationWidget(QWidget):
         self.sourceName.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
         }
@@ -619,11 +619,11 @@ class GetMediaTimeWidget(QWidget):
         self.sourceName.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
         }
@@ -652,12 +652,12 @@ class SetMediaTimeWidget(QWidget):
         self.timestamp.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
         self.timestamp.set_data(data['timestamp']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
             'timestamp': self.timestamp.get_data(),
@@ -687,12 +687,12 @@ class ScrubMediaWidget(QWidget):
         self.timeOffset.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
         self.timeOffset.set_data(data['timeOffset']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
             'timeOffset': self.timeOffset.get_data(),
@@ -718,11 +718,11 @@ class GetMediaStateWidget(QWidget):
         self.sourceName.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
         }
@@ -744,10 +744,10 @@ class GetMediaSourcesListWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -787,7 +787,7 @@ class CreateSourceWidget(QWidget):
         self.setVisible.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
         self.sourceKind.set_data(data['sourceKind']) 
@@ -795,7 +795,7 @@ class CreateSourceWidget(QWidget):
         self.sourceSettings.set_data(data['sourceSettings']) 
         self.setVisible.set_data(data['setVisible']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
             'sourceKind': self.sourceKind.get_data(),
@@ -821,10 +821,10 @@ class GetSourcesListWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -845,10 +845,10 @@ class GetSourceTypesListWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -876,12 +876,12 @@ class GetVolumeWidget(QWidget):
         self.useDecibel.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.source.set_data(data['source']) 
         self.useDecibel.set_data(data['useDecibel']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'source': self.source.get_data(),
             'useDecibel': self.useDecibel.get_data(),
@@ -915,13 +915,13 @@ class SetVolumeWidget(QWidget):
         self.useDecibel.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.source.set_data(data['source']) 
         self.volume.set_data(data['volume']) 
         self.useDecibel.set_data(data['useDecibel']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'source': self.source.get_data(),
             'volume': self.volume.get_data(),
@@ -956,13 +956,13 @@ class SetTracksWidget(QWidget):
         self.active.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
         self.track.set_data(data['track']) 
         self.active.set_data(data['active']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
             'track': self.track.get_data(),
@@ -989,11 +989,11 @@ class GetTracksWidget(QWidget):
         self.sourceName.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
         }
@@ -1018,11 +1018,11 @@ class GetMuteWidget(QWidget):
         self.source.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.source.set_data(data['source']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'source': self.source.get_data(),
         }
@@ -1051,12 +1051,12 @@ class SetMuteWidget(QWidget):
         self.mute.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.source.set_data(data['source']) 
         self.mute.set_data(data['mute']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'source': self.source.get_data(),
             'mute': self.mute.get_data(),
@@ -1082,11 +1082,11 @@ class ToggleMuteWidget(QWidget):
         self.source.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.source.set_data(data['source']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'source': self.source.get_data(),
         }
@@ -1111,11 +1111,11 @@ class GetSourceActiveWidget(QWidget):
         self.sourceName.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
         }
@@ -1140,11 +1140,11 @@ class GetAudioActiveWidget(QWidget):
         self.sourceName.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
         }
@@ -1173,12 +1173,12 @@ class SetSourceNameWidget(QWidget):
         self.newName.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
         self.newName.set_data(data['newName']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
             'newName': self.newName.get_data(),
@@ -1208,12 +1208,12 @@ class SetSyncOffsetWidget(QWidget):
         self.offset.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.source.set_data(data['source']) 
         self.offset.set_data(data['offset']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'source': self.source.get_data(),
             'offset': self.offset.get_data(),
@@ -1239,11 +1239,11 @@ class GetSyncOffsetWidget(QWidget):
         self.source.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.source.set_data(data['source']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'source': self.source.get_data(),
         }
@@ -1272,12 +1272,12 @@ class GetSourceSettingsWidget(QWidget):
         self.sourceType.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
         self.sourceType.set_data(data['sourceType']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
             'sourceType': self.sourceType.get_data(),
@@ -1311,13 +1311,13 @@ class SetSourceSettingsWidget(QWidget):
         self.sourceSettings.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
         self.sourceType.set_data(data['sourceType']) 
         self.sourceSettings.set_data(data['sourceSettings']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
             'sourceType': self.sourceType.get_data(),
@@ -1344,11 +1344,11 @@ class GetTextGDIPlusPropertiesWidget(QWidget):
         self.source.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.source.set_data(data['source']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'source': self.source.get_data(),
         }
@@ -1469,7 +1469,7 @@ class SetTextGDIPlusPropertiesWidget(QWidget):
         self.render.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.source.set_data(data['source']) 
         self.align.set_data(data['align']) 
@@ -1497,7 +1497,7 @@ class SetTextGDIPlusPropertiesWidget(QWidget):
         self.vertical.set_data(data['vertical']) 
         self.render.set_data(data['render']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'source': self.source.get_data(),
             'align': self.align.get_data(),
@@ -1546,11 +1546,11 @@ class GetTextFreetype2PropertiesWidget(QWidget):
         self.source.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.source.set_data(data['source']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'source': self.source.get_data(),
         }
@@ -1619,7 +1619,7 @@ class SetTextFreetype2PropertiesWidget(QWidget):
         self.word_wrap.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.source.set_data(data['source']) 
         self.color1.set_data(data['color1']) 
@@ -1634,7 +1634,7 @@ class SetTextFreetype2PropertiesWidget(QWidget):
         self.text_file.set_data(data['text_file']) 
         self.word_wrap.set_data(data['word_wrap']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'source': self.source.get_data(),
             'color1': self.color1.get_data(),
@@ -1670,11 +1670,11 @@ class GetBrowserSourcePropertiesWidget(QWidget):
         self.source.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.source.set_data(data['source']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'source': self.source.get_data(),
         }
@@ -1735,7 +1735,7 @@ class SetBrowserSourcePropertiesWidget(QWidget):
         self.render.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.source.set_data(data['source']) 
         self.is_local_file.set_data(data['is_local_file']) 
@@ -1748,7 +1748,7 @@ class SetBrowserSourcePropertiesWidget(QWidget):
         self.shutdown.set_data(data['shutdown']) 
         self.render.set_data(data['render']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'source': self.source.get_data(),
             'is_local_file': self.is_local_file.get_data(),
@@ -1779,10 +1779,10 @@ class GetSpecialSourcesWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -1806,11 +1806,11 @@ class GetSourceFiltersWidget(QWidget):
         self.sourceName.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
         }
@@ -1839,12 +1839,12 @@ class GetSourceFilterInfoWidget(QWidget):
         self.filterName.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
         self.filterName.set_data(data['filterName']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
             'filterName': self.filterName.get_data(),
@@ -1882,14 +1882,14 @@ class AddFilterToSourceWidget(QWidget):
         self.filterSettings.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
         self.filterName.set_data(data['filterName']) 
         self.filterType.set_data(data['filterType']) 
         self.filterSettings.set_data(data['filterSettings']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
             'filterName': self.filterName.get_data(),
@@ -1921,12 +1921,12 @@ class RemoveFilterFromSourceWidget(QWidget):
         self.filterName.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
         self.filterName.set_data(data['filterName']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
             'filterName': self.filterName.get_data(),
@@ -1960,13 +1960,13 @@ class ReorderSourceFilterWidget(QWidget):
         self.newIndex.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
         self.filterName.set_data(data['filterName']) 
         self.newIndex.set_data(data['newIndex']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
             'filterName': self.filterName.get_data(),
@@ -2001,13 +2001,13 @@ class MoveSourceFilterWidget(QWidget):
         self.movementType.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
         self.filterName.set_data(data['filterName']) 
         self.movementType.set_data(data['movementType']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
             'filterName': self.filterName.get_data(),
@@ -2042,13 +2042,13 @@ class SetSourceFilterSettingsWidget(QWidget):
         self.filterSettings.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
         self.filterName.set_data(data['filterName']) 
         self.filterSettings.set_data(data['filterSettings']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
             'filterName': self.filterName.get_data(),
@@ -2083,13 +2083,13 @@ class SetSourceFilterVisibilityWidget(QWidget):
         self.filterEnabled.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
         self.filterName.set_data(data['filterName']) 
         self.filterEnabled.set_data(data['filterEnabled']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
             'filterName': self.filterName.get_data(),
@@ -2116,11 +2116,11 @@ class GetAudioMonitorTypeWidget(QWidget):
         self.sourceName.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
         }
@@ -2149,12 +2149,12 @@ class SetAudioMonitorTypeWidget(QWidget):
         self.monitorType.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
         self.monitorType.set_data(data['monitorType']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
             'monitorType': self.monitorType.get_data(),
@@ -2180,11 +2180,11 @@ class GetSourceDefaultSettingsWidget(QWidget):
         self.sourceKind.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceKind.set_data(data['sourceKind']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceKind': self.sourceKind.get_data(),
         }
@@ -2233,7 +2233,7 @@ class TakeSourceScreenshotWidget(QWidget):
         self.height.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
         self.embedPictureFormat.set_data(data['embedPictureFormat']) 
@@ -2243,7 +2243,7 @@ class TakeSourceScreenshotWidget(QWidget):
         self.width.set_data(data['width']) 
         self.height.set_data(data['height']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
             'embedPictureFormat': self.embedPictureFormat.get_data(),
@@ -2274,11 +2274,11 @@ class RefreshBrowserSourceWidget(QWidget):
         self.sourceName.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sourceName.set_data(data['sourceName']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sourceName': self.sourceName.get_data(),
         }
@@ -2300,10 +2300,10 @@ class ListOutputsWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -2327,11 +2327,11 @@ class GetOutputInfoWidget(QWidget):
         self.outputName.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.outputName.set_data(data['outputName']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'outputName': self.outputName.get_data(),
         }
@@ -2356,11 +2356,11 @@ class StartOutputWidget(QWidget):
         self.outputName.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.outputName.set_data(data['outputName']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'outputName': self.outputName.get_data(),
         }
@@ -2389,12 +2389,12 @@ class StopOutputWidget(QWidget):
         self.force.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.outputName.set_data(data['outputName']) 
         self.force.set_data(data['force']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'outputName': self.outputName.get_data(),
             'force': self.force.get_data(),
@@ -2420,11 +2420,11 @@ class SetCurrentProfileWidget(QWidget):
         self.profile_name.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.profile_name.set_data(data['profile_name']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'profile_name': self.profile_name.get_data(),
         }
@@ -2446,10 +2446,10 @@ class GetCurrentProfileWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -2470,10 +2470,10 @@ class ListProfilesWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -2494,10 +2494,10 @@ class GetRecordingStatusWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -2518,10 +2518,10 @@ class StartStopRecordingWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -2542,10 +2542,10 @@ class StartRecordingWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -2566,10 +2566,10 @@ class StopRecordingWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -2590,10 +2590,10 @@ class PauseRecordingWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -2614,10 +2614,10 @@ class ResumeRecordingWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -2641,11 +2641,11 @@ class SetRecordingFolderWidget(QWidget):
         self.rec_folder.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.rec_folder.set_data(data['rec_folder']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'rec_folder': self.rec_folder.get_data(),
         }
@@ -2667,10 +2667,10 @@ class GetRecordingFolderWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -2691,10 +2691,10 @@ class GetReplayBufferStatusWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -2715,10 +2715,10 @@ class StartStopReplayBufferWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -2739,10 +2739,10 @@ class StartReplayBufferWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -2763,10 +2763,10 @@ class StopReplayBufferWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -2787,10 +2787,10 @@ class SaveReplayBufferWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -2814,11 +2814,11 @@ class SetCurrentSceneCollectionWidget(QWidget):
         self.sc_name.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sc_name.set_data(data['sc_name']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sc_name': self.sc_name.get_data(),
         }
@@ -2840,10 +2840,10 @@ class GetCurrentSceneCollectionWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -2864,10 +2864,10 @@ class ListSceneCollectionsWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -2891,11 +2891,11 @@ class GetSceneItemListWidget(QWidget):
         self.sceneName.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sceneName.set_data(data['sceneName']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sceneName': self.sceneName.get_data(),
         }
@@ -2924,12 +2924,12 @@ class GetSceneItemPropertiesWidget(QWidget):
         self.item.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.scene_name.set_data(data['scene_name']) 
         self.item.set_data(data['item']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'scene_name': self.scene_name.get_data(),
             'item': self.item.get_data(),
@@ -2987,7 +2987,7 @@ class SetSceneItemPropertiesWidget(QWidget):
         self.bounds.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.scene_name.set_data(data['scene_name']) 
         self.item.set_data(data['item']) 
@@ -2999,7 +2999,7 @@ class SetSceneItemPropertiesWidget(QWidget):
         self.locked.set_data(data['locked']) 
         self.bounds.set_data(data['bounds']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'scene_name': self.scene_name.get_data(),
             'item': self.item.get_data(),
@@ -3036,12 +3036,12 @@ class ResetSceneItemWidget(QWidget):
         self.item.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.scene_name.set_data(data['scene_name']) 
         self.item.set_data(data['item']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'scene_name': self.scene_name.get_data(),
             'item': self.item.get_data(),
@@ -3079,14 +3079,14 @@ class SetSceneItemRenderWidget(QWidget):
         self.render.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.scene_name.set_data(data['scene_name']) 
         self.source.set_data(data['source']) 
         self.item.set_data(data['item']) 
         self.render.set_data(data['render']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'scene_name': self.scene_name.get_data(),
             'source': self.source.get_data(),
@@ -3126,14 +3126,14 @@ class SetSceneItemPositionWidget(QWidget):
         self.y.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.scene_name.set_data(data['scene_name']) 
         self.item.set_data(data['item']) 
         self.x.set_data(data['x']) 
         self.y.set_data(data['y']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'scene_name': self.scene_name.get_data(),
             'item': self.item.get_data(),
@@ -3177,7 +3177,7 @@ class SetSceneItemTransformWidget(QWidget):
         self.rotation.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.scene_name.set_data(data['scene_name']) 
         self.item.set_data(data['item']) 
@@ -3185,7 +3185,7 @@ class SetSceneItemTransformWidget(QWidget):
         self.y_scale.set_data(data['y_scale']) 
         self.rotation.set_data(data['rotation']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'scene_name': self.scene_name.get_data(),
             'item': self.item.get_data(),
@@ -3234,7 +3234,7 @@ class SetSceneItemCropWidget(QWidget):
         self.right.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.scene_name.set_data(data['scene_name']) 
         self.item.set_data(data['item']) 
@@ -3243,7 +3243,7 @@ class SetSceneItemCropWidget(QWidget):
         self.left.set_data(data['left']) 
         self.right.set_data(data['right']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'scene_name': self.scene_name.get_data(),
             'item': self.item.get_data(),
@@ -3277,12 +3277,12 @@ class DeleteSceneItemWidget(QWidget):
         self.item.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.scene.set_data(data['scene']) 
         self.item.set_data(data['item']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'scene': self.scene.get_data(),
             'item': self.item.get_data(),
@@ -3316,13 +3316,13 @@ class AddSceneItemWidget(QWidget):
         self.setVisible.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sceneName.set_data(data['sceneName']) 
         self.sourceName.set_data(data['sourceName']) 
         self.setVisible.set_data(data['setVisible']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sceneName': self.sceneName.get_data(),
             'sourceName': self.sourceName.get_data(),
@@ -3357,13 +3357,13 @@ class DuplicateSceneItemWidget(QWidget):
         self.item.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.fromScene.set_data(data['fromScene']) 
         self.toScene.set_data(data['toScene']) 
         self.item.set_data(data['item']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'fromScene': self.fromScene.get_data(),
             'toScene': self.toScene.get_data(),
@@ -3390,11 +3390,11 @@ class SetCurrentSceneWidget(QWidget):
         self.scene_name.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.scene_name.set_data(data['scene_name']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'scene_name': self.scene_name.get_data(),
         }
@@ -3416,10 +3416,10 @@ class GetCurrentSceneWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -3440,10 +3440,10 @@ class GetSceneListWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -3467,11 +3467,11 @@ class CreateSceneWidget(QWidget):
         self.sceneName.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sceneName.set_data(data['sceneName']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sceneName': self.sceneName.get_data(),
         }
@@ -3500,12 +3500,12 @@ class ReorderSceneItemsWidget(QWidget):
         self.items.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.scene.set_data(data['scene']) 
         self.items.set_data(data['items']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'scene': self.scene.get_data(),
             'items': self.items.get_data(),
@@ -3539,13 +3539,13 @@ class SetSceneTransitionOverrideWidget(QWidget):
         self.transitionDuration.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sceneName.set_data(data['sceneName']) 
         self.transitionName.set_data(data['transitionName']) 
         self.transitionDuration.set_data(data['transitionDuration']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sceneName': self.sceneName.get_data(),
             'transitionName': self.transitionName.get_data(),
@@ -3572,11 +3572,11 @@ class RemoveSceneTransitionOverrideWidget(QWidget):
         self.sceneName.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sceneName.set_data(data['sceneName']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sceneName': self.sceneName.get_data(),
         }
@@ -3601,11 +3601,11 @@ class GetSceneTransitionOverrideWidget(QWidget):
         self.sceneName.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.sceneName.set_data(data['sceneName']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'sceneName': self.sceneName.get_data(),
         }
@@ -3627,10 +3627,10 @@ class GetStreamingStatusWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -3651,10 +3651,10 @@ class StartStopStreamingWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -3678,11 +3678,11 @@ class StartStreamingWidget(QWidget):
         self.stream.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.stream.set_data(data['stream']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'stream': self.stream.get_data(),
         }
@@ -3704,10 +3704,10 @@ class StopStreamingWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -3739,13 +3739,13 @@ class SetStreamSettingsWidget(QWidget):
         self.save.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.type.set_data(data['type']) 
         self.settings.set_data(data['settings']) 
         self.save.set_data(data['save']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'type': self.type.get_data(),
             'settings': self.settings.get_data(),
@@ -3769,10 +3769,10 @@ class GetStreamSettingsWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -3793,10 +3793,10 @@ class SaveStreamSettingsWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -3820,11 +3820,11 @@ class SendCaptionsWidget(QWidget):
         self.text.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.text.set_data(data['text']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'text': self.text.get_data(),
         }
@@ -3846,10 +3846,10 @@ class GetStudioModeStatusWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -3870,10 +3870,10 @@ class GetPreviewSceneWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -3897,11 +3897,11 @@ class SetPreviewSceneWidget(QWidget):
         self.scene_name.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.scene_name.set_data(data['scene_name']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'scene_name': self.scene_name.get_data(),
         }
@@ -3926,11 +3926,11 @@ class TransitionToProgramWidget(QWidget):
         self.with_transition.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.with_transition.set_data(data['with_transition']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'with_transition': self.with_transition.get_data(),
         }
@@ -3952,10 +3952,10 @@ class EnableStudioModeWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -3976,10 +3976,10 @@ class DisableStudioModeWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -4000,10 +4000,10 @@ class ToggleStudioModeWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -4024,10 +4024,10 @@ class GetTransitionListWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -4048,10 +4048,10 @@ class GetCurrentTransitionWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -4075,11 +4075,11 @@ class SetCurrentTransitionWidget(QWidget):
         self.transition_name.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.transition_name.set_data(data['transition_name']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'transition_name': self.transition_name.get_data(),
         }
@@ -4104,11 +4104,11 @@ class SetTransitionDurationWidget(QWidget):
         self.duration.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.duration.set_data(data['duration']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'duration': self.duration.get_data(),
         }
@@ -4130,10 +4130,10 @@ class GetTransitionDurationWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -4154,10 +4154,10 @@ class GetTransitionPositionWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -4181,11 +4181,11 @@ class GetTransitionSettingsWidget(QWidget):
         self.transitionName.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.transitionName.set_data(data['transitionName']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'transitionName': self.transitionName.get_data(),
         }
@@ -4214,12 +4214,12 @@ class SetTransitionSettingsWidget(QWidget):
         self.transitionSettings.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.transitionName.set_data(data['transitionName']) 
         self.transitionSettings.set_data(data['transitionSettings']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'transitionName': self.transitionName.get_data(),
             'transitionSettings': self.transitionSettings.get_data(),
@@ -4242,10 +4242,10 @@ class ReleaseTBarWidget(QWidget):
     def refresh(self):
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
 
-    def to_dict(self):
+    def get_data(self):
         return {
         }
 
@@ -4273,12 +4273,12 @@ class SetTBarPositionWidget(QWidget):
         self.release.refresh()
         return
 
-    def from_dict(self, data):
+    def set_data(self, data):
         self._data = data
         self.position.set_data(data['position']) 
         self.release.set_data(data['release']) 
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'position': self.position.get_data(),
             'release': self.release.get_data(),

@@ -22,11 +22,11 @@ class ActionItem:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def from_dict(self, data: dict):
+    def set_data(self, data: dict):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def to_dict(self) -> dict:
+    def get_data(self) -> dict:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -67,12 +67,12 @@ class SandboxAction(QWidget, ActionItem):
         self.action.setDisabled('\n' in text)
         self.changed()
 
-    def from_dict(self, data: dict):
+    def set_data(self, data: dict):
         self.data = data
         self.action.setText(data['action'])
         self.action.setDisabled('\n' in self.action.text())
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'action': self.action.text()
         }
@@ -117,7 +117,7 @@ class Action(QWidget):
             self.action = None
         self.action = ActionItem.get_item(self.type.currentText())(self._changed, self.owner)
         if self.data:
-            self.action.from_dict(self.data)
+            self.action.set_data(self.data)
         self.action_box.add(self.action)
 
     def set_data(self, data):
@@ -128,10 +128,10 @@ class Action(QWidget):
         self.type.setCurrentText(data['action_type'])
         self.type_changed()
 
-    def to_dict(self):
+    def get_data(self):
         return  {
             'action_type': self.type.currentText(),
-            **self.action.to_dict(),
+            **self.action.get_data(),
         }
 
     def run(self):
@@ -194,13 +194,13 @@ class ActionWidget(QWidget):
             layout.add(self.action, 2)
             layout.add(self.run_btn)
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'name': self.name,
             'label': self.label.text(),
-            **self.action.to_dict(),
-            **self.trigger.to_dict(),
-            **self.filter.to_dict(),
+            **self.action.get_data(),
+            **self.trigger.get_data(),
+            **self.filter.get_data(),
         }
 
     def set_data(self, data):
@@ -228,9 +228,9 @@ class ActionWidget(QWidget):
 
     def copy(self):
         data = {
-            **self.action.to_dict(),
-            **self.trigger.to_dict(),
-            **self.filter.to_dict(),
+            **self.action.get_data(),
+            **self.trigger.get_data(),
+            **self.filter.get_data(),
         }
         QClipboard().setText(json.dumps(data))
 

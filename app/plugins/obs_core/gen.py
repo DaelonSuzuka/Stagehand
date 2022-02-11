@@ -330,14 +330,14 @@ def build_widget(w, i, event):
             w.line("return")
         w.line()
         
-        w.line("def from_dict(self, data):")
+        w.line("def set_data(self, data):")
         with w:
             w.line("self._data = data")
             for field in fields:
                 w.line(f"self.{field['name']}.set_data(data['{field['name']}']) ")
         w.line()
 
-        w.line("def to_dict(self):")
+        w.line("def get_data(self):")
         with w:
             w.line("return {")
             with w:

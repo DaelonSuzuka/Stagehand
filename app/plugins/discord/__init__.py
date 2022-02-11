@@ -73,8 +73,8 @@ class DiscordAction(QWidget, ActionItem):
         with CVBoxLayout(self, margins=(0,0,0,0)) as layout:
             layout.add(QLabel('Discord'))
 
-    def from_dict(self, data):
+    def set_data(self, data):
         pass
 
-    def to_dict(self):
+    def get_data(self):
         return {}

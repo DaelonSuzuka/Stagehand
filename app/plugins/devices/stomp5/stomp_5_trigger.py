@@ -74,7 +74,7 @@ class Stomp5Trigger(QWidget, TriggerItem):
             self.refresh_devices()
             self.device_changed(self.device.currentText())
 
-    def from_dict(self, data):
+    def set_data(self, data):
         try:
             if data['device'] not in self.devices:
                 self.device.addItem(data['device'])
@@ -83,7 +83,7 @@ class Stomp5Trigger(QWidget, TriggerItem):
         except:
             pass
 
-    def to_dict(self):
+    def get_data(self):
         return {
             'signal': self.signal.currentText(),
             'device': self.device.currentText(),
