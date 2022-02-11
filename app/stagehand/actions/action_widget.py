@@ -115,7 +115,7 @@ class Action(QWidget):
         if self.action:
             self.action.deleteLater()
             self.action = None
-        self.action = ActionItem.from_name(self.type.currentText())(self._changed, self.owner)
+        self.action = ActionItem.get_item(self.type.currentText())(self._changed, self.owner)
         if self.data:
             self.action.from_dict(self.data)
         self.action_box.add(self.action)

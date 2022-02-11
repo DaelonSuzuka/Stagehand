@@ -103,7 +103,8 @@ class ActionTrigger(QWidget):
         if self.trigger:
             self.trigger.deleteLater()
             self.trigger = None
-        self.trigger = trigger(self._changed, self._run, owner=self.owner)
+        trigger_class = TriggerItem.get_item(self.type.currentText())
+        self.trigger = trigger_class(self._changed, self._run, self.owner)
         if self.data:
             self.trigger.from_dict(self.data['trigger'])
         self.trigger_box.add(self.trigger)
