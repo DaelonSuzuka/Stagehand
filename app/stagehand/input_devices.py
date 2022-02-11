@@ -45,9 +45,8 @@ class InputDeviceList(QListWidget):
             self.device_removed.connect(on_remove)
 
     def contextMenuEvent(self, event):
-        remove = QAction("Remove Device", self, triggered=self.remove_device)
         menu = QMenu('', self)
-        menu.addAction(remove)
+        menu.addAction(QAction("Remove Device", self, triggered=self.remove_device))
         menu.exec_(event.globalPos())
 
     def add_device(self, device):
