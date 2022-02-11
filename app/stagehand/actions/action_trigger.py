@@ -32,9 +32,10 @@ class SandboxTrigger(QWidget, TriggerItem):
     name = 'sandbox'
     triggered = Signal()
 
-    def __init__(self, changed, run, parent=None):
-        super().__init__(parent=parent)
+    def __init__(self, changed, run, owner=None):
+        super().__init__()
 
+        self.owner = owner
         self.trigger = QLineEdit()
         self.trigger.textChanged.connect(changed)
         
@@ -57,9 +58,10 @@ class SandboxTrigger(QWidget, TriggerItem):
 class ActionTrigger(QWidget):
     changed = Signal()
 
-    def __init__(self, changed, run, trigger_type='sandbox', trigger='', parent=None):
-        super().__init__(parent=parent)
+    def __init__(self, changed, run, trigger_type='sandbox', trigger='', owner=None):
+        super().__init__()
 
+        self.owner = owner
         self.type = QComboBox()
 
         self.trigger = SandboxTrigger(changed, run)
@@ -101,8 +103,7 @@ class ActionTrigger(QWidget):
         if self.trigger:
             self.trigger.deleteLater()
             self.trigger = None
-        trigger = TriggerItem.get_item(self.type.currentText())
-        self.trigger = trigger(self._changed, self._run)
+        self.trigger = trigger(self._changed, self._run, owner=self.owner)
         if self.data:
             self.trigger.from_dict(self.data['trigger'])
         self.trigger_box.add(self.trigger)

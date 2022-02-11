@@ -8,8 +8,10 @@ from .request_widgets import widgets
 class ObsActionWidget(QWidget, ActionItem):
     name = 'obs'
 
-    def __init__(self, changed):
+    def __init__(self, changed, owner=None):
         super().__init__()
+
+        self.owner = owner
         self.changed = changed
 
         self.request_widget = None

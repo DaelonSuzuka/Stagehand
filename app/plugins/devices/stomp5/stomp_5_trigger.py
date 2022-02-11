@@ -8,9 +8,10 @@ class Stomp5Trigger(QWidget, TriggerItem):
     name = 'Stomp 5'
     triggered = Signal()
 
-    def __init__(self, changed, run):
+    def __init__(self, changed, run, owner=None):
         super().__init__()
 
+        self.owner = owner
         self.triggered.connect(run)
         self.stomps = {}
         self.adapter = None

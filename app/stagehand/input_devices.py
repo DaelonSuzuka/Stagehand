@@ -9,9 +9,10 @@ class DeviceTrigger(QWidget, TriggerItem):
     name = 'device'
     triggered = Signal()
 
-    def __init__(self, changed, run, parent=None):
-        super().__init__(parent=parent)
+    def __init__(self, changed, run, owner=None):
+        super().__init__()
 
+        self.owner = owner
         self.trigger = QLineEdit()
         self.trigger.textChanged.connect(changed)
 

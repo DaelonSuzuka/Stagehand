@@ -6,9 +6,10 @@ from stagehand.actions import ActionItem
 class KeyboardAction(QWidget, ActionItem):
     name = 'keyboard'
 
-    def __init__(self, changed):
+    def __init__(self, changed, owner=None):
         super().__init__()
 
+        self.owner = owner
         self.type = QComboBox()
         self.type.addItems(['tap', 'press', 'release', 'type'])
         self.type.currentIndexChanged.connect(changed)

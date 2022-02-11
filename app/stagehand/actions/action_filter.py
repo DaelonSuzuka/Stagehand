@@ -37,9 +37,10 @@ class FilterStackItem:
 class SandboxFilterWidget(QWidget, FilterStackItem):
     name = 'sandbox'
 
-    def __init__(self, changed, parent=None) -> None:
-        super().__init__(parent=parent)
+    def __init__(self, changed, owner=None) -> None:
+        super().__init__()
 
+        self.owner = owner
         self.filter = QLineEdit()
         self.filter.textChanged.connect(changed)
         
@@ -62,9 +63,10 @@ class SandboxFilterWidget(QWidget, FilterStackItem):
 class FilterStack(QWidget):
     changed = Signal()
 
-    def __init__(self, changed=lambda: ..., filter_type='sandbox', filter='', parent=None) -> None:
-        super().__init__(parent=parent)
+    def __init__(self, changed=lambda: ..., filter_type='sandbox', filter='', owner=None) -> None:
+        super().__init__()
 
+        self.owner = owner
         self.type = QComboBox()
         self.stack = QStackedWidget()
         self.remove = QPushButton('X', clicked=self.on_remove)
@@ -73,7 +75,7 @@ class FilterStack(QWidget):
         
         for name, filt in FilterStackItem.get_subclasses().items():
             self.type.addItem(name)
-            self.stack.addWidget(filt(changed, parent=self))
+            self.stack.addWidget(filt(changed, owner=owner))
 
         self.type.currentIndexChanged.connect(changed)
         self.type.currentIndexChanged.connect(self.stack.setCurrentIndex)
@@ -107,10 +109,11 @@ class FilterStack(QWidget):
 
 
 class ActionFilterDialog(QDialog):
-    def __init__(self, filters, parent=None):
-        super().__init__(parent=parent)
+    def __init__(self, filters, owner=None):
+        super().__init__()
         self.setWindowTitle("Filter Editor")
-
+        
+        self.owner = owner
         self.filters = filters
 
         self.add_btn = QPushButton('New Filter', clicked=self.on_add)
@@ -143,8 +146,10 @@ class ActionFilterDialog(QDialog):
 class ActionFilter(QWidget):
     changed = Signal()
 
-    def __init__(self, changed, parent=None):
-        super().__init__(parent=parent)
+    def __init__(self, changed, owner=None):
+        super().__init__()
+
+        self.owner = owner
         self.changed.connect(changed)
 
         self.filters = []
@@ -153,7 +158,7 @@ class ActionFilter(QWidget):
         self.open_btn = QPushButton('', clicked=self.open_editor, icon=QIcon(qta.icon('mdi.filter-menu-outline')), parent=self)
         self.number_of_filters = QLabel('0')
 
-        self.editor = ActionFilterDialog(self.filters, self)
+        self.editor = ActionFilterDialog(self.filters, owner)
         self.editor.accepted.connect(self.on_accept)
 
         with CHBoxLayout(self, margins=(0,0,0,0)) as layout:

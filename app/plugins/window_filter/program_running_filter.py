@@ -27,9 +27,10 @@ def get_process_names():
 class ProgramRunningFilter(QWidget, FilterStackItem):
     name = 'program running'
 
-    def __init__(self, changed, parent=None) -> None:
-        super().__init__(parent=parent)
+    def __init__(self, changed, owner=None) -> None:
+        super().__init__()
 
+        self.owner = owner
         self.process = QComboBox()
         self.process.addItems(get_process_names())
         self.process.currentIndexChanged.connect(changed)

@@ -66,9 +66,10 @@ class DiscordWidget(QWidget):
 class DiscordAction(QWidget, ActionItem):
     name = 'discord'
 
-    def __init__(self, changed):
+    def __init__(self, changed, owner=None):
         super().__init__()
 
+        self.owner = owner
         with CVBoxLayout(self, margins=(0,0,0,0)) as layout:
             layout.add(QLabel('Discord'))
 

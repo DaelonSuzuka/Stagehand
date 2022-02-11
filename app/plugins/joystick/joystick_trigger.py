@@ -75,9 +75,10 @@ class JoystickTrigger(QWidget, TriggerItem):
     triggered = Signal()
     changed = Signal()
 
-    def __init__(self, changed, run):
+    def __init__(self, changed, run, owner=None):
         super().__init__()
 
+        self.owner = owner
         self.changed.connect(changed)
 
         self.listener = JoystickListener()

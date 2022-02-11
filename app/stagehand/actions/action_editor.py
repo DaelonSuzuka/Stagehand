@@ -7,13 +7,14 @@ import qtawesome as qta
 class ActionEditorDialog(QDialog):
     reload = Signal(str, Slot)
 
-    def __init__(self, data, parent=None):
-        super().__init__(parent=parent)
+    def __init__(self, data, owner=None):
+        super().__init__()
 
+        self.owner = owner
         self.setWindowTitle('Action Editor')
 
-        self.name = data['name']
-        self.label = QLineEdit(data['label'])
+        self.name = owner.name
+        self.label = QLineEdit(owner.label.text())
         self.editor = CodeEditor()
         self.editor.setText(data['action'])
         self.editor.textChanged.connect(lambda: self.reload.emit(self.editor.toPlainText(), self.set_error))
@@ -29,7 +30,7 @@ class ActionEditorDialog(QDialog):
         with CVBoxLayout(self) as layout:
             with layout.hbox() as layout:
                 layout.add(QLabel('Name:'))
-                layout.add(QLabel(data['name']))
+                layout.add(QLabel(owner.name))
                 layout.add(QLabel(), 1)
                 layout.add(self.reset)
             with layout.hbox(align='left') as layout:

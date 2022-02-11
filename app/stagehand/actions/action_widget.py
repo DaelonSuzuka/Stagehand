@@ -40,10 +40,10 @@ class ActionItem:
 class SandboxAction(QWidget, ActionItem):
     name = 'sandbox'
 
-    def __init__(self, changed, parent=None):
-        super().__init__(parent=parent)
+    def __init__(self, changed, owner=None):
+        super().__init__()
         
-        self.parent = parent
+        self.owner = owner
         self.action = QLineEdit()
         self.action.textChanged.connect(changed)
         self.changed = changed
@@ -56,7 +56,8 @@ class SandboxAction(QWidget, ActionItem):
     
     def open_editor(self, *_):
         self.data['action'] = self.action.text()
-        self.editor = ActionEditorDialog(self.data, self)
+        self.data['name'] = self.owner.name
+        self.editor = ActionEditorDialog(self.data, self.owner)
         self.editor.accepted.connect(self.on_accept)
         self.editor.open()
 
@@ -90,11 +91,12 @@ class SandboxAction(QWidget, ActionItem):
 class Action(QWidget):
     changed = Signal()
 
-    def __init__(self, changed, action_type='sandbox', action=''):
+    def __init__(self, changed, action_type='sandbox', action='', owner=None):
         super().__init__()
 
+        self.owner = owner
         self.type = QComboBox()
-        self.action = SandboxAction(changed, self)
+        self.action = SandboxAction(changed, owner)
         self._changed = changed
         self.data = None
         self.this = None
@@ -115,7 +117,7 @@ class Action(QWidget):
         if self.action:
             self.action.deleteLater()
             self.action = None
-        self.action = ActionItem.get_item(self.type.currentText())(self._changed)
+        self.action = ActionItem.from_name(self.type.currentText())(self._changed, self.owner)
         if self.data:
             self.action.from_dict(self.data)
         self.action_box.add(self.action)
@@ -172,9 +174,9 @@ class ActionWidget(QWidget):
         self.run_btn = QPushButton('', clicked=self.run, icon=QIcon(qta.icon('fa5.play-circle')))
 
         self.label = LabelEdit(label, changed=self.on_change)
-        self.action = Action(self.on_change, action_type, action)
-        self.trigger = ActionTrigger(self.on_change, run=self.run, parent=self)
-        self.filter = ActionFilter(self.on_change, parent=self)
+        self.action = Action(self.on_change, action_type, action, owner=self)
+        self.trigger = ActionTrigger(self.on_change, run=self.run, owner=self)
+        self.filter = ActionFilter(self.on_change, owner=self)
 
         if trigger:
             self.trigger.enabled.setChecked(True)

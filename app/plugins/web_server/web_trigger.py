@@ -8,9 +8,10 @@ class WebTrigger(QWidget, TriggerItem):
     name = 'web'
     triggered = Signal()
 
-    def __init__(self, changed, run):
+    def __init__(self, changed, run, owner=None):
         super().__init__()
         
+        self.owner = owner
         self.triggered.connect(run)
 
         self.socket = SocketListener()

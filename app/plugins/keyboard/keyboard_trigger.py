@@ -34,9 +34,10 @@ class KeyboardTrigger(QWidget, TriggerItem):
     name = 'keyboard'
     triggered = Signal()
 
-    def __init__(self, changed, run):
+    def __init__(self, changed, run, owner=None):
         super().__init__()
         
+        self.owner = owner
         self.triggered.connect(run)
 
         self.type = QComboBox()
