@@ -2,7 +2,27 @@
 
 Stagehand is a collection of tools that help automate and streamline your OBS experience.
 
-# Features
+# Action System
+
+The core idea of Stagehand is `actions`. An action has 3 parts: `trigger`, `filter`, and `output`. A `trigger` is some external event that causes an action to activate. `Filters` can prevent an action from activating based on some condition. `Output` is what the action actually does.
+
+Stagehand itself only has one `trigger`, one `filter`, and one `output`. All additional functionality is provided by a robust plugin system.
+
+# Sandbox Plugins
+
+Plugins can register one or more `triggers`, `filters`, or `outputs`, which are made available for use both in Stagehand's UI and in the `Sandbox`'s execution environment.
+
+Stagehand comes standard with a number of plugins:
+- OBS remote control
+- Microphone Voter
+- Web Actions
+- Joystick
+- Keyboard
+- Physical Input Device Support, including
+  - Stomp4 pedals
+  - Stomp5 pedals
+  - Click4 switches
+
 
 ## OBS Websocket Connection
 
@@ -13,12 +33,6 @@ By default, Stagehand looks for an obs-websocket server at `localhost:4444`. It'
 Stagehand also supports password authentication for obs-websocket.
 
 Stagehand will attempt to connect to the websocket at startup. This behavior can be disabled by unchecking the 'Connect on Startup' box. 
-
-## Action Sandbox
-
-Stagehand sends commands to OBS via the [obs-websocket protocol](https://github.com/Palakis/obs-websocket/blob/4.x-current/docs/generated/protocol.md). 
-
-Currently only a few actions are implemented, but complete support is a planned feature.
 
 ## Microphone Voter
 
@@ -32,7 +46,7 @@ I can even use this in discord/zoom/whatever calls by using OBS to route my audi
 
 Stagehand is developed primarily on Windows 10, and has been lightly tested on Ubuntu 20.04. In theory, there's no reason it won't also work on MacOS, but I don't currently have plans to support Macs. 
 
-Binary releases are coming soon. Stagehand is also perfectly happy to execute from source. This requires git, Python 3, and GNU Make to be installed. Simply clone the repo and run it as follows:
+Binary releases are coming soon. Stagehand is also perfectly happy to execute from source. This requires git, Python 3, and GNU Make to be installed(Ubuntu systems also need the `python3-venv` package, for some reason). Simply clone the repo and run it as follows:
 
 ```bash
 git clone git@github.com:DaelonSuzuka/Stagehand.git
@@ -44,14 +58,38 @@ Ubuntu 20.04 (and presumably other distros) don't have portaudio installed by de
 
 # Roadmap
 
-- Multiple 
+- Documentation
+- Examples and usage
 
-# Contributing
+# Sandbox Action Examples
 
-todo
+Don't let the limited number of built-in actions fool you, they're actually *extremely* powerful.
+
+Pretty much the simplest action in any language is to print 'hello world', so let's start with that.
+![editing actions](images/action_basic.gif)
+
+Actions aren't limited to only one line, simply press the edit button to pop out the multiline editor.
+![editing actions](images/action_multiline.gif)
+
+Actions can do a lot more than just print. The sandbox is a full python execution environment.
+![editing actions](images/action_for_loop.gif)
+
+The sandbox is an isolated environment, and code is always checked for errors before being executed. Typos and syntax errors aren't going to crash Stagehand.
+![editing actions](images/sandbox_validation.gif)
+
+Stagehand has more tools available than just running code snippets directly. Data persistence allows you to write complex actions that just aren't possible on other platforms.
+![editing actions](images/sandbox_persistence.gif)
+
+# Plugin Examples
+
+The `keyboard` plugin provides a `trigger` that listens for key presses and an `output` that can simulate keypresses in your system.
+![editing actions](images/keyboard_plugin.gif)
+
+Plugins are able to register thier functionality into the UI, as well as directly into the `Sandbox`, allowing you to write scripts to create any kind of complex behavior you want.
+![editing actions](images/keyboard_sandbox.gif)
 
 
-# Feature Gallery
+![editing actions](images/foot_pedal_plugin.gif)
 
 ## OBS Manager
 ![OBS Websocket Controls](images/obs_manager.png)
@@ -60,5 +98,12 @@ todo
 
 ![voter in action](images/voter_in_action.gif)
 
+# Workflow
+Copy/Paste
+![editing actions](images/action_copy_paste.gif)
 
-## Action Editing
+Reset actions with one click
+![editing actions](images/action_reset.gif)
+
+Rename actions with a double click
+![editing actions](images/action_rename.gif)
