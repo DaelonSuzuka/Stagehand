@@ -1,4 +1,5 @@
 from qtstrap import *
+from qtstrap.extras.code_editor import CodeEditor
 from stagehand.sandbox import Sandbox
 import qtawesome as qta
 from .action_editor import ActionEditorDialog
@@ -37,6 +38,23 @@ class ActionItem:
         pass
 
 
+class CodeLine(CodeEditor):
+    def __init__(self, changed):
+        super().__init__()
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setLineWrapMode(QTextEdit.NoWrap)
+        self.setFixedHeight(28)
+        self.textChanged.connect(changed)
+
+    def event(self, event: PySide2.QtCore.QEvent) -> bool:
+        if event.type() == QEvent.Type.KeyPress:
+            if event.key() in [Qt.Key_Return, Qt.Key_Enter]:
+                event.accept()
+                return True
+        return super().event(event)
+
+
 class SandboxAction(QWidget, ActionItem):
     name = 'sandbox'
 
@@ -44,8 +62,7 @@ class SandboxAction(QWidget, ActionItem):
         super().__init__()
         
         self.owner = owner
-        self.action = QLineEdit()
-        self.action.textChanged.connect(changed)
+        self.action = CodeLine(changed)
         self.changed = changed
 
         self.edit_btn = QPushButton('', clicked=self.open_editor, icon=QIcon(qta.icon('fa5.edit')))
@@ -55,7 +72,7 @@ class SandboxAction(QWidget, ActionItem):
             layout.add(self.edit_btn)
     
     def open_editor(self, *_):
-        self.data['action'] = self.action.text()
+        self.data['action'] = self.action.toPlainText()
         self.data['name'] = self.owner.name
         self.editor = ActionEditorDialog(self.data, self.owner)
         self.editor.accepted.connect(self.on_accept)
@@ -70,12 +87,13 @@ class SandboxAction(QWidget, ActionItem):
 
     def set_data(self, data: dict):
         self.data = data
-        self.action.setText(data['action'])
-        self.action.setDisabled('\n' in self.action.text())
+        if 'action' in data:
+            self.action.setText(data['action'])
+        self.action.setDisabled('\n' in self.action.toPlainText())
 
     def get_data(self):
         return {
-            'action': self.action.text()
+            'action': self.action.toPlainText()
         }
 
     def reset(self):
@@ -84,7 +102,7 @@ class SandboxAction(QWidget, ActionItem):
 
     def run(self):
         # Sandbox().run(self.action.text(), this=self.parent.this)
-        Sandbox().run(self.action.text())
+        Sandbox().run(self.action.toPlainText())
 
 
 class Action(QWidget):
