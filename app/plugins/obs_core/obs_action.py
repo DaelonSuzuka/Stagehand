@@ -5,7 +5,7 @@ from .requests import requests
 from .request_widgets import widgets
 
 
-class ObsActionWidget(QWidget, ActionItem):
+class ObsAction(QWidget, ActionItem):
     name = 'obs'
 
     def __init__(self, changed, owner=None):
