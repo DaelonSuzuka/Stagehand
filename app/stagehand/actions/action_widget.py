@@ -69,11 +69,8 @@ class SandboxAction(QWidget, ActionItem):
 
     def from_dict(self, data: dict):
         self.data = data
-        try:
-            self.action.setText(data['action'])
-            self.action.setDisabled('\n' in text)
-        except:
-            pass
+        self.action.setText(data['action'])
+        self.action.setDisabled('\n' in self.action.text())
 
     def to_dict(self):
         return {
@@ -82,6 +79,7 @@ class SandboxAction(QWidget, ActionItem):
 
     def reset(self):
         self.action.clear()
+        self.action.setDisabled(False)
 
     def run(self):
         # Sandbox().run(self.action.text(), this=self.parent.this)
