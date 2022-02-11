@@ -65,6 +65,7 @@ class SandboxAction(QWidget, ActionItem):
         text = self.editor.editor.toPlainText()
         self.action.setText(text)
         self.action.setDisabled('\n' in text)
+        self.owner.label.setText(self.editor.label.text())
         self.changed()
 
     def set_data(self, data: dict):
