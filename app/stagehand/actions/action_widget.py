@@ -47,12 +47,54 @@ class CodeLine(CodeEditor):
         self.setFixedHeight(28)
         self.textChanged.connect(changed)
 
-    def event(self, event: PySide2.QtCore.QEvent) -> bool:
-        if event.type() == QEvent.Type.KeyPress:
-            if event.key() in [Qt.Key_Return, Qt.Key_Enter]:
-                event.accept()
-                return True
-        return super().event(event)
+        words = [
+            //
+        ]
+
+        self.completer = QCompleter(words, self)
+        self.completer.setWidget(self)
+        self.completer.setCompletionMode(QCompleter.PopupCompletion)
+        self.completer.setCaseSensitivity(Qt.CaseInsensitive)
+        self.completer.setFilterMode(Qt.MatchContains)
+
+        self.completer.activated.connect(self.insert_completion)
+
+    def insert_completion(self, completion):
+        tc = self.textCursor()
+        extra = len(completion) - len(self.completer.completionPrefix())
+        tc.movePosition(QTextCursor.Left)
+        tc.movePosition(QTextCursor.EndOfWord)
+        tc.insertText(completion[-extra:])
+        self.setTextCursor(tc)
+
+    def text_under_cursor(self):
+        tc = self.textCursor()
+        tc.select(QTextCursor.WordUnderCursor)
+        return tc.selectedText()
+
+    def keyPressEvent(self, event: PySide2.QtCore.QEvent):
+        keys = [Qt.Key_Enter, Qt.Key_Return, Qt.Key_Escape, Qt.Key_Tab, Qt.Key_Backtab]
+        if self.completer.popup().isVisible():
+            if event.key() in keys:
+                event.ignore()
+                return
+    
+        if event.key() in [Qt.Key_Enter, Qt.Key_Return]:
+            event.accept()
+            return
+
+        super().keyPressEvent(event)
+
+        self.completer.setCompletionPrefix(self.text_under_cursor())
+        index = self.completer.completionModel().index(0, 0)
+        self.completer.popup().setCurrentIndex(index)
+
+        cr = self.cursorRect()
+        cr.setWidth(self.completer.popup().sizeHintForColumn(0) + self.completer.popup().verticalScrollBar().sizeHint().width())
+        self.completer.complete(cr)
+
+    def text(self):
+        return self.toPlainText()
 
 
 class SandboxAction(QWidget, ActionItem):
@@ -72,7 +114,7 @@ class SandboxAction(QWidget, ActionItem):
             layout.add(self.edit_btn)
     
     def open_editor(self, *_):
-        self.data['action'] = self.action.toPlainText()
+        self.data['action'] = self.action.text()
         self.data['name'] = self.owner.name
         self.editor = ActionEditorDialog(self.data, self.owner)
         self.editor.accepted.connect(self.on_accept)
@@ -89,11 +131,11 @@ class SandboxAction(QWidget, ActionItem):
         self.data = data
         if 'action' in data:
             self.action.setText(data['action'])
-        self.action.setDisabled('\n' in self.action.toPlainText())
+        self.action.setDisabled('\n' in self.action.text())
 
     def get_data(self):
         return {
-            'action': self.action.toPlainText()
+            'action': self.action.text()
         }
 
     def reset(self):
@@ -102,7 +144,7 @@ class SandboxAction(QWidget, ActionItem):
 
     def run(self):
         # Sandbox().run(self.action.text(), this=self.parent.this)
-        Sandbox().run(self.action.toPlainText())
+        Sandbox().run(self.action.text())
 
 
 class Action(QWidget):
