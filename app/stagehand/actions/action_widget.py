@@ -1,10 +1,10 @@
 from qtstrap import *
-from qtstrap.extras.code_editor import CodeEditor
 from stagehand.sandbox import Sandbox
 import qtawesome as qta
 from .action_editor import ActionEditorDialog
 from .action_trigger import ActionTrigger
 from .action_filter import FilterStack, ActionFilter
+from .code_line import CodeLine
 import abc
 import json
 
@@ -38,90 +38,6 @@ class ActionItem:
         pass
 
 
-class CodeLine(CodeEditor):
-    def __init__(self, changed):
-        super().__init__()
-        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.setLineWrapMode(QTextEdit.NoWrap)
-        self.setFixedHeight(28)
-        self.textChanged.connect(changed)
-
-        words = [
-            #
-        ]
-
-        self.completer = QCompleter(words, self)
-        self.completer.setWidget(self)
-        self.completer.setCompletionMode(QCompleter.PopupCompletion)
-        self.completer.setCaseSensitivity(Qt.CaseInsensitive)
-        self.completer.setFilterMode(Qt.MatchContains)
-
-        self.completer.activated.connect(self.insert_completion)
-
-    def insert_completion(self, completion):
-        tc = self.textCursor()
-        extra = len(completion) - len(self.completer.completionPrefix())
-        tc.movePosition(QTextCursor.Left)
-        tc.movePosition(QTextCursor.EndOfWord)
-        tc.insertText(completion[-extra:])
-        self.setTextCursor(tc)
-
-    def text_under_cursor(self):
-        tc = self.textCursor()
-        tc.select(QTextCursor.WordUnderCursor)
-        return tc.selectedText()
-
-    def keyPressEvent(self, event: PySide2.QtCore.QEvent):
-        keys = [Qt.Key_Enter, Qt.Key_Return, Qt.Key_Escape, Qt.Key_Tab, Qt.Key_Backtab]
-        if self.completer.popup().isVisible():
-            if event.key() in keys:
-                event.ignore()
-                return
-    
-        if event.key() in [Qt.Key_Enter, Qt.Key_Return]:
-            event.accept()
-            return
-
-        braces = {
-            '"': '"',
-            "'": "'",
-            '{': '}',
-            '(': ')',
-            '<': '>',
-            '[': ']',
-            '|': '|',
-            '`': '`',
-        }
-
-        cur = self.textCursor()
-        if cur.hasSelection():
-            if event.text() in braces:
-                start = cur.selectionStart()
-                end = cur.selectionEnd()
-                cur.clearSelection()
-                cur.setPosition(end)
-                cur.insertText(braces[event.text()])
-                cur.setPosition(start)
-                cur.insertText(event.text())
-                cur.movePosition(QTextCursor.WordRight, QTextCursor.KeepAnchor)
-                self.setTextCursor(cur)
-                return
-
-        super().keyPressEvent(event)
-
-        self.completer.setCompletionPrefix(self.text_under_cursor())
-        index = self.completer.completionModel().index(0, 0)
-        self.completer.popup().setCurrentIndex(index)
-
-        cr = self.cursorRect()
-        cr.setWidth(self.completer.popup().sizeHintForColumn(0) + self.completer.popup().verticalScrollBar().sizeHint().width())
-        self.completer.complete(cr)
-
-    def text(self):
-        return self.toPlainText()
-
-
 class SandboxAction(QWidget, ActionItem):
     name = 'sandbox'
 
@@ -129,7 +45,11 @@ class SandboxAction(QWidget, ActionItem):
         super().__init__()
         
         self.owner = owner
-        self.action = CodeLine(changed)
+        words = [
+            *Sandbox()._data.keys(),
+            *Sandbox()._globals.keys()
+        ]
+        self.action = CodeLine(changed, words)
         self.changed = changed
 
         self.edit_btn = QPushButton('', clicked=self.open_editor, icon=QIcon(qta.icon('fa5.edit')))
