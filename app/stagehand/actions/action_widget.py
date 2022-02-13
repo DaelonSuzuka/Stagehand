@@ -301,15 +301,15 @@ class ActionWidget(QWidget):
         self.trigger.setVisible(self.trigger.enabled.isChecked())
         self.changed.emit()
 
-    def contextMenuEvent(self, event: PySide2.QtGui.QContextMenuEvent) -> None:
+    def contextMenuEvent(self, event: QContextMenuEvent) -> None:
         menu = QMenu()
-        menu.addAction(QAction('Run', self, triggered=self.run))
-        menu.addAction(QAction('Rename', self, triggered=self.label.start_editing))
-        menu.addAction(QAction('Copy', self, triggered=self.copy))
-        menu.addAction(QAction('Paste', self, triggered=self.paste))
+        menu.addAction('Run').triggered.connect(self.run)
+        menu.addAction('Rename').triggered.connect(self.label.start_editing)
+        menu.addAction('Copy').triggered.connect(self.copy)
+        menu.addAction('Paste').triggered.connect(self.paste)
         menu.addAction(self.trigger.enabled)
         menu.addAction(self.filter.enabled)
-        menu.addAction(QAction('Reset', self, triggered=self.reset))
+        menu.addAction('Reset').triggered.connect(self.reset)
         menu.exec_(event.globalPos())
 
     def copy(self):
