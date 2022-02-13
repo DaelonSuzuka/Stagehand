@@ -22,6 +22,10 @@ class StagehandWidget(QWidget):
     ...
 
 
+class StagehandStatusBarItem(QWidget):
+    ...
+
+
 class FontSizeMenu(QMenu):
     def __init__(self, parent=None, default=12):
         super().__init__(parent=parent)
@@ -104,7 +108,10 @@ class MainWindow(BaseMainWindow):
         
         self.status.addWidget(self.init_settings_btn())
         self.status.add_spacer()
-        
+
+        for widget in StagehandStatusBarItem.__subclasses__():
+            self.status.addWidget(widget(self))
+
         for w in self.widgets:
             if hasattr(w, 'status_widget'):
                 self.status.addWidget(w.status_widget)
