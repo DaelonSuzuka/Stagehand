@@ -1,5 +1,5 @@
 from qtstrap import *
-from stagehand.sandbox import Sandbox
+from stagehand.sandbox import Sandbox, SandboxCompletionModel
 import qtawesome as qta
 from .action_editor import ActionEditorDialog
 from .action_trigger import ActionTrigger
@@ -45,11 +45,7 @@ class SandboxAction(QWidget, ActionItem):
         super().__init__()
         
         self.owner = owner
-        words = [
-            *Sandbox()._data.keys(),
-            *Sandbox()._globals.keys()
-        ]
-        self.action = CodeLine(changed, words)
+        self.action = CodeLine(changed, SandboxCompletionModel())
         self.changed = changed
 
         self.edit_btn = QPushButton('', clicked=self.open_editor, icon=QIcon(qta.icon('fa5.edit')))

@@ -1,1 +1,1 @@
-from .sandbox import Sandbox, _Sandbox, SandboxExtension
+from .sandbox import Sandbox, _Sandbox, SandboxExtension, SandboxCompletionModel

@@ -3,7 +3,7 @@ from qtstrap.extras.code_editor import CodeEditor
 
 
 class CodeLine(CodeEditor):
-    def __init__(self, changed=None, words=[]):
+    def __init__(self, changed=None, model=None):
         super().__init__()
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -13,13 +13,12 @@ class CodeLine(CodeEditor):
         if changed:
             self.textChanged.connect(changed)
 
-        self.completer = QCompleter(words, self)
-        self.completer.setModelSorting(QCompleter.CaseInsensitivelySortedModel)
+        self.model = model
+
+        self.completer = QCompleter(self.model, self)
         self.completer.setWidget(self)
         self.completer.popup().setMinimumWidth(150)
-        self.completer.setCompletionMode(QCompleter.PopupCompletion)
-        self.completer.setCaseSensitivity(Qt.CaseInsensitive)
-        self.completer.setFilterMode(Qt.MatchContains)
+        self.completer.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
 
         self.completer.activated.connect(self.insert_completion)
 
@@ -81,7 +80,11 @@ class CodeLine(CodeEditor):
         super().keyPressEvent(event)
 
         prefix = self.text_under_cursor()
+        if event.key() == Qt.Key_Period:
+            force_popup = True
         if prefix or force_popup:
+            if self.model:
+                self.model.set_prefix(prefix, self.textCursor())
             self.completer.setCompletionPrefix(prefix)
             index = self.completer.completionModel().index(0, 0)
             self.completer.popup().setCurrentIndex(index)
