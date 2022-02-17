@@ -31,18 +31,18 @@ class Stomp4Widget(QWidget):
 
         self.status = QLabel("Not Connected")
 
-        with CVBoxLayout(self, align='top') as layout:
+        with CVBoxLayout(self, margins=(0,0,0,0), align='top') as layout:
             with layout.hbox(align='left'):
                 layout.add(QLabel('Device Status:'))
                 layout.add(self.status)
 
-            layout.add(QLabel())
+            layout.add(QWidget())
             layout.add(HLine())
 
             for pedal in self.pedals:
                 layout.add(pedal)
 
-            layout.add(QLabel(), 1)
+            layout.add(QWidget(), 1)
 
     def connect_device(self, device):
         self.status.setText('Connected')

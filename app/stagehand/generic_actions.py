@@ -12,7 +12,7 @@ class ActionsWidget(QWidget):
         self.group = ActionWidgetGroup(f'generic_actions/{name}', self)
         self.actions = [ActionWidget(f'Action {i}', group=self.group) for i in range(1, 13)]
 
-        with CVBoxLayout(self, align='top') as layout:
+        with CVBoxLayout(self, margins=(0,0,0,0), align='top') as layout:
             layout.add(self.actions)
             layout.add(QWidget(), 1)
 
@@ -32,7 +32,7 @@ class ActionsContainer(StagehandWidget):
         self.add(ActionsWidget('2'))
         self.add(ActionsWidget('3'))
 
-        with PersistentCSplitter('generic_actions_splitter', self) as split:
+        with PersistentCSplitter('generic_actions_splitter', self, margins=(0,0,0,0)) as split:
             split.setOrientation(Qt.Horizontal)
             split.add(self.widget_list, 1)
             split.add(self.widget_stack, 1)
