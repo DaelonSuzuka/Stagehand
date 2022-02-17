@@ -1,6 +1,6 @@
 from qtstrap import *
 from .godot_socket import GodotSocket
-from stagehand.main_window import StagehandWidget, StagehandStatusBarItem, SidebarButton
+from stagehand.main_window import StagehandStatusBarItem, SidebarButton
 from pathlib import Path
 
 

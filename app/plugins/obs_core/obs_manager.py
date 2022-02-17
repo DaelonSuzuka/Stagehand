@@ -1,116 +1,62 @@
 from qtstrap import *
 from .obs_socket import ObsSocket
-from stagehand.main_window import StagehandWidget, SidebarButton
+from stagehand.main_window import StagehandStatusBarItem, SidebarButton
 from pathlib import Path
 
 
-class ObsStatusWidget(QWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent=parent)
-        self.status = QLabel('Not Connected')
-
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
-            layout.add(QLabel('OBS:'))
-            layout.add(self.status)
-            layout.add(QLabel())
-
-    def setText(self, text):
-        self.status.setText(text)
-
-
-class ObsManager(StagehandWidget):
-    message_received = Signal(dict)
-    raw_message_received = Signal(str)
-    socket_connected = Signal()
-
+class ObsStatusWidget(StagehandStatusBarItem):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.socket = ObsSocket()
         self.socket.status_changed.connect(self.set_status)
 
-        self.status = QLabel('Not Connected')
-        self.status_widget = ObsStatusWidget()
+        self.status = ''
+        self.status_label = QLabel('Not Connected')
 
-        icon = QIcon(str(Path(__file__).parent / 'obs.png'))
-        self.sidebar_button = SidebarButton(target=self, icon=icon)
+        self.url = 'localhost'
+        self.port = '4444'
+        self.password = 'websocketpassword'
 
-        self.url = PersistentLineEdit('obs_url', default='localhost', fixedWidth=75)
-        self.port = PersistentLineEdit('obs_port', default='4444', fixedWidth=50)
-        self.connect_btn = QPushButton('Connect', clicked=self.on_connect_btn)
-        self.connect_at_start = PersistentCheckBox('connect_at_start')
+        self.connect_at_start = PersistentCheckableAction('obs/connect_at_start', 'Connect on Startup')
 
-        self.password = PersistentLineEdit('obs_password')
-        def set_show_password(state):
-            if state == Qt.Checked:
-                self.password.setEchoMode(QLineEdit.Normal)
-            else:
-                self.password.setEchoMode(QLineEdit.Password)
-        self.show_password = PersistentCheckBox('show_password', changed=set_show_password)
-        set_show_password(self.show_password.checkState())
-
-        if self.connect_at_start.checkState() == Qt.Checked:
+        if self.connect_at_start.isChecked():
             self.open()
 
-        with CVBoxLayout(self, align='top') as layout:
-            with layout.hbox(align='left'):
-                layout.add(QLabel('Connect on Startup:'))
-                layout.add(self.connect_at_start)
-            layout.add(HLine())
-            with layout.hbox(align='left'):
-                layout.add(QLabel('Status:'))
-                layout.add(self.status)
-            with layout.hbox(align='left'):
-                layout.add(QLabel('Address:'))
-                layout.add(self.url)
-                layout.add(QLabel('Port:'))
-                layout.add(self.port)
-                layout.add(self.connect_btn)
-                layout.add(QLabel(), 1)
-            with layout.hbox(align='left'):
-                layout.add(QLabel('Password:'))
-                layout.add(self.password)
-                layout.add(QLabel('Show:'))
-                layout.add(self.show_password)
-                layout.add(QLabel(), 1)
+        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+            layout.add(QLabel('OBS:'))
+            layout.add(self.status_label)
+            layout.add(QLabel())
 
-    def on_connect_btn(self):
-        if self.connect_btn.text() == 'Connect':
-            self.open()
-        else:
-            self.socket.close()
-
-    def lock(self):
-        self.url.setEnabled(False)
-        self.port.setEnabled(False)
-        self.password.setEnabled(False)
-        self.show_password.setEnabled(False)
-        self.show_password.setChecked(False)
-        self.password.setEchoMode(QLineEdit.Password)
-
-    def unlock(self):
-        self.url.setEnabled(True)
-        self.port.setEnabled(True)
-        self.password.setEnabled(True)
-        self.show_password.setEnabled(True)
-
+    def setText(self, text):
+        self.status_label.setText(text)
+    
     def set_status(self, status):
-        if status == 'active':
-            self.status.setText('Connected')
-            self.status_widget.setText('Connected')
-            self.connect_btn.setText('Disconnect')
-
-        elif status == 'inactive':
-            self.status.setText('Not Connected')
-            self.status_widget.setText('Not Connected')
-            self.connect_btn.setText('Connect')
-
-        elif status == 'failed':
-            self.status.setText('Authentication Failed')
-            self.status_widget.setText('Not Connected')
-            self.connect_btn.setText('Connect')
+        self.status = status
+        status_messages = {
+            'active': 'Connected',
+            'pending': 'Connecting',
+            'reconnecting': f'Reconnecting {self.socket.reconnect_attempts}',
+            'inactive': 'Not Connected',
+            'failed': 'Authentication Failed',
+        }
+        self.status_label.setText(status_messages[status])
+        
+    def contextMenuEvent(self, event):
+        menu = QMenu()
+        if self.status != 'active':
+            menu.addAction('Connect').triggered.connect(self.open)
+        else:
+            menu.addAction('Disconnect').triggered.connect(self.close)
+        menu.addAction(self.connect_at_start)
+        menu.exec_(event.globalPos())
 
     def open(self):
-        self.socket.open(self.url.text(), self.port.text(), self.password.text())
+        self.set_status('pending')
+        self.socket.open(self.url, self.port, self.password)
+
+    def close(self):
+        self.socket.we_closed = True
+        self.socket.close()
 
     def send(self, payload, callback=None):
         self.socket.send(payload, callback)

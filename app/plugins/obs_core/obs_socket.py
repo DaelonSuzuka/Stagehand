@@ -16,6 +16,11 @@ class _ObsSocket(QObject):
         super().__init__(parent=parent)
         self.id = 0
         self.active = False
+        self.we_closed = False
+        self.reconnect_attempts = 0
+        self.max_attempts = 5
+
+        self.url = ''
 
         self.socket = QWebSocket()
         self.socket.connected.connect(self.connected)
@@ -64,7 +69,6 @@ class _ObsSocket(QObject):
                 def auth_cb2(msg):
                     if msg['status'] == 'error':
                         if msg['error'] == 'Authentication Failed.':
-                            self.unlock()
                             self.set_status('failed')
 
                     elif msg['status'] == 'ok':
@@ -77,11 +81,30 @@ class _ObsSocket(QObject):
         self._send({"request-type": "GetAuthRequired"}, auth_cb)
 
     def disconnected(self):
-        self.set_status('inactive')
+        if self.we_closed:
+            self.we_closed = False
+            self.set_status('inactive')
+            return
+        self.set_status('reconnecting')
+        self.retry()
 
-    def open(self, url, port, password):
+    def retry(self):
+        self.reconnect_attempts += 1
+        if self.reconnect_attempts >= self.max_attempts:
+            self.set_status('inactive')
+            return
+
+        self.set_status(f'reconnecting')
+        self.socket.close()
+        self.socket.open(self.url)
+
+    def open(self, url, port, password=''):
+        self.url = QUrl(f'ws://{url}:{port}')
         self.password = password
-        self.socket.open(QUrl(f'ws://{url}:{port}'))
+        self.socket.open(self.url)
+        
+    def close(self):
+        self.socket.close()
 
     def _send(self, payload, callback=None):
         payload['message-id'] = str(self.id)
