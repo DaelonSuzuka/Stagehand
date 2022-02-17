@@ -18,9 +18,7 @@ class _GodotSocket(QObject):
         self.active = False
         self.we_closed = False
         self.reconnect_attempts = 0
-        self.max_attempts = 20
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.retry)
+        self.max_attempts = 5
 
         self.url = ''
 
@@ -36,19 +34,22 @@ class _GodotSocket(QObject):
     def set_status(self, status):
         self.status_changed.emit(status)
         if status == 'active':
+            self.reconnect_attempts = 0
             self.active = True
             self.socket_connected.emit()
             self.process_queue()
 
         elif status == 'inactive':
+            self.reconnect_attempts = 0
             self.active = False
 
         elif status == 'failed':
             self.active = False
 
-    def connected(self):
-        self.timer.stop()
+        elif status == 'reconnecting':
+            self.active = False
 
+    def connected(self):
         def auth_cb(msg):
             if msg['authRequired']:
                 pass
@@ -62,13 +63,11 @@ class _GodotSocket(QObject):
             self.set_status('inactive')
             return
         self.set_status('reconnecting')
-        self.timer.start(1000)
+        self.retry()
 
     def retry(self):
         self.reconnect_attempts += 1
         if self.reconnect_attempts >= self.max_attempts:
-            self.timer.stop()
-            self.reconnect_attempts = 0
             self.set_status('inactive')
             return
 
