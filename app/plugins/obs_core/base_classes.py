@@ -1,4 +1,5 @@
 from qtstrap import *
+from shiboken2 import isValid
 from stagehand.sandbox import Sandbox
 from .requests import requests
 
@@ -25,6 +26,8 @@ class SceneSelector(QComboBox):
 
     def refresh(self):
         def cb(msg):
+            if not isValid(self):
+                return
             scenes = [s['name'] for s in msg['scenes']]
             value = self.currentText()
             self.blockSignals(True)
@@ -57,6 +60,8 @@ class SourceSelector(QComboBox):
 
     def refresh(self):
         def cb(msg):
+            if not isValid(self):
+                return
             sources = [s['name'] for s in msg['sources']]
             value = self.currentText()
             self.blockSignals(True)
@@ -92,6 +97,8 @@ class FilterSelector(QComboBox):
     def refresh(self, source=None):
         if source:
             def cb(msg):
+                if not isValid(self):
+                    return
                 filters = [s['name'] for s in msg['filters']]
                 value = self.currentText()
                 self.blockSignals(True)
