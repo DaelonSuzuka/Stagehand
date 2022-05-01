@@ -1,7 +1,7 @@
 from qtstrap import *
 from codex import DeviceManager
 from .actions import ActionWidget, ActionWidgetGroup, TriggerItem
-from stagehand.main_window import StagehandWidget, SidebarButton
+from stagehand.components import StagehandWidget, SidebarButton
 import qtawesome as qta
 
 

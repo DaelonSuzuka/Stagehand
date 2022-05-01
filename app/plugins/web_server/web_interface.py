@@ -5,7 +5,7 @@ from qtpy.QtWebSockets import *
 from qtpy.QtNetwork import *
 import threading
 from stagehand.actions import ActionWidget, ActionWidgetGroup
-from stagehand.main_window import StagehandWidget, SidebarButton
+from stagehand.components import StagehandWidget, SidebarButton
 import socket
 import json
 import qtawesome as qta

@@ -1,6 +1,6 @@
 from qtstrap import *
 from .actions import ActionWidget, ActionWidgetGroup
-from stagehand.main_window import StagehandWidget, SidebarButton
+from stagehand.components import StagehandWidget, SidebarButton
 import qtawesome as qta
 
 
