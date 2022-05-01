@@ -4,7 +4,7 @@ import sounddevice as sd
 from time import time
 import os
 from stagehand.sandbox import Sandbox
-from stagehand.main_window import StagehandWidget, SidebarButton
+from stagehand.components import StagehandWidget, SidebarButton
 import qtawesome as qta
 
 
