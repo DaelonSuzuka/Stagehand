@@ -2,7 +2,7 @@ altgraph==0.17
 appdirs==1.4.4
 cffi==1.14.5
 click==7.1.2
-codex-engine-pyqt==0.0.12
+codex-engine-pyqt==0.0.13
 Flask==1.1.2
 future==0.18.2
 itsdangerous==1.1.0
