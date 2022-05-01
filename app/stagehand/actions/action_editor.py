@@ -1,6 +1,6 @@
 from qtstrap import *
 from qtstrap.extras.code_editor import CodeEditor
-from stagehand.sandbox import Sandbox
+from stagehand.sandbox import Sandbox, SandboxCompletionModel
 import qtawesome as qta
 
 
@@ -15,7 +15,7 @@ class ActionEditorDialog(QDialog):
 
         self.name = owner.name
         self.label = QLineEdit(owner.label.text())
-        self.editor = CodeEditor()
+        self.editor = CodeEditor(model=SandboxCompletionModel())
         self.editor.setText(data['action'])
         self.editor.textChanged.connect(lambda: self.reload.emit(self.editor.toPlainText(), self.set_error))
         self.reload.connect(Sandbox().compile)

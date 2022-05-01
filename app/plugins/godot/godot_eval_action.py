@@ -1,6 +1,7 @@
 from qtstrap import *
+from qtstrap.extras.code_editor import CodeLine
 from stagehand.sandbox import Sandbox
-from stagehand.actions import ActionItem, CodeLine
+from stagehand.actions import ActionItem
 
 
 class GodotEvalAction(QWidget, ActionItem):
