@@ -178,7 +178,7 @@ class ActionFilter(QWidget):
 
         self.editor.open()
 
-    def contextMenuEvent(self, event: PySide2.QtGui.QContextMenuEvent) -> None:
+    def contextMenuEvent(self, event: QtGui.QContextMenuEvent) -> None:
         menu = QMenu()
         menu.addAction(QAction('Copy Filters', self, triggered=self.copy))
         menu.addAction(QAction('Paste Filters', self, triggered=self.paste))

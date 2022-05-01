@@ -53,5 +53,5 @@ class Plugins():
             try:
                 module = importlib.import_module(plugin_name)
                 self._plugins[plugin_name] = module
-            except:
-                pass
+            except Exception as e:
+                print(e)
