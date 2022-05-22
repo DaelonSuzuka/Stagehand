@@ -28,6 +28,8 @@ class FontSizeMenu(QMenu):
 
 
 class MainWindow(BaseMainWindow):
+    closing = Signal()
+
     def __init__(self, parent=None):
         super().__init__(parent=parent)
 
@@ -57,6 +59,8 @@ class MainWindow(BaseMainWindow):
             w = widget(self)
             self.widgets.append(w)
             self.stack.addWidget(w)
+            if hasattr(w, 'on_app_close'):
+                self.closing.connect(w.on_app_close)
 
         self.setCentralWidget(self.stack)
 
@@ -94,11 +98,16 @@ class MainWindow(BaseMainWindow):
         self.status.add_spacer()
 
         for widget in StagehandStatusBarItem.__subclasses__():
-            self.status.addWidget(widget(self))
+            w = widget(self)
+            self.status.addWidget(w)
+            if hasattr(w, 'on_app_close'):
+                self.closing.connect(w.on_app_close)
 
         for w in self.widgets:
             if hasattr(w, 'status_widget'):
                 self.status.addWidget(w.status_widget)
+            if hasattr(w, 'on_app_close'):
+                self.closing.connect(w.on_app_close)
 
         self.status.addWidget(QLabel())
 
@@ -145,6 +154,7 @@ class MainWindow(BaseMainWindow):
             event.ignore()
             self.hide()
         else:
+            self.closing.emit()
             self.tray_icon.hide()
             super().closeEvent(event)
             qApp.quit()
