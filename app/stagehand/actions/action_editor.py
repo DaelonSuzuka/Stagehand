@@ -1,5 +1,5 @@
 from qtstrap import *
-from qtstrap.extras.code_editor import CodeEditor
+from qtstrap.extras.code_editor import CodeEditor, PythonHighlighter
 from stagehand.sandbox import Sandbox, SandboxCompletionModel
 import qtawesome as qta
 
@@ -15,7 +15,7 @@ class ActionEditorDialog(QDialog):
 
         self.name = owner.name
         self.label = QLineEdit(owner.label.text())
-        self.editor = CodeEditor(model=SandboxCompletionModel())
+        self.editor = CodeEditor(highlighter=PythonHighlighter, model=SandboxCompletionModel())
         self.editor.setText(data['action'])
         self.editor.textChanged.connect(lambda: self.reload.emit(self.editor.toPlainText(), self.set_error))
         self.reload.connect(Sandbox().compile)

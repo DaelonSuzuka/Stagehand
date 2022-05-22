@@ -1,5 +1,5 @@
 from qtstrap import *
-from qtstrap.extras.code_editor import CodeLine
+from qtstrap.extras.code_editor import CodeLine, PythonHighlighter
 from stagehand.sandbox import Sandbox, SandboxCompletionModel
 import qtawesome as qta
 from .action_editor import ActionEditorDialog
@@ -45,7 +45,7 @@ class SandboxAction(QWidget, ActionItem):
         super().__init__()
         
         self.owner = owner
-        self.action = CodeLine(changed=changed, model=SandboxCompletionModel())
+        self.action = CodeLine(changed=changed, highlighter=PythonHighlighter, model=SandboxCompletionModel())
         self.changed = changed
 
         self.edit_btn = QPushButton('', clicked=self.open_editor, icon=QIcon(qta.icon('fa5.edit')))
