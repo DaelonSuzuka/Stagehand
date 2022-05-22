@@ -11,6 +11,7 @@ class _ObsSocket(QObject):
     message_received = Signal(dict)
     raw_message_received = Signal(str)
     socket_connected = Signal()
+    event_recieved = Signal(dict)
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
@@ -138,6 +139,8 @@ class _ObsSocket(QObject):
         if 'message-id' in msg:
             if msg['message-id'] in self.callbacks:
                 self.callbacks[msg['message-id']](msg)
+        if 'update-type' in msg:
+            self.event_recieved.emit(msg)
 
 
 socket = None

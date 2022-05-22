@@ -113,6 +113,7 @@ def collect_returns(data):
                     known_returns.append(name)
                     returns.append({
                             'name': name,
+                            'clean_name': clean_var(name),
                             'type': r['type'],
                             'description': r['description']
                         })
@@ -225,55 +226,7 @@ def build_request(w, i, event):
         w += ''
 
 
-def build_event(w, i, event):
-    # gather class info
-    name = i['name']
-    description = i['description']
-
-    fields = collect_fields(i)
-    returns = collect_returns(i)
-
-    # 
-    w += f"class {name}({classname[event]}):"
-    with w:
-        w += f'"""{description}'
-        w += ''
-        if fields:
-            w += ":Arguments:"
-        for field in fields:
-            with w:
-                w += f"*{clean_var(field['name'])}*"
-                with w:
-                    w += f"type: {field['type']}"
-                    w += f"{field['description']}"
-
-        if returns:
-            w += ":Returns:"
-        for ret in returns:
-            with w:
-                w += f"*{clean_var(ret['name'])}*"
-                with w:
-                    w += f"type: {ret['type']}"
-                    w += f"{ret['description']}"
-
-        w += '"""'
-
-        w += '' # init method
-        w += "def __init__(self):"
-        # w += "def __init__({}:".format(
-        #     ", ".join(
-        #         ["self"]
-        #         + [clean_var(a['name']) for a in fields if not a['optional']]
-        #         + [clean_var(a['name']) + "=None" for a in fields if a['optional']]
-        #     )
-        # )
-        with w:
-            w += "super().__init__()"
-        w += ''
-        w += ''
-
-
-def build_widget(w, i, event):
+def build_request_widget(w, i, event):
     # gather class info
     name = i['name']
     description = i['description']
@@ -350,6 +303,142 @@ def build_widget(w, i, event):
             w += "}"
         w += ''
 
+        
+def build_event(w, i, event):
+    # gather class info
+    name = i['name']
+    description = i['description']
+
+    fields = collect_fields(i)
+    returns = collect_returns(i)
+
+    # 
+    w += f"class {name}({classname[event]}):"
+    with w:
+        w += f'"""{description}'
+        w += ''
+        if fields:
+            w += ":Arguments:"
+        for field in fields:
+            with w:
+                w += f"*{clean_var(field['name'])}*"
+                with w:
+                    w += f"type: {field['type']}"
+                    w += f"{field['description']}"
+
+        if returns:
+            w += ":Returns:"
+        for ret in returns:
+            with w:
+                w += f"*{clean_var(ret['name'])}*"
+                with w:
+                    w += f"type: {ret['type']}"
+                    w += f"{ret['description']}"
+
+        w += '"""'
+        w += ''
+
+        # info
+        w += f"name = '{name}'"
+        w += f"category = '{i['category']}'"
+
+        w += '' # init method
+        w += "def __init__(self, payload=None):"
+        # w += "def __init__({}):".format(
+        #     ", ".join(
+        #         ["self"]
+        #         + [clean_var(a['name']) for a in fields if not a['optional']]
+        #         + [clean_var(a['name']) + "=None" for a in fields if a['optional']]
+        #     )
+        # )
+        with w:
+            w += "super().__init__()"
+            
+            # if returns:
+            #     w += "self.datain = {}"
+            # for r in returns:
+            #     w += f"self.datain['{r['name']}'] = None"
+
+        w += ''
+        w += ''
+
+def build_event_widget(w, i, event):
+    # gather class info
+    name = i['name']
+    description = i['description']
+
+    fields = collect_fields(i)
+    returns = collect_returns(i)
+
+    w += f"class {name}Widget(QWidget):"
+    with w:
+        def field_widget(field):
+            line = "UnimplementedField('[field not implemented]')"
+
+            if field['name'] in ['sourceName', 'source']:
+                line = f"SourceSelector(changed, parent=self)"
+            elif field['name'] in ['sceneName', 'scene_name']:
+                line = f"SceneSelector(changed, parent=self)"
+            elif field['name'] == 'filterName':
+                line = f"FilterSelector(changed, self.sourceName, parent=self)"
+            elif field['type'] == 'boolean' or 'Bool' in field['name'] or 'Enabled' in field['name']:
+                line = f"BoolSelector(changed, parent=self)"
+            else:
+                if name not in unimplemented_fields:
+                    unimplemented_fields[name] = []
+                unimplemented_fields[name].append(field)
+
+            return line
+
+        w += "def __init__(self, changed=None, parent=None):"
+        with w:
+            w += "super().__init__(parent=parent)"
+            w += "self.changed = changed"
+            # for field in returns:
+            #     w += f"self.{field['clean_name']} = {field_widget(field)}"
+            w += ''
+            w += "with CHBoxLayout(self, margins=(0,0,0,0)) as layout:"
+            with w:
+                w += 'pass'
+            #     if returns:
+            #         for field in returns:
+            #             w += f"layout.add(self.{field['clean_name']})"
+            #     else:
+            #         w += "layout.add(QLabel('[ request has no fields ]'))"
+        w += ''
+
+        w += "def validate_event(self, event):"
+        with w:
+            w += f"if event['update-type'] != '{name}':"
+            with w:
+                w += "return False"
+            # for field in returns:
+            #     w += f"self.{field['name']}.refresh()"
+            w += "return True"
+        w += ''
+
+        w += "def refresh(self):"
+        with w:
+            # for field in returns:
+            #     w += f"self.{field['name']}.refresh()"
+            w += "return"
+        w += ''
+        
+        w += "def set_data(self, data):"
+        with w:
+            w += "self._data = data"
+            # for field in returns:
+            #     w += f"self.{field['name']}.set_data(data['{field['name']}']) "
+        w += ''
+
+        w += "def get_data(self):"
+        with w:
+            w += "return {"
+            # with w:
+            #     for field in returns:
+            #         w += f"'{field['name']}': self.{field['name']}.get_data(),"
+            w += "}"
+        w += ''
 
 def generate_classes():
     """Generates the necessary classes."""
@@ -405,7 +494,7 @@ def generate_classes():
         classes = []
         for sec in data[event]:
             for i in data[event][sec]:
-                build_widget(w, i, event)
+                build_request_widget(w, i, event)
                 classes.append(i['name'])
                 w += ''
 
@@ -444,6 +533,30 @@ def generate_classes():
         with w:
             for c in classes:
                 w += f"'{c}': {c}(),"
+        w += "}"
+
+    event = 'events'
+    with open(Path(__file__).parent / 'event_widgets.py', 'w') as f:
+        w = Writer(f.write)
+
+        w += "from .base_classes import *"
+        w += "from qtstrap import *"
+        w += "from stagehand.sandbox import Sandbox"
+        w += ''
+        w += ''
+
+        classes = []
+        for sec in data[event]:
+            for i in data[event][sec]:
+                build_event_widget(w, i, event)
+                classes.append(i['name'])
+                w += ''
+
+        w += ''
+        w += "widgets = {"
+        with w:
+            for c in classes:
+                w += f"'{c}': {c}Widget,"
         w += "}"
 
     print("API classes have been generated.")

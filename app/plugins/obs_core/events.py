@@ -18,7 +18,10 @@ class SwitchScenes(BaseEvent):
             List of scene items in the new scene. Same specification as [`GetCurrentScene`](#getcurrentscene).
     """
 
-    def __init__(self):
+    name = 'SwitchScenes'
+    category = 'scenes'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -33,7 +36,10 @@ Note: This event is not fired when the scenes are reordered.
             Scenes list.
     """
 
-    def __init__(self):
+    name = 'ScenesChanged'
+    category = 'scenes'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -46,7 +52,10 @@ class SceneCollectionChanged(BaseEvent):
             Name of the new current scene collection.
     """
 
-    def __init__(self):
+    name = 'SceneCollectionChanged'
+    category = 'scenes'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -59,7 +68,10 @@ class SceneCollectionListChanged(BaseEvent):
             Scene collections list.
     """
 
-    def __init__(self):
+    name = 'SceneCollectionListChanged'
+    category = 'scenes'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -72,7 +84,10 @@ class SwitchTransition(BaseEvent):
             The name of the new active transition.
     """
 
-    def __init__(self):
+    name = 'SwitchTransition'
+    category = 'transitions'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -86,7 +101,10 @@ Transitions have been added, removed, or renamed.
             Transitions list.
     """
 
-    def __init__(self):
+    name = 'TransitionListChanged'
+    category = 'transitions'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -99,7 +117,10 @@ class TransitionDurationChanged(BaseEvent):
             New transition duration.
     """
 
-    def __init__(self):
+    name = 'TransitionDurationChanged'
+    category = 'transitions'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -124,7 +145,10 @@ class TransitionBegin(BaseEvent):
             Destination scene of the transition
     """
 
-    def __init__(self):
+    name = 'TransitionBegin'
+    category = 'transitions'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -147,7 +171,10 @@ Note: The `from-scene` field is not available in TransitionEnd.
             Destination scene of the transition
     """
 
-    def __init__(self):
+    name = 'TransitionEnd'
+    category = 'transitions'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -172,7 +199,10 @@ class TransitionVideoEnd(BaseEvent):
             Destination scene of the transition
     """
 
-    def __init__(self):
+    name = 'TransitionVideoEnd'
+    category = 'transitions'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -185,7 +215,10 @@ class ProfileChanged(BaseEvent):
             Name of the new current profile.
     """
 
-    def __init__(self):
+    name = 'ProfileChanged'
+    category = 'profiles'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -198,7 +231,10 @@ class ProfileListChanged(BaseEvent):
             Profiles list.
     """
 
-    def __init__(self):
+    name = 'ProfileListChanged'
+    category = 'profiles'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -211,7 +247,10 @@ class StreamStarting(BaseEvent):
             Always false (retrocompatibility).
     """
 
-    def __init__(self):
+    name = 'StreamStarting'
+    category = 'streaming'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -220,7 +259,10 @@ class StreamStarted(BaseEvent):
 
     """
 
-    def __init__(self):
+    name = 'StreamStarted'
+    category = 'streaming'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -233,7 +275,10 @@ class StreamStopping(BaseEvent):
             Always false (retrocompatibility).
     """
 
-    def __init__(self):
+    name = 'StreamStopping'
+    category = 'streaming'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -242,7 +287,10 @@ class StreamStopped(BaseEvent):
 
     """
 
-    def __init__(self):
+    name = 'StreamStopped'
+    category = 'streaming'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -309,7 +357,10 @@ class StreamStatus(BaseEvent):
             Always false (retrocompatibility).
     """
 
-    def __init__(self):
+    name = 'StreamStatus'
+    category = 'streaming'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -321,7 +372,10 @@ is not available at the time this event is emitted.
 
     """
 
-    def __init__(self):
+    name = 'RecordingStarting'
+    category = 'recording'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -334,7 +388,10 @@ class RecordingStarted(BaseEvent):
             Absolute path to the file of the current recording.
     """
 
-    def __init__(self):
+    name = 'RecordingStarted'
+    category = 'recording'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -347,7 +404,10 @@ class RecordingStopping(BaseEvent):
             Absolute path to the file of the current recording.
     """
 
-    def __init__(self):
+    name = 'RecordingStopping'
+    category = 'recording'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -360,7 +420,10 @@ class RecordingStopped(BaseEvent):
             Absolute path to the file of the current recording.
     """
 
-    def __init__(self):
+    name = 'RecordingStopped'
+    category = 'recording'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -369,7 +432,10 @@ class RecordingPaused(BaseEvent):
 
     """
 
-    def __init__(self):
+    name = 'RecordingPaused'
+    category = 'recording'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -378,7 +444,10 @@ class RecordingResumed(BaseEvent):
 
     """
 
-    def __init__(self):
+    name = 'RecordingResumed'
+    category = 'recording'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -387,7 +456,10 @@ class VirtualCamStarted(BaseEvent):
 
     """
 
-    def __init__(self):
+    name = 'VirtualCamStarted'
+    category = 'virtual cam'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -396,7 +468,10 @@ class VirtualCamStopped(BaseEvent):
 
     """
 
-    def __init__(self):
+    name = 'VirtualCamStopped'
+    category = 'virtual cam'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -405,7 +480,10 @@ class ReplayStarting(BaseEvent):
 
     """
 
-    def __init__(self):
+    name = 'ReplayStarting'
+    category = 'replay buffer'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -414,7 +492,10 @@ class ReplayStarted(BaseEvent):
 
     """
 
-    def __init__(self):
+    name = 'ReplayStarted'
+    category = 'replay buffer'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -423,7 +504,10 @@ class ReplayStopping(BaseEvent):
 
     """
 
-    def __init__(self):
+    name = 'ReplayStopping'
+    category = 'replay buffer'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -432,7 +516,10 @@ class ReplayStopped(BaseEvent):
 
     """
 
-    def __init__(self):
+    name = 'ReplayStopped'
+    category = 'replay buffer'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -441,7 +528,10 @@ class Exiting(BaseEvent):
 
     """
 
-    def __init__(self):
+    name = 'Exiting'
+    category = 'other'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -487,7 +577,10 @@ class Heartbeat(BaseEvent):
             OBS Stats
     """
 
-    def __init__(self):
+    name = 'Heartbeat'
+    category = 'general'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -503,7 +596,10 @@ class BroadcastCustomMessage(BaseEvent):
             User-defined data
     """
 
-    def __init__(self):
+    name = 'BroadcastCustomMessage'
+    category = 'general'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -525,7 +621,10 @@ class SourceCreated(BaseEvent):
             Source settings
     """
 
-    def __init__(self):
+    name = 'SourceCreated'
+    category = 'sources'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -544,7 +643,10 @@ class SourceDestroyed(BaseEvent):
             Source kind.
     """
 
-    def __init__(self):
+    name = 'SourceDestroyed'
+    category = 'sources'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -563,7 +665,10 @@ class SourceVolumeChanged(BaseEvent):
             Source volume in Decibel
     """
 
-    def __init__(self):
+    name = 'SourceVolumeChanged'
+    category = 'sources'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -579,7 +684,10 @@ class SourceMuteStateChanged(BaseEvent):
             Mute status of the source
     """
 
-    def __init__(self):
+    name = 'SourceMuteStateChanged'
+    category = 'sources'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -592,7 +700,10 @@ class SourceAudioDeactivated(BaseEvent):
             Source name
     """
 
-    def __init__(self):
+    name = 'SourceAudioDeactivated'
+    category = 'sources'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -605,7 +716,10 @@ class SourceAudioActivated(BaseEvent):
             Source name
     """
 
-    def __init__(self):
+    name = 'SourceAudioActivated'
+    category = 'sources'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -621,7 +735,10 @@ class SourceAudioSyncOffsetChanged(BaseEvent):
             Audio sync offset of the source (in nanoseconds)
     """
 
-    def __init__(self):
+    name = 'SourceAudioSyncOffsetChanged'
+    category = 'sources'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -640,7 +757,10 @@ class SourceAudioMixersChanged(BaseEvent):
             Raw mixer flags (little-endian, one bit per mixer) as an hexadecimal value
     """
 
-    def __init__(self):
+    name = 'SourceAudioMixersChanged'
+    category = 'sources'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -659,7 +779,10 @@ class SourceRenamed(BaseEvent):
             Type of source (input, scene, filter, transition)
     """
 
-    def __init__(self):
+    name = 'SourceRenamed'
+    category = 'sources'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -681,7 +804,10 @@ class SourceFilterAdded(BaseEvent):
             Filter settings
     """
 
-    def __init__(self):
+    name = 'SourceFilterAdded'
+    category = 'sources'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -700,7 +826,10 @@ class SourceFilterRemoved(BaseEvent):
             Filter type
     """
 
-    def __init__(self):
+    name = 'SourceFilterRemoved'
+    category = 'sources'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -719,7 +848,10 @@ class SourceFilterVisibilityChanged(BaseEvent):
             New filter state
     """
 
-    def __init__(self):
+    name = 'SourceFilterVisibilityChanged'
+    category = 'sources'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -735,7 +867,10 @@ class SourceFiltersReordered(BaseEvent):
             Ordered Filters list
     """
 
-    def __init__(self):
+    name = 'SourceFiltersReordered'
+    category = 'sources'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -753,7 +888,10 @@ Note: This event is only emitted when something actively controls the media/VLC 
             The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
     """
 
-    def __init__(self):
+    name = 'MediaPlaying'
+    category = 'media'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -771,7 +909,10 @@ Note: This event is only emitted when something actively controls the media/VLC 
             The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
     """
 
-    def __init__(self):
+    name = 'MediaPaused'
+    category = 'media'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -789,7 +930,10 @@ Note: This event is only emitted when something actively controls the media/VLC 
             The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
     """
 
-    def __init__(self):
+    name = 'MediaRestarted'
+    category = 'media'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -807,7 +951,10 @@ Note: This event is only emitted when something actively controls the media/VLC 
             The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
     """
 
-    def __init__(self):
+    name = 'MediaStopped'
+    category = 'media'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -825,7 +972,10 @@ Note: This event is only emitted when something actively controls the media/VLC 
             The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
     """
 
-    def __init__(self):
+    name = 'MediaNext'
+    category = 'media'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -843,7 +993,10 @@ Note: This event is only emitted when something actively controls the media/VLC 
             The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
     """
 
-    def __init__(self):
+    name = 'MediaPrevious'
+    category = 'media'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -861,7 +1014,10 @@ Note: These events are emitted by the OBS sources themselves. For example when t
             The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
     """
 
-    def __init__(self):
+    name = 'MediaStarted'
+    category = 'media'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -879,7 +1035,10 @@ Note: These events are emitted by the OBS sources themselves. For example when t
             The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
     """
 
-    def __init__(self):
+    name = 'MediaEnded'
+    category = 'media'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -895,7 +1054,10 @@ class SourceOrderChanged(BaseEvent):
             Ordered list of scene items
     """
 
-    def __init__(self):
+    name = 'SourceOrderChanged'
+    category = 'scene items'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -914,7 +1076,10 @@ class SceneItemAdded(BaseEvent):
             Scene item ID
     """
 
-    def __init__(self):
+    name = 'SceneItemAdded'
+    category = 'scene items'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -933,7 +1098,10 @@ class SceneItemRemoved(BaseEvent):
             Scene item ID
     """
 
-    def __init__(self):
+    name = 'SceneItemRemoved'
+    category = 'scene items'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -955,7 +1123,10 @@ class SceneItemVisibilityChanged(BaseEvent):
             New visibility state of the item.
     """
 
-    def __init__(self):
+    name = 'SceneItemVisibilityChanged'
+    category = 'scene items'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -977,7 +1148,10 @@ class SceneItemLockChanged(BaseEvent):
             New locked state of the item.
     """
 
-    def __init__(self):
+    name = 'SceneItemLockChanged'
+    category = 'scene items'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -999,7 +1173,10 @@ class SceneItemTransformChanged(BaseEvent):
             Scene item transform properties
     """
 
-    def __init__(self):
+    name = 'SceneItemTransformChanged'
+    category = 'scene items'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -1018,7 +1195,10 @@ class SceneItemSelected(BaseEvent):
             Name of the item in the scene.
     """
 
-    def __init__(self):
+    name = 'SceneItemSelected'
+    category = 'scene items'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -1037,7 +1217,10 @@ class SceneItemDeselected(BaseEvent):
             Name of the item in the scene.
     """
 
-    def __init__(self):
+    name = 'SceneItemDeselected'
+    category = 'scene items'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -1053,7 +1236,10 @@ class PreviewSceneChanged(BaseEvent):
             List of sources composing the scene. Same specification as [`GetCurrentScene`](#getcurrentscene).
     """
 
-    def __init__(self):
+    name = 'PreviewSceneChanged'
+    category = 'studio mode'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
@@ -1066,7 +1252,10 @@ class StudioModeSwitched(BaseEvent):
             The new enabled state of Studio Mode.
     """
 
-    def __init__(self):
+    name = 'StudioModeSwitched'
+    category = 'studio mode'
+
+    def __init__(self, payload=None):
         super().__init__()
 
 
