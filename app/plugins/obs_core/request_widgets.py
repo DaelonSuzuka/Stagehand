@@ -929,7 +929,7 @@ class SetVolumeWidget(QWidget):
         }
 
 
-class SetTracksWidget(QWidget):
+class SetAudioTracksWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
@@ -944,7 +944,7 @@ class SetTracksWidget(QWidget):
 
     def payload(self):
         payload = {}
-        payload['request-type'] = 'SetTracks'
+        payload['request-type'] = 'SetAudioTracks'
         payload['sourceName'] = self.sourceName.get_data()
         payload['track'] = self.track.get_data()
         payload['active'] = self.active.get_data()
@@ -970,7 +970,7 @@ class SetTracksWidget(QWidget):
         }
 
 
-class GetTracksWidget(QWidget):
+class GetAudioTracksWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
@@ -981,7 +981,7 @@ class GetTracksWidget(QWidget):
 
     def payload(self):
         payload = {}
-        payload['request-type'] = 'GetTracks'
+        payload['request-type'] = 'GetAudioTracks'
         payload['sourceName'] = self.sourceName.get_data()
         return payload
 
@@ -4285,6 +4285,102 @@ class SetTBarPositionWidget(QWidget):
         }
 
 
+class GetVirtualCamStatusWidget(QWidget):
+    def __init__(self, changed=None, parent=None):
+        super().__init__(parent=parent)
+        self.changed = changed
+
+        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+            layout.add(QLabel('[ request has no fields ]'))
+
+    def payload(self):
+        payload = {}
+        payload['request-type'] = 'GetVirtualCamStatus'
+        return payload
+
+    def refresh(self):
+        return
+
+    def set_data(self, data):
+        self._data = data
+
+    def get_data(self):
+        return {
+        }
+
+
+class StartStopVirtualCamWidget(QWidget):
+    def __init__(self, changed=None, parent=None):
+        super().__init__(parent=parent)
+        self.changed = changed
+
+        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+            layout.add(QLabel('[ request has no fields ]'))
+
+    def payload(self):
+        payload = {}
+        payload['request-type'] = 'StartStopVirtualCam'
+        return payload
+
+    def refresh(self):
+        return
+
+    def set_data(self, data):
+        self._data = data
+
+    def get_data(self):
+        return {
+        }
+
+
+class StartVirtualCamWidget(QWidget):
+    def __init__(self, changed=None, parent=None):
+        super().__init__(parent=parent)
+        self.changed = changed
+
+        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+            layout.add(QLabel('[ request has no fields ]'))
+
+    def payload(self):
+        payload = {}
+        payload['request-type'] = 'StartVirtualCam'
+        return payload
+
+    def refresh(self):
+        return
+
+    def set_data(self, data):
+        self._data = data
+
+    def get_data(self):
+        return {
+        }
+
+
+class StopVirtualCamWidget(QWidget):
+    def __init__(self, changed=None, parent=None):
+        super().__init__(parent=parent)
+        self.changed = changed
+
+        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+            layout.add(QLabel('[ request has no fields ]'))
+
+    def payload(self):
+        payload = {}
+        payload['request-type'] = 'StopVirtualCam'
+        return payload
+
+    def refresh(self):
+        return
+
+    def set_data(self, data):
+        self._data = data
+
+    def get_data(self):
+        return {
+        }
+
+
 
 widgets = {
     'GetVersion': GetVersionWidget,
@@ -4317,8 +4413,8 @@ widgets = {
     'GetSourceTypesList': GetSourceTypesListWidget,
     'GetVolume': GetVolumeWidget,
     'SetVolume': SetVolumeWidget,
-    'SetTracks': SetTracksWidget,
-    'GetTracks': GetTracksWidget,
+    'SetAudioTracks': SetAudioTracksWidget,
+    'GetAudioTracks': GetAudioTracksWidget,
     'GetMute': GetMuteWidget,
     'SetMute': SetMuteWidget,
     'ToggleMute': ToggleMuteWidget,
@@ -4416,4 +4512,8 @@ widgets = {
     'SetTransitionSettings': SetTransitionSettingsWidget,
     'ReleaseTBar': ReleaseTBarWidget,
     'SetTBarPosition': SetTBarPositionWidget,
+    'GetVirtualCamStatus': GetVirtualCamStatusWidget,
+    'StartStopVirtualCam': StartStopVirtualCamWidget,
+    'StartVirtualCam': StartVirtualCamWidget,
+    'StopVirtualCam': StopVirtualCamWidget,
 }

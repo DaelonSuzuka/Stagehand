@@ -382,6 +382,24 @@ class RecordingResumed(BaseEvent):
         super().__init__()
 
 
+class VirtualCamStarted(BaseEvent):
+    """Virtual cam started successfully.
+
+    """
+
+    def __init__(self):
+        super().__init__()
+
+
+class VirtualCamStopped(BaseEvent):
+    """Virtual cam stopped successfully.
+
+    """
+
+    def __init__(self):
+        super().__init__()
+
+
 class ReplayStarting(BaseEvent):
     """A request to start the replay buffer has been issued.
 
@@ -1078,6 +1096,8 @@ events = {
     'RecordingStopped': RecordingStopped(),
     'RecordingPaused': RecordingPaused(),
     'RecordingResumed': RecordingResumed(),
+    'VirtualCamStarted': VirtualCamStarted(),
+    'VirtualCamStopped': VirtualCamStopped(),
     'ReplayStarting': ReplayStarting(),
     'ReplayStarted': ReplayStarted(),
     'ReplayStopping': ReplayStopping(),

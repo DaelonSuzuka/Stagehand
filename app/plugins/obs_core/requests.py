@@ -1211,7 +1211,7 @@ class SetVolume(BaseRequest):
         return payload
 
 
-class SetTracks(BaseRequest):
+class SetAudioTracks(BaseRequest):
     """Changes whether an audio track is active for a source.
 
     :Arguments:
@@ -1226,7 +1226,7 @@ class SetTracks(BaseRequest):
             Whether audio track is active or not.
     """
 
-    name = 'SetTracks'
+    name = 'SetAudioTracks'
     category = 'sources'
     fields = [
         'sourceName',
@@ -1243,7 +1243,7 @@ class SetTracks(BaseRequest):
 
     def __call__(self, sourceName, track, active, cb=None):
         payload = {}
-        payload['request-type'] = 'SetTracks'
+        payload['request-type'] = 'SetAudioTracks'
         payload['sourceName'] = sourceName
         payload['track'] = track
         payload['active'] = active
@@ -1252,14 +1252,14 @@ class SetTracks(BaseRequest):
     @staticmethod
     def payload(sourceName, track, active):
         payload = {}
-        payload['request-type'] = 'SetTracks'
+        payload['request-type'] = 'SetAudioTracks'
         payload['sourceName'] = sourceName
         payload['track'] = track
         payload['active'] = active
         return payload
 
 
-class GetTracks(BaseRequest):
+class GetAudioTracks(BaseRequest):
     """Gets whether an audio track is active for a source.
 
     :Arguments:
@@ -1287,7 +1287,7 @@ class GetTracks(BaseRequest):
 
     """
 
-    name = 'GetTracks'
+    name = 'GetAudioTracks'
     category = 'sources'
     fields = [
         'sourceName',
@@ -1307,14 +1307,14 @@ class GetTracks(BaseRequest):
 
     def __call__(self, sourceName, cb=None):
         payload = {}
-        payload['request-type'] = 'GetTracks'
+        payload['request-type'] = 'GetAudioTracks'
         payload['sourceName'] = sourceName
         ObsSocket().send(payload, cb)
 
     @staticmethod
     def payload(sourceName):
         payload = {}
-        payload['request-type'] = 'GetTracks'
+        payload['request-type'] = 'GetAudioTracks'
         payload['sourceName'] = sourceName
         return payload
 
@@ -4674,7 +4674,7 @@ class ReorderSceneItems(BaseRequest):
             type: String (optional)
             Name of the scene to reorder (defaults to current).
         *items*
-            type: Array<Scene>
+            type: Array<Object>
             Ordered list of objects with name and/or id specified. Id preferred due to uniqueness per scene
     """
 
@@ -4846,6 +4846,9 @@ class GetStreamingStatus(BaseRequest):
         *recording_paused*
             type: boolean
             If recording is paused.
+        *virtualcam*
+            type: boolean
+            Current virtual cam status.
         *preview_only*
             type: boolean
             Always false. Retrocompatibility with OBSRemote.
@@ -4855,6 +4858,9 @@ class GetStreamingStatus(BaseRequest):
         *rec_timecode*
             type: String (optional)
             Time elapsed since recording started (only present if currently recording).
+        *virtualcam_timecode*
+            type: String (optional)
+            Time elapsed since virtual cam started (only present if virtual cam currently active).
     """
 
     name = 'GetStreamingStatus'
@@ -4867,9 +4873,11 @@ class GetStreamingStatus(BaseRequest):
         self.datain['streaming'] = None
         self.datain['recording'] = None
         self.datain['recording-paused'] = None
+        self.datain['virtualcam'] = None
         self.datain['preview-only'] = None
         self.datain['stream-timecode'] = None
         self.datain['rec-timecode'] = None
+        self.datain['virtualcam-timecode'] = None
 
     def __call__(self, cb=None):
         payload = {}
@@ -5665,6 +5673,114 @@ If your code needs to perform multiple successive T-Bar moves (e.g. : in an anim
         return payload
 
 
+class GetVirtualCamStatus(BaseRequest):
+    """Get current virtual cam status.
+
+    :Returns:
+        *isVirtualCam*
+            type: boolean
+            Current virtual camera status.
+        *virtualCamTimecode*
+            type: String (optional)
+            Time elapsed since virtual cam started (only present if virtual cam currently active).
+    """
+
+    name = 'GetVirtualCamStatus'
+    category = 'virtual cam'
+    fields = []
+
+    def __init__(self):
+        super().__init__()
+        self.datain = {}
+        self.datain['isVirtualCam'] = None
+        self.datain['virtualCamTimecode'] = None
+
+    def __call__(self, cb=None):
+        payload = {}
+        payload['request-type'] = 'GetVirtualCamStatus'
+        ObsSocket().send(payload, cb)
+
+    @staticmethod
+    def payload():
+        payload = {}
+        payload['request-type'] = 'GetVirtualCamStatus'
+        return payload
+
+
+class StartStopVirtualCam(BaseRequest):
+    """Toggle virtual cam on or off (depending on the current virtual cam state).
+
+    """
+
+    name = 'StartStopVirtualCam'
+    category = 'virtual cam'
+    fields = []
+
+    def __init__(self):
+        super().__init__()
+
+    def __call__(self, cb=None):
+        payload = {}
+        payload['request-type'] = 'StartStopVirtualCam'
+        ObsSocket().send(payload, cb)
+
+    @staticmethod
+    def payload():
+        payload = {}
+        payload['request-type'] = 'StartStopVirtualCam'
+        return payload
+
+
+class StartVirtualCam(BaseRequest):
+    """Start virtual cam.
+Will return an `error` if virtual cam is already active.
+
+    """
+
+    name = 'StartVirtualCam'
+    category = 'virtual cam'
+    fields = []
+
+    def __init__(self):
+        super().__init__()
+
+    def __call__(self, cb=None):
+        payload = {}
+        payload['request-type'] = 'StartVirtualCam'
+        ObsSocket().send(payload, cb)
+
+    @staticmethod
+    def payload():
+        payload = {}
+        payload['request-type'] = 'StartVirtualCam'
+        return payload
+
+
+class StopVirtualCam(BaseRequest):
+    """Stop virtual cam.
+Will return an `error` if virtual cam is not active.
+
+    """
+
+    name = 'StopVirtualCam'
+    category = 'virtual cam'
+    fields = []
+
+    def __init__(self):
+        super().__init__()
+
+    def __call__(self, cb=None):
+        payload = {}
+        payload['request-type'] = 'StopVirtualCam'
+        ObsSocket().send(payload, cb)
+
+    @staticmethod
+    def payload():
+        payload = {}
+        payload['request-type'] = 'StopVirtualCam'
+        return payload
+
+
 
 
 requests = {
@@ -5698,8 +5814,8 @@ requests = {
     'GetSourceTypesList': GetSourceTypesList(),
     'GetVolume': GetVolume(),
     'SetVolume': SetVolume(),
-    'SetTracks': SetTracks(),
-    'GetTracks': GetTracks(),
+    'SetAudioTracks': SetAudioTracks(),
+    'GetAudioTracks': GetAudioTracks(),
     'GetMute': GetMute(),
     'SetMute': SetMute(),
     'ToggleMute': ToggleMute(),
@@ -5797,4 +5913,8 @@ requests = {
     'SetTransitionSettings': SetTransitionSettings(),
     'ReleaseTBar': ReleaseTBar(),
     'SetTBarPosition': SetTBarPosition(),
+    'GetVirtualCamStatus': GetVirtualCamStatus(),
+    'StartStopVirtualCam': StartStopVirtualCam(),
+    'StartVirtualCam': StartVirtualCam(),
+    'StopVirtualCam': StopVirtualCam(),
 }
