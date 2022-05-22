@@ -104,6 +104,7 @@ class _ObsSocket(QObject):
         self.socket.open(self.url)
         
     def close(self):
+        self.we_closed = true
         self.socket.close()
 
     def _send(self, payload, callback=None):
