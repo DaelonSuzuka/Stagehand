@@ -54,3 +54,6 @@ class GodotStatusWidget(StagehandStatusBarItem):
 
     def send(self, payload, callback=None):
         self.socket.send(payload, callback)
+
+    def on_app_close(self):
+        self.close()
