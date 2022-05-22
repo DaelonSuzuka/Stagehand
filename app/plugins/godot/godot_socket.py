@@ -15,7 +15,7 @@ class _GodotSocket(QObject):
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
-        self.log = logging.getLogger('stagehand.' + __name__)
+        self.log = logging.getLogger(__name__)
 
         self.id = 0
         self.active = False
