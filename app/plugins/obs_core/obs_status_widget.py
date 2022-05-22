@@ -1,4 +1,5 @@
 from qtstrap import *
+from qtstrap.extras.command_palette import Command
 from .obs_socket import ObsSocket
 from stagehand.components import StagehandStatusBarItem, SidebarButton
 from pathlib import Path
@@ -21,6 +22,11 @@ class ObsStatusWidget(StagehandStatusBarItem):
 
         if self.connect_at_start.isChecked():
             self.open()
+
+        self.commands = [
+            Command("OBS: Connect websocket", triggered=self.open),
+            Command("OBS: Disconnect websocket", triggered=self.close),
+        ]
 
         with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
             layout.add(QLabel('OBS:'))

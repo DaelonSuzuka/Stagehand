@@ -64,6 +64,11 @@ class MainWindow(BaseMainWindow):
 
         self.setCentralWidget(self.stack)
 
+        self.commands = [
+            Command("Minimize to tray"),
+            Command("Quit Application", triggered=self.close, shortcut='Ctrl+Q'),
+        ]
+
         self.init_tray_stuff()
         self.init_statusbar()
         self.init_sidebar()

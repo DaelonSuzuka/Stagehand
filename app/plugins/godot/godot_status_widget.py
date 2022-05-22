@@ -1,4 +1,5 @@
 from qtstrap import *
+from qtstrap.extras.command_palette import Command
 from .godot_socket import GodotSocket
 from stagehand.components import StagehandStatusBarItem, SidebarButton
 from pathlib import Path
@@ -18,6 +19,11 @@ class GodotStatusWidget(StagehandStatusBarItem):
 
         if self.connect_at_start.isChecked():
             self.open()
+
+        self.commands = [
+            Command("Godot: Connect websocket", triggered=self.open),
+            Command("Godot: Disconnect websocket", triggered=self.close),
+        ]
 
         with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
             layout.add(QLabel('Godot:'))
