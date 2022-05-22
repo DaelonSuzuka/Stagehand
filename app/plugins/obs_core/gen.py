@@ -37,6 +37,10 @@ class Writer:
         self.indent = 4
         self.level = 0
 
+    def __iadd__(self, other):
+        self.line(other)
+        return self
+
     def raw(self, string):
         self.out(string)
 
@@ -127,98 +131,98 @@ def build_request(w, i, event):
     returns = collect_returns(i)
 
     # 
-    w.line(f"class {name}({classname[event]}):")
+    w += f"class {name}({classname[event]}):"
     with w:
-        w.line(f'"""{description}')
-        w.line()
+        w += f'"""{description}'
+        w += ''
         if fields:
-            w.line(":Arguments:")
+            w += ":Arguments:"
         for field in fields:
             with w:
-                w.line(f"*{clean_var(field['name'])}*")
+                w += f"*{clean_var(field['name'])}*"
                 with w:
-                    w.line(f"type: {field['type']}")
-                    w.line(f"{field['description']}")
+                    w += f"type: {field['type']}"
+                    w += f"{field['description']}"
 
         if returns:
-            w.line(":Returns:")
+            w += ":Returns:"
         for ret in returns:
             with w:
-                w.line(f"*{clean_var(ret['name'])}*")
+                w += f"*{clean_var(ret['name'])}*"
                 with w:
-                    w.line(f"type: {ret['type']}")
-                    w.line(f"{ret['description']}")
+                    w += f"type: {ret['type']}"
+                    w += f"{ret['description']}"
 
-        w.line('"""')
-        w.line()
+        w += '"""'
+        w += ''
 
         # info
-        w.line(f"name = '{name}'")
-        w.line(f"category = '{i['category']}'")
+        w += f"name = '{name}'"
+        w += f"category = '{i['category']}'"
         if fields:
-            w.line("fields = [")
+            w += "fields = ["
             for field in fields:
                 with w:
-                    w.line(f"'{field['name']}',")
-            w.line("]")
+                    w += f"'{field['name']}',"
+            w += "]"
         else:
-            w.line("fields = []")
-        w.line()
+            w += "fields = []"
+        w += ''
 
         # init method
-        w.line("def __init__(self):")
+        w += "def __init__(self):"
         with w:
-            w.line("super().__init__()")
+            w += "super().__init__()"
             # datain
             if returns:
-                w.line("self.datain = {}")
+                w += "self.datain = {}"
             for r in returns:
-                w.line(f"self.datain['{r['name']}'] = None")
+                w += f"self.datain['{r['name']}'] = None"
 
             # dataout
             if fields:
-                w.line("self.dataout = {}")
+                w += "self.dataout = {}"
             for a in fields:
                 if not a['optional']:
-                    w.line(f"self.dataout['{a['name']}'] = {None}")
+                    w += f"self.dataout['{a['name']}'] = {None}"
             for a in fields:
                 if a['optional']:
-                    w.line(f"self.dataout['{a['name']}'] = {None}")
-            w.line()
+                    w += f"self.dataout['{a['name']}'] = {None}"
+            w += ''
 
         # send the request by calling
-        w.line("def __call__({}):".format(
+        w += "def __call__({}):".format(
             ", ".join(
                 ['self']
                 + [clean_var(a['name']) for a in fields if not a['optional']]
                 + [clean_var(a['name']) + "=None" for a in fields if a['optional']]
                 + ['cb=None']
             )
-        ))
+        )
         with w:
-            w.line("payload = {}")
-            w.line(f"payload['request-type'] = '{i['name']}'")
+            w += "payload = {}"
+            w += f"payload['request-type'] = '{i['name']}'"
             for field in fields:
-                w.line(f"payload['{field['original_name']}'] = {field['name']}")
-            w.line("ObsSocket().send(payload, cb)")
-            w.line()
+                w += f"payload['{field['original_name']}'] = {field['name']}"
+            w += "ObsSocket().send(payload, cb)"
+            w += ''
 
         # build payload
-        w.line("@staticmethod")
-        w.line("def payload({}):".format(
+        w += "@staticmethod"
+        w += "def payload({}):".format(
             ", ".join(
                 [clean_var(a['name']) for a in fields if not a['optional']]
                 + [clean_var(a['name']) + "=None" for a in fields if a['optional']]
             )
-        ))
+        )
         with w:
-            w.line("payload = {}")
-            w.line(f"payload['request-type'] = '{i['name']}'")
+            w += "payload = {}"
+            w += f"payload['request-type'] = '{i['name']}'"
             for field in fields:
-                w.line(f"payload['{field['original_name']}'] = {field['name']}")
-            w.line("return payload")
-            w.line()
-        w.line()
+                w += f"payload['{field['original_name']}'] = {field['name']}"
+            w += "return payload"
+            w += ''
+        w += ''
 
 
 def build_event(w, i, event):
@@ -230,43 +234,43 @@ def build_event(w, i, event):
     returns = collect_returns(i)
 
     # 
-    w.line(f"class {name}({classname[event]}):")
+    w += f"class {name}({classname[event]}):"
     with w:
-        w.line(f'"""{description}')
-        w.line()
+        w += f'"""{description}'
+        w += ''
         if fields:
-            w.line(":Arguments:")
+            w += ":Arguments:"
         for field in fields:
             with w:
-                w.line(f"*{clean_var(field['name'])}*")
+                w += f"*{clean_var(field['name'])}*"
                 with w:
-                    w.line(f"type: {field['type']}")
-                    w.line(f"{field['description']}")
+                    w += f"type: {field['type']}"
+                    w += f"{field['description']}"
 
         if returns:
-            w.line(":Returns:")
+            w += ":Returns:"
         for ret in returns:
             with w:
-                w.line(f"*{clean_var(ret['name'])}*")
+                w += f"*{clean_var(ret['name'])}*"
                 with w:
-                    w.line(f"type: {ret['type']}")
-                    w.line(f"{ret['description']}")
+                    w += f"type: {ret['type']}"
+                    w += f"{ret['description']}"
 
-        w.line('"""')
+        w += '"""'
 
-        w.line() # init method
-        w.line("def __init__(self):")
-        # w.line("def __init__({}):".format(
+        w += '' # init method
+        w += "def __init__(self):"
+        # w += "def __init__({}:".format(
         #     ", ".join(
         #         ["self"]
         #         + [clean_var(a['name']) for a in fields if not a['optional']]
         #         + [clean_var(a['name']) + "=None" for a in fields if a['optional']]
         #     )
-        # ))
+        # )
         with w:
-            w.line("super().__init__()")
-        w.line()
-        w.line()
+            w += "super().__init__()"
+        w += ''
+        w += ''
 
 
 def build_widget(w, i, event):
@@ -278,73 +282,73 @@ def build_widget(w, i, event):
     returns = collect_returns(i)
 
     # 
-    w.line(f"class {name}Widget(QWidget):")
+    w += f"class {name}Widget(QWidget):"
     with w:
         def field_widget(field):
-            w = "UnimplementedField('[field not implemented]')"
+            line = "UnimplementedField('[field not implemented]')"
 
             if field['name'] in ['sourceName', 'source']:
-                w = f"SourceSelector(changed, parent=self)"
+                line = f"SourceSelector(changed, parent=self)"
             elif field['name'] in ['sceneName', 'scene_name']:
-                w = f"SceneSelector(changed, parent=self)"
+                line = f"SceneSelector(changed, parent=self)"
             elif field['name'] == 'filterName':
-                w = f"FilterSelector(changed, self.sourceName, parent=self)"
+                line = f"FilterSelector(changed, self.sourceName, parent=self)"
             elif field['type'] == 'boolean' or 'Bool' in field['name'] or 'Enabled' in field['name']:
-                w = f"BoolSelector(changed, parent=self)"
+                line = f"BoolSelector(changed, parent=self)"
             else:
                 if name not in unimplemented_fields:
                     unimplemented_fields[name] = []
                 unimplemented_fields[name].append(field)
 
-            return w
+            return line
 
-        w.line("def __init__(self, changed=None, parent=None):")
+        w += "def __init__(self, changed=None, parent=None):"
         with w:
-            w.line("super().__init__(parent=parent)")
-            w.line("self.changed = changed")
+            w += "super().__init__(parent=parent)"
+            w += "self.changed = changed"
             for field in fields:
-                w.line(f"self.{field['name']} = {field_widget(field)}")
-            w.line()
-            w.line("with CHBoxLayout(self, margins=(0,0,0,0)) as layout:")
+                w += f"self.{field['name']} = {field_widget(field)}"
+            w += ''
+            w += "with CHBoxLayout(self, margins=(0,0,0,0)) as layout:"
             with w:
                 if fields:
                     for field in fields:
-                        w.line(f"layout.add(self.{field['name']})")
+                        w += f"layout.add(self.{field['name']})"
                 else:
-                    w.line("layout.add(QLabel('[ request has no fields ]'))")
-        w.line()
+                    w += "layout.add(QLabel('[ request has no fields ]'))"
+        w += ''
 
-        w.line("def payload(self):")
+        w += "def payload(self):"
         with w:
-            w.line("payload = {}")
-            w.line(f"payload['request-type'] = '{i['name']}'")
+            w += "payload = {}"
+            w += f"payload['request-type'] = '{i['name']}'"
             for field in fields:
-                w.line(f"payload['{field['original_name']}'] = self.{field['name']}.get_data()")
-            w.line("return payload")
-        w.line()
+                w += f"payload['{field['original_name']}'] = self.{field['name']}.get_data()"
+            w += "return payload"
+        w += ''
 
-        w.line("def refresh(self):")
+        w += "def refresh(self):"
         with w:
             for field in fields:
-                w.line(f"self.{field['name']}.refresh()")
-            w.line("return")
-        w.line()
+                w += f"self.{field['name']}.refresh()"
+            w += "return"
+        w += ''
         
-        w.line("def set_data(self, data):")
+        w += "def set_data(self, data):"
         with w:
-            w.line("self._data = data")
+            w += "self._data = data"
             for field in fields:
-                w.line(f"self.{field['name']}.set_data(data['{field['name']}']) ")
-        w.line()
+                w += f"self.{field['name']}.set_data(data['{field['name']}']) "
+        w += ''
 
-        w.line("def get_data(self):")
+        w += "def get_data(self):"
         with w:
-            w.line("return {")
+            w += "return {"
             with w:
                 for field in fields:
-                    w.line(f"'{field['name']}': self.{field['name']}.get_data(),")
-            w.line("}")
-        w.line()
+                    w += f"'{field['name']}': self.{field['name']}.get_data(),"
+            w += "}"
+        w += ''
 
 
 def generate_classes():
@@ -361,18 +365,18 @@ def generate_classes():
     with open(Path(__file__).parent / 'requests.py', 'w') as f:
         w = Writer(f.write)
 
-        w.line("from stagehand.sandbox import Sandbox")
-        w.line("from .obs_socket import ObsSocket")
-        w.line()
-        w.line()
-        
-        w.line(f'class {classname[event]}:')
+        w += "from stagehand.sandbox import Sandbox"
+        w += "from .obs_socket import ObsSocket"
+        w += ''
+        w += ''
+
+        w += f'class {classname[event]}:'
         with w:
-            w.line('def __init__(self):')
+            w += 'def __init__(self):'
             with w:
-                w.line('pass')
-        w.line()
-        w.line()
+                w += 'pass'
+        w += ''
+        w += ''
 
         classes = []
         for sec in data[event]:
@@ -380,53 +384,53 @@ def generate_classes():
                 build_request(w, i, event)
                 classes.append(i['name'])
 
-        w.line()
-        w.line()
-        w.line("requests = {")
+        w += ''
+        w += ''
+        w += "requests = {"
         with w:
             for c in classes:
-                w.line(f"'{c}': {c}(),")
-        w.line("}")
+                w += f"'{c}': {c}(),"
+        w += "}"
 
     event = 'requests'
     with open(Path(__file__).parent / 'request_widgets.py', 'w') as f:
         w = Writer(f.write)
 
-        w.line("from .base_classes import *")
-        w.line("from qtstrap import *")
-        w.line("from stagehand.sandbox import Sandbox")
-        w.line()
-        w.line()
+        w += "from .base_classes import *"
+        w += "from qtstrap import *"
+        w += "from stagehand.sandbox import Sandbox"
+        w += ''
+        w += ''
 
         classes = []
         for sec in data[event]:
             for i in data[event][sec]:
                 build_widget(w, i, event)
                 classes.append(i['name'])
-                w.line()
+                w += ''
 
-        w.line()
-        w.line("widgets = {")
+        w += ''
+        w += "widgets = {"
         with w:
             for c in classes:
-                w.line(f"'{c}': {c}Widget,")
-        w.line("}")
+                w += f"'{c}': {c}Widget,"
+        w += "}"
 
     event = 'events'
     with open(Path(__file__).parent / 'events.py', 'w') as f:
         w = Writer(f.write)
 
-        w.line("from stagehand.sandbox import Sandbox")
-        w.line()
-        w.line()
+        w += "from stagehand.sandbox import Sandbox"
+        w += ''
+        w += ''
         
-        w.line(f'class {classname[event]}:')
+        w += f'class {classname[event]}:'
         with w:
-            w.line('def __init__(self):')
+            w += 'def __init__(self):'
             with w:
-                w.line('pass')
-        w.line()
-        w.line()
+                w += 'pass'
+        w += ''
+        w += ''
 
         classes = []
         for sec in data[event]:
@@ -434,13 +438,13 @@ def generate_classes():
                 build_event(w, i, event)
                 classes.append(i['name'])
 
-        w.line()
-        w.line()
-        w.line("events = {")
+        w += ''
+        w += ''
+        w += "events = {"
         with w:
             for c in classes:
-                w.line(f"'{c}': {c}(),")
-        w.line("}")
+                w += f"'{c}': {c}(),"
+        w += "}"
 
     print("API classes have been generated.")
 
