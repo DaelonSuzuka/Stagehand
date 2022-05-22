@@ -1,5 +1,5 @@
 from qtstrap import *
-from qtstrap.extras.log_monitor import LogMonitorDockWidget
+from qtstrap.extras.log_monitor import LogMonitorDropdown
 from qtstrap.extras.command_palette import CommandPalette, Command
 from codex import DeviceControlsDockWidget
 from .sandbox import Sandbox
@@ -41,7 +41,7 @@ class MainWindow(BaseMainWindow):
 
         self.about = AboutDialog(self)
         self.device_controls = DeviceControlsDockWidget(self)
-        self.log_monitor = LogMonitorDockWidget(self)
+        self.log_monitor = LogMonitorDropdown(self)
         self.command_palette = CommandPalette(self)
         
         self.sandbox = Sandbox(self)
