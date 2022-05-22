@@ -4,6 +4,7 @@ import json
 import base64
 import hashlib
 import queue
+import logging
 
 
 class _ObsSocket(QObject):
@@ -15,6 +16,8 @@ class _ObsSocket(QObject):
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
+        self.log = logging.getLogger('stagehand.' + __name__)
+
         self.id = 0
         self.active = False
         self.we_closed = False
@@ -101,16 +104,19 @@ class _ObsSocket(QObject):
 
     def open(self, url, port, password=''):
         self.url = QUrl(f'ws://{url}:{port}')
+        self.log.info(f"Attempting to connect to OBS at: {self.url}")
         self.password = password
         self.socket.open(self.url)
         
     def close(self):
-        self.we_closed = true
+        self.log.info(f"Closing socket")
         self.socket.close()
 
     def _send(self, payload, callback=None):
         payload['message-id'] = str(self.id)
         self.history[self.id] = payload
+
+        self.log.info(f"TX: {payload}")
 
         if callback:
             self.callbacks[str(self.id)] = callback
@@ -134,6 +140,8 @@ class _ObsSocket(QObject):
         self.raw_message_received.emit(message)
         msg = json.loads(message)
         self.message_received.emit(msg)
+
+        self.log.info(f"RX: {message}")
 
         # process callbacks
         if 'message-id' in msg:

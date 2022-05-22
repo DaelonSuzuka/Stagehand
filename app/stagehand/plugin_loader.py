@@ -6,6 +6,7 @@ import sys
 import os
 import codex
 import zipimport
+import logging
 
 
 plugin_folder = OPTIONS.APPLICATION_PATH / 'plugins'
@@ -16,6 +17,8 @@ class Plugins():
     _plugins = {}
 
     def __init__(self):
+        self.log = logging.getLogger(__name__)
+
         def is_plugin(p):
             return Path(Path(p) / 'plugin.json').exists()
 
@@ -53,5 +56,7 @@ class Plugins():
             try:
                 module = importlib.import_module(plugin_name)
                 self._plugins[plugin_name] = module
+                self.log.debug(f'Successfully loaded plugin: {plugin_name}')
             except Exception as e:
                 print(e)
+                self.log.error(f'Failed loading plugin: {plugin_name}')
