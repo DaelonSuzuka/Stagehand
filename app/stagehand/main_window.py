@@ -1,4 +1,6 @@
 from qtstrap import *
+from qtstrap.extras.log_monitor import LogMonitorDockWidget
+from qtstrap.extras.command_palette import CommandPalette, Command
 from codex import DeviceControlsDockWidget
 from .sandbox import Sandbox
 import qtawesome as qta
@@ -39,6 +41,8 @@ class MainWindow(BaseMainWindow):
 
         self.about = AboutDialog(self)
         self.device_controls = DeviceControlsDockWidget(self)
+        self.log_monitor = LogMonitorDockWidget(self)
+        self.command_palette = CommandPalette(self)
         
         self.sandbox = Sandbox(self)
         if not self.restoreDockWidget(self.sandbox.tools_dock):
@@ -105,9 +109,11 @@ class MainWindow(BaseMainWindow):
         settings_btn.setPopupMode(QToolButton.InstantPopup)
 
         # settings popup menu
+        menu.addAction(self.command_palette.action)
         menu.addSeparator()
         menu.addAction(self.sandbox.tools_dock.toggleViewAction())
         menu.addAction(self.device_controls.toggleViewAction())
+        menu.addAction(self.log_monitor.toggleViewAction())
 
         menu.addSeparator()
         menu.addMenu(self.font_menu)
