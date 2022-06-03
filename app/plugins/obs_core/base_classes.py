@@ -1,5 +1,5 @@
 from qtstrap import *
-from shiboken6 import isValid
+from qtpy.shiboken import isValid
 from stagehand.sandbox import Sandbox
 from .requests import requests
 
