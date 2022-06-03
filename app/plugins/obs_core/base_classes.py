@@ -30,10 +30,9 @@ class SceneSelector(QComboBox):
                 return
             scenes = [s['name'] for s in msg['scenes']]
             value = self.currentText()
-            self.blockSignals(True)
-            self.clear()
-            self.addItems(scenes)
-            self.blockSignals(False)
+            with SignalBlocker(self):
+                self.clear()
+                self.addItems(scenes)
             if value in scenes:
                 self.setCurrentText(value)
             self.changed()
@@ -64,10 +63,9 @@ class SourceSelector(QComboBox):
                 return
             sources = [s['name'] for s in msg['sources']]
             value = self.currentText()
-            self.blockSignals(True)
-            self.clear()
-            self.addItems(sources)
-            self.blockSignals(False)
+            with SignalBlocker(self):
+                self.clear()
+                self.addItems(sources)
             if value in sources:
                 self.setCurrentText(value)
             self.changed()
@@ -101,10 +99,9 @@ class FilterSelector(QComboBox):
                     return
                 filters = [s['name'] for s in msg['filters']]
                 value = self.currentText()
-                self.blockSignals(True)
-                self.clear()
-                self.addItems(filters)
-                self.blockSignals(False)
+                with SignalBlocker(self):
+                    self.clear()
+                    self.addItems(filters)
                 if value in filters:
                     self.setCurrentText(value)
                 self.changed()
