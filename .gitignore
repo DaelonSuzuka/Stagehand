@@ -8,7 +8,7 @@ output
 *.pyo
 
 # vs code project settings folder
-.vscode
+# .vscode
 
 # pyinstaller output
 build
