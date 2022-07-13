@@ -28,7 +28,7 @@ a = Analysis(
         'numpy',
         'sounddevice',
         'flask',
-        'PySide6.QtWebSockets',
+        'qtpy.QtWebSockets',
     ],
     hookspath=[],
     runtime_hooks=[],
