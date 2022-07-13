@@ -22,7 +22,7 @@ a = Analysis(
     binaries=[],
     datas=[
         ('app/resources', 'resources'),
-        ('app/plugins/*.zip', 'plugins'),
+        ('app/plugins', 'plugins'),
     ],
     hiddenimports=[
         'numpy',
@@ -51,7 +51,7 @@ exe = EXE(
     [],
     exclude_binaries=True,
     name=app_name,
-    debug=False,
+    debug=True,
     bootloader_ignore_signals=False,
     strip=False,
     upx=False,
