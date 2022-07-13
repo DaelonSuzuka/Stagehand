@@ -43,8 +43,12 @@ class Plugins():
         if plugin_name not in self._plugins:
             sys.path.append(plugin)
             
-            module = importlib.import_module(plugin_name)
-            self._plugins[plugin_name] = module
+            try:
+                module = importlib.import_module(plugin_name)
+                self._plugins[plugin_name] = module
+                self.log.debug(f'Successfully loaded plugin: {plugin_name}')
+            except Exception as e:
+                self.log.error(f'Failed loading plugin: {plugin_name}', exc_info=True)
 
     def load_loose_plugin(self, plugin):
         plugin_name = plugin.relative_to(OPTIONS.APPLICATION_PATH).as_posix()
@@ -58,5 +62,4 @@ class Plugins():
                 self._plugins[plugin_name] = module
                 self.log.debug(f'Successfully loaded plugin: {plugin_name}')
             except Exception as e:
-                print(e)
-                self.log.error(f'Failed loading plugin: {plugin_name}')
+                self.log.error(f'Failed loading plugin: {plugin_name}', exc_info=True)
