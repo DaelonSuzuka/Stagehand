@@ -26,8 +26,8 @@ class Plugins():
         for plugin in plugins:
             self.load_loose_plugin(plugin)
 
-        for plugin in plugin_folder.rglob('*.zip'):
-            self.load_zip_plugin(plugin)
+        # for plugin in plugin_folder.rglob('*.zip'):
+        #     self.load_zip_plugin(plugin)
 
     def __getattr__(self, name):
         return self._plugins['plugins.' + name]
