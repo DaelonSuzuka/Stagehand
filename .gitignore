@@ -27,4 +27,4 @@ debug.log
 settings.ini
 
 # zipped plugins
-app/plugins/*.zip
+app/plugins/**/*.zip
