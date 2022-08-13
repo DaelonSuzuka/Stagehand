@@ -6,7 +6,7 @@ Stagehand is a collection of tools that help automate and streamline your OBS ex
 
 Stagehand is developed primarily on Windows 10, and has been lightly tested on Ubuntu 20.04. In theory, there's no reason it won't also work on MacOS, but I don't currently have plans to support Macs. 
 
-## Binary releases:
+## Latest development build:
 
 - [windows-installer](https://nightly.link/DaelonSuzuka/Stagehand/workflows/release.yaml/master/windows-installer.zip)
 - [windows-portable](https://nightly.link/DaelonSuzuka/Stagehand/workflows/release.yaml/master/windows-portable.zip)
