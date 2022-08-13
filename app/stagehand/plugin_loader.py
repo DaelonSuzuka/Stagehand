@@ -36,6 +36,7 @@ class Plugins():
         return key in self._plugins
 
     def load_zip_plugin(self, plugin):
+        self.log.info(f'Attemping to load zip plugin: {plugin}')
         plugin_name = plugin.relative_to(OPTIONS.APPLICATION_PATH).as_posix()
         plugin_name = plugin_name.replace('/','.')
         plugin_name = plugin_name[:-len('.zip')]
@@ -51,6 +52,7 @@ class Plugins():
                 self.log.error(f'Failed loading plugin: {plugin_name}', exc_info=True)
 
     def load_loose_plugin(self, plugin):
+        self.log.info(f'Attemping to load loose plugin: {plugin}')
         plugin_name = plugin.relative_to(OPTIONS.APPLICATION_PATH).as_posix()
         plugin_name = plugin_name.replace('/','.')
 
