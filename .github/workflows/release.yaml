@@ -5,19 +5,14 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup Python
-        uses: actions/setup-python@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.9'
           architecture: 'x64'
           cache: 'pip'
-        run: pip install -r requirements.txt
-
-      - name: Build application
-        run: |
+      - run: pip install -r requirements.txt
+      - run: |
           make bundle
           make zip
           make installer
