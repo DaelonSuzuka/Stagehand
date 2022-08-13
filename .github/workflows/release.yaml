@@ -17,7 +17,7 @@ jobs:
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip     # install pip
-          python3 -m pip install -r requirement.txt
+          python3 -m pip install -r requirements.txt
 
       - name: Build application
         run: |
