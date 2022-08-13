@@ -2,6 +2,26 @@
 
 Stagehand is a collection of tools that help automate and streamline your OBS experience.
 
+# Installation
+
+Stagehand is developed primarily on Windows 10, and has been lightly tested on Ubuntu 20.04. In theory, there's no reason it won't also work on MacOS, but I don't currently have plans to support Macs. 
+
+## Binary releases:
+
+- [windows-installer](https://nightly.link/DaelonSuzuka/Stagehand/workflows/release.yaml/master/windows-installer.zip)
+- [windows-portable](https://nightly.link/DaelonSuzuka/Stagehand/workflows/release.yaml/master/windows-portable.zip)
+- [linux-portable](https://nightly.link/DaelonSuzuka/Stagehand/workflows/release.yaml/master/linux-portable.zip)
+
+Stagehand is also perfectly happy to execute from source. This requires git, Python 3, and GNU Make to be installed(Ubuntu systems also need the `python3-venv` package, for some reason). Simply clone the repo and run it as follows:
+
+```bash
+git clone git@github.com:DaelonSuzuka/Stagehand.git
+cd Stagehand
+make run
+```
+
+Ubuntu 20.04 (and presumably other distros) don't have portaudio installed by default. The python audio library I use(`sounddevice`) includes a copy of portaudio on Windows, but on Linux (and Mac), you'll have to install portaudio using your package manager.
+
 # Action System
 
 The core idea of Stagehand is `actions`. An action has 3 parts: `trigger`, `filter`, and `output`. A `trigger` is some external event that causes an action to activate. `Filters` can prevent an action from activating based on some condition. `Output` is what the action actually does.
@@ -41,20 +61,6 @@ It's possible that I'm the only person with this problem, but my streaming/video
 Stagehand's Microphone Voter solves this by monitoring my microphone audio, calculating which mic is currently the loudest, and sending commands to OBS to mute/unmute the proper mics. 
 
 I can even use this in discord/zoom/whatever calls by using OBS to route my audio devices to the input of a VoiceMeeter Virtual Audio Cable, and using the output of that Virtual Audio Cable as my 'microphone' in discord.
-
-# Installation
-
-Stagehand is developed primarily on Windows 10, and has been lightly tested on Ubuntu 20.04. In theory, there's no reason it won't also work on MacOS, but I don't currently have plans to support Macs. 
-
-Binary releases are coming soon. Stagehand is also perfectly happy to execute from source. This requires git, Python 3, and GNU Make to be installed(Ubuntu systems also need the `python3-venv` package, for some reason). Simply clone the repo and run it as follows:
-
-```bash
-git clone git@github.com:DaelonSuzuka/Stagehand.git
-cd Stagehand
-make run
-```
-
-Ubuntu 20.04 (and presumably other distros) don't have portaudio installed by default. The python audio library I use(`sounddevice`) includes a copy of portaudio on Windows, but on Linux (and Mac), you'll have to install portaudio using your package manager.
 
 # Roadmap
 
