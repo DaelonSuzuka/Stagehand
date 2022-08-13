@@ -7,7 +7,9 @@ MAKEFLAGS += -s
 
 # **************************************************************************** #
 
-APP_INFO = app/app_info.py
+APP_FOLDER := app
+APP_MAIN = $(APP_FOLDER)/main.py
+APP_INFO := $(APP_FOLDER)/app_info.py
 
 # load the project variables
 ifneq (,$(wildcard $(APP_INFO)))
@@ -30,11 +32,11 @@ endif
 
 # run the application
 run: venv
-	$(VENV_PYTHON) app/main.py
+	$(VENV_PYTHON) $(APP_MAIN)
 
 # run the application in pdb
 debug: venv
-	$(VENV_PYTHON) -m pdb app/main.py
+	$(VENV_PYTHON) -m pdb $(APP_MAIN)
 
 # open the qtawesome icon browser
 qta: venv
