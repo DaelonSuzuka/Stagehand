@@ -13,7 +13,7 @@ class GodotEvalAction(QWidget, ActionItem):
         self.owner = owner
         self.changed = changed
 
-        self.eval = CodeLine(changed)
+        self.eval = CodeLine(changed=changed)
         
         with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
             layout.add(self.eval)
