@@ -74,8 +74,9 @@ class MainWindow(BaseMainWindow):
         self.init_sidebar()
 
         # restore active widget
-        prev_widget = QSettings().value('mainwindow/active_widget', 0)
-        self.stack.widget(int(prev_widget)).sidebar_button.click()
+        prev_widget = int(QSettings().value('mainwindow/active_widget', 0))
+        if prev_widget < self.stack.count():
+            self.stack.widget(prev_widget).sidebar_button.click()
 
         qApp.updater.update_found.connect(self.display_update_available)
 
