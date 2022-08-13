@@ -5,6 +5,7 @@ on:
       - master
     paths-ignore:
       - '**/README.md'
+      - 'images/*'
 
 jobs:
   build-windows:
