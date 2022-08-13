@@ -17,6 +17,7 @@ numpy==1.22.3
 packaging==21.3
 pefile==2021.9.3
 prompt-toolkit==1.0.14
+psutil==5.9.1
 pycparser==2.21
 pygame==2.1.2
 Pygments==2.12.0
