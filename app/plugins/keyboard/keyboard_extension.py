@@ -1,6 +1,6 @@
 from stagehand.sandbox import SandboxExtension
-from .packages.pynput.keyboard import Key, Controller
-from .packages.pynput import mouse
+from .pynput.keyboard import Key, Controller
+from .pynput import mouse
 
 
 class KeyboardExtension(SandboxExtension):
