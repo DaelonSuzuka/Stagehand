@@ -1,4 +1,4 @@
-from .packages import psutil
+import psutil
 from ctypes import wintypes, windll, create_unicode_buffer, byref
 import ctypes
  
