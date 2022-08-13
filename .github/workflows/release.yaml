@@ -13,13 +13,19 @@ jobs:
         with:
           python-version: '3.9'
           architecture: 'x64'
-
-      - name: Install dependencies
-        run: |
-          python3 -m pip install --upgrade pip     # install pip
-          python3 -m pip install -r requirements.txt
+          cache: 'pip'
+        run: pip install -r requirements.txt
 
       - name: Build application
         run: |
           make bundle
+          make zip
           make installer
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: build-artifact
+          path: |
+            dist/installer/*.exe
+            dist/*.zip
