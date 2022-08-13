@@ -1,5 +1,5 @@
 AppName = "Stagehand"
-AppVersion = "0.3"
+AppVersion = "0.4"
 AppPublisher = "DaelonCo"
 AppExeName = "Stagehand.exe"
 AppIconName = "stagehand.ico"
