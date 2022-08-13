@@ -30,7 +30,7 @@ PySide6-Addons==6.3.0
 PySide6-Essentials==6.3.0
 pywin32-ctypes==0.2.0
 QtAwesome==1.1.1
-QtPy @ git+https://github.com/spyder-ide/qtpy.git@9588c9ca38a7ace8f66431f03e921100be858ede
+QtPy==2.2.0
 qtstrap==0.1.9
 regex==2022.4.24
 shiboken6==6.3.0
