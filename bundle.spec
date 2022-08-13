@@ -22,13 +22,15 @@ a = Analysis(
     binaries=[],
     datas=[
         ('app/resources', 'resources'),
-        ('app/plugins', 'plugins'),
+        ('app/plugins/*.zip', 'plugins'),
+        ('app/plugins/devices/*.zip', 'plugins/devices'),
     ],
     hiddenimports=[
         'numpy',
         'sounddevice',
         'flask',
         'qtpy.QtWebSockets',
+        'qtpy.shiboken',
     ],
     hookspath=[],
     runtime_hooks=[],
