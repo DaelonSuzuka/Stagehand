@@ -4,12 +4,11 @@ from codex import SubscriptionManager
 
 
 @SubscriptionManager.subscribe
-class Stomp5Trigger(QWidget, TriggerItem):
-    name = 'Stomp 5'
-    triggered = Signal()
+class Stomp4Trigger(StagehandDeviceTrigger, TriggerItem):
+    name = 'Stomp 4'
 
-    def __init__(self, changed, run, owner=None):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         self.owner = owner
         self.triggered.connect(run)
@@ -29,7 +28,6 @@ class Stomp5Trigger(QWidget, TriggerItem):
             '2 Down', '2 Up',
             '3 Down', '3 Up',
             '4 Down', '4 Up',
-            '5 Down', '5 Up',
         ])
         self.signal.currentIndexChanged.connect(changed)
 

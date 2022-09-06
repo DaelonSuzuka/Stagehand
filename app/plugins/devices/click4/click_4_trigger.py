@@ -4,16 +4,15 @@ from codex import SubscriptionManager
 
 
 @SubscriptionManager.subscribe
-class Stomp5Trigger(QWidget, TriggerItem):
-    name = 'Stomp 5'
-    triggered = Signal()
+class Click4Trigger(StagehandDeviceTrigger, TriggerItem):
+    name = 'Click 4'
 
-    def __init__(self, changed, run, owner=None):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         self.owner = owner
         self.triggered.connect(run)
-        self.stomps = {}
+        self.clicks = {}
         self.adapter = None
         self.current_guid = None
 
@@ -29,7 +28,6 @@ class Stomp5Trigger(QWidget, TriggerItem):
             '2 Down', '2 Up',
             '3 Down', '3 Up',
             '4 Down', '4 Up',
-            '5 Down', '5 Up',
         ])
         self.signal.currentIndexChanged.connect(changed)
 
@@ -38,11 +36,11 @@ class Stomp5Trigger(QWidget, TriggerItem):
             layout.add(self.signal)
     
     def device_changed(self, guid):
-        if guid in self.stomps:
+        if guid in self.clicks:
             if self.adapter:
                 self.adapter.kill()
                 self.adapter.deleteLater()
-            self.adapter = self.stomps[guid].signals.adapter()
+            self.adapter = self.clicks[guid].signals.adapter()
             self.adapter.button_pressed.connect(self.button_pressed)
             self.adapter.button_released.connect(self.button_released)
 
@@ -60,7 +58,7 @@ class Stomp5Trigger(QWidget, TriggerItem):
         with SignalBlocker(self.device):
             selected = self.device.currentText()
             self.device.clear()
-            items = sorted(self.stomps.keys())
+            items = sorted(self.clicks.keys())
             if selected:
                 if selected not in items:
                     items.insert(0, selected)
@@ -71,7 +69,7 @@ class Stomp5Trigger(QWidget, TriggerItem):
     def device_added(self, device):
         if device.profile_name == self.name:
             # the full GUID is way too long, so truncate it at six characters
-            self.stomps[device.guid[-6:]] = device
+            self.clicks[device.guid[-6:]] = device
             self.refresh_devices()
             self.device_changed(self.device.currentText())
 
