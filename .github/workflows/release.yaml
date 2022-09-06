@@ -18,23 +18,20 @@ jobs:
           architecture: 'x64'
           cache: 'pip'
       - run: pip install -r requirements.txt
-      - run: |
-          make bundle
-          make installer
+      - run: make bundle
+      - run: make installer
 
       - name: Upload installer
         uses: actions/upload-artifact@v3.1.0
         with:
           name: windows-installer
-          path: |
-            dist/installer/*.exe
+          path: dist/installer/*.exe
 
       - name: Upload zip
         uses: actions/upload-artifact@v3.1.0
         with:
           name: windows-portable
-          path: |
-            dist/Stagehand
+          path: dist/Stagehand
 
   build-linux:
     runs-on: ubuntu-latest
@@ -46,12 +43,10 @@ jobs:
           architecture: 'x64'
           cache: 'pip'
       - run: pip install -r requirements.txt
-      - run: |
-          make bundle
+      - run: make bundle
 
       - name: Upload zip
         uses: actions/upload-artifact@v3.1.0
         with:
           name: linux-portable
-          path: |
-            dist/Stagehand
+          path: dist/Stagehand
