@@ -14,7 +14,7 @@ plugin_folder = OPTIONS.APPLICATION_PATH / 'plugins'
 
 
 @singleton
-class Plugins():
+class Plugins:
     _plugins = {}
 
     def __init__(self):
@@ -32,19 +32,19 @@ class Plugins():
 
     def __getattr__(self, name):
         return self._plugins['plugins.' + name]
-    
+
     def __contains__(self, key):
         return key in self._plugins
 
     def load_zip_plugin(self, plugin):
         plugin_name = plugin.relative_to(OPTIONS.APPLICATION_PATH).as_posix()
-        plugin_name = plugin_name.replace('/','.')
-        plugin_name = plugin_name[:-len('.zip')]
+        plugin_name = plugin_name.replace('/', '.')
+        plugin_name = plugin_name[: -len('.zip')]
 
         if plugin_name not in self._plugins:
             self.log.info(f'Attemping to load zip plugin: {plugin}')
             sys.path.insert(0, plugin)
-            
+
             try:
                 importer = zipimporter(plugin)
                 module = importer.load_module(plugin_name)
@@ -55,7 +55,7 @@ class Plugins():
 
     def load_loose_plugin(self, plugin):
         plugin_name = plugin.relative_to(OPTIONS.APPLICATION_PATH).as_posix()
-        plugin_name = plugin_name.replace('/','.')
+        plugin_name = plugin_name.replace('/', '.')
 
         if plugin_name not in self._plugins:
             self.log.info(f'Attemping to load loose plugin: {plugin}')
