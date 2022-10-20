@@ -4,7 +4,7 @@ from codex import SubscriptionManager
 
 
 @SubscriptionManager.subscribe
-class Stomp4Trigger(StagehandDeviceTrigger, TriggerItem):
+class Stomp4Trigger(QWidget, TriggerItem):
     name = 'Stomp 4'
 
     def __init__(self, *args, **kwargs):

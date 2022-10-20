@@ -4,7 +4,7 @@ from codex import SubscriptionManager
 
 
 @SubscriptionManager.subscribe
-class Click4Trigger(StagehandDeviceTrigger, TriggerItem):
+class Click4Trigger(QWidget, TriggerItem):
     name = 'Click 4'
 
     def __init__(self, *args, **kwargs):
