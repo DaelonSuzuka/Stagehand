@@ -53,16 +53,9 @@ class MainWindow(BaseMainWindow):
         self.load_settings()
 
         self.stack = QStackedWidget()
+        self.setCentralWidget(self.stack)
 
         self.widgets = []
-        for widget in StagehandWidget.__subclasses__():
-            w = widget(self)
-            self.widgets.append(w)
-            self.stack.addWidget(w)
-            if hasattr(w, 'on_app_close'):
-                self.closing.connect(w.on_app_close)
-
-        self.setCentralWidget(self.stack)
 
         self.commands = [
             Command("Minimize to tray"),
@@ -73,10 +66,7 @@ class MainWindow(BaseMainWindow):
         self.init_statusbar()
         self.init_sidebar()
 
-        # restore active widget
-        prev_widget = int(QSettings().value('mainwindow/active_widget', 0))
-        if prev_widget < self.stack.count():
-            self.stack.widget(prev_widget).sidebar_button.click()
+        call_later(self.init_widgets)
 
         qApp.updater.update_found.connect(self.display_update_available)
 
@@ -88,13 +78,24 @@ class MainWindow(BaseMainWindow):
     def display_update_available(self):
         self.tray_icon.showMessage('An update is available.', 'an update is available')
 
+    def init_widgets(self):
+        for widget in StagehandWidget.__subclasses__():
+            w = widget(self.stack)
+            self.widgets.append(w)
+            self.stack.addWidget(w)
+            if hasattr(w, 'on_app_close'):
+                self.closing.connect(w.on_app_close)
+            if hasattr(w, 'sidebar_button'):
+                self.sidebar.addWidget(w.sidebar_button)
+
+        # restore active widget
+        prev_widget = int(QSettings().value('mainwindow/active_widget', 0))
+        if prev_widget < self.stack.count():
+            self.stack.widget(prev_widget).sidebar_button.click()
+
     def init_sidebar(self):
         self.sidebar = BaseToolbar(self, 'sidebar', location='left', size=40)
         self.sidebar.setContextMenuPolicy(Qt.PreventContextMenu)
-
-        for w in self.widgets:
-            if hasattr(w, 'sidebar_button'):
-                self.sidebar.addWidget(w.sidebar_button)
 
     def init_statusbar(self):
         self.status = BaseToolbar(self, 'statusbar', location='bottom', size=30)
@@ -104,7 +105,7 @@ class MainWindow(BaseMainWindow):
         self.status.add_spacer()
 
         for widget in StagehandStatusBarItem.__subclasses__():
-            w = widget(self)
+            w = widget(self.status)
             self.status.addWidget(w)
             if hasattr(w, 'on_app_close'):
                 self.closing.connect(w.on_app_close)
