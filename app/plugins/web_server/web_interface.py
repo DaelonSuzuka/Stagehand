@@ -90,8 +90,6 @@ class WebInterfaceManager(StagehandWidget):
 
         self.flask = threading.Thread(name='Web App', target=start_flask, daemon=True)
         self.flask.start()
-        
-        self.sidebar_widget = QPushButton(iconSize=QSize(40, 40), icon=qta.icon('mdi.web'), flat=True)
 
         self.local_link = LinkLabel(both='http://localhost:5000')
         self.lan_link = LinkLabel(both=f'http://{get_ip()}:5000')
