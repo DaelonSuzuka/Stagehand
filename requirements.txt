@@ -34,7 +34,7 @@ PySide6-Essentials==6.3.0
 pywin32-ctypes==0.2.0
 QtAwesome==1.2.0
 QtPy==2.2.1
-qtstrap==0.2.5
+qtstrap==0.2.6
 regex==2022.9.13
 shiboken6==6.3.0
 six==1.16.0
