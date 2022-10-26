@@ -62,14 +62,14 @@ class MicStreamWidget(QWidget):
         self.title = QLabel(self.name)
         self.title.setFixedWidth(250)
         self.title.setToolTip(self.name)
-        self.enabled = PersistentCheckBox(f'enabled:{self.name}', changed=self.on_check)
-        self.obs_name = PersistentLineEdit(f'obs_name:{self.name}')
+        self.enabled = PersistentCheckBox(f'mic_voter/{self.name}/enabled', changed=self.on_check)
+        self.obs_name = PersistentLineEdit(f'mic_voter/{self.name}/obs_name')
         self.meter = QLabel()
-        self.preferred = PersistentCheckBox(f'preferred:{self.name}')
+        self.preferred = PersistentCheckBox(f'mic_voter/{self.name}/preferred')
 
-        self.gain = PersistentLineEdit(f'gain:{self.name}', changed=self.stream.set_gain, default=str(self.stream.gain))
+        self.gain = PersistentLineEdit(f'mic_voter/{self.name}/gain', changed=self.stream.set_gain, default=str(self.stream.gain))
         self.gain.setFixedWidth(40)
-        self.beta = PersistentLineEdit(f'beta:{self.name}', changed=self.stream.set_beta, default=str(self.stream.beta))
+        self.beta = PersistentLineEdit(f'mic_voter/{self.name}/beta', changed=self.stream.set_beta, default=str(self.stream.beta))
         self.beta.setFixedWidth(40)
 
         self.on_check()
@@ -90,23 +90,21 @@ class MicVoterWidget(StagehandWidget):
 
         self.best_mic = QLabel()
 
+        self.default_host_api = 0
         if os.name == 'nt':
-            default_host_api = 3
-        else:
-            default_host_api = 0
+            self.default_host_api = 3
 
         self.mics = {}
-        for i, d in enumerate(sd.query_devices()):
-            if d['hostapi'] == default_host_api and d['max_input_channels'] > 0:
-                self.mics[i] = MicStreamWidget(i)
+
+        self.enabled = PersistentCheckBox('mic_voter/enabled', changed=self.set_enabled)
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.process_audio)
-        self.timer.start(20)
+        # self.timer.start(20)
 
         self.last_changed_time = time()
-        self.rate_limit = PersistentLineEdit('rate_limit', default='1')
-        self.change_threshold = PersistentLineEdit('change_threshold', default='5')
+        self.rate_limit = PersistentLineEdit('mic_voter/rate_limit', default='1')
+        self.change_threshold = PersistentLineEdit('mic_voter/change_threshold', default='5')
 
         with CVBoxLayout(self, align='top') as layout:
             with layout.hbox(align='left'):
@@ -120,9 +118,12 @@ class MicVoterWidget(StagehandWidget):
                 layout.add(QLabel('Rate Limit:'))
                 layout.add(self.rate_limit)
                 layout.add(QLabel(), 1)
+                layout.add(QLabel('Voter Enabled:'))
+                layout.add(self.enabled)
             layout.add(QLabel())
 
             with layout.grid() as layout:
+                self.grid = layout._layout
                 layout.setColumnStretch(1, 1)
                 layout.add(QLabel('Title'), 0, 0)
                 layout.add(QLabel('Meter'), 0, 1)
@@ -131,16 +132,52 @@ class MicVoterWidget(StagehandWidget):
                 layout.add(QLabel('OBS Name'), 0, 5)
                 layout.add(QLabel('Enabled'), 0, 6)
                 layout.add(HLine(), 1, 0, 1, 8)
-                
-                for i, mic in enumerate(self.mics.values()):
-                    layout.add(mic.title, i + 2, 0)
-                    layout.add(mic.meter, i + 2, 1)
-                    layout.add(mic.beta, i + 2, 3)
-                    layout.add(mic.gain, i + 2, 4)
-                    layout.add(mic.obs_name, i + 2, 5)
-                    layout.add(mic.enabled, i + 2, 6)
+
+                if self.enabled:
+                    self.create_devices()
                 
             layout.add(QLabel(), 1)
+
+    def create_devices(self):
+        for i, d in enumerate(sd.query_devices()):
+            if d['hostapi'] == self.default_host_api and d['max_input_channels'] > 0:
+                self.mics[i] = MicStreamWidget(i)
+
+        for i, mic in enumerate(self.mics.values()):
+            self.grid.add(mic.title, i + 2, 0)
+            self.grid.add(mic.meter, i + 2, 1)
+            self.grid.add(mic.beta, i + 2, 3)
+            self.grid.add(mic.gain, i + 2, 4)
+            self.grid.add(mic.obs_name, i + 2, 5)
+            self.grid.add(mic.enabled, i + 2, 6)
+    
+        self.timer.start(20)
+
+    def remove_devices(self):
+        self.timer.stop()
+
+        for i, mic in enumerate(self.mics.values()):
+            self.grid.removeWidget(mic.title)
+            mic.title.hide()
+            self.grid.removeWidget(mic.meter)
+            mic.meter.hide()
+            self.grid.removeWidget(mic.beta)
+            mic.beta.hide()
+            self.grid.removeWidget(mic.gain)
+            mic.gain.hide()
+            self.grid.removeWidget(mic.obs_name)
+            mic.obs_name.hide()
+            self.grid.removeWidget(mic.enabled)
+            mic.enabled.hide()
+            mic.deleteLater()
+
+        self.mics.clear()
+
+    def set_enabled(self, value):
+        if self.enabled:
+            self.create_devices()
+        else:
+            self.remove_devices()
 
     def process_audio(self):
         volumes = {}
