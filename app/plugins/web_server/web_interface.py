@@ -42,8 +42,13 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(path.read_text().encode())
 
 
+server_port = 5000
+httpd = None
+
+
 def start_server():
-    httpd = HTTPServer(('', 5000), Handler)
+    global httpd
+    httpd = HTTPServer(('', server_port), Handler)
     httpd.serve_forever()
 
 
@@ -81,14 +86,26 @@ class WebInterfaceManager(StagehandWidget):
         self.socket.new_connection.connect(self.rename_buttons)
         self.socket.message_recieved.connect(self.processTextMessage)
 
-        self.httpd_thread = threading.Thread(name='Web App', target=start_server, daemon=True)
-        self.httpd_thread.start()
+        self.httpd = None
+        self.httpd_thread = None
 
-        self.local_link = LinkLabel(both='http://localhost:5000')
-        self.lan_link = LinkLabel(both=f'http://{get_ip()}:5000')
+        self.local_link = LinkLabel(both='')
+        self.lan_link = LinkLabel(both='')
 
-        self.start_server = QPushButton('Start Server')
-        self.port = PersistentLineEdit('web_server/port', default='5000')
+        self.port = PersistentLineEdit('web_server/port', default='5000', changed=self.port_changed)
+        self.port.setValidator(QIntValidator())
+        self.port.setPlaceholderText('default: 5000')
+
+        self.autostart = PersistentCheckBox('web_server/autostart')
+        self.start = QPushButton('Start Server', clicked=self.start_thread)
+        self.stop = QPushButton('Stop Server', clicked=self.stop_thread)
+        self.stop.hide()
+
+        if not self.port.text():
+            self.start.setEnabled(False)
+            
+        if self.autostart:
+            self.start_thread()
 
         self.group = ActionWidgetGroup(f'web_actions/actions', self)
 
@@ -105,13 +122,41 @@ class WebInterfaceManager(StagehandWidget):
                 layout.add(QLabel('LAN Link:'))
                 layout.add(self.lan_link)
                 layout.add(QLabel(), 1)
+                layout.add(QLabel('Autostart Server:'))
+                layout.add(self.autostart)
+                layout.add(QLabel('Port:'))
                 layout.add(self.port)
-                layout.add(self.start_server)
-            layout.add(QLabel())
+                layout.add(self.start)
+                layout.add(self.stop)
             layout.add(HLine())
 
             layout.add([a for _, a in self.actions.items()])
             layout.add(QLabel(), 1)
+
+    def start_thread(self):
+        self.httpd_thread = threading.Thread(name='Web App', target=start_server, daemon=True)
+        self.httpd_thread.start()
+        self.start.hide()
+        self.stop.show()
+        self.port.setEnabled(False)
+        self.local_link.setBoth(f'http://localhost:{self.port.text()}')
+        self.lan_link.setBoth(f'http://{get_ip()}:{self.port.text()}')
+
+    def stop_thread(self):
+        httpd.shutdown()
+        self.start.show()
+        self.stop.hide()
+        self.port.setEnabled(True)
+        self.local_link.setBoth('')
+        self.lan_link.setBoth('')
+
+    def port_changed(self, value):
+        self.start.setEnabled(True)
+        if not value:
+            self.start.setEnabled(False)
+            return
+        global server_port
+        server_port = int(value)
 
     def rename_buttons(self):
         for client in self.socket.clients:
