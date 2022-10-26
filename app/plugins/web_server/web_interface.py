@@ -1,56 +1,51 @@
-from flask import Flask, render_template
-from urllib.parse import urlparse
 from qtstrap import *
+from urllib.parse import urlparse
 from qtpy.QtWebSockets import *
 from qtpy.QtNetwork import *
 import threading
 from stagehand.actions import ActionWidget, ActionWidgetGroup
-from stagehand.components import StagehandWidget, SidebarButton
-import socket
+from stagehand.components import StagehandWidget
 import json
-import qtawesome as qta
+from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-# disable flask logging
-import logging
-log = logging.getLogger('werkzeug')
-log.setLevel(logging.ERROR)
+pages = {}
 
-# disable flask console output
-import click
-def secho(text, file=None, nl=None, err=None, color=None, **styles):
-    pass
-def echo(text, file=None, nl=None, err=None, color=None, **styles):
-    pass
-click.echo = echo
-click.secho = secho
+base_dir = Path(Path(__file__).parent / 'pages')
+
+for f in base_dir.rglob('*'):
+    rel = f.relative_to(base_dir)
+    pages[rel.as_posix()] = f
+    if rel.suffix == '.html':
+        pages[rel.as_posix().removesuffix('.html')] = f
 
 
-def start_flask():
-    template_path = Path(Path(__file__).parent / 'pages')
-    static_path = Path(template_path / 'static').as_posix()
-    app = Flask(__name__, template_folder=template_path, static_folder=static_path)
+class Handler(BaseHTTPRequestHandler):
+    def log_message(self, format, *args):
+        # silence log messages
+        pass
 
-    @app.route("/")
-    def home():
-        return render_template('index.html')
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header('Content-type', 'text/html')
+        self.end_headers()
 
-    @app.route("/<page>")
-    def others(page):
-        if f'{page}.html' in [f.parts[-1] for f in template_path.rglob('*.html')]:
-            return render_template(f'{page}.html')
-        return render_template('404.html')
+        path = self.path.lstrip('/')
+        if path == '':
+            path = 'index.html'
 
-    app.run(host='0.0.0.0', debug=True, use_reloader=False)
+        if path in pages:
+            path = pages[path]
+        else:
+            path = pages['404']
+
+        self.wfile.write(path.read_text().encode())
 
 
-def get_ip():
-    # this is a dirty hack to get our current machine's IP address
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    ip = s.getsockname()[0]
-    s.close()
-    return ip
+def start_server():
+    httpd = HTTPServer(('', 5000), Handler)
+    httpd.serve_forever()
+
 
 @singleton
 class SocketListener(QObject):
@@ -80,19 +75,20 @@ class SocketListener(QObject):
 
 class WebInterfaceManager(StagehandWidget):
     def __init__(self, parent=None):
-        super().__init__(parent=parent)
-
-        self.sidebar_button = SidebarButton(target=self, icon=qta.icon('mdi.web'))
+        super().__init__(icon_name='mdi.web', parent=parent)
 
         self.socket = SocketListener()
         self.socket.new_connection.connect(self.rename_buttons)
         self.socket.message_recieved.connect(self.processTextMessage)
 
-        self.flask = threading.Thread(name='Web App', target=start_flask, daemon=True)
-        self.flask.start()
+        self.httpd_thread = threading.Thread(name='Web App', target=start_server, daemon=True)
+        self.httpd_thread.start()
 
         self.local_link = LinkLabel(both='http://localhost:5000')
         self.lan_link = LinkLabel(both=f'http://{get_ip()}:5000')
+
+        self.start_server = QPushButton('Start Server')
+        self.port = PersistentLineEdit('web_server/port', default='5000')
 
         self.group = ActionWidgetGroup(f'web_actions/actions', self)
 
@@ -109,6 +105,8 @@ class WebInterfaceManager(StagehandWidget):
                 layout.add(QLabel('LAN Link:'))
                 layout.add(self.lan_link)
                 layout.add(QLabel(), 1)
+                layout.add(self.port)
+                layout.add(self.start_server)
             layout.add(QLabel())
             layout.add(HLine())
 
