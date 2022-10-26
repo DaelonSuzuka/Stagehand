@@ -1,1 +1,1 @@
-# from .voter import MicVoterWidget
+from .voter import MicVoterWidget
