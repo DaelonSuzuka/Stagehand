@@ -4,8 +4,7 @@ import sounddevice as sd
 from time import time
 import os
 from stagehand.sandbox import Sandbox
-from stagehand.components import StagehandWidget, SidebarButton
-import qtawesome as qta
+from stagehand.components import StagehandWidget
 
 
 class MicStream:
@@ -86,8 +85,8 @@ class MicStreamWidget(QWidget):
 
 
 class MicVoterWidget(StagehandWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent=parent)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, icon_name='fa5s.microphone', **kwargs)
 
         self.best_mic = QLabel()
 
@@ -95,8 +94,6 @@ class MicVoterWidget(StagehandWidget):
             default_host_api = 3
         else:
             default_host_api = 0
-
-        self.sidebar_button = SidebarButton(target=self, icon=qta.icon('fa5s.microphone'))
 
         self.mics = {}
         for i, d in enumerate(sd.query_devices()):

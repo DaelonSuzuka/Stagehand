@@ -1,7 +1,6 @@
 from qtstrap import *
 from .actions import ActionWidget, ActionWidgetGroup
-from stagehand.components import StagehandWidget, SidebarButton
-import qtawesome as qta
+from stagehand.components import StagehandWidget
 
 
 class ActionsWidget(QWidget):
@@ -18,10 +17,8 @@ class ActionsWidget(QWidget):
 
 
 class ActionsContainer(StagehandWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent=parent)
-        
-        self.sidebar_button = SidebarButton(target=self, icon=qta.icon('mdi.format-list-checkbox'))
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, icon_name='mdi.format-list-checkbox', **kwargs)
 
         self.widgets = []
         self.widget_list = QListWidget(fixedWidth=150)

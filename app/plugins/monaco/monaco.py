@@ -1,7 +1,6 @@
-from stagehand.components import StagehandWidget, SidebarButton
-from monaco import MonacoWidget
-import qtawesome as qta
 from qtstrap import *
+from stagehand.components import StagehandWidget
+from monaco import MonacoWidget
 from qtpy.QtQuick import QQuickWindow, QSGRendererInterface
 
 
@@ -10,10 +9,8 @@ QQuickWindow.setGraphicsApi(QSGRendererInterface.OpenGLRhi)
 
 
 class MonacoExample(StagehandWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent=parent)
-
-        self.sidebar_button = SidebarButton(target=self, icon=qta.icon('mdi.text'))
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, icon_name='mdi.text', **kwargs)
 
         self.monaco = MonacoWidget(self)
 

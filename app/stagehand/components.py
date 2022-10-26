@@ -1,4 +1,5 @@
 from qtstrap import *
+import qtawesome as qta
 
 
 class SidebarButton(QPushButton):
@@ -15,7 +16,11 @@ class SidebarButton(QPushButton):
 
 
 class StagehandWidget(QWidget):
-    ...
+    def __init__(self, *args, icon_name='', **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if icon_name:
+            self.sidebar_button = SidebarButton(parent=self, target=self, icon=qta.icon(icon_name))
 
 
 class StagehandStatusBarItem(QWidget):

@@ -1,8 +1,7 @@
 from qtstrap import *
 from codex import DeviceManager
 from .actions import ActionWidget, ActionWidgetGroup, TriggerItem
-from stagehand.components import StagehandWidget, SidebarButton
-import qtawesome as qta
+from stagehand.components import StagehandWidget
 
 
 class DeviceTrigger(QWidget, TriggerItem):
@@ -62,14 +61,12 @@ class InputDeviceList(QListWidget):
 
 @DeviceManager.subscribe
 class InputDeviceManager(StagehandWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent=parent)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, icon_name='mdi.format-list-text', **kwargs)
         self.parent = parent
 
         self.known_devices = QSettings().value(f'input_devices/known_devices', {})
         self.widgets = {}
-
-        self.sidebar_button = SidebarButton(target=self, icon=qta.icon('mdi.format-list-text'))
 
         self.known_devices_list = InputDeviceList(self, on_remove=self.remove_widget, fixedWidth=150)
         self.widget_stack = QStackedWidget()
