@@ -66,7 +66,8 @@ class MainWindow(BaseMainWindow):
         self.init_statusbar()
         self.init_sidebar()
 
-        call_later(self.init_widgets)
+        self.init_widgets()
+        # call_later(self.init_widgets)
 
         qApp.updater.update_found.connect(self.display_update_available)
 
@@ -80,7 +81,7 @@ class MainWindow(BaseMainWindow):
 
     def init_widgets(self):
         for widget in StagehandWidget.__subclasses__():
-            w = widget(self.stack)
+            w = widget(parent=self.stack)
             self.widgets.append(w)
             self.stack.addWidget(w)
             if hasattr(w, 'on_app_close'):
