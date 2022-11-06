@@ -25,7 +25,7 @@ class ActionEditorDialog(QDialog):
         self.cancel = QPushButton('Cancel', clicked=self.reject)
         self.ok = QPushButton('Ok', clicked=self.accept)
         self.run = QPushButton('', clicked=lambda: Sandbox().run(self.editor.toPlainText(), error_cb=self.set_error))
-        self.run.setIcon(QIcon(qta.icon('mdi.play-circle-outline')))
+        self.run.setIcon(qta.icon('mdi.play-circle-outline'))
 
         with CVBoxLayout(self) as layout:
             with layout.hbox() as layout:

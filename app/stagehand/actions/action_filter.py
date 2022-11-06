@@ -155,7 +155,7 @@ class ActionFilter(QWidget):
         self.filters = []
 
         self.enabled = QAction('Filter Enabled', self, triggered=changed, checkable=True)
-        self.open_btn = QPushButton('', clicked=self.open_editor, icon=QIcon(qta.icon('mdi.filter-menu-outline')), parent=self)
+        self.open_btn = QPushButton('', clicked=self.open_editor, icon=qta.icon('mdi.filter-menu-outline'), parent=self)
         self.number_of_filters = QLabel('0')
 
         self.editor = ActionFilterDialog(self.filters, owner)

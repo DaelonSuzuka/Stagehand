@@ -48,7 +48,7 @@ class SandboxAction(QWidget, ActionItem):
         self.action = CodeLine(changed=changed, highlighter=PythonHighlighter, model=SandboxCompletionModel())
         self.changed = changed
 
-        self.edit_btn = QPushButton('', clicked=self.open_editor, icon=QIcon(qta.icon('fa5.edit')))
+        self.edit_btn = QPushButton('', clicked=self.open_editor, icon=qta.icon('fa5.edit'))
 
         with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
             layout.add(self.action)
@@ -171,7 +171,7 @@ class ActionWidget(QWidget):
             if 'type' in data:
                 action_type = data['type']
 
-        self.run_btn = QPushButton('', clicked=self.run, icon=QIcon(qta.icon('fa5.play-circle')))
+        self.run_btn = QPushButton('', clicked=self.run, icon=qta.icon('fa5.play-circle'))
 
         self.label = LabelEdit(label, changed=self.on_change)
         self.action = Action(self.on_change, action_type, action, owner=self)
