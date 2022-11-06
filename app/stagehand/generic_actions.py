@@ -21,7 +21,7 @@ class ActionsContainer(StagehandWidget):
         super().__init__(*args, icon_name='mdi.format-list-checkbox', **kwargs)
 
         self.widgets = []
-        self.widget_list = QListWidget(fixedWidth=150)
+        self.widget_list = QListWidget()
         self.widget_stack = QStackedWidget()
         self.widget_list.currentRowChanged.connect(self.widget_stack.setCurrentIndex)
 
