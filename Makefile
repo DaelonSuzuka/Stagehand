@@ -38,19 +38,22 @@ run: venv
 debug: venv
 	$(VENV_PYTHON) -m pdb $(APP_MAIN)
 
+# **************************************************************************** #
+# Utility Targets
+
 # open the qtawesome icon browser
 qta: venv
 	$(VENV)/qta-browser
 
-# **************************************************************************** #
-# Build Targets
-
-test:
+obs:
 	$(VENV_PYTHON) app/plugins/obs_core/gen.py
 
 # build all the plugins into zips
 plugins:
-	$(PYTHON) build_plugins.py
+	$(PYTHON) tools/build_plugins.py
+
+# **************************************************************************** #
+# Build Targets
 
 # build a self-contained onefile executable 
 onefile: venv plugins
