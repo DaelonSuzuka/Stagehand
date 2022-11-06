@@ -1,6 +1,7 @@
 from qtstrap import *
 from .actions import ActionWidget, ActionWidgetGroup
 from stagehand.components import StagehandWidget
+import qtawesome as qta
 
 
 class ActionsWidget(QWidget):
@@ -25,14 +26,21 @@ class ActionsContainer(StagehandWidget):
         self.widget_stack = QStackedWidget()
         self.widget_list.currentRowChanged.connect(self.widget_stack.setCurrentIndex)
 
+        self.create_page_btn = QPushButton(icon=qta.icon('mdi.playlist-plus'), clicked=self.create_page)
+
         self.add(ActionsWidget('1'))
         self.add(ActionsWidget('2'))
         self.add(ActionsWidget('3'))
 
-        with PersistentCSplitter('generic_actions_splitter', self, margins=(0,0,0,0)) as split:
-            split.setOrientation(Qt.Horizontal)
-            split.add(self.widget_list, 1)
-            split.add(self.widget_stack, 1)
+        with PersistentCSplitter('generic_actions/splitter', self, orientation='h', margins=(0,0,0,0)) as split:
+            with CVBoxLayout(split, 1) as layout:
+                with layout.hbox(align='r'):
+                    layout.add(self.create_page_btn)
+                layout.add(self.widget_list)
+            split.add(self.widget_stack, 4)
+
+    def create_page(self):
+        pass
 
     def add(self, widget):
         self.widget_stack.addWidget(widget)
