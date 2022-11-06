@@ -1,19 +1,29 @@
 from qtstrap import *
 import qtawesome as qta
+import sys
+import qtpy
+import app_info
 
 
 class AboutDialog(QDialog):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.setWindowTitle('About Stagehand')
+
         with CVBoxLayout(self) as layout:
             with layout.vbox() as layout:
-                layout.add(QLabel('Version: xx.xx.xx'))
+                layout.add(QLabel(f'Stagehand: v{app_info.AppVersion}'))
                 layout.add(QLabel())
 
                 layout.add(QLabel('Built with:'))
-                layout.add(QLabel('Python: 3.8+'))
-                layout.add(QLabel('PySide2: 5.15.2'))
+                layout.add(QLabel(f'Python: {sys.version}'))
+                layout.add(QLabel(f'Qt: {qtpy.QT_VERSION}'))
+                layout.add(QLabel(f'QtPy: {qtpy.__version__}'))
+                if qtpy.PYQT5 or qtpy.PYQT6:
+                    layout.add(QLabel(f'{qtpy.API_NAME}: {qtpy.PYQT_VERSION}'))
+                elif qtpy.PYSIDE2 or qtpy.PYSIDE6:
+                    layout.add(QLabel(f'{qtpy.API_NAME}: {qtpy.PYSIDE_VERSION}'))
                 layout.add(QLabel())
 
                 layout.add(QLabel('Designed for:'))
