@@ -48,10 +48,13 @@ qta: venv
 test:
 	$(VENV_PYTHON) app/plugins/obs_core/gen.py
 
-
 # build all the plugins into zips
 plugins:
 	$(PYTHON) build_plugins.py
+
+# build a self-contained onefile executable 
+onefile: venv plugins
+	$(VENV_PYINSTALLER) -y onefile.spec
 
 # build a one folder bundle 
 bundle: venv plugins
