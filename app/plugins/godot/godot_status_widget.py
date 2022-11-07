@@ -6,8 +6,8 @@ from pathlib import Path
 
 
 class GodotStatusWidget(StagehandStatusBarItem):
-    def __init__(self, parent=None):
-        super().__init__(parent=parent)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.socket = GodotSocket()
         self.socket.status_changed.connect(self.set_status)
 
