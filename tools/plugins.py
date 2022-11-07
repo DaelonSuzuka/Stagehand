@@ -1,20 +1,32 @@
 from pathlib import Path
-from zipfile import ZipFile, PyZipFile
-import shutil
+from zipfile import PyZipFile
+import os
+import click
 
 
-plugin_folder = 'app/plugins/'
+@click.group()
+def main() -> None:
+    pass
 
 
-def build_plugins():
-    plugins = [p for p in Path(plugin_folder).rglob('*') if Path(p / 'plugin.json').exists()]
+PLUGIN_FOLDER = 'app/plugins/'
+
+
+@main.command()
+def build():
+    plugins = [p for p in Path(PLUGIN_FOLDER).rglob('*') if Path(p / 'plugin.json').exists()]
 
     for plugin in plugins:
         with PyZipFile(plugin.as_posix() + '.zip', mode='w') as zip_module:
             zip_module.writepy(plugin)
-        # shutil.make_archive(plugin, 'zip', plugin)
-        # shutil.make_archive(f'app/plugins/{plugin.name}', 'zip', plugin)
+
+@main.command()
+def clean():
+    plugins = [p for p in Path(PLUGIN_FOLDER).rglob('*.zip')]
+    
+    for plugin in plugins:
+        os.remove(plugin)
 
 
-if __name__ == "__main__":
-    build_plugins()
+if __name__ == '__main__':
+    main()

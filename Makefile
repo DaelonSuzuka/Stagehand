@@ -50,7 +50,11 @@ obs:
 
 # build all the plugins into zips
 plugins:
-	$(PYTHON) tools/build_plugins.py
+	$(PYTHON) tools/plugins.py build
+
+clean_plugins:
+	$(PYTHON) tools/plugins.py clean
+
 
 # **************************************************************************** #
 # Build Targets
