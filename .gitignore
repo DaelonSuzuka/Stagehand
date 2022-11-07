@@ -28,3 +28,5 @@ settings.ini
 
 # zipped plugins
 app/plugins/**/*.zip
+
+Stagehand.code-workspace
