@@ -9,19 +9,19 @@ from .components import StagehandWidget, StagehandStatusBarItem, SidebarButton
 
 
 class FontSizeMenu(QMenu):
-    def __init__(self, parent=None, default=12):
+    def __init__(self, parent=None, default=12) -> None:
         super().__init__(parent=parent)
         self.setTitle('Font Size')
 
         self.default_size = default
-        self.font_size = QSettings().value('font_size', self.default_size)
+        self.font_size:int = QSettings().value('font_size', self.default_size)
         self.set_font_size(self.font_size)
 
-        self.addAction(QAction('+', self, triggered=lambda: self.set_font_size(self.font_size + 2)))
-        self.addAction(QAction('-', self, triggered=lambda: self.set_font_size(self.font_size - 2)))
-        self.addAction(QAction('Reset', self, triggered=lambda: self.set_font_size(self.default_size)))
+        self.addAction('+').triggered.connect(lambda: self.set_font_size(self.font_size + 2))
+        self.addAction('-').triggered.connect(lambda: self.set_font_size(self.font_size - 2))
+        self.addAction('Reset').triggered.connect(lambda: self.set_font_size(self.default_size))
 
-    def set_font_size(self, size):
+    def set_font_size(self, size) -> None:
         set_font_options(self.parent(), {'setPointSize': int(size)})
         self.font_size = int(size)
         QSettings().setValue('font_size', size)
