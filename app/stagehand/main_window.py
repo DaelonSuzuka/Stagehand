@@ -3,9 +3,8 @@ from qtstrap.extras.log_monitor import LogMonitorDropdown
 from qtstrap.extras.command_palette import CommandPalette, Command
 from codex import DeviceControlsDockWidget
 from .sandbox import Sandbox
-import qtawesome as qta
 from .about import AboutDialog
-from .components import StagehandWidget, StagehandStatusBarItem, SidebarButton
+from .components import StagehandWidget, StagehandStatusBarItem
 
 
 class FontSizeMenu(QMenu):
@@ -30,7 +29,7 @@ class FontSizeMenu(QMenu):
 class MainWindow(BaseMainWindow):
     closing = Signal()
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None) -> None:
         super().__init__(parent=parent)
 
         self.force_close = False
@@ -62,23 +61,25 @@ class MainWindow(BaseMainWindow):
         ]
 
         self.init_tray_stuff()
-        self.init_statusbar()
-        self.init_sidebar()
+
+        self.create_sidebar()
+        self.create_statusbar()
+        self.init_statusbar_items()
+        self.init_settings_menu()
 
         self.init_widgets()
-        # call_later(self.init_widgets)
 
-        qApp.updater.update_found.connect(self.display_update_available)
+        App().updater.update_found.connect(self.display_update_available)
 
-    def set_widget(self, widget):
+    def set_widget(self, widget) -> None:
         enable_children(self.sidebar)
         self.stack.setCurrentWidget(widget)
         QSettings().setValue('mainwindow/active_widget', self.stack.currentIndex())
 
-    def display_update_available(self):
+    def display_update_available(self) -> None:
         self.tray_icon.showMessage('An update is available.', 'an update is available')
 
-    def init_widgets(self):
+    def init_widgets(self) -> None:
         for widget in StagehandWidget.__subclasses__():
             w = widget(parent=self.stack)
             self.widgets.append(w)
@@ -93,38 +94,18 @@ class MainWindow(BaseMainWindow):
         if prev_widget < self.stack.count():
             self.stack.widget(prev_widget).sidebar_button.click()
 
-    def init_sidebar(self):
-        self.sidebar = BaseToolbar(self, 'sidebar', location='left', size=40)
-        self.sidebar.setContextMenuPolicy(Qt.PreventContextMenu)
-
-    def init_statusbar(self):
-        self.status = BaseToolbar(self, 'statusbar', location='bottom', size=30)
-        self.status.setContextMenuPolicy(Qt.PreventContextMenu)
-        
-        self.status.addWidget(self.init_settings_btn())
-        self.status.add_spacer()
+    def init_statusbar_items(self) -> None:
+        self.statusbar.add_spacer()
 
         for widget in StagehandStatusBarItem.__subclasses__():
-            w = widget(self.status)
-            self.status.addWidget(w)
-            if hasattr(w, 'on_app_close'):
-                self.closing.connect(w.on_app_close)
+            w: StagehandStatusBarItem = widget(self.statusbar)
+            self.statusbar.addWidget(w)
 
-        for w in self.widgets:
-            if hasattr(w, 'status_widget'):
-                self.status.addWidget(w.status_widget)
-            if hasattr(w, 'on_app_close'):
-                self.closing.connect(w.on_app_close)
+        self.statusbar.addWidget(QLabel())
 
-        self.status.addWidget(QLabel())
+    def init_settings_menu(self):
+        menu = self.settings_menu
 
-    def init_settings_btn(self):
-        settings_btn = QToolButton(self.status, icon=qta.icon('fa.gear', color='gray'))
-        menu = QMenu(settings_btn)
-        settings_btn.setMenu(menu)
-        settings_btn.setPopupMode(QToolButton.InstantPopup)
-
-        # settings popup menu
         menu.addAction(self.command_palette.action)
         menu.addSeparator()
         menu.addAction(self.sandbox.tools_dock.toggleViewAction())
@@ -138,17 +119,11 @@ class MainWindow(BaseMainWindow):
         menu.addAction(self.minimize_to_tray)
 
         menu.addSeparator()
-        menu.addAction(qApp.updater.check_for_updates_action())
+        menu.addAction(App().updater.check_for_updates_action())
         menu.addAction(self.about.show_action())
         
         menu.addSeparator()
-        menu.addAction(QAction('&Exit', menu, 
-            shortcut='Ctrl+Q',
-            statusTip='Exit application',
-            triggered=self._close)
-        )
-
-        return settings_btn
+        menu.addAction('&Exit', shortcut='Ctrl+Q').triggered.connect(self._close)
 
     def _close(self):
         self.force_close = True
