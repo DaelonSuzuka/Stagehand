@@ -6,9 +6,10 @@ from codex import SubscriptionManager
 @SubscriptionManager.subscribe
 class Stomp4Trigger(QWidget, TriggerItem):
     name = 'Stomp 4'
+    triggered = Signal()
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, changed, run, owner=None):
+        super().__init__()
 
         self.owner = owner
         self.triggered.connect(run)
