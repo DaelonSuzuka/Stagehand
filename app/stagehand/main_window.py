@@ -39,7 +39,6 @@ class MainWindow(BaseMainWindow):
 
         # hack
         from . import generic_actions
-        from . import input_devices
 
         self.about = AboutDialog(self)
         self.device_controls = DeviceControlsDockWidget(self)
