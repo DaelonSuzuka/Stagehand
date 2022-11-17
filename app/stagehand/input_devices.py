@@ -63,7 +63,7 @@ class InputDeviceList(QListWidget):
 class InputDeviceManager(StagehandWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, icon_name='mdi.format-list-text', **kwargs)
-        self.parent = parent
+        # self.parent = parent
 
         self.known_devices = QSettings().value(f'input_devices/known_devices', {})
         self.widgets = {}
@@ -90,7 +90,7 @@ class InputDeviceManager(StagehandWidget):
         if profile_name in DeviceManager.profiles():
             profile = DeviceManager.profiles()[profile_name]
             if hasattr(profile, 'widget'):
-                widget = profile.widget(guid, self.parent)
+                widget = profile.widget(guid)
                 self.widgets[guid] = widget
                 self.widget_stack.addWidget(widget)
 
