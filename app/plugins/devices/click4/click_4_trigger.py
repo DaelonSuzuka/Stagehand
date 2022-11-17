@@ -6,9 +6,10 @@ from codex import SubscriptionManager
 @SubscriptionManager.subscribe
 class Click4Trigger(QWidget, TriggerItem):
     name = 'Click 4'
+    triggered = Signal()
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, changed, run, owner=None):
+        super().__init__()
 
         self.owner = owner
         self.triggered.connect(run)

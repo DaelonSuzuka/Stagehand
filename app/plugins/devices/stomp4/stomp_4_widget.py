@@ -19,8 +19,8 @@ class PedalActions(QWidget):
 
 
 class Stomp4Widget(QWidget):
-    def __init__(self, guid, parent=None):
-        super().__init__(parent=parent)
+    def __init__(self, guid):
+        super().__init__()
         self.guid = guid
 
         self.group = ActionWidgetGroup(f'input_devices/{guid}', self)
