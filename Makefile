@@ -134,7 +134,7 @@ $(VENV_DIR):
 $(VENV_CANARY_FILE): $(REQUIREMENTS)
 	$(VENV_PYTHON) -m pip install --upgrade pip
 	$(VENV_PYTHON) -m pip install -r $(REQUIREMENTS)
-	$(RM) $(VENV_CANARY_DIR)
+	-$(RM) $(VENV_CANARY_DIR)
 	mkdir $(VENV_CANARY_DIR)
 	$(CP) $(REQUIREMENTS) $(VENV_CANARY_FILE)
 
@@ -150,7 +150,7 @@ freeze_reqs: venv
 update_venv: venv
 	$(VENV_PYTHON) -m pip install --upgrade pip
 	$(VENV_PYTHON) -m pip install --upgrade -r $(REQUIREMENTS)
-	$(RM) $(VENV_CANARY_DIR)
+	-$(RM) $(VENV_CANARY_DIR)
 	mkdir $(VENV_CANARY_DIR)
 	$(CP) $(REQUIREMENTS) $(VENV_CANARY_FILE)
 
