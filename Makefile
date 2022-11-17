@@ -45,15 +45,15 @@ debug: venv
 qta: venv
 	$(VENV)/qta-browser
 
-obs:
+obs: venv
 	$(VENV_PYTHON) app/plugins/obs_core/gen.py
 
 # build all the plugins into zips
-plugins:
-	$(PYTHON) tools/plugins.py build
+plugins: venv
+	$(VENV_PYTHON) tools/plugins.py build
 
-clean_plugins:
-	$(PYTHON) tools/plugins.py clean
+clean_plugins: venv
+	$(VENV_PYTHON) tools/plugins.py clean
 
 
 # **************************************************************************** #
