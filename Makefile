@@ -3,7 +3,7 @@
 
 # This suppresses make's command echoing. This suppression produces a cleaner output. 
 # If you need to see the full commands being issued by make, comment this out.
-# MAKEFLAGS += -s
+MAKEFLAGS += -s
 
 # **************************************************************************** #
 
