@@ -21,7 +21,7 @@ class WebTrigger(QWidget, TriggerItem):
         self.action.addItems([f'Action {i + 1}' for i in range(12)])
         self.action.currentIndexChanged.connect(changed)
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.action)
 
     def processTextMessage(self, text):

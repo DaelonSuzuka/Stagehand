@@ -18,7 +18,7 @@ class DeviceTrigger(QWidget, TriggerItem):
         self.device = QComboBox()
         self.event_ = QComboBox()
         
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.device)
             layout.add(self.event_)
 
@@ -75,9 +75,9 @@ class InputDeviceManager(StagehandWidget):
         for _, d in self.known_devices.items():
             self.known_devices_list.add_device(d)
 
-        with PersistentCSplitter('input_devices_splitter', self, margins=(0,0,0,0)) as split:
+        with PersistentCSplitter('input_devices_splitter', self, margins=0) as split:
             split.setOrientation(Qt.Horizontal)
-            with CVBoxLayout(margins=(0,0,0,0)) as layout:
+            with CVBoxLayout(margins=0) as layout:
                 split.add(layout, 1)
                 layout.add(QLabel("Known Devices:"))
                 layout.add(self.known_devices_list)

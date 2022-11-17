@@ -70,7 +70,7 @@ class DiscordAction(QWidget, ActionItem):
         super().__init__()
 
         self.owner = owner
-        with CVBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CVBoxLayout(self, margins=0) as layout:
             layout.add(QLabel('Discord'))
 
     def set_data(self, data):

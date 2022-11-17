@@ -32,7 +32,7 @@ class Click4Trigger(QWidget, TriggerItem):
         ])
         self.signal.currentIndexChanged.connect(changed)
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.device)
             layout.add(self.signal)
     

@@ -22,7 +22,7 @@ class ObsAction(QWidget, ActionItem):
         self.type.currentIndexChanged.connect(changed)
         self.type.currentIndexChanged.connect(self.change_type)
         
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.type)
 
     def change_type(self, *_):

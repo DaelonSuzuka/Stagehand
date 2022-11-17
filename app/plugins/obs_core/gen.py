@@ -262,7 +262,7 @@ def build_request_widget(w, i, event):
             for field in fields:
                 w += f"self.{field['name']} = {field_widget(field)}"
             w += ''
-            w += "with CHBoxLayout(self, margins=(0,0,0,0)) as layout:"
+            w += "with CHBoxLayout(self, margins=0) as layout:"
             with w:
                 if fields:
                     for field in fields:
@@ -397,7 +397,7 @@ def build_event_widget(w, i, event):
             # for field in returns:
             #     w += f"self.{field['clean_name']} = {field_widget(field)}"
             w += ''
-            w += "with CHBoxLayout(self, margins=(0,0,0,0)) as layout:"
+            w += "with CHBoxLayout(self, margins=0) as layout:"
             with w:
                 w += 'pass'
             #     if returns:

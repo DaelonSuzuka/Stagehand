@@ -130,7 +130,7 @@ class WebInterfaceManager(StagehandWidget):
                 layout.add(self.stop)
             layout.add(HLine())
 
-            with layout.scroll(margins=(0,0,0,0)):
+            with layout.scroll(margins=0):
                 layout.add(list(self.actions.values()))
                 layout.add(QLabel(), 1)
 

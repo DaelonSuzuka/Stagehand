@@ -15,7 +15,7 @@ class GodotEvalAction(QWidget, ActionItem):
 
         self.eval = CodeLine(changed=changed)
         
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.eval)
 
     def set_data(self, data):

@@ -39,7 +39,7 @@ class ProgramRunningFilter(QWidget, FilterStackItem):
 
         self.refresh_btn = QPushButton(clicked=self.refresh)
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.process, 1)
             layout.add(self.refresh_btn)
 

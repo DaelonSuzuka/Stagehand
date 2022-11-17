@@ -26,7 +26,7 @@ class ObsTrigger(QWidget, TriggerItem):
         self.type.currentIndexChanged.connect(changed)
         self.type.currentIndexChanged.connect(self.change_type)
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.type)
 
     def event_recieved(self, event):

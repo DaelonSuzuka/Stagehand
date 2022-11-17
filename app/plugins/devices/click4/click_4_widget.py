@@ -10,7 +10,7 @@ class PedalActions(QWidget):
         self.press = ActionWidget(f'{name} Pressed', group)
         self.release = ActionWidget(f'{name} Released', group)
 
-        with CVBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CVBoxLayout(self, margins=0) as layout:
             with layout.hbox(align='left'):
                 layout.add(QLabel(f'{self.name}'))
                 layout.add(QLabel(''), 1)
@@ -33,7 +33,7 @@ class Click4Widget(QWidget):
 
         self.status = QLabel("Not Connected")
 
-        with CVBoxLayout(self, margins=(0,0,0,0), align='top') as layout:
+        with CVBoxLayout(self, margins=0, align='top') as layout:
             with layout.hbox(align='left'):
                 layout.add(QLabel('Device Status:'))
                 layout.add(self.status)

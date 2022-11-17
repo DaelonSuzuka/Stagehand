@@ -28,7 +28,7 @@ class ObsStatusWidget(StagehandStatusBarItem):
             Command("OBS: Disconnect websocket", triggered=self.close),
         ]
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             layout.add(QLabel('OBS:'))
             layout.add(self.status_label)
             layout.add(QLabel())

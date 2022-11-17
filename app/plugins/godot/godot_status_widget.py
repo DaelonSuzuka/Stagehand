@@ -25,7 +25,7 @@ class GodotStatusWidget(StagehandStatusBarItem):
             Command("Godot: Disconnect websocket", triggered=self.close),
         ]
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             layout.add(QLabel('Godot:'))
             layout.add(self.status_label)
             layout.add(QLabel())

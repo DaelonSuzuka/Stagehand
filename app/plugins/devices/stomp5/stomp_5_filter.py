@@ -1,18 +1,16 @@
 from qtstrap import *
-from stagehand.actions import TriggerItem
+from stagehand.actions import FilterStackItem
 from codex import SubscriptionManager
 
 
 @SubscriptionManager.subscribe
-class Stomp5Trigger(QWidget, TriggerItem):
-    name = 'Stomp 5'
-    triggered = Signal()
+class Stomp4Filter(QWidget, FilterStackItem):
+    name = 'Stomp 4'
 
-    def __init__(self, changed, run, owner=None):
+    def __init__(self, changed, owner=None) -> None:
         super().__init__()
 
         self.owner = owner
-        self.triggered.connect(run)
         self.stomps = {}
         self.adapter = None
         self.current_guid = None
@@ -22,6 +20,13 @@ class Stomp5Trigger(QWidget, TriggerItem):
         self.device.currentTextChanged.connect(self.device_changed)
 
         self.signal = QComboBox()
+        self.state = {
+            '1': False,
+            '2': False,
+            '3': False,
+            '4': False,
+            '5': False,
+        }
 
         # [f'{n} {d}' for n, d in zip(['1','2','3','4','5'], ['Up', 'Down'])]
         self.signal.addItems([
@@ -36,7 +41,7 @@ class Stomp5Trigger(QWidget, TriggerItem):
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.device)
             layout.add(self.signal)
-    
+
     def device_changed(self, guid):
         if guid in self.stomps:
             if self.adapter:
@@ -47,14 +52,12 @@ class Stomp5Trigger(QWidget, TriggerItem):
             self.adapter.button_released.connect(self.button_released)
 
     def button_pressed(self, button):
-        if self.signal.currentText()[2:] == 'Down':
-            if self.signal.currentText()[0] == button:
-                self.triggered.emit()
+        if self.signal.currentText()[0] == button:
+            self.state[button] = True
 
     def button_released(self, button):
-        if self.signal.currentText()[2:] == 'Up':
-            if self.signal.currentText()[0] == button:
-                self.triggered.emit()
+        if self.signal.currentText()[0] == button:
+            self.state[button] = False
 
     def refresh_devices(self):
         with SignalBlocker(self.device):
@@ -74,6 +77,15 @@ class Stomp5Trigger(QWidget, TriggerItem):
             self.stomps[device.guid[-6:]] = device
             self.refresh_devices()
             self.device_changed(self.device.currentText())
+
+    def check(self) -> bool:
+        button = self.signal.currentText()[0]
+        state = self.state[button]
+        
+        if self.signal.currentText()[2:] == 'Down':
+            return state
+        else:
+            return not state
 
     def set_data(self, data):
         try:

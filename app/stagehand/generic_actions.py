@@ -12,8 +12,10 @@ class ActionsWidget(QWidget):
         self.group = ActionWidgetGroup(f'generic_actions/{name}', self)
         self.actions = [ActionWidget(f'Action {i}', group=self.group) for i in range(1, 13)]
 
-        with CVBoxLayout(self, margins=(0,0,0,0), align='top') as layout:
-            with layout.scroll(margins=(0,0,0,0)):
+        with CVBoxLayout(self, margins=0, align='top') as layout:
+            with layout.hbox(margins=0):
+                layout.add(QLabel('test'))
+            with layout.scroll(margins=0):
                 layout.add(self.actions)
                 layout.add(QWidget(), 1)
 
@@ -33,7 +35,7 @@ class ActionsContainer(StagehandWidget):
         self.add(ActionsWidget('2'))
         self.add(ActionsWidget('3'))
 
-        with PersistentCSplitter('generic_actions/splitter', self, orientation='h', margins=(0,0,0,0)) as split:
+        with PersistentCSplitter('generic_actions/splitter', self, orientation='h', margins=0) as split:
             with CVBoxLayout(split, 1) as layout:
                 with layout.hbox(align='r'):
                     layout.add(self.create_page_btn)

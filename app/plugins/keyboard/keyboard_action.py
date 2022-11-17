@@ -17,7 +17,7 @@ class KeyboardAction(QWidget, ActionItem):
         self.value = QLineEdit()
         self.value.textChanged.connect(changed)
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.type)
             layout.add(self.value)
 

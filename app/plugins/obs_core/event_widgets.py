@@ -8,7 +8,7 @@ class SwitchScenesWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -32,7 +32,7 @@ class ScenesChangedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -56,7 +56,7 @@ class SceneCollectionChangedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -80,7 +80,7 @@ class SceneCollectionListChangedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -104,7 +104,7 @@ class SwitchTransitionWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -128,7 +128,7 @@ class TransitionListChangedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -152,7 +152,7 @@ class TransitionDurationChangedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -176,7 +176,7 @@ class TransitionBeginWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -200,7 +200,7 @@ class TransitionEndWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -224,7 +224,7 @@ class TransitionVideoEndWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -248,7 +248,7 @@ class ProfileChangedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -272,7 +272,7 @@ class ProfileListChangedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -296,7 +296,7 @@ class StreamStartingWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -320,7 +320,7 @@ class StreamStartedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -344,7 +344,7 @@ class StreamStoppingWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -368,7 +368,7 @@ class StreamStoppedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -392,7 +392,7 @@ class StreamStatusWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -416,7 +416,7 @@ class RecordingStartingWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -440,7 +440,7 @@ class RecordingStartedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -464,7 +464,7 @@ class RecordingStoppingWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -488,7 +488,7 @@ class RecordingStoppedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -512,7 +512,7 @@ class RecordingPausedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -536,7 +536,7 @@ class RecordingResumedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -560,7 +560,7 @@ class VirtualCamStartedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -584,7 +584,7 @@ class VirtualCamStoppedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -608,7 +608,7 @@ class ReplayStartingWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -632,7 +632,7 @@ class ReplayStartedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -656,7 +656,7 @@ class ReplayStoppingWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -680,7 +680,7 @@ class ReplayStoppedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -704,7 +704,7 @@ class ExitingWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -728,7 +728,7 @@ class HeartbeatWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -752,7 +752,7 @@ class BroadcastCustomMessageWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -776,7 +776,7 @@ class SourceCreatedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -800,7 +800,7 @@ class SourceDestroyedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -824,7 +824,7 @@ class SourceVolumeChangedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -848,7 +848,7 @@ class SourceMuteStateChangedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -872,7 +872,7 @@ class SourceAudioDeactivatedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -896,7 +896,7 @@ class SourceAudioActivatedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -920,7 +920,7 @@ class SourceAudioSyncOffsetChangedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -944,7 +944,7 @@ class SourceAudioMixersChangedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -968,7 +968,7 @@ class SourceRenamedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -992,7 +992,7 @@ class SourceFilterAddedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -1016,7 +1016,7 @@ class SourceFilterRemovedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -1040,7 +1040,7 @@ class SourceFilterVisibilityChangedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -1064,7 +1064,7 @@ class SourceFiltersReorderedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -1088,7 +1088,7 @@ class MediaPlayingWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -1112,7 +1112,7 @@ class MediaPausedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -1136,7 +1136,7 @@ class MediaRestartedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -1160,7 +1160,7 @@ class MediaStoppedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -1184,7 +1184,7 @@ class MediaNextWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -1208,7 +1208,7 @@ class MediaPreviousWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -1232,7 +1232,7 @@ class MediaStartedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -1256,7 +1256,7 @@ class MediaEndedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -1280,7 +1280,7 @@ class SourceOrderChangedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -1304,7 +1304,7 @@ class SceneItemAddedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -1328,7 +1328,7 @@ class SceneItemRemovedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -1352,7 +1352,7 @@ class SceneItemVisibilityChangedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -1376,7 +1376,7 @@ class SceneItemLockChangedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -1400,7 +1400,7 @@ class SceneItemTransformChangedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -1424,7 +1424,7 @@ class SceneItemSelectedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -1448,7 +1448,7 @@ class SceneItemDeselectedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -1472,7 +1472,7 @@ class PreviewSceneChangedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):
@@ -1496,7 +1496,7 @@ class StudioModeSwitchedWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             pass
 
     def validate_event(self, event):

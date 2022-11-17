@@ -52,7 +52,7 @@ class KeyboardTrigger(QWidget, TriggerItem):
         self.value.textChanged.connect(changed)
         self.value.textChanged.connect(self.on_change)
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.type)
             layout.add(self.value)
 
