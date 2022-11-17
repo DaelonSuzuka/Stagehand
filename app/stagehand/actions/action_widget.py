@@ -210,7 +210,7 @@ class ActionWidget(QWidget):
         self.action.set_data(data)
         self.trigger.set_data(data)
         self.filter.set_data(data)
-        self.on_change()
+        call_later(self.on_change, 10)
 
     def on_change(self):
         self.filter.setVisible(self.filter.enabled.isChecked())
