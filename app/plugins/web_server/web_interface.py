@@ -130,7 +130,7 @@ class WebInterfaceManager(StagehandWidget):
                 layout.add(self.stop)
             layout.add(HLine())
 
-            layout.add([a for _, a in self.actions.items()])
+            layout.add(list(self.actions.values()))
             layout.add(QLabel(), 1)
 
     def start_thread(self):
