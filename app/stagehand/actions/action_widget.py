@@ -50,7 +50,7 @@ class SandboxAction(QWidget, ActionItem):
 
         self.edit_btn = QPushButton('', clicked=self.open_editor, icon=qta.icon('fa5.edit'))
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.action)
             layout.add(self.edit_btn)
     
@@ -107,9 +107,9 @@ class Action(QWidget):
         self.type.currentIndexChanged.connect(changed)
         self.type.currentIndexChanged.connect(self.type_changed)
 
-        self.action_box = CHBoxLayout(margins=(0,0,0,0))
+        self.action_box = CHBoxLayout(margins=0)
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             layout.add(QLabel("Action:", minimumWidth=60))
             layout.add(self.type)
             layout.add(self.action_box, 1)
@@ -174,6 +174,7 @@ class ActionWidget(QWidget):
             self.trigger.enabled.setChecked(True)
             self.filter.enabled.setChecked(True)
 
+        self.group = group
         if group:
             group.register(self)
 
@@ -183,15 +184,15 @@ class ActionWidget(QWidget):
         self.do_layout()
 
     def do_layout(self):
-        with CVBoxLayout(self, margins=(0,0,0,0)) as layout:
-            with layout.hbox(margins=(0,0,0,0)):
+        with CVBoxLayout(self, margins=0) as layout:
+            with layout.hbox(margins=0):
                 layout.add(self.label)
                 layout.add(QWidget(), 1)
                 layout.add(self.filter)
-            with layout.hbox(margins=(0,0,0,0)):
+            with layout.hbox(margins=0):
                 layout.add(self.trigger)
                 layout.add(QWidget(), 1)
-            with layout.hbox(margins=(0,0,0,0)):
+            with layout.hbox(margins=0):
                 layout.add(self.action, 2)
                 layout.add(self.run_btn)
             layout.add(HLine())
@@ -210,7 +211,7 @@ class ActionWidget(QWidget):
         self.action.set_data(data)
         self.trigger.set_data(data)
         self.filter.set_data(data)
-        call_later(self.on_change, 10)
+        call_later(self.on_change, 50) #TODO: this is a hack, find a real solution
 
     def on_change(self):
         self.filter.setVisible(self.filter.enabled.isChecked())
@@ -250,12 +251,19 @@ class ActionWidget(QWidget):
         self.on_change()
 
     def run(self):
-        if self.filter.check_filters():
-            self.action.run()
+        if self.group:
+            if not self.group.filter.check_filters():
+                return
+
+        if not self.filter.check_filters():
+            return
+
+        self.action.run()
+
 
 class CompactActionWidget(ActionWidget):
     def do_layout(self):
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.label)
             layout.add(VLine())
             layout.add(self.trigger, 1)

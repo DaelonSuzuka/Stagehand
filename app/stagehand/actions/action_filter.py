@@ -44,7 +44,7 @@ class SandboxFilterWidget(QWidget, FilterStackItem):
         self.filter = QLineEdit()
         self.filter.textChanged.connect(changed)
         
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.filter)
 
     def check(self) -> bool:
@@ -80,7 +80,7 @@ class FilterStack(QWidget):
         self.type.currentIndexChanged.connect(changed)
         self.type.currentIndexChanged.connect(self.stack.setCurrentIndex)
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.type)
             layout.add(self.stack)
             layout.add(self.remove)
@@ -148,6 +148,7 @@ class ActionFilter(QWidget):
 
     def __init__(self, changed, owner=None):
         super().__init__()
+        self.data = {}
 
         self.owner = owner
         self.changed.connect(changed)
@@ -161,7 +162,7 @@ class ActionFilter(QWidget):
         self.editor = ActionFilterDialog(self.filters, owner)
         self.editor.accepted.connect(self.on_accept)
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+        with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.open_btn)
 
     def open_editor(self, *_):
@@ -224,10 +225,11 @@ class ActionFilter(QWidget):
                 self.enabled.setChecked(data['filter']['enabled'])
 
             self.filters.clear()
-            for f in data['filter']['filters']:
-                filt = FilterStack()
-                filt.set_data(f)
-                self.filters.append(filt)
+            if 'filters' in data['filter']:
+                for f in data['filter']['filters']:
+                    filt = FilterStack()
+                    filt.set_data(f)
+                    self.filters.append(filt)
 
         self.open_btn.setText(str(len(self.filters)))
 
