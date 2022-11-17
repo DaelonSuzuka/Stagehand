@@ -25,7 +25,7 @@ PySide6-Essentials==6.3.0
 pywin32-ctypes==0.2.0
 QtAwesome==1.2.1
 QtPy==2.2.1
-qtstrap==0.2.9
+qtstrap==0.3.2
 shiboken6==6.3.0
 six==1.16.0
 sounddevice==0.4.5
