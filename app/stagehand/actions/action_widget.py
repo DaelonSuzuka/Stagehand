@@ -147,15 +147,6 @@ class Action(QWidget):
 class ActionWidget(QWidget):
     changed = Signal()
 
-    @staticmethod
-    def from_data(data):
-        name = data['name']
-        label = data['label']
-        action = data['action']
-        action_type = data['type']
-
-        return ActionWidget()
-
     def __init__(self, name='', group=None, trigger=False, data=None, changed=None, parent=None):
         super().__init__(parent=parent)
 
