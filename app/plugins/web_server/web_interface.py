@@ -110,7 +110,7 @@ class WebInterfaceManager(StagehandWidget):
         self.group = ActionWidgetGroup(f'web_actions/actions', self)
 
         self.actions = {}
-        for i in range(1, 9):
+        for i in range(1, 13):
             name = f'Web Action {i}'
             self.actions[name] = ActionWidget(name, self.group, changed=self.rename_buttons)
 
@@ -130,8 +130,9 @@ class WebInterfaceManager(StagehandWidget):
                 layout.add(self.stop)
             layout.add(HLine())
 
-            layout.add(list(self.actions.values()))
-            layout.add(QLabel(), 1)
+            with layout.scroll(margins=(0,0,0,0)):
+                layout.add(list(self.actions.values()))
+                layout.add(QLabel(), 1)
 
     def start_thread(self):
         self.httpd_thread = threading.Thread(name='Web App', target=start_server, daemon=True)
