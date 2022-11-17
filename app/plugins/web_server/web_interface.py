@@ -110,7 +110,7 @@ class WebInterfaceManager(StagehandWidget):
         self.group = ActionWidgetGroup(f'web_actions/actions', self)
 
         self.actions = {}
-        for i in range(1, 13):
+        for i in range(1, 9):
             name = f'Web Action {i}'
             self.actions[name] = ActionWidget(name, self.group, changed=self.rename_buttons)
 

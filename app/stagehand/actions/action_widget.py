@@ -110,6 +110,7 @@ class Action(QWidget):
         self.action_box = CHBoxLayout(margins=(0,0,0,0))
 
         with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+            layout.add(QLabel("Action:", minimumWidth=60))
             layout.add(self.type)
             layout.add(self.action_box, 1)
 
@@ -179,13 +180,21 @@ class ActionWidget(QWidget):
         if changed:
             self.changed.connect(changed)
 
-        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
-            layout.add(self.label)
-            layout.add(VLine())
-            layout.add(self.trigger, 1)
-            layout.add(self.filter)
-            layout.add(self.action, 2)
-            layout.add(self.run_btn)
+        self.do_layout()
+
+    def do_layout(self):
+        with CVBoxLayout(self, margins=(0,0,0,0)) as layout:
+            with layout.hbox(margins=(0,0,0,0)):
+                layout.add(self.label)
+                layout.add(QWidget(), 1)
+                layout.add(self.filter)
+            with layout.hbox(margins=(0,0,0,0)):
+                layout.add(self.trigger)
+                layout.add(QWidget(), 1)
+            with layout.hbox(margins=(0,0,0,0)):
+                layout.add(self.action, 2)
+                layout.add(self.run_btn)
+            layout.add(HLine())
 
     def get_data(self):
         return {
@@ -243,3 +252,13 @@ class ActionWidget(QWidget):
     def run(self):
         if self.filter.check_filters():
             self.action.run()
+
+class CompactActionWidget(ActionWidget):
+    def do_layout(self):
+        with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
+            layout.add(self.label)
+            layout.add(VLine())
+            layout.add(self.trigger, 1)
+            layout.add(self.filter)
+            layout.add(self.action, 2)
+            layout.add(self.run_btn)

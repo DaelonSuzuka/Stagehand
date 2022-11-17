@@ -155,16 +155,14 @@ class ActionFilter(QWidget):
         self.filters = []
 
         self.enabled = QAction('Filter Enabled', self, triggered=changed, checkable=True)
-        self.open_btn = QPushButton('', clicked=self.open_editor, icon=qta.icon('mdi.filter-menu-outline'), parent=self)
-        self.number_of_filters = QLabel('0')
+        self.open_btn = QPushButton('0', clicked=self.open_editor, icon=qta.icon('mdi.filter-menu-outline'), parent=self)
+        self.open_btn.setToolTip('Edit Filters')
 
         self.editor = ActionFilterDialog(self.filters, owner)
         self.editor.accepted.connect(self.on_accept)
 
         with CHBoxLayout(self, margins=(0,0,0,0)) as layout:
             layout.add(self.open_btn)
-            layout.add(self.number_of_filters)
-            layout.add(VLine())
 
     def open_editor(self, *_):
         self.data['filter'] = self.get_data()['filter']
@@ -195,11 +193,11 @@ class ActionFilter(QWidget):
 
     def reset(self):
         self.filters = []
-        self.number_of_filters.setText('0')
+        self.open_btn.setText('0')
 
     def on_accept(self):
         filts = [f for f in self.filters if not f.pls_delete]
-        self.number_of_filters.setText(str(len(filts)))
+        self.open_btn.setText(str(len(filts)))
         self.changed.emit()
 
         delete = []
@@ -231,7 +229,7 @@ class ActionFilter(QWidget):
                 filt.set_data(f)
                 self.filters.append(filt)
 
-        self.number_of_filters.setText(str(len(self.filters)))
+        self.open_btn.setText(str(len(self.filters)))
 
     def get_data(self):
         return {

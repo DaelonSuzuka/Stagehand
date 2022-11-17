@@ -10,7 +10,7 @@ class ActionsWidget(QWidget):
         self.name = name
 
         self.group = ActionWidgetGroup(f'generic_actions/{name}', self)
-        self.actions = [ActionWidget(f'Action {i}', group=self.group) for i in range(1, 13)]
+        self.actions = [ActionWidget(f'Action {i}', group=self.group) for i in range(1, 7)]
 
         with CVBoxLayout(self, margins=(0,0,0,0), align='top') as layout:
             layout.add(self.actions)
