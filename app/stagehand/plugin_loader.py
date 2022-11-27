@@ -60,6 +60,11 @@ class Plugins:
         if plugin_name not in self._plugins:
             self.log.info(f'Attemping to load loose plugin: {plugin}')
             try:
+                package_dir = plugin / 'packages'
+                if package_dir.exists():
+                    self.log.info(f'Adding plugin package dir to path: {plugin}')
+                    sys.path.insert(0, package_dir.as_posix())
+
                 module = importlib.import_module(plugin_name)
                 self._plugins[plugin_name] = module
                 self.log.debug(f'Successfully loaded loose plugin: {plugin_name}')
