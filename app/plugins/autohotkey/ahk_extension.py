@@ -1,5 +1,6 @@
 from stagehand.sandbox import SandboxExtension
 from ahk.daemon import AHK, AHKDaemon
+from ahk.directives import NoTrayIcon
 
 # for future vendored packages
 # from .packages.ahk.daemon import AHK, AHKDaemon
@@ -15,8 +16,9 @@ class AutohotkeyExtension(SandboxExtension):
         # self._ahk = AHK(executable_path=exe_path)
         # self._daemon = AHKDaemon(executable_path=exe_path)
 
-        self._ahk = AHK()
-        self._daemon = AHKDaemon()
+        self._ahk = AHK(directives=[NoTrayIcon])
+        self._daemon = AHKDaemon(directives=[NoTrayIcon])
+        qApp.aboutToQuit.connect(self._daemon.stop)
         self._daemon.start()
 
     def __getattr__(self, name):
@@ -25,4 +27,4 @@ class AutohotkeyExtension(SandboxExtension):
 
         return getattr(self._daemon, name)
 
-    def close
+    # def close
