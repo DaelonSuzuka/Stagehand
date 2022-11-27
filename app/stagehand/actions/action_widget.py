@@ -270,3 +270,12 @@ class CompactActionWidget(ActionWidget):
             # layout.add(self.filter)
             layout.add(self.action, 2)
             layout.add(self.run_btn)
+        
+    def contextMenuEvent(self, event: QContextMenuEvent) -> None:
+        menu = QMenu()
+        menu.addAction('Run').triggered.connect(self.run)
+        menu.addAction('Rename').triggered.connect(self.label.start_editing)
+        menu.addAction('Copy').triggered.connect(self.copy)
+        menu.addAction('Paste').triggered.connect(self.paste)
+        menu.addAction('Reset').triggered.connect(self.reset)
+        menu.exec_(event.globalPos())
