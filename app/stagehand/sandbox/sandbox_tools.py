@@ -9,10 +9,10 @@ class SandboxTools(QWidget):
         self.clear_output = QPushButton('Clear', clicked=self.output.clear)
 
         with CVBoxLayout(self) as layout:
-            # with layout.hbox(margins=0) as layout:
-            #     layout.add(QLabel('Output:'))
-            #     layout.add(QLabel(), 1)
-            #     layout.add(self.clear_output)
+            with layout.hbox(margins=0) as layout:
+                layout.add(QLabel('Output:'))
+                layout.add(QLabel(), 1)
+                layout.add(self.clear_output)
             layout.add(self.output)
 
     def print(self, *args):
