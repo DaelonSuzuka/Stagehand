@@ -1,10 +1,9 @@
 from qtstrap import *
-from urllib.parse import urlparse
 from qtpy.QtWebSockets import *
 from qtpy.QtNetwork import *
 import threading
-from stagehand.actions import ActionWidget, ActionWidgetGroup
-from stagehand.components import StagehandWidget
+from stagehand.actions import CompactActionWidget, ActionWidget, ActionWidgetGroup
+from stagehand.components import StagehandPage
 import json
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
@@ -61,7 +60,7 @@ class SocketListener(QObject):
         super().__init__(*args, **kwargs)
         self.clients = []
         
-        self.server = QWebSocketServer('flask', QWebSocketServer.NonSecureMode)
+        self.server = QWebSocketServer('stagehand_web_control', QWebSocketServer.NonSecureMode)
         self.server.listen(address=QHostAddress.Any, port=5001)
         
         # if self.server.listen(address=QHostAddress.Any, port=5001):
@@ -78,9 +77,16 @@ class SocketListener(QObject):
         self.new_connection.emit()
 
 
-class WebInterfaceManager(StagehandWidget):
-    def __init__(self, parent=None):
-        super().__init__(icon_name='mdi.web', parent=parent)
+class WebInterfacePage(StagehandPage):
+    page_type = 'Web Actions'
+    changed = Signal()
+    
+    def __init__(self, name='', changed=None, data=None):
+        super().__init__()
+        self.name = name
+        self.icon_name = 'mdi.web'
+
+        self.label = LabelEdit(f'Page {name}', changed=self.changed)
 
         self.socket = SocketListener()
         self.socket.new_connection.connect(self.rename_buttons)
@@ -92,30 +98,39 @@ class WebInterfaceManager(StagehandWidget):
         self.local_link = LinkLabel(both='')
         self.lan_link = LinkLabel(both='')
 
-        self.port = PersistentLineEdit('web_server/port', default='5000', changed=self.port_changed)
+        self.port = QLineEdit('5000')
+        self.port.textChanged.connect(self.port_changed)
         self.port.setValidator(QIntValidator())
         self.port.setPlaceholderText('default: 5000')
 
-        self.autostart = PersistentCheckBox('web_server/autostart')
+        self.autostart = QCheckBox()
+        self.autostart.stateChanged.connect(lambda _: self.changed.emit())
         self.start = QPushButton('Start Server', clicked=self.start_thread)
         self.stop = QPushButton('Stop Server', clicked=self.stop_thread)
         self.stop.hide()
 
-        if not self.port.text():
-            self.start.setEnabled(False)
-            
-        if self.autostart:
-            self.start_thread()
-
-        self.group = ActionWidgetGroup(f'web_actions/actions', self)
+        self.group = ActionWidgetGroup(f'web_actions/actions', changed=self.on_change, parent=self, autosave=False)
 
         self.actions = {}
-        for i in range(1, 13):
-            name = f'Web Action {i}'
-            self.actions[name] = ActionWidget(name, self.group, changed=self.rename_buttons)
+        self.actions_container = CVBoxLayout()
 
-        with CVBoxLayout(self) as layout:
-            with layout.hbox():
+        if changed:
+            self.changed.connect(changed)
+        
+        if data is not None:
+            self.set_data(data)
+
+        if not self.port.text():
+            self.start.setEnabled(False)
+        else:
+            if self.autostart.isChecked():
+                self.start_thread()
+
+        with CVBoxLayout(self, margins=0) as layout:
+            with layout.hbox(margins=0):
+                layout.add(self.label)
+                layout.add(QLabel(), 1)
+            with layout.hbox(margins=0):
                 layout.add(QLabel('Local Link:'))
                 layout.add(self.local_link)
                 layout.add(QLabel())
@@ -128,10 +143,10 @@ class WebInterfaceManager(StagehandWidget):
                 layout.add(self.port)
                 layout.add(self.start)
                 layout.add(self.stop)
-            layout.add(HLine())
 
             with layout.scroll(margins=0):
-                layout.add(list(self.actions.values()))
+                layout.setStretchFactor(layout._layout, 1)
+                layout.add(self.actions_container)
                 layout.add(QLabel(), 1)
 
     def start_thread(self):
@@ -158,6 +173,7 @@ class WebInterfaceManager(StagehandWidget):
             return
         global server_port
         server_port = int(value)
+        self.changed.emit()
 
     def rename_buttons(self):
         for client in self.socket.clients:
@@ -173,3 +189,64 @@ class WebInterfaceManager(StagehandWidget):
                     self.actions[btn_name].run()
         except:
             pass
+
+    def get_name(self):
+        return self.label.text()
+    
+    def on_change(self):
+        self.changed.emit()
+
+    def set_data(self, data):
+        self.data = data
+        self.group.set_data(self.data)
+
+        label = f'Page {self.name}'
+        if 'label' in data:
+            label = data['label']
+        self.label.setText(label)
+
+        self.port.setText(data.get('port', 5000))
+        self.autostart.setChecked(data.get('autostart', False))
+
+        if 'actions' in data and data['actions']:
+            for name in data['actions']:
+                action = CompactActionWidget(name, group=self.group)
+                self.actions[name] = action
+                self.actions_container.add(action)
+        else:
+            actions = {}
+            for i in range(1, 13):
+                name = f'Action {i}'
+                actions[name] = {
+                    "name": name,
+                    "label": name,
+                    "action_type": "sandbox",
+                    "action": "",
+                    "trigger": {
+                        "enabled": False,
+                        "trigger_type": "sandbox",
+                        "trigger": ""
+                    },
+                    "filter": {
+                        "enabled": False,
+                        "filters": []
+                    }
+                }
+            data['actions'] = actions
+            self.group.set_data(data)
+
+            self.actions = {}
+            for i in range(1, 13):
+                name = f'Web Action {i}'
+                self.actions[name] = CompactActionWidget(name, self.group, changed=self.rename_buttons)
+
+            self.actions_container.add(list(self.actions.values()))
+
+    def get_data(self):
+        return {
+            'page_type': self.page_type,
+            'label': self.label.text(),
+            'port': self.port.text(),
+            'autostart': self.autostart.isChecked(),
+            **self.group.get_data(),
+        }

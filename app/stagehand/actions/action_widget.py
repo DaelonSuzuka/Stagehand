@@ -266,7 +266,7 @@ class CompactActionWidget(ActionWidget):
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.label)
             layout.add(VLine())
-            layout.add(self.trigger, 1)
-            layout.add(self.filter)
+            # layout.add(self.trigger, 1)
+            # layout.add(self.filter)
             layout.add(self.action, 2)
             layout.add(self.run_btn)

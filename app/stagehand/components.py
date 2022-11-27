@@ -15,6 +15,12 @@ class SidebarButton(QPushButton):
         self.setEnabled(False)
 
 
+class StagehandPage(QWidget):
+    @classmethod
+    def get_subclasses(cls):
+        return {c.page_type: c for c in cls.__subclasses__()}
+
+
 class StagehandWidget(QWidget):
     def __init__(self, *args, icon_name='', **kwargs):
         super().__init__(*args, **kwargs)
@@ -24,4 +30,4 @@ class StagehandWidget(QWidget):
 
 
 class StagehandStatusBarItem(QWidget):
-    ...
+    pass

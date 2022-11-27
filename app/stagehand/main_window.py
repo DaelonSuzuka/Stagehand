@@ -5,6 +5,7 @@ from codex import DeviceControlsDockWidget
 from .sandbox import Sandbox
 from .about import AboutDialog
 from .components import StagehandWidget, StagehandStatusBarItem
+from .tabs import MainTabWidget
 
 
 class FontSizeMenu(QMenu):
@@ -36,9 +37,6 @@ class MainWindow(BaseMainWindow):
 
         self.font_menu = FontSizeMenu(self)
 
-        # hack
-        from . import generic_actions
-
         self.about = AboutDialog(self)
         self.device_controls = DeviceControlsDockWidget(self)
         self.log_monitor = LogMonitorDropdown(self)
@@ -47,11 +45,14 @@ class MainWindow(BaseMainWindow):
         self.sandbox = Sandbox(self)
         if not self.restoreDockWidget(self.sandbox.tools_dock):
             self.addDockWidget(self.sandbox.tools_dock.starting_area, self.sandbox.tools_dock)
+            self.sandbox.tools_dock.hide()
 
         self.load_settings()
 
+        self.tabs = MainTabWidget()
+
         self.stack = QStackedWidget()
-        self.setCentralWidget(self.stack)
+        self.setCentralWidget(self.tabs)
 
         self.widgets = []
 
@@ -62,12 +63,12 @@ class MainWindow(BaseMainWindow):
 
         self.init_tray_stuff()
 
-        self.create_sidebar()
+        # self.create_sidebar()
         self.create_statusbar()
         self.init_statusbar_items()
         self.init_settings_menu()
 
-        self.init_widgets()
+        # self.init_widgets()
 
         App().updater.update_found.connect(self.display_update_available)
 
@@ -86,8 +87,8 @@ class MainWindow(BaseMainWindow):
             self.stack.addWidget(w)
             if hasattr(w, 'on_app_close'):
                 self.closing.connect(w.on_app_close)
-            if hasattr(w, 'sidebar_button'):
-                self.sidebar.addWidget(w.sidebar_button)
+            # if hasattr(w, 'sidebar_button'):
+            #     self.sidebar.addWidget(w.sidebar_button)
 
         # restore active widget
         prev_widget = int(QSettings().value('mainwindow/active_widget', 0))
