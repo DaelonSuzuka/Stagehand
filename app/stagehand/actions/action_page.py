@@ -27,6 +27,7 @@ class ActionsPage(StagehandPage):
         
         with CVBoxLayout(self, margins=0) as layout:
             with layout.hbox(margins=0):
+                layout.add(QWidget())
                 layout.add(self.label)
                 layout.add(QWidget(), 1)
                 # layout.add(QPushButton('Add Action'))

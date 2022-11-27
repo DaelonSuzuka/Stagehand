@@ -13,6 +13,8 @@ class MainTabWidget(QTabWidget):
     def __init__(self):
         super().__init__()
 
+        self.setIconSize(QSize(25, 25))
+
         tab_bar = self.tabBar()
         tab_bar.setContextMenuPolicy(Qt.CustomContextMenu)
         tab_bar.customContextMenuRequested.connect(self.tab_context_menu)

@@ -128,9 +128,11 @@ class WebInterfacePage(StagehandPage):
 
         with CVBoxLayout(self, margins=0) as layout:
             with layout.hbox(margins=0):
+                layout.add(QWidget())
                 layout.add(self.label)
                 layout.add(QLabel(), 1)
             with layout.hbox(margins=0):
+                layout.add(QWidget())
                 layout.add(QLabel('Local Link:'))
                 layout.add(self.local_link)
                 layout.add(QLabel())
