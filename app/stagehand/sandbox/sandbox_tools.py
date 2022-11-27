@@ -16,7 +16,9 @@ class SandboxTools(QWidget):
             layout.add(self.output)
 
     def print(self, *args):
-        s = [str(a) for a in args]
+        s = ''
+        for arg in args:
+            s += str(arg)
 
         if t := self.output.toPlainText():
             s = t + '\n' + s
