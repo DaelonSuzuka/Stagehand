@@ -114,6 +114,9 @@ class WebInterfacePage(StagehandPage):
         self.actions = {}
         self.actions_container = CVBoxLayout()
 
+        self.enabled = AnimatedToggle()
+        self.enabled.stateChanged.connect(lambda _: self.changed.emit())
+
         if changed:
             self.changed.connect(changed)
         
@@ -131,6 +134,8 @@ class WebInterfacePage(StagehandPage):
                 layout.add(QWidget())
                 layout.add(self.label)
                 layout.add(QLabel(), 1)
+                layout.add(self.enabled)
+                layout.add(self.group.filter)
             with layout.hbox(margins=0):
                 layout.add(QWidget())
                 layout.add(QLabel('Local Link:'))
@@ -209,6 +214,7 @@ class WebInterfacePage(StagehandPage):
 
         self.port.setText(str(data.get('port', '5000')))
         self.autostart.setChecked(data.get('autostart', False))
+        self.enabled.setChecked(data.get('enabled', True))
 
         if 'actions' in data and data['actions']:
             for name in data['actions']:
@@ -250,5 +256,6 @@ class WebInterfacePage(StagehandPage):
             'label': self.label.text(),
             'port': self.port.text(),
             'autostart': self.autostart.isChecked(),
+            'enabled': self.enabled.isChecked(),
             **self.group.get_data(),
         }
