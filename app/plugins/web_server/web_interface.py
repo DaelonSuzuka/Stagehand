@@ -109,7 +109,7 @@ class WebInterfacePage(StagehandPage):
         self.stop = QPushButton('Stop Server', clicked=self.stop_thread)
         self.stop.hide()
 
-        self.group = ActionWidgetGroup(f'web_actions/actions', changed=self.on_change, parent=self, autosave=False)
+        self.group = ActionWidgetGroup(name, changed=self.on_change, parent=self, autosave=False)
 
         self.actions = {}
         self.actions_container = CVBoxLayout()
@@ -207,7 +207,7 @@ class WebInterfacePage(StagehandPage):
             label = data['label']
         self.label.setText(label)
 
-        self.port.setText(data.get('port', 5000))
+        self.port.setText(str(data.get('port', '5000')))
         self.autostart.setChecked(data.get('autostart', False))
 
         if 'actions' in data and data['actions']:
@@ -218,7 +218,7 @@ class WebInterfacePage(StagehandPage):
         else:
             actions = {}
             for i in range(1, 13):
-                name = f'Action {i}'
+                name = f'Web Action {i}'
                 actions[name] = {
                     "name": name,
                     "label": name,
@@ -240,7 +240,7 @@ class WebInterfacePage(StagehandPage):
             self.actions = {}
             for i in range(1, 13):
                 name = f'Web Action {i}'
-                self.actions[name] = CompactActionWidget(name, self.group, changed=self.rename_buttons)
+                self.actions[name] = CompactActionWidget(name=name, group=self.group, changed=self.rename_buttons)
 
             self.actions_container.add(list(self.actions.values()))
 
