@@ -96,6 +96,7 @@ class MainTabWidget(QTabWidget):
         if hasattr(page, 'icon_name'):
             icon = qta.icon(page.icon_name)
             self.setTabIcon(idx, icon)
+        self.setCurrentIndex(idx)
 
     def load(self):
         data = {}
