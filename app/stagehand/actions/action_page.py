@@ -52,7 +52,7 @@ class ActionsPage(StagehandPage):
             label = data['label']
         self.label.setText(label)
 
-        if 'actions' in data:
+        if 'actions' in data and data['actions']:
             for name in data['actions']:
                 action = ActionWidget(name, group=self.group)
                 self.actions.append(action)
