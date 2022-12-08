@@ -18,6 +18,7 @@ class UnimplementedField(QLabel):
 class SceneSelector(QComboBox):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
+        self.setPlaceholderText('<scenes>')
         self.changed = changed
         if changed:
             self.currentIndexChanged.connect(changed)
@@ -51,6 +52,7 @@ class SceneSelector(QComboBox):
 class SourceSelector(QComboBox):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
+        self.setPlaceholderText('<sources>')
         self.changed = changed
         if changed:
             self.currentIndexChanged.connect(changed)
@@ -84,6 +86,7 @@ class SourceSelector(QComboBox):
 class FilterSelector(QComboBox):
     def __init__(self, changed=None, source=None, parent=None):
         super().__init__(parent=parent)
+        self.setPlaceholderText('<filters>')
         self.changed = changed
         if changed:
             self.currentIndexChanged.connect(changed)

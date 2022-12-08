@@ -5,6 +5,16 @@ from .requests import requests
 from .request_widgets import widgets
 
 
+def filt(r:str) -> bool:
+    if r.startswith('Get'):
+        return False
+    if r in ['Authenticate']:
+        return False
+    return True
+
+request_names = [r for r in requests.keys() if filt(r)]
+
+
 class ObsAction(QWidget, ActionItem):
     name = 'obs'
 
@@ -17,7 +27,10 @@ class ObsAction(QWidget, ActionItem):
         self.request_widget = None
 
         self.type = QComboBox()
-        self.type.addItems(requests.keys())
+        # this can't be editable without some additional work to make completion and search
+        # behave better
+        # self.type.setEditable(True)
+        self.type.addItems(request_names)
 
         self.type.currentIndexChanged.connect(changed)
         self.type.currentIndexChanged.connect(self.change_type)
