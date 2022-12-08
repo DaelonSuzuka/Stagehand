@@ -12,6 +12,7 @@ class ActionWidgetGroup(QObject):
         self.autosave = autosave
 
         self.filter = ActionFilter(self.action_changed, owner=self)
+        self.active = True
 
         if changed:
             self.action_changed.connect(changed)
@@ -36,6 +37,16 @@ class ActionWidgetGroup(QObject):
         if self.autosave:
             self.save()
         self.action_changed.emit()
+
+    def set_active(self, value: bool):
+        self.active = value
+
+    def can_run(self) -> bool:
+        if not self.active:
+            return False
+        if not self.filter.check_filters():
+            return False
+        return True
         
     def load(self):
         self.data = QSettings().value(self.name, {})

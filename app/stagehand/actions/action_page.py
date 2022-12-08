@@ -20,6 +20,7 @@ class ActionsPage(StagehandPage):
         self.actions_container = CVBoxLayout()
 
         self.enabled = AnimatedToggle()
+        self.enabled.stateChanged.connect(lambda _: self.group.set_active(self.enabled.isChecked()))
         self.enabled.stateChanged.connect(lambda _: self.changed.emit())
 
         if changed:

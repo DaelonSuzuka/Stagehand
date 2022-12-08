@@ -254,7 +254,7 @@ class ActionWidget(QWidget):
 
     def run(self):
         if self.group:
-            if not self.group.filter.check_filters():
+            if not self.group.can_run():
                 return
 
         if not self.filter.check_filters():
