@@ -53,7 +53,10 @@ class MainWindow(BaseMainWindow):
 
         self.setCentralWidget(self.tabs)
 
-        self.widgets = []
+        self.tab_shortcuts = []
+        for i in range(10):
+            shortcut = QShortcut(f'Ctrl+{i + 1}', self, activated=lambda i=i: self.tabs.setCurrentIndex(i))
+            self.tab_shortcuts.append(shortcut)
 
         self.commands = [
             Command("Minimize to tray"),
