@@ -1,8 +1,7 @@
 from qtstrap import *
 from qtpy.QtWebSockets import *
+from qtpy.shiboken import isValid
 import json
-import base64
-import hashlib
 import queue
 import logging
 
@@ -74,7 +73,10 @@ class _GodotSocket(QObject):
             self.set_status('inactive')
             return
 
-        self.set_status(f'reconnecting')
+        self.set_status('reconnecting')
+        if isValid(self.socket):
+            self.socket.close()
+            self.socket.open(self.url)
         self.socket.close()
         self.socket.open(self.url)
 

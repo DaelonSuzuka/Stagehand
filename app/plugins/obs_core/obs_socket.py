@@ -1,5 +1,6 @@
 from qtstrap import *
 from qtpy.QtWebSockets import *
+from qtpy.shiboken import isValid
 import json
 import base64
 import hashlib
@@ -98,9 +99,10 @@ class _ObsSocket(QObject):
             self.set_status('inactive')
             return
 
-        self.set_status(f'reconnecting')
-        self.socket.close()
-        self.socket.open(self.url)
+        self.set_status('reconnecting')
+        if isValid(self.socket):
+            self.socket.close()
+            self.socket.open(self.url)
 
     def open(self, url, port, password=''):
         self.url = QUrl(f'ws://{url}:{port}')
