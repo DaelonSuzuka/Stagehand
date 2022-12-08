@@ -51,7 +51,6 @@ class MainWindow(BaseMainWindow):
 
         self.tabs = MainTabWidget()
 
-        self.stack = QStackedWidget()
         self.setCentralWidget(self.tabs)
 
         self.widgets = []
@@ -63,37 +62,14 @@ class MainWindow(BaseMainWindow):
 
         self.init_tray_stuff()
 
-        # self.create_sidebar()
         self.create_statusbar()
         self.init_statusbar_items()
         self.init_settings_menu()
 
-        # self.init_widgets()
-
         App().updater.update_found.connect(self.display_update_available)
-
-    def set_widget(self, widget) -> None:
-        enable_children(self.sidebar)
-        self.stack.setCurrentWidget(widget)
-        QSettings().setValue('mainwindow/active_widget', self.stack.currentIndex())
 
     def display_update_available(self) -> None:
         self.tray_icon.showMessage('An update is available.', 'an update is available')
-
-    def init_widgets(self) -> None:
-        for widget in StagehandWidget.__subclasses__():
-            w = widget(parent=self.stack)
-            self.widgets.append(w)
-            self.stack.addWidget(w)
-            if hasattr(w, 'on_app_close'):
-                self.closing.connect(w.on_app_close)
-            # if hasattr(w, 'sidebar_button'):
-            #     self.sidebar.addWidget(w.sidebar_button)
-
-        # restore active widget
-        prev_widget = int(QSettings().value('mainwindow/active_widget', 0))
-        if prev_widget < self.stack.count():
-            self.stack.widget(prev_widget).sidebar_button.click()
 
     def init_statusbar_items(self) -> None:
         self.statusbar.add_spacer()
