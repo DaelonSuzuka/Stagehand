@@ -146,6 +146,7 @@ class Action(QWidget):
         self.action.reset()
 
 
+@draggable
 class ActionWidget(QWidget):
     changed = Signal()
 
@@ -231,6 +232,16 @@ class ActionWidget(QWidget):
         menu.addAction('Reset').triggered.connect(self.reset)
         menu.addAction('Remove').triggered.connect(self.remove)
         menu.exec_(event.globalPos())
+
+    def get_drag_data(self) -> QMimeData:
+        mime = QMimeData()
+        data = json.dumps(self.get_data()).encode()
+        mime.setData('action_drop', data)
+        return mime
+
+    def handle_drop(self, drop):
+        if drop == Qt.MoveAction:
+            self.remove()
 
     def copy(self):
         data = {

@@ -9,13 +9,58 @@ import qtawesome as qta
 default_page_type = 'Generic Actions'
 
 
+class TabBar(QTabBar):
+    def __init__(self, parent):
+        super().__init__(parent)
+        parent.setTabBar(self)
+        self.setAcceptDrops(True)
+
+    def get_page_from_pos(self, pos):
+        tab_idx = self.tabAt(pos)
+        page = self.parent().widget(tab_idx)
+        return page
+
+    def dragEnterEvent(self, event: QDragEnterEvent) -> None:
+        mime = event.mimeData()
+        if mime.hasFormat('action_drop'):
+            page = self.get_page_from_pos(event.pos())
+            if hasattr(page, 'accept_action_drop'):
+                event.accept()
+                return
+
+        event.ignore()
+
+    def dragMoveEvent(self, event: QDragMoveEvent) -> None:
+        mime = event.mimeData()
+        if mime.hasFormat('action_drop'):
+            page = self.get_page_from_pos(event.pos())
+            if hasattr(page, 'accept_action_drop'):
+                event.accept()
+                return
+
+        event.ignore()
+
+    def dropEvent(self, event: QDropEvent) -> None:
+        mime = event.mimeData()
+        if mime.hasFormat('action_drop'):
+            page = self.get_page_from_pos(event.pos())
+            if hasattr(page, 'accept_action_drop'):
+                data = bytes(mime.data('action_drop')).decode()
+                page.accept_action_drop(json.loads(data))
+                self.parent().setCurrentIndex(self.tabAt(event.pos()))
+                event.accept()
+                return
+
+        event.ignore()
+
+
 class MainTabWidget(QTabWidget):
     def __init__(self):
         super().__init__()
 
         self.setIconSize(QSize(25, 25))
 
-        tab_bar = self.tabBar()
+        tab_bar = TabBar(self)
         tab_bar.setContextMenuPolicy(Qt.CustomContextMenu)
         tab_bar.customContextMenuRequested.connect(self.tab_context_menu)
 
