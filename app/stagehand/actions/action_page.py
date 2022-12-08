@@ -34,8 +34,8 @@ class ActionsPage(StagehandPage):
                 layout.add(QWidget())
                 layout.add(self.label)
                 layout.add(QWidget(), 1)
-                # layout.add(QPushButton('Add Action'))
                 layout.add(self.enabled)
+                layout.add(QPushButton('New Action', clicked=self.create_action))
                 layout.add(self.group.filter)
             with layout.scroll(margins=0):
                 layout.setStretchFactor(layout._layout, 1)
@@ -47,6 +47,44 @@ class ActionsPage(StagehandPage):
 
     def on_change(self):
         self.changed.emit()
+
+    def create_action(self, data=None, index=None):
+        name = f'Action {len(self.actions) + 1}'
+
+        # make sure the action name is unique
+        action_names = [a.name for a in self.actions]
+        i = 0
+        while name in action_names:
+            i += 1
+            name = f'Action {len(self.actions) + 1 + i}'
+
+        if data:
+            data['name'] = name
+        else:
+            data = {
+                "name": name,
+                "label": name,
+                "action_type": "sandbox",
+                "action": "",
+                "trigger": {
+                    "enabled": True,
+                    "trigger_type": "sandbox",
+                    "trigger": ""
+                },
+                "filter": {
+                    "enabled": True,
+                    "filters": []
+                }
+            }
+        self.group.data['actions'][name] = data
+
+        action = ActionWidget(name, group=self.group)
+        if index:
+            self.actions.insert(index, action)
+            self.actions_container.insertWidget(index, action)
+        else:
+            self.actions.append(action)
+            self.actions_container.add(action)
 
     def set_data(self, data):
         self.data = data
@@ -66,7 +104,7 @@ class ActionsPage(StagehandPage):
                 self.actions_container.add(action)
         else:
             actions = {}
-            for i in range(1, 13):
+            for i in range(1, 2):
                 name = f'Action {i}'
                 actions[name] = {
                     "name": name,
@@ -86,7 +124,7 @@ class ActionsPage(StagehandPage):
             data['actions'] = actions
             self.group.set_data(data)
 
-            self.actions = [ActionWidget(f'Action {i}', group=self.group) for i in range(1, 13)]
+            self.actions = [ActionWidget(f'Action {i}', group=self.group) for i in range(1, 2)]
             self.actions_container.add(self.actions)
             
     def get_data(self):

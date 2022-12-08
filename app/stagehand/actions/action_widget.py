@@ -229,6 +229,7 @@ class ActionWidget(QWidget):
         menu.addAction(self.trigger.enabled)
         menu.addAction(self.filter.enabled)
         menu.addAction('Reset').triggered.connect(self.reset)
+        menu.addAction('Remove').triggered.connect(self.remove)
         menu.exec_(event.globalPos())
 
     def copy(self):
@@ -251,6 +252,13 @@ class ActionWidget(QWidget):
         self.trigger.reset()
         self.filter.reset()
         self.on_change()
+
+    def remove(self):
+        if self.group:
+            self.group.actions.remove(self)
+            self.group.parent().actions.remove(self)
+            self.group.action_changed.emit()
+        self.deleteLater()
 
     def run(self):
         if self.group:
