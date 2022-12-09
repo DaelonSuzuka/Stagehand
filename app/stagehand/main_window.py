@@ -4,7 +4,7 @@ from qtstrap.extras.command_palette import CommandPalette, Command
 from codex import DeviceControlsDockWidget
 from .sandbox import Sandbox
 from .about import AboutDialog
-from .components import StagehandWidget, StagehandStatusBarItem
+from .components import StagehandStatusBarItem
 from .tabs import MainTabWidget
 
 
