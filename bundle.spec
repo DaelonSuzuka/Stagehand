@@ -28,7 +28,6 @@ a = Analysis(
     hiddenimports=[
         'numpy',
         'sounddevice',
-        'flask',
         'qtpy.QtWebSockets',
         'qtpy.shiboken',
     ],
