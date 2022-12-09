@@ -19,7 +19,9 @@ icon_file = str(section['AppIconPath'] + '/' + section['AppIconName']).replace('
 a = Analysis(
     ['app/main.py'],
     pathex=['./app'],
-    binaries=[],
+    binaries=[
+        ('.venv/Scripts/AutoHotkey.exe', '.')
+    ],
     datas=[
         ('app/resources', 'resources'),
         ('app/plugins/*.zip', 'plugins'),
