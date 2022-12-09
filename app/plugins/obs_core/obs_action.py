@@ -49,7 +49,7 @@ class ObsAction(QWidget, ActionItem):
     def set_data(self, data):
         self.data = data
         try:
-            self.type.setCurrentText(data['type'])
+            self.type.setCurrentText(data.get('type', 'SetCurrentScene'))
             if data['fields']:
                 if self.request_widget:
                     self.request_widget.set_data(data['fields'])

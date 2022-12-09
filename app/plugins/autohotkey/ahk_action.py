@@ -30,19 +30,19 @@ class AutohotkeyAction(QWidget, ActionItem):
             self.layout().removeWidget(self.ahk_widget)
             self.ahk_widget.deleteLater()
             
-        self.ahk_widget = widgets[self.type.currentText()](changed=self.changed, owner=self.owner)
+        self.ahk_widget = widgets[self.type.currentText()](changed=self.changed)
         self.layout().add(self.ahk_widget, 1)
 
     def set_data(self, data):
         self.data = data
         try:
-            self.type.setCurrentText(data['type'])
+            self.type.setCurrentText(data.get('type', 'script'))
             self.change_type()
             if data['fields']:
                 if self.ahk_widget:
                     self.ahk_widget.set_data(data['fields'])
                     self.ahk_widget.refresh()
-        except:
+        except KeyError:
             pass
 
     def get_data(self):
