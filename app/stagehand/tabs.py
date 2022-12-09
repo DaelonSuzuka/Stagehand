@@ -68,12 +68,10 @@ class MainTabWidget(QTabWidget):
 
         self.currentChanged.connect(self.save)
 
-        more_pages_button = QPushButton('New Page')
-        page_menu = QMenu(more_pages_button)
-        more_pages_button.setMenu(page_menu)
+        more_pages_button = MenuButton('New Page')
         
         for c in StagehandPage.__subclasses__():
-            page_menu.addAction(c.page_type).triggered.connect(lambda _=None, p=c: self.create_page(p.page_type))
+            more_pages_button.addAction(c.page_type).triggered.connect(lambda _=None, p=c: self.create_page(p.page_type))
 
         corner = QWidget()
         with CHBoxLayout(corner, margins=0) as layout:
