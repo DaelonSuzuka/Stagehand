@@ -163,8 +163,6 @@ class MainTabWidget(QTabWidget):
                 self.setCurrentIndex(data['current_tab'])
         else:
             self.add(ActionsPage('1', changed=self.save, data={}))
-            self.add(ActionsPage('2', changed=self.save, data={}))
-            self.add(ActionsPage('3', changed=self.save, data={}))
 
     def save(self):
         self.fix_tab_names()
