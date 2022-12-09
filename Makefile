@@ -8,7 +8,7 @@ MAKEFLAGS += -s
 # **************************************************************************** #
 
 APP_FOLDER := app
-APP_MAIN = $(APP_FOLDER)/main.py
+APP_MAIN := $(APP_FOLDER)/main.py
 APP_INFO := $(APP_FOLDER)/app_info.py
 
 # load the project variables
@@ -37,6 +37,18 @@ run: venv
 # run the application in pdb
 debug: venv
 	$(VENV_PYTHON) -m pdb $(APP_MAIN)
+
+# ---------------------------------------------------------------------------- #
+
+PORTABLE_FLAG := $(APP_FOLDER)/.portable
+
+# create the portable flag folder
+portable:
+	mkdir "$(PORTABLE_FLAG)"
+
+# remove the portable flag folder
+clean_portable:
+	$(RM) "$(PORTABLE_FLAG)"
 
 # **************************************************************************** #
 # Utility Targets

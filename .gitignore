@@ -18,13 +18,16 @@ settings.json
 log.txt
 settings-logviewer.json
 main.spec
-log.db
 
 # Microsoft stupidity
 debug.log
 
+# portable settings
 .portable
 settings.ini
+actions.json
+log_profiles.json
+log.db
 
 # zipped plugins
 app/plugins/**/*.zip

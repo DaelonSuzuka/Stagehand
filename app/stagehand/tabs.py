@@ -60,6 +60,8 @@ class MainTabWidget(QTabWidget):
 
         self.setIconSize(QSize(25, 25))
 
+        self.settings_file = OPTIONS.config_dir / 'actions.json'
+
         tab_bar = TabBar(self)
         tab_bar.setContextMenuPolicy(Qt.CustomContextMenu)
         tab_bar.customContextMenuRequested.connect(self.tab_context_menu)
@@ -146,7 +148,7 @@ class MainTabWidget(QTabWidget):
     def load(self):
         data = {}
         try:
-            with open('settings.json', 'r') as f:
+            with open(self.settings_file, 'r') as f:
                 data = json.loads(f.read())
         except:
             pass
@@ -177,5 +179,5 @@ class MainTabWidget(QTabWidget):
             'pages': {p.name: p.get_data() for p in pages},
         }
         
-        with open('settings.json', 'w') as f:
+        with open(self.settings_file, 'w') as f:
             f.write(json.dumps(data, indent=4))
