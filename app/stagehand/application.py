@@ -1,17 +1,12 @@
 from qtstrap import *
-from codex import DeviceManager, SerialDevice
-import codex
-import qtawesome as qta
+from codex import DeviceManager
 from .app_updater import ApplicationUpdater
-from .plugin_loader import Plugins
 
 
 class Application(BaseApplication):
     def __init__(self) -> None:
         super().__init__()
         
-        Plugins()
-
         self.updater = ApplicationUpdater()
         # self.updater.check_latest()
 
