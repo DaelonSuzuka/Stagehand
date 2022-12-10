@@ -1,5 +1,6 @@
 from qtstrap import *
 import qtawesome as qta
+from abc import abstractmethod
 
 
 class SidebarButton(QPushButton):
@@ -19,6 +20,18 @@ class StagehandPage(QWidget):
     @classmethod
     def get_subclasses(cls):
         return {c.page_type: c for c in cls.__subclasses__()}
+
+    @abstractmethod    
+    def get_name(self) -> str:
+        raise NotImplementedError
+
+    @abstractmethod
+    def set_data(self, data: dict) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_data(self) -> dict:
+        raise NotImplementedError
 
 
 class StagehandWidget(QWidget):
