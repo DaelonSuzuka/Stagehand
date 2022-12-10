@@ -1,11 +1,9 @@
 from qtstrap import *
 from pathlib import Path
-import json
 import importlib
 import sys
 import os
 import codex
-import zipimport
 from zipimport import zipimporter
 import logging
 
