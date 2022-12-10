@@ -5,7 +5,7 @@ import qtawesome as qta
 from .action_editor import ActionEditorDialog
 from .action_trigger import ActionTrigger
 from .action_filter import FilterStack, ActionFilter
-import abc
+from abc import abstractmethod
 import json
 
 
@@ -18,19 +18,19 @@ class ActionItem:
     def get_item(cls, name):
         return cls.get_subclasses()[name]
 
-    @abc.abstractmethod
+    @abstractmethod
     def __init__(self, changed) -> None:
         raise NotImplementedError
 
-    @abc.abstractmethod
+    @abstractmethod
     def set_data(self, data: dict):
         raise NotImplementedError
 
-    @abc.abstractmethod
+    @abstractmethod
     def get_data(self) -> dict:
         raise NotImplementedError
 
-    @abc.abstractmethod
+    @abstractmethod
     def run(self) -> None:
         raise NotImplementedError
 

@@ -1,5 +1,5 @@
 from qtstrap import *
-import abc
+from abc import abstractmethod
 import json
 
 
@@ -12,15 +12,15 @@ class TriggerItem:
     def get_item(cls, name):
         return cls.get_subclasses()[name]
 
-    @abc.abstractmethod
+    @abstractmethod
     def __init__(self, changed) -> None:
         raise NotImplementedError
 
-    @abc.abstractmethod
+    @abstractmethod
     def set_data(self, data: dict):
         raise NotImplementedError
 
-    @abc.abstractmethod
+    @abstractmethod
     def get_data(self) -> dict:
         raise NotImplementedError
 

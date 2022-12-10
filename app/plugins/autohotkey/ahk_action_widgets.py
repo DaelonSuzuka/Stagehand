@@ -1,28 +1,28 @@
 from qtstrap import *
 from qtstrap.extras.code_editor import CodeLine, CodeEditor
 import qtawesome as qta
-import abc
+from abc import abstractmethod
 from stagehand.sandbox import Sandbox
 
 
 class AHKActionWidget(QWidget):
-    @abc.abstractmethod
+    @abstractmethod
     def __init__(self, changed=None, owner=None):
         raise NotImplementedError
 
-    @abc.abstractmethod
+    @abstractmethod
     def refresh(self):
         raise NotImplementedError
 
-    @abc.abstractmethod
+    @abstractmethod
     def set_data(self, data):
         raise NotImplementedError
 
-    @abc.abstractmethod
+    @abstractmethod
     def get_data(self):
         raise NotImplementedError
 
-    @abc.abstractmethod
+    @abstractmethod
     def run(self):
         raise NotImplementedError
     
