@@ -1,6 +1,4 @@
 from qtstrap import *
-import json
-from pathlib import Path
 from .sandbox_tools import SandboxTools
 
 
@@ -101,7 +99,8 @@ class SandboxToolsDockWidget(QDockWidget):
         return action
 
 
-class _Sandbox(QWidget):
+@singleton
+class Sandbox(QWidget):
     extensions = {}
 
     def __init__(self, parent=None):
@@ -191,14 +190,3 @@ class _Sandbox(QWidget):
             error_cb(error)
         else:
             self.tools.print(error)
-
-
-
-sandbox = None
-
-
-def Sandbox(parent=None):
-    global sandbox
-    if sandbox is None:
-        sandbox = _Sandbox(parent)
-    return sandbox
