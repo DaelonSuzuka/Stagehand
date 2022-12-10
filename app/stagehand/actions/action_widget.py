@@ -121,21 +121,24 @@ class Action(QWidget):
             self.action = None
         self.action = ActionItem.get_item(self.type.currentText())(self._changed, self.owner)
         if self.data:
-            self.action.set_data(self.data)
+            self.action.set_data(self.data['action'])
         self.action_box.add(self.action)
 
     def set_data(self, data):
-        self.data = data
-        if 'action_type' not in data:
-            data['action_type'] = 'sandbox'
+        if 'action' in data:
+            self.data = data
+            if 'action_type' not in data['action']:
+                data['action']['type'] = 'sandbox'
 
-        self.type.setCurrentText(data['action_type'])
-        self.type_changed()
+            self.type.setCurrentText(data['action']['type'])
+            self.type_changed()
 
     def get_data(self):
-        return  {
-            'action_type': self.type.currentText(),
-            **self.action.get_data(),
+        return {
+            'action': {
+                'type': self.type.currentText(),
+                **self.action.get_data(),
+            }
         }
 
     def run(self):

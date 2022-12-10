@@ -123,9 +123,9 @@ class ActionTrigger(QWidget):
     def set_data(self, data):
         if 'trigger' in data:
             self.data = data
-            if 'trigger_type' not in data['trigger']:
-                data['trigger']['trigger_type'] = 'sandbox'
-            self.type.setCurrentText(data['trigger']['trigger_type'])
+            if 'type' not in data['trigger']:
+                data['trigger']['type'] = 'sandbox'
+            self.type.setCurrentText(data['trigger']['type'])
             
             self.type_changed()
 
@@ -136,7 +136,7 @@ class ActionTrigger(QWidget):
         return {
             'trigger': {
                 'enabled': self.enabled.isChecked(),
-                'trigger_type': self.type.currentText(),
+                'type': self.type.currentText(),
                 **self.trigger.get_data(),
             }
         }

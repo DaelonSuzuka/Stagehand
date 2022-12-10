@@ -68,8 +68,10 @@ class ActionsPage(StagehandPage):
             data = {
                 "name": name,
                 "label": name,
-                "action_type": "sandbox",
-                "action": "",
+                "action": {
+                    "type": "sandbox",
+                    "action": ""
+                },
                 "trigger": {
                     "enabled": True,
                     "trigger_type": "sandbox",
@@ -159,8 +161,10 @@ class ActionsPage(StagehandPage):
                 actions[name] = {
                     "name": name,
                     "label": name,
-                    "action_type": "sandbox",
-                    "action": "",
+                    "action": {
+                        "type": "sandbox",
+                        "action": ""
+                    },
                     "trigger": {
                         "enabled": True,
                         "trigger_type": "sandbox",

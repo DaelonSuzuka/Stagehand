@@ -57,9 +57,10 @@ class ProgramRunningFilter(QWidget, FilterStackItem):
         return self.process.currentText() in get_process_names()
     
     def set_data(self, data: dict) -> None:
-        self.process.setCurrentText(data['type'])
+        if 'process' in data:
+            self.process.setCurrentText(data['process'])
 
     def get_data(self) -> dict:
         return {
-            'type': self.process.currentText(),
+            'process': self.process.currentText(),
         }
