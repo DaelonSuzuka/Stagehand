@@ -1,7 +1,10 @@
 from stagehand.sandbox import SandboxExtension
-from ahk.daemon import AHK
 from pathlib import Path
 import sys
+
+import ahk
+from ahk import AHK
+from ahk.window import Window
 
 
 class AutohotkeyExtension(SandboxExtension):
@@ -15,5 +18,15 @@ class AutohotkeyExtension(SandboxExtension):
         exe_path = (Path(sys.executable).parent / 'AutoHotkey.exe').as_posix()
         self._ahk = AHK(executable_path=exe_path)
 
+        self._namespace = {
+            'Window': Window,
+        }
+
     def __getattr__(self, name):
+        if name in self._namespace:
+            return self._namespace[name]
+
+        if hasattr(ahk, name):
+            return getattr(ahk, name)
+
         return getattr(self._ahk, name)
