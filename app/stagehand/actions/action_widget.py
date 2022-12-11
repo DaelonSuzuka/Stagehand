@@ -126,6 +126,21 @@ class Action(QWidget):
             self.action.set_data(self.data['action'])
         self.action_box.add(self.action)
 
+    def contextMenuEvent(self, event: QContextMenuEvent) -> None:
+        menu = QMenu()
+        menu.addAction(QAction('Copy Action', self, triggered=self.copy))
+        menu.addAction(QAction('Paste Action', self, triggered=self.paste))
+        menu.addAction(QAction('Reset Action', self, triggered=self.reset))
+        menu.exec_(event.globalPos())
+
+    def copy(self):
+        data = json.dumps(self.get_data())
+        QClipboard().setText(data)
+
+    def paste(self):
+        data = json.loads(QClipboard().text())
+        self.set_data(data)
+
     def set_data(self, data):
         if 'action' in data:
             self.data = data
