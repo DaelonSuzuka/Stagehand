@@ -13,6 +13,12 @@ class ActionEditorDialog(QDialog):
         self.owner = owner
         self.setWindowTitle('Action Editor')
 
+        geometry = QSettings().value("script_editor/geometry")
+        if isinstance(geometry, QByteArray):
+            self.restoreGeometry(geometry)
+
+        self.finished.connect(lambda _: QSettings().setValue("script_editor/geometry", self.saveGeometry()))
+
         self.name = owner.name
         self.label = QLineEdit(owner.label.text())
         self.editor = CodeEditor(highlighter=PythonHighlighter, model=SandboxCompletionModel())
