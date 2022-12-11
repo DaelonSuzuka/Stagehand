@@ -167,7 +167,7 @@ class ActionWidget(QWidget):
             },
             'trigger': {
                 'enabled': True,
-                'trigger_type': 'sandbox',
+                'trigger_type': 'keyboard',
                 'trigger': ''
             },
             'filter': {

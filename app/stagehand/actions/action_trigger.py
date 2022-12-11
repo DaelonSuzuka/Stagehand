@@ -118,13 +118,13 @@ class ActionTrigger(QWidget):
         self.set_data(data)
 
     def reset(self):
-        self.type.setCurrentText('sandbox')
+        self.type.setCurrentText('keyboard')
 
     def set_data(self, data):
         if 'trigger' in data:
             self.data = data
             if 'type' not in data['trigger']:
-                data['trigger']['type'] = 'sandbox'
+                data['trigger']['type'] = 'keyboard'
             self.type.setCurrentText(data['trigger']['type'])
             
             self.type_changed()
