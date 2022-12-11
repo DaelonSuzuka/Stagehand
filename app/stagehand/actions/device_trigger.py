@@ -73,10 +73,12 @@ class DeviceTrigger(QWidget, TriggerItem):
     def set_status(self, status:Status):
         if status is Status.CONNECTED:
             self.status.setEnabled(True)
+            self.status.setToolTip('Device is connected')
             self.status.setPixmap(self.connected)
 
         if status is Status.DISCONNECTED:
             self.status.setEnabled(False)
+            self.status.setToolTip('Device is disconnected')
             self.status.setPixmap(self.disconnected)
 
     def device_changed(self, display_name):
