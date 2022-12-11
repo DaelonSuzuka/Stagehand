@@ -69,11 +69,6 @@ class ActionTrigger(QWidget):
         self._run = run
         self.data = None
 
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.show_menu)
-        self.type.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.type.customContextMenuRequested.connect(self.show_menu)
-
         self.enabled = QAction('Custom Trigger', self, triggered=changed, checkable=True)
 
         for trigger in TriggerItem.__subclasses__():
@@ -92,12 +87,12 @@ class ActionTrigger(QWidget):
             layout.add(self.type)
             layout.add(self.trigger_box, 1)
 
-    def show_menu(self, pos) -> None:
+    def contextMenuEvent(self, event: QContextMenuEvent) -> None:
         menu = QMenu()
         menu.addAction(QAction('Copy Trigger', self, triggered=self.copy))
         menu.addAction(QAction('Paste Trigger', self, triggered=self.paste))
         menu.addAction(QAction('Reset Trigger', self, triggered=self.reset))
-        menu.exec_(self.mapToGlobal(pos))
+        menu.exec_(event.globalPos())
 
     def type_changed(self):
         if self.trigger:
