@@ -66,22 +66,12 @@ class ActionsPage(StagehandPage):
             data['name'] = name
         else:
             data = {
+                **ActionWidget.default_data,
                 "name": name,
                 "label": name,
-                "action": {
-                    "type": "sandbox",
-                    "action": ""
-                },
-                "trigger": {
-                    "enabled": True,
-                    "trigger_type": "sandbox",
-                    "trigger": ""
-                },
-                "filter": {
-                    "enabled": True,
-                    "filters": []
-                }
             }
+        if 'actions' not in self.group.data:
+            self.group.data['actions'] = {}
         self.group.data['actions'][name] = data
 
         action = ActionWidget(name, group=self.group)
@@ -155,29 +145,6 @@ class ActionsPage(StagehandPage):
                 self.actions.append(action)
                 self.actions_container.add(action)
         else:
-            actions = {}
-            for i in range(1, 2):
-                name = f'Action {i}'
-                actions[name] = {
-                    "name": name,
-                    "label": name,
-                    "action": {
-                        "type": "sandbox",
-                        "action": ""
-                    },
-                    "trigger": {
-                        "enabled": True,
-                        "trigger_type": "sandbox",
-                        "trigger": ""
-                    },
-                    "filter": {
-                        "enabled": True,
-                        "filters": []
-                    }
-                }
-            data['actions'] = actions
-            self.group.set_data(data)
-
             self.actions = [ActionWidget(f'Action {i}', group=self.group) for i in range(1, 2)]
             self.actions_container.add(self.actions)
             

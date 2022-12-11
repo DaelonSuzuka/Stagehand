@@ -129,7 +129,7 @@ class Action(QWidget):
     def set_data(self, data):
         if 'action' in data:
             self.data = data
-            if 'action_type' not in data['action']:
+            if 'type' not in data['action']:
                 data['action']['type'] = 'sandbox'
 
             self.type.setCurrentText(data['action']['type'])
@@ -154,6 +154,27 @@ class Action(QWidget):
 @draggable
 class ActionWidget(QWidget):
     changed = Signal()
+
+    @classmethod
+    @property
+    def default_data(cls):
+        return {
+            'name': 'Action',
+            'label': 'Action',
+            'action': {
+                'type': 'sandbox',
+                'action': ''
+            },
+            'trigger': {
+                'enabled': True,
+                'trigger_type': 'sandbox',
+                'trigger': ''
+            },
+            'filter': {
+                'enabled': True,
+                'filters': []
+            }
+        }
 
     def __init__(self, name='', group=None, trigger=False, data=None, changed=None, parent=None):
         super().__init__(parent=parent)
@@ -215,6 +236,8 @@ class ActionWidget(QWidget):
         }
 
     def set_data(self, data):
+        if not data:
+            data = self.default_data
         self.label.setText(data['label'])
         self.action.set_data(data)
         self.trigger.set_data(data)
@@ -288,6 +311,27 @@ class ActionWidget(QWidget):
 
 
 class CompactActionWidget(ActionWidget):
+    @classmethod
+    @property
+    def default_data(cls):
+        return {
+            'name': 'Action',
+            'label': 'Action',
+            'action': {
+                'type': 'sandbox',
+                'action': ''
+            },
+            'trigger': {
+                'enabled': False,
+                'trigger_type': 'sandbox',
+                'trigger': ''
+            },
+            'filter': {
+                'enabled': False,
+                'filters': []
+            }
+        }
+
     def do_layout(self):
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.label)

@@ -222,27 +222,6 @@ class WebInterfacePage(StagehandPage):
                 self.actions[name] = action
                 self.actions_container.add(action)
         else:
-            actions = {}
-            for i in range(1, 13):
-                name = f'Web Action {i}'
-                actions[name] = {
-                    "name": name,
-                    "label": name,
-                    "action_type": "sandbox",
-                    "action": "",
-                    "trigger": {
-                        "enabled": False,
-                        "trigger_type": "sandbox",
-                        "trigger": ""
-                    },
-                    "filter": {
-                        "enabled": False,
-                        "filters": []
-                    }
-                }
-            data['actions'] = actions
-            self.group.set_data(data)
-
             self.actions = {}
             for i in range(1, 13):
                 name = f'Web Action {i}'

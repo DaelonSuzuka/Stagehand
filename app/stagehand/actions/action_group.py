@@ -11,6 +11,14 @@ class ActionWidgetGroup(QObject):
         self.name = name
         self.autosave = autosave
 
+        self.data = {
+            'actions': {},
+            'filter': {
+                'enabled': True,
+                'filters': []
+            }
+        }
+
         self.filter = ActionFilter(self.action_changed, owner=self)
         self.active = True
 
@@ -23,13 +31,12 @@ class ActionWidgetGroup(QObject):
 
     def register(self, action):
         self.actions.append(action)
-        if action.name in self.data:
-            action.set_data(self.data[action.name])
+        
         if 'actions' in self.data:
             if action.name in self.data['actions']:
                 action.set_data(self.data['actions'][action.name])
         else:
-            action.set_data(action.get_data())
+            action.set_data({})
         action.changed.connect(self.on_action_change)
         action.action.this = self.this
 

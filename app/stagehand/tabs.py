@@ -151,7 +151,7 @@ class MainTabWidget(QTabWidget):
         except:
             pass
   
-        if 'pages' in data:
+        if 'pages' in data and data['pages']:
             for name, page_data in data['pages'].items():
                 page_type = page_data.get('page_type', default_page_type)
                 page_class = StagehandPage.get_subclasses()[page_type]
