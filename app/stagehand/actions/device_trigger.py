@@ -36,7 +36,7 @@ class KnownDevices:
 
 @SubscriptionManager.subscribe
 class DeviceTrigger(QWidget, TriggerItem):
-    name = 'Device'
+    name = 'device'
     triggered = Signal()
     
     def __init__(self, changed, run, owner=None):
