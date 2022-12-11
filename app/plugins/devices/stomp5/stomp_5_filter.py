@@ -4,8 +4,8 @@ from codex import SubscriptionManager
 
 
 @SubscriptionManager.subscribe
-class Stomp4Filter(QWidget, FilterStackItem):
-    name = 'Stomp 4'
+class Stomp5Filter(QWidget, FilterStackItem):
+    name = 'Stomp 5'
 
     def __init__(self, changed, owner=None) -> None:
         super().__init__()
