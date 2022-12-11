@@ -46,6 +46,8 @@ class SandboxAction(QWidget, ActionItem):
         
         self.owner = owner
         self.action = CodeLine(changed=changed, highlighter=PythonHighlighter, model=SandboxCompletionModel())
+        self.action.ctrl_enter_pressed.connect(self.run)
+    
         self.changed = changed
 
         self.edit_btn = QPushButton('', clicked=self.open_editor, icon=qta.icon('fa5.edit'))
