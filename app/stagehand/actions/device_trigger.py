@@ -148,9 +148,10 @@ class DeviceTrigger(QWidget, TriggerItem):
 
     def set_data(self, data):
         self.refresh_devices()
-        self.device_selector.setCurrentText(data['device'])
-        self.event_selector.setCurrentText(data['event'])
-        self.device_changed(data['device'])
+        if 'device' in data:
+            self.device_selector.setCurrentText(data['device'])
+            self.event_selector.setCurrentText(data['event'])
+            self.device_changed(data['device'])
 
     def get_data(self):
         return {
