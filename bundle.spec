@@ -28,6 +28,8 @@ a = Analysis(
         ('app/plugins/devices/*.zip', 'plugins/devices'),
     ],
     hiddenimports=[
+        'pynput',
+        'ahk',
         'numpy',
         'sounddevice',
         'qtpy.QtWebSockets',
