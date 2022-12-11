@@ -108,6 +108,9 @@ class Sandbox(QWidget):
         self.tools = SandboxTools()
         self.tools_dock = SandboxToolsDockWidget(self.tools, self)
 
+        self.this = None
+        self.source = None
+
         for ext in SandboxExtension.__subclasses__():
             e = ext()
             if isinstance(ext.name, list):
@@ -128,7 +131,8 @@ class Sandbox(QWidget):
             'load': self._load,
             'data': self._data,
             'print': self.tools.print,
-            'this': None,
+            'this': self.this,
+            'source': self.source,
             **self.extensions,
         }
         self._locals = {
@@ -152,19 +156,21 @@ class Sandbox(QWidget):
             error_cb(error)
 
     @Slot()
-    def run(self, text, this=None, error_cb=None):
+    def run(self, text, error_cb=None):
         if text == '':
             return
 
         error = ''
         try:
             code = compile(text, '', 'exec')
-            self._globals['this'] = this
+            self._globals['this'] = self.this
+            self._globals['source'] = self.source
             exec(code, self._globals, self._locals)
         except Exception as e:
             error = str(e)
 
         self._globals['this'] = None
+        self._globals['source'] = None
 
         if error_cb:
             error_cb(error)
@@ -172,19 +178,21 @@ class Sandbox(QWidget):
             self.tools.print(error)
     
     @Slot()
-    def eval(self, text, this=None, error_cb=None):
+    def eval(self, text, error_cb=None):
         if text == '':
             return
 
         error = ''
         try:
             code = compile(text, '', 'exec')
-            self._globals['this'] = this
+            self._globals['this'] = self.this
+            self._globals['source'] = self.source
             eval(code, self._globals, self._locals)
         except Exception as e:
             error = str(e)
 
         self._globals['this'] = None
+        self._globals['source'] = None
 
         if error_cb:
             error_cb(error)

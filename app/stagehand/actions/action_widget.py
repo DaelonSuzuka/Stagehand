@@ -322,7 +322,11 @@ class ActionWidget(QWidget):
         if not self.filter.check_filters():
             return
 
+        Sandbox().this = self
+        Sandbox().source = self.sender()
         self.action.run()
+        Sandbox().this = None
+        Sandbox().source = None
 
 
 class CompactActionWidget(ActionWidget):
