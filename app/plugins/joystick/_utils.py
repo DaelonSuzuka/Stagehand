@@ -18,13 +18,20 @@ def get_joystick_sources(name):
     if name not in joysticks:
         return
 
-    sources = []
+    sources = {
+        'axes': [],
+        'buttons': [],
+        'hats': [],
+    }
 
     for i in range(joysticks[name].get_numaxes()):
-        sources.append(f'axis {i}')
-
+        sources['axes'].append(i)
+    
     for i in range(joysticks[name].get_numbuttons()):
-        sources.append(f'button {i}')
+        sources['buttons'].append(i)
+
+    for i in range(joysticks[name].get_numhats()):
+        sources['hats'].append(i)
     
     return sources
     

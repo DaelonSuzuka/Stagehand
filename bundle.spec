@@ -28,6 +28,7 @@ a = Analysis(
         ('app/plugins/devices/*.zip', 'plugins/devices'),
     ],
     hiddenimports=[
+        'pygame',
         'pynput',
         'ahk',
         'numpy',

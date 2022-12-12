@@ -19,6 +19,7 @@ pfzy==0.3.4
 prompt-toolkit==3.0.31
 psutil==5.9.3
 pycparser==2.21
+pygame==2.1.2
 pyinstaller==5.6.1
 pyinstaller-hooks-contrib==2022.10
 pynput==1.7.6
@@ -30,7 +31,7 @@ PySide6-Essentials==6.3.0
 pywin32-ctypes==0.2.0
 QtAwesome==1.2.1
 QtPy==2.3.0
-qtstrap==0.3.9
+qtstrap==0.3.10
 # -e P:/qtstrap/qtstrap
 shiboken6==6.3.0
 six==1.16.0
