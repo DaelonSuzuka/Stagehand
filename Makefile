@@ -64,6 +64,9 @@ obs: venv
 plugins: venv
 	$(VENV_PYTHON) tools/plugins.py build
 
+install_plugins: venv
+	$(VENV_PYTHON) tools/plugins.py install
+
 clean_plugins: venv
 	$(VENV_PYTHON) tools/plugins.py clean
 

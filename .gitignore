@@ -29,6 +29,8 @@ actions.json
 log_profiles.json
 log.db
 
+app/plugins/**/packages
+
 # zipped plugins
 app/plugins/**/*.zip
 
