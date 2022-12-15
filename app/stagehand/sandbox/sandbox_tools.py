@@ -16,6 +16,11 @@ class SandboxTools(QWidget):
             layout.add(self.output)
 
     def print(self, *args):
+        scrollbar = self.output.verticalScrollBar()
+        at_bottom = False
+        if scrollbar.value() == scrollbar.maximum():
+            at_bottom = True
+        
         s = ''
         for arg in args:
             s += str(arg)
@@ -25,3 +30,6 @@ class SandboxTools(QWidget):
 
         out = '\n'.join(l for l in s.split('\n') if l)
         self.output.setPlainText(out)
+        
+        if at_bottom:
+            scrollbar.setValue(scrollbar.maximum())
