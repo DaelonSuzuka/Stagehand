@@ -46,6 +46,7 @@ class DeviceTrigger(QWidget, TriggerItem):
         self.owner = owner
         self.triggered.connect(run)
 
+        self.device = None
         self.adapter = None
         self.current_guid = None
 
@@ -55,7 +56,7 @@ class DeviceTrigger(QWidget, TriggerItem):
         self.device_selector.currentTextChanged.connect(self.device_changed)
         
         self.event_selector = QComboBox()
-        self.event_selector.setMinimumWidth(150)
+        self.event_selector.setMinimumWidth(200)
         self.event_selector.currentIndexChanged.connect(changed)
 
         self.connected = qta.icon('mdi.link-variant').pixmap(QSize(25, 25))
@@ -84,6 +85,9 @@ class DeviceTrigger(QWidget, TriggerItem):
     def device_changed(self, display_name):
         self.set_status(Status.DISCONNECTED)
 
+        self.device = None
+        self.current_guid = None
+
         full_name = KnownDevices().get_full_name(display_name)
         parts = full_name.split(':')
         name = parts[0]
@@ -92,6 +96,7 @@ class DeviceTrigger(QWidget, TriggerItem):
         if guid in self.devices:
             if self.adapter:
                 self.adapter.deleteLater()
+            self.device = self.devices[guid]
             self.adapter = self.devices[guid].signals.adapter()
             
             if hasattr(self.adapter, 'event_recieved'):
