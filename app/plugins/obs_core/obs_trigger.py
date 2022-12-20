@@ -18,7 +18,7 @@ class ObsTrigger(QWidget, TriggerItem):
 
         self.event_widget = None
 
-        ObsSocket().event_recieved.connect(self.event_recieved)
+        ObsSocket().event_received.connect(self.event_received)
 
         self.type = QComboBox()
         self.type.addItems(events.keys())
@@ -29,7 +29,7 @@ class ObsTrigger(QWidget, TriggerItem):
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.type)
 
-    def event_recieved(self, event):
+    def event_received(self, event):
         if self.event_widget and self.event_widget.validate_event(event):
             self.triggered.emit()
 

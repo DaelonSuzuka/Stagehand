@@ -12,7 +12,7 @@ class Rocker(JudiStandardMixin, SerialDevice):
     ]
     
     class Signals(Adapter):
-        event_recieved = Signal(str)
+        event_received = Signal(str)
         value_changed = Signal(str, int)
         channel_0_changed = Signal(int)
         channel_1_changed = Signal(int)
@@ -41,4 +41,4 @@ class Rocker(JudiStandardMixin, SerialDevice):
             if channel == '1':
                 self.value_1 = value
                 self.signals.channel_1_changed.emit(value)
-            self.signals.event_recieved.emit(f'Channel {channel} Changed')
+            self.signals.event_received.emit(f'Channel {channel} Changed')

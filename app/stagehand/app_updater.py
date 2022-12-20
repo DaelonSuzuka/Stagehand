@@ -10,7 +10,7 @@ class ApplicationUpdater(QObject):
         super().__init__()
 
         self.request_manager = QNetworkAccessManager(self)
-        self.request_manager.finished.connect(self.replyRecieved)
+        self.request_manager.finished.connect(self.reply_received)
 
         self.update_available = False
 
@@ -18,7 +18,7 @@ class ApplicationUpdater(QObject):
         url = OPTIONS.app_info.AppReleaseUrl
         self.request_manager.get(QNetworkRequest(QUrl(url)))
 
-    def replyRecieved(self, reply: QNetworkReply):
+    def reply_received(self, reply: QNetworkReply):
         if reply.error() == QNetworkReply.NoError:
             response = reply.readAll()
             d = json.loads(str(response, 'utf-8'))

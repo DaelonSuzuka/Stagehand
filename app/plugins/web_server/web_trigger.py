@@ -15,7 +15,7 @@ class WebTrigger(QWidget, TriggerItem):
         self.triggered.connect(run)
 
         self.socket = SocketListener()
-        self.socket.message_recieved.connect(self.processTextMessage)
+        self.socket.message_received.connect(self.processTextMessage)
 
         self.action = QComboBox()
         self.action.addItems([f'Action {i + 1}' for i in range(12)])

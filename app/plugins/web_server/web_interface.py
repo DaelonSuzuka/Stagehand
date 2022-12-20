@@ -54,7 +54,7 @@ def start_server():
 @singleton
 class SocketListener(QObject):
     new_connection = Signal()
-    message_recieved = Signal(str)
+    message_received = Signal(str)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -73,7 +73,7 @@ class SocketListener(QObject):
     def on_new_connection(self):
         socket = self.server.nextPendingConnection()
         self.clients.append(socket)
-        socket.textMessageReceived.connect(self.message_recieved.emit)
+        socket.textMessageReceived.connect(self.message_received.emit)
         self.new_connection.emit()
 
 
@@ -90,7 +90,7 @@ class WebInterfacePage(StagehandPage):
 
         self.socket = SocketListener()
         self.socket.new_connection.connect(self.rename_buttons)
-        self.socket.message_recieved.connect(self.processTextMessage)
+        self.socket.message_received.connect(self.processTextMessage)
 
         self.httpd = None
         self.httpd_thread = None

@@ -13,12 +13,12 @@ class Click4(JudiStandardMixin, SerialDevice):
     ]
     
     class Signals(Adapter):
-        event_recieved = Signal(str)
+        event_received = Signal(str)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.signals = self.Signals()
 
         self.message_tree.merge(self.common_message_tree)
-        self.message_tree['update']['button_pressed'] = lambda b: self.signals.event_recieved.emit(f'{b} Down')
-        self.message_tree['update']['button_released'] = lambda b: self.signals.event_recieved.emit(f'{b} Up')
+        self.message_tree['update']['button_pressed'] = lambda b: self.signals.event_received.emit(f'{b} Down')
+        self.message_tree['update']['button_released'] = lambda b: self.signals.event_received.emit(f'{b} Up')

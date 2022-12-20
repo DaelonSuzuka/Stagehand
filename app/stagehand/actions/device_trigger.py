@@ -99,8 +99,8 @@ class DeviceTrigger(QWidget, TriggerItem):
             self.device = self.devices[guid]
             self.adapter = self.devices[guid].signals.adapter()
             
-            if hasattr(self.adapter, 'event_recieved'):
-                self.adapter.event_recieved.connect(self.event_recieved)
+            if hasattr(self.adapter, 'event_received'):
+                self.adapter.event_received.connect(self.event_received)
             self.set_status(Status.CONNECTED)
 
         profile = DeviceManager.profiles()[name]
@@ -120,7 +120,7 @@ class DeviceTrigger(QWidget, TriggerItem):
         else:
             self.event_selector.clear()
 
-    def event_recieved(self, event):
+    def event_received(self, event):
         if event == self.event_selector.currentText():
             self.triggered.emit()
 
