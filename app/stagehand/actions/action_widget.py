@@ -176,6 +176,7 @@ class ActionWidget(QWidget):
         return {
             'name': 'Action',
             'label': 'Action',
+            'enabled': True,
             'action': {
                 'type': 'sandbox',
                 'action': ''
@@ -209,6 +210,9 @@ class ActionWidget(QWidget):
         self.run_btn = QPushButton('', clicked=self.run, icon=qta.icon('fa5.play-circle'))
         self.run_btn.setIconSize(QSize(22, 22))
 
+        self.enabled = AnimatedToggle()
+        self.enabled.stateChanged.connect(lambda _: self.changed.emit())
+
         self.label = LabelEdit(label, changed=self.on_change)
         self.action = Action(self.on_change, action_type, action, owner=self)
         self.trigger = ActionTrigger(self.on_change, run=self.run, owner=self)
@@ -232,6 +236,7 @@ class ActionWidget(QWidget):
             with layout.hbox(margins=0):
                 layout.add(self.label)
                 layout.add(QWidget(), 1)
+                layout.add(self.enabled)
                 layout.add(self.filter)
             with layout.hbox(margins=0):
                 layout.add(self.trigger)
@@ -245,6 +250,7 @@ class ActionWidget(QWidget):
         return {
             'name': self.name,
             'label': self.label.text(),
+            'enabled': self.enabled.isChecked(),
             **self.action.get_data(),
             **self.trigger.get_data(),
             **self.filter.get_data(),
@@ -253,6 +259,8 @@ class ActionWidget(QWidget):
     def set_data(self, data):
         if not data:
             data = self.default_data
+
+        self.enabled.setChecked(data.get('enabled', True))
         self.label.setText(data['label'])
         self.action.set_data(data)
         self.trigger.set_data(data)
@@ -336,6 +344,7 @@ class CompactActionWidget(ActionWidget):
         return {
             'name': 'Action',
             'label': 'Action',
+            'enabled': True,
             'action': {
                 'type': 'sandbox',
                 'action': ''
