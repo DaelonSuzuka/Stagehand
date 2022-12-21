@@ -42,7 +42,7 @@ class MainWindow(BaseMainWindow):
         self.log_monitor = LogMonitorDropdown(self)
         self.command_palette = CommandPalette(self)
         
-        self.sandbox = Sandbox(self)
+        self.sandbox = Sandbox()
         if not self.restoreDockWidget(self.sandbox.tools_dock):
             self.addDockWidget(self.sandbox.tools_dock.starting_area, self.sandbox.tools_dock)
             self.sandbox.tools_dock.hide()
