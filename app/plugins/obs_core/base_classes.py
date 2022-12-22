@@ -139,3 +139,65 @@ class BoolSelector(QComboBox):
             return True
         else:
             return False
+
+
+class StringSelector(QLineEdit):
+    def __init__(self, changed=None, parent=None, placeholder=''):
+        super().__init__(parent=parent)
+        self.changed = changed
+        if changed:
+            self.textChanged.connect(changed)
+
+        self.placeholder = placeholder
+        self.setPlaceholderText(placeholder)
+
+    def refresh(self):
+        pass
+
+    def set_data(self, data):
+        self.setText(str(data))
+
+    def get_data(self):
+        return self.text()
+
+
+class IntSelector(QLineEdit):
+    def __init__(self, changed=None, parent=None, placeholder=''):
+        super().__init__(parent=parent)
+        self.changed = changed
+        if changed:
+            self.textChanged.connect(changed)
+
+        self.placeholder = placeholder
+        self.setPlaceholderText(placeholder)
+        self.setValidator(QIntValidator(self))
+
+    def refresh(self):
+        pass
+
+    def set_data(self, data):
+        self.setText(str(data))
+
+    def get_data(self):
+        return self.text()
+
+
+class DoubleSelector(QLineEdit):
+    def __init__(self, changed=None, parent=None, placeholder=''):
+        super().__init__(parent=parent)
+        self.changed = changed
+        if changed:
+            self.textChanged.connect(changed)
+
+        self.placeholder = placeholder
+        self.setPlaceholderText(placeholder)
+        self.setValidator(QDoubleValidator(self))
+
+    def refresh(self):
+        pass
+
+    def set_data(self, data):
+        self.setText(str(data))
+
+    def get_data(self):
+        return self.text()

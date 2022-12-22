@@ -55,7 +55,7 @@ class AuthenticateWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.auth = UnimplementedField('[field not implemented]')
+        self.auth = StringSelector(changed, parent=self, placeholder='auth')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.auth)
@@ -113,7 +113,7 @@ class SetFilenameFormattingWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.filename_formatting = UnimplementedField('[field not implemented]')
+        self.filename_formatting = StringSelector(changed, parent=self, placeholder='filename_formatting')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.filename_formatting)
@@ -190,8 +190,8 @@ class BroadcastCustomMessageWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.realm = UnimplementedField('[field not implemented]')
-        self.data = UnimplementedField('[field not implemented]')
+        self.realm = StringSelector(changed, parent=self, placeholder='realm')
+        self.data = UnimplementedField('[data: Object]')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.realm)
@@ -249,10 +249,10 @@ class OpenProjectorWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.type = UnimplementedField('[field not implemented]')
-        self.monitor = UnimplementedField('[field not implemented]')
-        self.geometry = UnimplementedField('[field not implemented]')
-        self.name = UnimplementedField('[field not implemented]')
+        self.type = StringSelector(changed, parent=self, placeholder='type')
+        self.monitor = IntSelector(changed, parent=self, placeholder='monitor')
+        self.geometry = StringSelector(changed, parent=self, placeholder='geometry')
+        self.name = StringSelector(changed, parent=self, placeholder='name')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.type)
@@ -296,7 +296,7 @@ class TriggerHotkeyByNameWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.hotkeyName = UnimplementedField('[field not implemented]')
+        self.hotkeyName = StringSelector(changed, parent=self, placeholder='hotkeyName')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.hotkeyName)
@@ -325,8 +325,8 @@ class TriggerHotkeyBySequenceWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.keyId = UnimplementedField('[field not implemented]')
-        self.keyModifiers = UnimplementedField('[field not implemented]')
+        self.keyId = StringSelector(changed, parent=self, placeholder='keyId')
+        self.keyModifiers = UnimplementedField('[keyModifiers: Object (Optional)]')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.keyId)
@@ -360,8 +360,8 @@ class ExecuteBatchWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.requests = UnimplementedField('[field not implemented]')
-        self.abortOnFail = UnimplementedField('[field not implemented]')
+        self.requests = UnimplementedField('[requests: Array<Object>]')
+        self.abortOnFail = UnimplementedField('[abortOnFail: boolean (Optional)]')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.requests)
@@ -395,7 +395,7 @@ class SleepWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.sleepMillis = UnimplementedField('[field not implemented]')
+        self.sleepMillis = IntSelector(changed, parent=self, placeholder='sleepMillis')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.sleepMillis)
@@ -634,7 +634,7 @@ class SetMediaTimeWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
         self.sourceName = SourceSelector(changed, parent=self)
-        self.timestamp = UnimplementedField('[field not implemented]')
+        self.timestamp = IntSelector(changed, parent=self, placeholder='timestamp')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.sourceName)
@@ -669,7 +669,7 @@ class ScrubMediaWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
         self.sourceName = SourceSelector(changed, parent=self)
-        self.timeOffset = UnimplementedField('[field not implemented]')
+        self.timeOffset = IntSelector(changed, parent=self, placeholder='timeOffset')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.sourceName)
@@ -757,10 +757,10 @@ class CreateSourceWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
         self.sourceName = SourceSelector(changed, parent=self)
-        self.sourceKind = UnimplementedField('[field not implemented]')
+        self.sourceKind = StringSelector(changed, parent=self, placeholder='sourceKind')
         self.sceneName = SceneSelector(changed, parent=self)
-        self.sourceSettings = UnimplementedField('[field not implemented]')
-        self.setVisible = UnimplementedField('[field not implemented]')
+        self.sourceSettings = UnimplementedField('[sourceSettings: Object (optional)]')
+        self.setVisible = UnimplementedField('[setVisible: boolean (optional)]')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.sourceName)
@@ -858,7 +858,7 @@ class GetVolumeWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
         self.source = SourceSelector(changed, parent=self)
-        self.useDecibel = UnimplementedField('[field not implemented]')
+        self.useDecibel = UnimplementedField('[useDecibel: boolean (optional)]')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.source)
@@ -893,8 +893,8 @@ class SetVolumeWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
         self.source = SourceSelector(changed, parent=self)
-        self.volume = UnimplementedField('[field not implemented]')
-        self.useDecibel = UnimplementedField('[field not implemented]')
+        self.volume = DoubleSelector(changed, parent=self, placeholder='volume')
+        self.useDecibel = UnimplementedField('[useDecibel: boolean (optional)]')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.source)
@@ -934,7 +934,7 @@ class SetAudioTracksWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
         self.sourceName = SourceSelector(changed, parent=self)
-        self.track = UnimplementedField('[field not implemented]')
+        self.track = IntSelector(changed, parent=self, placeholder='track')
         self.active = BoolSelector(changed, parent=self)
 
         with CHBoxLayout(self, margins=0) as layout:
@@ -1155,7 +1155,7 @@ class SetSourceNameWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
         self.sourceName = SourceSelector(changed, parent=self)
-        self.newName = UnimplementedField('[field not implemented]')
+        self.newName = StringSelector(changed, parent=self, placeholder='newName')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.sourceName)
@@ -1190,7 +1190,7 @@ class SetSyncOffsetWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
         self.source = SourceSelector(changed, parent=self)
-        self.offset = UnimplementedField('[field not implemented]')
+        self.offset = IntSelector(changed, parent=self, placeholder='offset')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.source)
@@ -1254,7 +1254,7 @@ class GetSourceSettingsWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
         self.sourceName = SourceSelector(changed, parent=self)
-        self.sourceType = UnimplementedField('[field not implemented]')
+        self.sourceType = StringSelector(changed, parent=self, placeholder='sourceType')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.sourceName)
@@ -1289,8 +1289,8 @@ class SetSourceSettingsWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
         self.sourceName = SourceSelector(changed, parent=self)
-        self.sourceType = UnimplementedField('[field not implemented]')
-        self.sourceSettings = UnimplementedField('[field not implemented]')
+        self.sourceType = StringSelector(changed, parent=self, placeholder='sourceType')
+        self.sourceSettings = UnimplementedField('[sourceSettings: Object]')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.sourceName)
@@ -1359,30 +1359,30 @@ class SetTextGDIPlusPropertiesWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
         self.source = SourceSelector(changed, parent=self)
-        self.align = UnimplementedField('[field not implemented]')
-        self.bk_color = UnimplementedField('[field not implemented]')
-        self.bk_opacity = UnimplementedField('[field not implemented]')
-        self.chatlog = UnimplementedField('[field not implemented]')
-        self.chatlog_lines = UnimplementedField('[field not implemented]')
-        self.color = UnimplementedField('[field not implemented]')
-        self.extents = UnimplementedField('[field not implemented]')
-        self.extents_cx = UnimplementedField('[field not implemented]')
-        self.extents_cy = UnimplementedField('[field not implemented]')
-        self.file = UnimplementedField('[field not implemented]')
-        self.read_from_file = UnimplementedField('[field not implemented]')
-        self.font = UnimplementedField('[field not implemented]')
-        self.gradient = UnimplementedField('[field not implemented]')
-        self.gradient_color = UnimplementedField('[field not implemented]')
-        self.gradient_dir = UnimplementedField('[field not implemented]')
-        self.gradient_opacity = UnimplementedField('[field not implemented]')
-        self.outline = UnimplementedField('[field not implemented]')
-        self.outline_color = UnimplementedField('[field not implemented]')
-        self.outline_size = UnimplementedField('[field not implemented]')
-        self.outline_opacity = UnimplementedField('[field not implemented]')
-        self.text = UnimplementedField('[field not implemented]')
-        self.valign = UnimplementedField('[field not implemented]')
-        self.vertical = UnimplementedField('[field not implemented]')
-        self.render = UnimplementedField('[field not implemented]')
+        self.align = StringSelector(changed, parent=self, placeholder='align')
+        self.bk_color = IntSelector(changed, parent=self, placeholder='bk_color')
+        self.bk_opacity = IntSelector(changed, parent=self, placeholder='bk_opacity')
+        self.chatlog = UnimplementedField('[chatlog: boolean (optional)]')
+        self.chatlog_lines = IntSelector(changed, parent=self, placeholder='chatlog_lines')
+        self.color = IntSelector(changed, parent=self, placeholder='color')
+        self.extents = UnimplementedField('[extents: boolean (optional)]')
+        self.extents_cx = IntSelector(changed, parent=self, placeholder='extents_cx')
+        self.extents_cy = IntSelector(changed, parent=self, placeholder='extents_cy')
+        self.file = StringSelector(changed, parent=self, placeholder='file')
+        self.read_from_file = UnimplementedField('[read_from_file: boolean (optional)]')
+        self.font = UnimplementedField('[font: Object (optional)]')
+        self.gradient = UnimplementedField('[gradient: boolean (optional)]')
+        self.gradient_color = IntSelector(changed, parent=self, placeholder='gradient_color')
+        self.gradient_dir = UnimplementedField('[gradient_dir: float (optional)]')
+        self.gradient_opacity = IntSelector(changed, parent=self, placeholder='gradient_opacity')
+        self.outline = UnimplementedField('[outline: boolean (optional)]')
+        self.outline_color = IntSelector(changed, parent=self, placeholder='outline_color')
+        self.outline_size = IntSelector(changed, parent=self, placeholder='outline_size')
+        self.outline_opacity = IntSelector(changed, parent=self, placeholder='outline_opacity')
+        self.text = StringSelector(changed, parent=self, placeholder='text')
+        self.valign = StringSelector(changed, parent=self, placeholder='valign')
+        self.vertical = UnimplementedField('[vertical: boolean (optional)]')
+        self.render = UnimplementedField('[render: boolean (optional)]')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.source)
@@ -1561,17 +1561,17 @@ class SetTextFreetype2PropertiesWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
         self.source = SourceSelector(changed, parent=self)
-        self.color1 = UnimplementedField('[field not implemented]')
-        self.color2 = UnimplementedField('[field not implemented]')
-        self.custom_width = UnimplementedField('[field not implemented]')
-        self.drop_shadow = UnimplementedField('[field not implemented]')
-        self.font = UnimplementedField('[field not implemented]')
-        self.from_file = UnimplementedField('[field not implemented]')
-        self.log_mode = UnimplementedField('[field not implemented]')
-        self.outline = UnimplementedField('[field not implemented]')
-        self.text = UnimplementedField('[field not implemented]')
-        self.text_file = UnimplementedField('[field not implemented]')
-        self.word_wrap = UnimplementedField('[field not implemented]')
+        self.color1 = IntSelector(changed, parent=self, placeholder='color1')
+        self.color2 = IntSelector(changed, parent=self, placeholder='color2')
+        self.custom_width = IntSelector(changed, parent=self, placeholder='custom_width')
+        self.drop_shadow = UnimplementedField('[drop_shadow: boolean (optional)]')
+        self.font = UnimplementedField('[font: Object (optional)]')
+        self.from_file = UnimplementedField('[from_file: boolean (optional)]')
+        self.log_mode = UnimplementedField('[log_mode: boolean (optional)]')
+        self.outline = UnimplementedField('[outline: boolean (optional)]')
+        self.text = StringSelector(changed, parent=self, placeholder='text')
+        self.text_file = StringSelector(changed, parent=self, placeholder='text_file')
+        self.word_wrap = UnimplementedField('[word_wrap: boolean (optional)]')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.source)
@@ -1685,15 +1685,15 @@ class SetBrowserSourcePropertiesWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
         self.source = SourceSelector(changed, parent=self)
-        self.is_local_file = UnimplementedField('[field not implemented]')
-        self.local_file = UnimplementedField('[field not implemented]')
-        self.url = UnimplementedField('[field not implemented]')
-        self.css = UnimplementedField('[field not implemented]')
-        self.width = UnimplementedField('[field not implemented]')
-        self.height = UnimplementedField('[field not implemented]')
-        self.fps = UnimplementedField('[field not implemented]')
-        self.shutdown = UnimplementedField('[field not implemented]')
-        self.render = UnimplementedField('[field not implemented]')
+        self.is_local_file = UnimplementedField('[is_local_file: boolean (optional)]')
+        self.local_file = StringSelector(changed, parent=self, placeholder='local_file')
+        self.url = StringSelector(changed, parent=self, placeholder='url')
+        self.css = StringSelector(changed, parent=self, placeholder='css')
+        self.width = IntSelector(changed, parent=self, placeholder='width')
+        self.height = IntSelector(changed, parent=self, placeholder='height')
+        self.fps = IntSelector(changed, parent=self, placeholder='fps')
+        self.shutdown = UnimplementedField('[shutdown: boolean (optional)]')
+        self.render = UnimplementedField('[render: boolean (optional)]')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.source)
@@ -1857,8 +1857,8 @@ class AddFilterToSourceWidget(QWidget):
         self.changed = changed
         self.sourceName = SourceSelector(changed, parent=self)
         self.filterName = FilterSelector(changed, self.sourceName, parent=self)
-        self.filterType = UnimplementedField('[field not implemented]')
-        self.filterSettings = UnimplementedField('[field not implemented]')
+        self.filterType = StringSelector(changed, parent=self, placeholder='filterType')
+        self.filterSettings = UnimplementedField('[filterSettings: Object]')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.sourceName)
@@ -1939,7 +1939,7 @@ class ReorderSourceFilterWidget(QWidget):
         self.changed = changed
         self.sourceName = SourceSelector(changed, parent=self)
         self.filterName = FilterSelector(changed, self.sourceName, parent=self)
-        self.newIndex = UnimplementedField('[field not implemented]')
+        self.newIndex = UnimplementedField('[newIndex: Integer]')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.sourceName)
@@ -1980,7 +1980,7 @@ class MoveSourceFilterWidget(QWidget):
         self.changed = changed
         self.sourceName = SourceSelector(changed, parent=self)
         self.filterName = FilterSelector(changed, self.sourceName, parent=self)
-        self.movementType = UnimplementedField('[field not implemented]')
+        self.movementType = StringSelector(changed, parent=self, placeholder='movementType')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.sourceName)
@@ -2021,7 +2021,7 @@ class SetSourceFilterSettingsWidget(QWidget):
         self.changed = changed
         self.sourceName = SourceSelector(changed, parent=self)
         self.filterName = FilterSelector(changed, self.sourceName, parent=self)
-        self.filterSettings = UnimplementedField('[field not implemented]')
+        self.filterSettings = UnimplementedField('[filterSettings: Object]')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.sourceName)
@@ -2131,7 +2131,7 @@ class SetAudioMonitorTypeWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
         self.sourceName = SourceSelector(changed, parent=self)
-        self.monitorType = UnimplementedField('[field not implemented]')
+        self.monitorType = StringSelector(changed, parent=self, placeholder='monitorType')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.sourceName)
@@ -2165,7 +2165,7 @@ class GetSourceDefaultSettingsWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.sourceKind = UnimplementedField('[field not implemented]')
+        self.sourceKind = StringSelector(changed, parent=self, placeholder='sourceKind')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.sourceKind)
@@ -2195,12 +2195,12 @@ class TakeSourceScreenshotWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
         self.sourceName = SourceSelector(changed, parent=self)
-        self.embedPictureFormat = UnimplementedField('[field not implemented]')
-        self.saveToFilePath = UnimplementedField('[field not implemented]')
-        self.fileFormat = UnimplementedField('[field not implemented]')
-        self.compressionQuality = UnimplementedField('[field not implemented]')
-        self.width = UnimplementedField('[field not implemented]')
-        self.height = UnimplementedField('[field not implemented]')
+        self.embedPictureFormat = StringSelector(changed, parent=self, placeholder='embedPictureFormat')
+        self.saveToFilePath = StringSelector(changed, parent=self, placeholder='saveToFilePath')
+        self.fileFormat = StringSelector(changed, parent=self, placeholder='fileFormat')
+        self.compressionQuality = IntSelector(changed, parent=self, placeholder='compressionQuality')
+        self.width = IntSelector(changed, parent=self, placeholder='width')
+        self.height = IntSelector(changed, parent=self, placeholder='height')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.sourceName)
@@ -2312,7 +2312,7 @@ class GetOutputInfoWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.outputName = UnimplementedField('[field not implemented]')
+        self.outputName = StringSelector(changed, parent=self, placeholder='outputName')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.outputName)
@@ -2341,7 +2341,7 @@ class StartOutputWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.outputName = UnimplementedField('[field not implemented]')
+        self.outputName = StringSelector(changed, parent=self, placeholder='outputName')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.outputName)
@@ -2370,8 +2370,8 @@ class StopOutputWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.outputName = UnimplementedField('[field not implemented]')
-        self.force = UnimplementedField('[field not implemented]')
+        self.outputName = StringSelector(changed, parent=self, placeholder='outputName')
+        self.force = UnimplementedField('[force: boolean (optional)]')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.outputName)
@@ -2405,7 +2405,7 @@ class SetCurrentProfileWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.profile_name = UnimplementedField('[field not implemented]')
+        self.profile_name = StringSelector(changed, parent=self, placeholder='profile_name')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.profile_name)
@@ -2626,7 +2626,7 @@ class SetRecordingFolderWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.rec_folder = UnimplementedField('[field not implemented]')
+        self.rec_folder = StringSelector(changed, parent=self, placeholder='rec_folder')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.rec_folder)
@@ -2799,7 +2799,7 @@ class SetCurrentSceneCollectionWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.sc_name = UnimplementedField('[field not implemented]')
+        self.sc_name = StringSelector(changed, parent=self, placeholder='sc_name')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.sc_name)
@@ -2906,7 +2906,7 @@ class GetSceneItemPropertiesWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
         self.scene_name = SceneSelector(changed, parent=self)
-        self.item = UnimplementedField('[field not implemented]')
+        self.item = StringSelector(changed, parent=self, placeholder='item')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.scene_name)
@@ -2941,14 +2941,14 @@ class SetSceneItemPropertiesWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
         self.scene_name = SceneSelector(changed, parent=self)
-        self.item = UnimplementedField('[field not implemented]')
-        self.position = UnimplementedField('[field not implemented]')
-        self.rotation = UnimplementedField('[field not implemented]')
-        self.scale = UnimplementedField('[field not implemented]')
-        self.crop = UnimplementedField('[field not implemented]')
-        self.visible = UnimplementedField('[field not implemented]')
-        self.locked = UnimplementedField('[field not implemented]')
-        self.bounds = UnimplementedField('[field not implemented]')
+        self.item = StringSelector(changed, parent=self, placeholder='item')
+        self.position = DoubleSelector(changed, parent=self, placeholder='position')
+        self.rotation = DoubleSelector(changed, parent=self, placeholder='rotation')
+        self.scale = DoubleSelector(changed, parent=self, placeholder='scale')
+        self.crop = IntSelector(changed, parent=self, placeholder='crop')
+        self.visible = UnimplementedField('[visible: bool (optional)]')
+        self.locked = UnimplementedField('[locked: bool (optional)]')
+        self.bounds = StringSelector(changed, parent=self, placeholder='bounds')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.scene_name)
@@ -3018,7 +3018,7 @@ class ResetSceneItemWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
         self.scene_name = SceneSelector(changed, parent=self)
-        self.item = UnimplementedField('[field not implemented]')
+        self.item = StringSelector(changed, parent=self, placeholder='item')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.scene_name)
@@ -3054,7 +3054,7 @@ class SetSceneItemRenderWidget(QWidget):
         self.changed = changed
         self.scene_name = SceneSelector(changed, parent=self)
         self.source = SourceSelector(changed, parent=self)
-        self.item = UnimplementedField('[field not implemented]')
+        self.item = IntSelector(changed, parent=self, placeholder='item')
         self.render = BoolSelector(changed, parent=self)
 
         with CHBoxLayout(self, margins=0) as layout:
@@ -3100,9 +3100,9 @@ class SetSceneItemPositionWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
         self.scene_name = SceneSelector(changed, parent=self)
-        self.item = UnimplementedField('[field not implemented]')
-        self.x = UnimplementedField('[field not implemented]')
-        self.y = UnimplementedField('[field not implemented]')
+        self.item = StringSelector(changed, parent=self, placeholder='item')
+        self.x = DoubleSelector(changed, parent=self, placeholder='x')
+        self.y = DoubleSelector(changed, parent=self, placeholder='y')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.scene_name)
@@ -3147,10 +3147,10 @@ class SetSceneItemTransformWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
         self.scene_name = SceneSelector(changed, parent=self)
-        self.item = UnimplementedField('[field not implemented]')
-        self.x_scale = UnimplementedField('[field not implemented]')
-        self.y_scale = UnimplementedField('[field not implemented]')
-        self.rotation = UnimplementedField('[field not implemented]')
+        self.item = StringSelector(changed, parent=self, placeholder='item')
+        self.x_scale = DoubleSelector(changed, parent=self, placeholder='x_scale')
+        self.y_scale = DoubleSelector(changed, parent=self, placeholder='y_scale')
+        self.rotation = DoubleSelector(changed, parent=self, placeholder='rotation')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.scene_name)
@@ -3200,11 +3200,11 @@ class SetSceneItemCropWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
         self.scene_name = SceneSelector(changed, parent=self)
-        self.item = UnimplementedField('[field not implemented]')
-        self.top = UnimplementedField('[field not implemented]')
-        self.bottom = UnimplementedField('[field not implemented]')
-        self.left = UnimplementedField('[field not implemented]')
-        self.right = UnimplementedField('[field not implemented]')
+        self.item = StringSelector(changed, parent=self, placeholder='item')
+        self.top = IntSelector(changed, parent=self, placeholder='top')
+        self.bottom = IntSelector(changed, parent=self, placeholder='bottom')
+        self.left = IntSelector(changed, parent=self, placeholder='left')
+        self.right = IntSelector(changed, parent=self, placeholder='right')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.scene_name)
@@ -3258,8 +3258,8 @@ class DeleteSceneItemWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.scene = UnimplementedField('[field not implemented]')
-        self.item = UnimplementedField('[field not implemented]')
+        self.scene = StringSelector(changed, parent=self, placeholder='scene')
+        self.item = UnimplementedField('[item: Object]')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.scene)
@@ -3295,7 +3295,7 @@ class AddSceneItemWidget(QWidget):
         self.changed = changed
         self.sceneName = SceneSelector(changed, parent=self)
         self.sourceName = SourceSelector(changed, parent=self)
-        self.setVisible = UnimplementedField('[field not implemented]')
+        self.setVisible = UnimplementedField('[setVisible: boolean (optional)]')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.sceneName)
@@ -3334,9 +3334,9 @@ class DuplicateSceneItemWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.fromScene = UnimplementedField('[field not implemented]')
-        self.toScene = UnimplementedField('[field not implemented]')
-        self.item = UnimplementedField('[field not implemented]')
+        self.fromScene = StringSelector(changed, parent=self, placeholder='fromScene')
+        self.toScene = StringSelector(changed, parent=self, placeholder='toScene')
+        self.item = UnimplementedField('[item: Object]')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.fromScene)
@@ -3481,8 +3481,8 @@ class ReorderSceneItemsWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.scene = UnimplementedField('[field not implemented]')
-        self.items = UnimplementedField('[field not implemented]')
+        self.scene = StringSelector(changed, parent=self, placeholder='scene')
+        self.items = UnimplementedField('[items: Array<Object>]')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.scene)
@@ -3517,8 +3517,8 @@ class SetSceneTransitionOverrideWidget(QWidget):
         super().__init__(parent=parent)
         self.changed = changed
         self.sceneName = SceneSelector(changed, parent=self)
-        self.transitionName = UnimplementedField('[field not implemented]')
-        self.transitionDuration = UnimplementedField('[field not implemented]')
+        self.transitionName = StringSelector(changed, parent=self, placeholder='transitionName')
+        self.transitionDuration = IntSelector(changed, parent=self, placeholder='transitionDuration')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.sceneName)
@@ -3663,7 +3663,7 @@ class StartStreamingWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.stream = UnimplementedField('[field not implemented]')
+        self.stream = UnimplementedField('[stream: Object (optional)]')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.stream)
@@ -3716,8 +3716,8 @@ class SetStreamSettingsWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.type = UnimplementedField('[field not implemented]')
-        self.settings = UnimplementedField('[field not implemented]')
+        self.type = StringSelector(changed, parent=self, placeholder='type')
+        self.settings = UnimplementedField('[settings: Object]')
         self.save = BoolSelector(changed, parent=self)
 
         with CHBoxLayout(self, margins=0) as layout:
@@ -3805,7 +3805,7 @@ class SendCaptionsWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.text = UnimplementedField('[field not implemented]')
+        self.text = StringSelector(changed, parent=self, placeholder='text')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.text)
@@ -3911,7 +3911,7 @@ class TransitionToProgramWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.with_transition = UnimplementedField('[field not implemented]')
+        self.with_transition = UnimplementedField('[with_transition: Object (optional)]')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.with_transition)
@@ -4060,7 +4060,7 @@ class SetCurrentTransitionWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.transition_name = UnimplementedField('[field not implemented]')
+        self.transition_name = StringSelector(changed, parent=self, placeholder='transition_name')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.transition_name)
@@ -4089,7 +4089,7 @@ class SetTransitionDurationWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.duration = UnimplementedField('[field not implemented]')
+        self.duration = IntSelector(changed, parent=self, placeholder='duration')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.duration)
@@ -4166,7 +4166,7 @@ class GetTransitionSettingsWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.transitionName = UnimplementedField('[field not implemented]')
+        self.transitionName = StringSelector(changed, parent=self, placeholder='transitionName')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.transitionName)
@@ -4195,8 +4195,8 @@ class SetTransitionSettingsWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.transitionName = UnimplementedField('[field not implemented]')
-        self.transitionSettings = UnimplementedField('[field not implemented]')
+        self.transitionName = StringSelector(changed, parent=self, placeholder='transitionName')
+        self.transitionSettings = UnimplementedField('[transitionSettings: Object]')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.transitionName)
@@ -4254,8 +4254,8 @@ class SetTBarPositionWidget(QWidget):
     def __init__(self, changed=None, parent=None):
         super().__init__(parent=parent)
         self.changed = changed
-        self.position = UnimplementedField('[field not implemented]')
-        self.release = UnimplementedField('[field not implemented]')
+        self.position = DoubleSelector(changed, parent=self, placeholder='position')
+        self.release = UnimplementedField('[release: boolean (optional)]')
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.position)

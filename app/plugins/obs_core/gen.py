@@ -9,7 +9,7 @@ from pathlib import Path
 import json
 
 
-import_url = "https://raw.githubusercontent.com/Palakis/obs-websocket/4.x-current/docs/generated/comments.json"  # noqa: E501
+import_url = "https://raw.githubusercontent.com/obsproject/obs-websocket/4.x-compat/docs/generated/comments.json"  # noqa: E501
 
 
 def clean_var(string):
@@ -238,7 +238,7 @@ def build_request_widget(w, i, event):
     w += f"class {name}Widget(QWidget):"
     with w:
         def field_widget(field):
-            line = "UnimplementedField('[field not implemented]')"
+            line = f"UnimplementedField('[{field['name']}: {field['type']}]')"
 
             if field['name'] in ['sourceName', 'source']:
                 line = f"SourceSelector(changed, parent=self)"
@@ -248,6 +248,12 @@ def build_request_widget(w, i, event):
                 line = f"FilterSelector(changed, self.sourceName, parent=self)"
             elif field['type'] == 'boolean' or 'Bool' in field['name'] or 'Enabled' in field['name']:
                 line = f"BoolSelector(changed, parent=self)"
+            elif 'String' in field['type']:
+                line = f"StringSelector(changed, parent=self, placeholder='{field['name']}')"
+            elif 'int' in field['type']:
+                line = f"IntSelector(changed, parent=self, placeholder='{field['name']}')"
+            elif 'double' in field['type']:
+                line = f"DoubleSelector(changed, parent=self, placeholder='{field['name']}')"
             else:
                 if name not in unimplemented_fields:
                     unimplemented_fields[name] = []
@@ -383,6 +389,12 @@ def build_event_widget(w, i, event):
                 line = f"FilterSelector(changed, self.sourceName, parent=self)"
             elif field['type'] == 'boolean' or 'Bool' in field['name'] or 'Enabled' in field['name']:
                 line = f"BoolSelector(changed, parent=self)"
+            elif 'String' in field['type']:
+                line = f"StringSelector(changed, parent=self, placeholder='{field['name']}')"
+            elif 'int' in field['type']:
+                line = f"IntSelector(changed, parent=self, placeholder='{field['name']}')"
+            elif 'double' in field['type']:
+                line = f"DoubleSelector(changed, parent=self, placeholder='{field['name']}')"
             else:
                 if name not in unimplemented_fields:
                     unimplemented_fields[name] = []
