@@ -5,6 +5,7 @@ from qtstrap.extras import log_monitor
 
 
 def main():
+    log_monitor.exception_logger_name = 'stagehand.exceptions'
     log_monitor.install()
     
     Plugins()
