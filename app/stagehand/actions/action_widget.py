@@ -327,6 +327,9 @@ class ActionWidget(QWidget):
             if not self.group.can_run():
                 return
 
+        if not self.enabled:
+            return
+
         if not self.filter.check_filters():
             return
 
