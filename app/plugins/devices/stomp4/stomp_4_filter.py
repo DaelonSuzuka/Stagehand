@@ -46,16 +46,11 @@ class Stomp4Filter(QWidget, FilterStackItem):
                 self.adapter.kill()
                 self.adapter.deleteLater()
             self.adapter = self.stomps[guid].signals.adapter()
-            self.adapter.button_pressed.connect(self.button_pressed)
-            self.adapter.button_released.connect(self.button_released)
+            self.adapter.event_received.connect(self.event_received)
 
-    def button_pressed(self, button):
-        if self.signal.currentText()[0] == button:
-            self.state[button] = True
-
-    def button_released(self, button):
-        if self.signal.currentText()[0] == button:
-            self.state[button] = False
+    def event_received(self, event):
+        if self.signal.currentText()[0] == event[0]:
+            self.state[event[0]] = True
 
     def refresh_devices(self):
         with SignalBlocker(self.device):
