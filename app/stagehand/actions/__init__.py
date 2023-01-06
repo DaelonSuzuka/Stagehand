@@ -4,3 +4,4 @@ from .action_filter import FilterStack, FilterStackItem
 from .action_group import ActionWidgetGroup
 from .action_page import ActionsPage
 from .device_trigger import DeviceTrigger
+from .startup_trigger import StartupTrigger
