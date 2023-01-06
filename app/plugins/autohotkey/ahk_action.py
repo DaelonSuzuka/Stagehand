@@ -37,10 +37,9 @@ class AutohotkeyAction(QWidget, ActionItem):
         self.data = data
         self.type.setCurrentText(data.get('ahk_type', 'script'))
         self.change_type()
-        if 'fields' in data and data['fields']:
-            if self.ahk_widget:
-                self.ahk_widget.set_data(data['fields'])
-                self.ahk_widget.refresh()
+        if self.ahk_widget:
+            self.ahk_widget.set_data(data.get('fields', {}))
+            self.ahk_widget.refresh()
 
     def get_data(self):
         data = {
