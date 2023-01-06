@@ -233,7 +233,7 @@ class ActionWidget(QWidget):
             with layout.hbox(margins=0):
                 layout.add(self.label)
                 layout.add(QWidget(), 1)
-                # layout.add(self.enabled)
+                layout.add(self.enabled)
                 layout.add(self.filter)
             with layout.hbox(margins=0):
                 layout.add(self.trigger)
