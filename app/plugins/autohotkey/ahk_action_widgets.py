@@ -104,6 +104,7 @@ class AHKScriptEditorDialog(QDialog):
 
 
 class AHKScriptWidget(QWidget):
+    # TODO: class doesn't init properly when there's no data
     def __init__(self, changed=None, owner=None):
         super().__init__()
         self.changed = changed
