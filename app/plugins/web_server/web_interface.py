@@ -207,32 +207,35 @@ class WebInterfacePage(StagehandPage):
         self.data = data
         self.group.set_data(self.data)
 
-        label = f'Page {self.name}'
-        if 'label' in data:
-            label = data['label']
-        self.label.setText(label)
+        self.label.setText(data.get('name', self.name))
 
         self.port.setText(str(data.get('port', '5000')))
         self.autostart.setChecked(data.get('autostart', False))
         self.enabled.setChecked(data.get('enabled', True))
 
-        if 'actions' in data and data['actions']:
-            for name in data['actions']:
-                action = CompactActionWidget(name, group=self.group)
-                self.actions[name] = action
+        if actions := data.get('actions'):
+            for action_data in actions:
+                action = CompactActionWidget(action_data['name'], group=self.group)
+                action.set_data(action_data)
+                self.actions[action.name] = (action)
                 self.actions_container.add(action)
         else:
             self.actions = {}
             for i in range(1, 13):
                 name = f'Web Action {i}'
-                self.actions[name] = CompactActionWidget(name=name, group=self.group, changed=self.rename_buttons)
+                action = CompactActionWidget(name=name, group=self.group, changed=self.rename_buttons)
+                self.actions[name] = action
+                action.set_data({
+                    **CompactActionWidget.default_data,
+                    "name": name,
+                })
 
             self.actions_container.add(list(self.actions.values()))
 
     def get_data(self):
         return {
             'page_type': self.page_type,
-            'label': self.label.text(),
+            'name': self.label.text(),
             'port': self.port.text(),
             'autostart': self.autostart.isChecked(),
             'enabled': self.enabled.isChecked(),

@@ -175,7 +175,6 @@ class ActionWidget(QWidget):
     def default_data(cls):
         return {
             'name': 'Action',
-            'label': 'Action',
             'enabled': True,
             'action': {
                 'type': 'sandbox',
@@ -196,13 +195,11 @@ class ActionWidget(QWidget):
         super().__init__(parent=parent)
 
         self.name = name
-        label = name
         action_type = 'sandbox'
         action = ''
 
         if data:
             self.name = data['name']
-            label = data['label']
             action = data['action']
             if 'type' in data:
                 action_type = data['type']
@@ -213,7 +210,7 @@ class ActionWidget(QWidget):
         self.enabled = AnimatedToggle()
         self.enabled.stateChanged.connect(lambda _: self.changed.emit())
 
-        self.label = LabelEdit(label, changed=self.on_change)
+        self.label = LabelEdit(self.name, changed=self.on_change)
         self.action = Action(self.on_change, action_type, action, owner=self)
         self.trigger = ActionTrigger(self.on_change, run=self.run, owner=self)
         self.filter = ActionFilter(self.on_change, owner=self)
@@ -236,7 +233,7 @@ class ActionWidget(QWidget):
             with layout.hbox(margins=0):
                 layout.add(self.label)
                 layout.add(QWidget(), 1)
-                layout.add(self.enabled)
+                # layout.add(self.enabled)
                 layout.add(self.filter)
             with layout.hbox(margins=0):
                 layout.add(self.trigger)
@@ -248,8 +245,7 @@ class ActionWidget(QWidget):
 
     def get_data(self):
         return {
-            'name': self.name,
-            'label': self.label.text(),
+            'name': self.label.text(),
             'enabled': self.enabled.isChecked(),
             **self.action.get_data(),
             **self.trigger.get_data(),
@@ -261,7 +257,7 @@ class ActionWidget(QWidget):
             data = self.default_data
 
         self.enabled.setChecked(data.get('enabled', True))
-        self.label.setText(data['label'])
+        self.label.setText(data['name'])
         self.action.set_data(data)
         self.trigger.set_data(data)
         self.filter.set_data(data)
@@ -346,7 +342,6 @@ class CompactActionWidget(ActionWidget):
     def default_data(cls):
         return {
             'name': 'Action',
-            'label': 'Action',
             'enabled': True,
             'action': {
                 'type': 'sandbox',

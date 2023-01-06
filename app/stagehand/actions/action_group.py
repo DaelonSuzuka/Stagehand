@@ -32,11 +32,6 @@ class ActionWidgetGroup(QObject):
     def register(self, action):
         self.actions.append(action)
         
-        if 'actions' in self.data:
-            if action.name in self.data['actions']:
-                action.set_data(self.data['actions'][action.name])
-        else:
-            action.set_data({})
         action.changed.connect(self.on_action_change)
         action.action.this = self.this
 
@@ -54,15 +49,6 @@ class ActionWidgetGroup(QObject):
         if not self.filter.check_filters():
             return False
         return True
-        
-    def load(self):
-        self.data = QSettings().value(self.name, {})
-        self.data['label'] = self.name
-        self.filter.set_data(self.data)
-        self.filter.enabled.setChecked(True)
-
-    def save(self):
-        QSettings().setValue(self.name, self.get_data())
 
     def set_data(self, data):
         self.data = data
@@ -71,9 +57,7 @@ class ActionWidgetGroup(QObject):
 
     def get_data(self):
         data = {
-            'actions': {},
+            'actions': [a.get_data() for a in self.actions],
             **self.filter.get_data(),
         }
-        for action in self.actions:
-            data['actions'][action.name] = action.get_data()
         return data

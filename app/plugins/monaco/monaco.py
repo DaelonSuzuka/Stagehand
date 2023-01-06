@@ -31,14 +31,11 @@ class MonacoExample(StagehandPage):
         return self.label.text()
 
     def set_data(self, data):
-        label = f'Monaco {self.name}'
-        if 'label' in data:
-            label = data['label']
-        self.label.setText(label)
+        self.label.setText(data.get('name', self.name))
 
     def get_data(self):
         data = {
             'page_type': self.page_type,
-            'label': self.label.text(),
+            'name': self.label.text(),
         }
         return data

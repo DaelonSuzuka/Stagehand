@@ -52,7 +52,7 @@ class ActionsPage(StagehandPage):
     def on_change(self):
         self.changed.emit()
 
-    def create_action(self, data=None, index=None):
+    def get_unique_action_name(self):
         name = f'Action {len(self.actions) + 1}'
 
         # make sure the action name is unique
@@ -62,19 +62,22 @@ class ActionsPage(StagehandPage):
             i += 1
             name = f'Action {len(self.actions) + 1 + i}'
 
+        return name
+
+    def create_action(self, data=None, index=None):
+        name = self.get_unique_action_name()
+
         if data:
+            name = data.get('name', name)
             data['name'] = name
         else:
             data = {
                 **ActionWidget.default_data,
                 "name": name,
-                "label": name,
             }
-        if 'actions' not in self.group.data:
-            self.group.data['actions'] = {}
-        self.group.data['actions'][name] = data
 
         action = ActionWidget(name, group=self.group)
+        action.set_data(data)
         if index:
             self.actions.insert(index, action)
             self.actions_container.insertWidget(index, action)
@@ -132,26 +135,22 @@ class ActionsPage(StagehandPage):
         self.data = data
         self.group.set_data(self.data)
 
-        label = f'Page {self.name}'
-        if 'label' in data:
-            label = data['label']
-        self.label.setText(label)
-
+        self.label.setText(data.get('name', self.name))
         self.enabled.setChecked(data.get('enabled', True))
 
-        if 'actions' in data and data['actions']:
-            for name in data['actions']:
-                action = ActionWidget(name, group=self.group)
+        if actions := data.get('actions'):
+            for action_data in actions:
+                action = ActionWidget(action_data['name'], group=self.group)
+                action.set_data(action_data)
                 self.actions.append(action)
                 self.actions_container.add(action)
         else:
-            self.actions = [ActionWidget(f'Action {i}', group=self.group) for i in range(1, 2)]
-            self.actions_container.add(self.actions)
+            self.create_action()
             
     def get_data(self):
         data = {
             'page_type': self.page_type,
-            'label': self.label.text(),
+            'name': self.label.text(),
             'enabled': self.enabled.isChecked(),
             **self.group.get_data(),
         }

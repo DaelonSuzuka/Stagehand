@@ -140,7 +140,7 @@ class ActionFilterDialog(QDialog):
         self.filter_box.add(filt)
 
     def set_data(self, data):
-        self.setWindowTitle(f"{data['label']} - Filter Editor")
+        self.setWindowTitle(f"{data['name']} - Filter Editor")
 
 
 class ActionFilter(QWidget):
@@ -216,7 +216,7 @@ class ActionFilter(QWidget):
         return all([f.check() for f in self.filters])
 
     def set_data(self, data):
-        if 'label' in data:
+        if 'name' in data:
             self.data = data
             self.editor.set_data(data)
 

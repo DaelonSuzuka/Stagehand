@@ -118,16 +118,24 @@ class MainTabWidget(QTabWidget):
         page.deleteLater()
         self.save()
 
-    def create_page(self, page_type=default_page_type):
-        i = 1
+    def get_unique_page_name(self):
+        name = f'Page {len(self.pages) + 1}'
 
-        for page in self.pages:
-            if page.name == str(i):
-                i += 1
+        # make sure the page name is unique
+        page_names = [p.name for p in self.pages]
+        i = 0
+        while name in page_names:
+            i += 1
+            name = f'Page {len(self.pages) + 1 + i}'
+
+        return name
+
+    def create_page(self, page_type=default_page_type):
+        name = self.get_unique_page_name()
 
         page_class = StagehandPage.get_subclasses()[page_type]
 
-        new_page = page_class(str(i), changed=self.save, data={})
+        new_page = page_class(name, changed=self.save, data={})
         self.add(new_page)
         self.save()
 

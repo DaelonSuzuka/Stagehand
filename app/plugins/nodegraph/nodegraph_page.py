@@ -87,10 +87,7 @@ class NodeGraphPage(StagehandPage):
     def set_data(self, data: dict) -> None:
         self.data = data
 
-        label = f'Graph {self.name}'
-        if 'label' in data:
-            label = data['label']
-        self.label.setText(label)
+        self.label.setText(data.get('name', self.name))
 
         if 'session' in data:
             self.graph.deserialize_session(data['session'])
@@ -101,7 +98,7 @@ class NodeGraphPage(StagehandPage):
     def get_data(self) -> dict:
         data = {
             'page_type': self.page_type,
-            'label': self.label.text(),
+            'name': self.label.text(),
             'session': self.graph.serialize_session()
         }
         return data
