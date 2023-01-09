@@ -31,7 +31,7 @@ class KnownDevices:
 
     def get_full_name(self, display_name):
         name_map = {self.get_display_name(i): i for i in self._registry}
-        return name_map[display_name]
+        return name_map.get(display_name, display_name)
 
 
 @SubscriptionManager.subscribe
