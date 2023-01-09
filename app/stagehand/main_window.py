@@ -1,11 +1,15 @@
 from qtstrap import *
 from qtstrap.extras.log_monitor import LogMonitorDropdown
 from qtstrap.extras.command_palette import CommandPalette, Command
+from qtstrap.extras.code_editor import CodeEditor
 from codex import DeviceControlsDockWidget
 from .sandbox import Sandbox
 from .about import AboutDialog
-from .components import StagehandStatusBarItem
+from .components import StagehandStatusBarItem, StagehandDockWidget
 from .tabs import MainTabWidget
+from .scene_tree import SceneTreeDockWidget
+
+from monaco import MonacoWidget
 
 
 class FontSizeMenu(QMenu):
@@ -27,6 +31,44 @@ class FontSizeMenu(QMenu):
         QSettings().setValue('font_size', size)
 
 
+class StyleEditorDockWidget(StagehandDockWidget):
+    _title = 'Style Editor'
+    _starting_area = Qt.BottomDockWidgetArea
+    _shortcut = 'Ctrl+Y'
+
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+
+        prev_text = QSettings().value('custom_style', '')
+
+        self.editor = MonacoWidget()
+        self.editor.setText(prev_text)
+        self.editor.setLanguage('css')
+        self.editor.textChanged.connect(lambda t: QSettings().setValue('custom_style', t))
+
+        with CVBoxLayout(self._widget, margins=2) as layout:
+            layout.add(self.editor)
+            with layout.hbox():
+                layout.add(QLabel(), 1)
+                layout.add(QPushButton('Apply', clicked=self.apply))
+
+    def apply(self):
+        text = self.editor.text()
+        self.parent().setStyleSheet(text)
+
+
+class ReplDockWidget(StagehandDockWidget):
+    _title = 'REPL'
+    _starting_area = Qt.BottomDockWidgetArea
+    _shortcut = 'Ctrl+R'
+
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+
+        with CVBoxLayout(self._widget, margins=2) as layout:
+            layout.add(QLabel('REPL goes here'))
+
+    
 class MainWindow(BaseMainWindow):
     closing = Signal()
 
@@ -41,6 +83,10 @@ class MainWindow(BaseMainWindow):
         self.about = AboutDialog(self)
         self.device_controls = DeviceControlsDockWidget(self)
         self.device_controls.hide()
+
+        self.style_editor = StyleEditorDockWidget(self)
+        self.repl = ReplDockWidget(self)
+        self.scene_tree = SceneTreeDockWidget(self)
         self.log_monitor = LogMonitorDropdown(self)
         self.command_palette = CommandPalette(self)
         
@@ -92,6 +138,10 @@ class MainWindow(BaseMainWindow):
         menu.addAction(self.sandbox.tools_dock.toggleViewAction())
         menu.addAction(self.device_controls.toggleViewAction())
         menu.addAction(self.log_monitor.toggleViewAction())
+
+        menu.addAction(self.style_editor.toggleViewAction())
+        menu.addAction(self.repl.toggleViewAction())
+        menu.addAction(self.scene_tree.toggleViewAction())
 
         menu.addSeparator()
         menu.addMenu(self.font_menu)
