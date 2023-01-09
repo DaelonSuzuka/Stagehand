@@ -8,9 +8,8 @@ class SandboxTools(QWidget):
         self.output = QTextEdit(readOnly=True)
         self.clear_output = QPushButton('Clear', clicked=self.output.clear)
 
-        with CVBoxLayout(self) as layout:
+        with CVBoxLayout(self, margins=2) as layout:
             with layout.hbox(margins=0) as layout:
-                layout.add(QLabel('Output:'))
                 layout.add(QLabel(), 1)
                 layout.add(self.clear_output)
             layout.add(self.output)
@@ -37,8 +36,8 @@ class SandboxTools(QWidget):
 
 class SandboxToolsDockWidget(QDockWidget):
     def __init__(self, widget: QWidget):
-        super().__init__('Sandbox Tools')
-        self.setObjectName('Sandbox_Tools')
+        super().__init__('Sandbox Output')
+        self.setObjectName('SandboxOutput')
 
         self.setWidget(widget)
         self.setFeatures(QDockWidget.DockWidgetClosable | QDockWidget.DockWidgetMovable | QDockWidget.DockWidgetFloatable)

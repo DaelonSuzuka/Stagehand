@@ -32,7 +32,7 @@ class ActionsPage(StagehandPage):
         if data is not None:
             self.set_data(data)
         
-        with CVBoxLayout(self, margins=0) as layout:
+        with CVBoxLayout(self, margins=2) as layout:
             with layout.hbox(margins=0):
                 layout.add(QWidget())
                 layout.add(self.label)

@@ -74,7 +74,7 @@ class MainTabWidget(QTabWidget):
             more_pages_button.addAction(c.page_type).triggered.connect(lambda _=None, p=c: self.create_page(p.page_type))
 
         corner = QWidget()
-        with CHBoxLayout(corner, margins=0) as layout:
+        with CHBoxLayout(corner, margins=(0, 0, 2, 0)) as layout:
             # layout.add(QPushButton(qta.icon('mdi.plus'), '', clicked=self.create_page))
             layout.add(more_pages_button)
 
@@ -168,7 +168,28 @@ class MainTabWidget(QTabWidget):
             if 'current_tab' in data:
                 self.setCurrentIndex(data['current_tab'])
         else:
-            self.add(ActionsPage('1', changed=self.save, data={}))
+            default_data = {
+                "actions": [
+                    {
+                        'name': 'Action',
+                        'enabled': True,
+                        'action': {
+                            'type': 'sandbox',
+                            'action': 'print("Hello world!")'
+                        },
+                        'trigger': {
+                            'enabled': True,
+                            'trigger_type': 'keyboard',
+                            'trigger': ''
+                        },
+                        'filter': {
+                            'enabled': True,
+                            'filters': []
+                        }
+                    }
+                ]
+            }
+            self.add(ActionsPage('Page 1', changed=self.save, data=default_data))
 
     def save(self):
         self.fix_tab_names()
