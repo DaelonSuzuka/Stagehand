@@ -42,7 +42,7 @@ class SandboxToolsDockWidget(QDockWidget):
 
         self.setWidget(widget)
         self.setFeatures(QDockWidget.DockWidgetClosable | QDockWidget.DockWidgetMovable | QDockWidget.DockWidgetFloatable)
-        self.starting_area = Qt.BottomDockWidgetArea
+        self.starting_area = Qt.RightDockWidgetArea
         self.closeEvent = lambda x: self.hide()
 
     def toggleViewAction(self):

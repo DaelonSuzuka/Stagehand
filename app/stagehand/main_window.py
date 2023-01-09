@@ -36,16 +36,17 @@ class MainWindow(BaseMainWindow):
         self.force_close = False
 
         self.font_menu = FontSizeMenu(self)
+        self.setTabPosition(Qt.TopDockWidgetArea | Qt.BottomDockWidgetArea | Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea, QTabWidget.North)
 
         self.about = AboutDialog(self)
         self.device_controls = DeviceControlsDockWidget(self)
+        self.device_controls.hide()
         self.log_monitor = LogMonitorDropdown(self)
         self.command_palette = CommandPalette(self)
         
         self.sandbox = Sandbox()
         if not self.restoreDockWidget(self.sandbox.tools_dock):
             self.addDockWidget(self.sandbox.tools_dock.starting_area, self.sandbox.tools_dock)
-            self.sandbox.tools_dock.hide()
 
         self.load_settings()
 
