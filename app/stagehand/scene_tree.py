@@ -1,7 +1,63 @@
 from qtstrap import *
+from qtstrap.extras.style import qcolors
 from qtpy.shiboken import isValid, delete
 import qtawesome as qta
 from .components import StagehandDockWidget
+
+
+class SceneTreeDelegate(QStyledItemDelegate):
+    def __init__(self):
+        super().__init__()
+
+        self.label = QLabel()
+        self.doc = QtGui.QTextDocument()
+
+    def paint(self, painter, option, index):
+        self.initStyleOption(option, index)
+        text = index.data(Qt.DisplayRole)
+
+        if text is None:
+            super().paint(painter, option, index)
+            return
+
+        r = QRect(option.rect)
+        bg_rect = QRect(r.x() - 3, r.y(), r.width() + 3, r.height())
+
+        if option.state & QStyle.State_MouseOver:
+            brush = QBrush(QColor('#e5f3ff'))
+            painter.fillRect(QRect(bg_rect), brush)
+        if option.state & QStyle.State_Selected:
+            if option.state & QStyle.State_Active:
+                brush = QBrush(QColor('#cde8ff'))  
+            elif option.state & QStyle.State_MouseOver:
+                brush = QBrush(QColor('#cde8ff'))
+            else:
+                brush = QBrush(QColor('#d9d9d9'))
+            painter.fillRect(QRect(bg_rect), brush)
+            
+            if option.state & QStyle.State_MouseOver:
+                painter.setPen(QColor('#99d1ff'))
+                r = QRect(bg_rect)
+                painter.drawLine(r.topLeft(), r.topRight())
+                painter.drawLine(r.bottomLeft(), r.bottomRight())
+                painter.drawLine(r.topLeft(), r.bottomLeft())
+    
+        painter.save()
+
+        parts = text.split('<')
+        parts[1] = '<' + parts[1]
+        
+        rect = QRect(option.rect)
+
+        if parts[0]:
+            painter.setPen(qcolors.black)
+            prev = painter.drawText(rect, Qt.AlignLeft, parts[0])
+            rect = QRect(prev.x() + prev.width(), prev.y(), option.rect.width(), prev.height())
+
+        painter.setPen(qcolors.gray)
+        painter.drawText(rect, Qt.AlignLeft, parts[1])
+
+        painter.restore()
 
 
 class SceneTreeWidgetItem(QTreeWidgetItem):
@@ -16,24 +72,31 @@ class SceneTreeWidgetItem(QTreeWidgetItem):
         name = obj.objectName()
         klass = type(obj).__name__
 
-        self.setText(0, klass)
+        s = ''
+        if name:
+            s += f'{name} '
 
-        if isinstance(obj, QWidget):
-            self.update_visibility_icon()
+        s += f'<{klass}>'
 
-    def update_visibility_icon(self):
-        if self.obj.isVisible():
-            self.setIcon(1, qta.icon('fa5.eye'))
-        else:
-            self.setIcon(1, qta.icon('fa5.eye-slash'))
-
-    def toggle_visibility(self):
-        if self.obj.isVisible():
-            self.obj.hide()
-        else:
-            self.obj.show()
+        self.setText(0, s)
 
         self.update_visibility_icon()
+
+    def update_visibility_icon(self):
+        if isinstance(self.obj, QWidget):
+            if self.obj.isVisible():
+                self.setIcon(1, qta.icon('fa5.eye'))
+            else:
+                self.setIcon(1, qta.icon('fa5.eye-slash'))
+
+    def toggle_visibility(self):
+        if isinstance(self.obj, QWidget):
+            if self.obj.isVisible():
+                self.obj.hide()
+            else:
+                self.obj.show()
+
+            self.update_visibility_icon()
 
 
 class TreeNode(QObject):
@@ -78,6 +141,8 @@ class TreeNode(QObject):
         for child_obj in self.obj.children():
             if child_obj in self.inverse:
                 continue
+            if isinstance(child_obj, TreeNode):
+                continue
             if isinstance(child_obj, (QWidget, QLayout)):
                 node = TreeNode(obj=child_obj, parent=self, item_parent=self.item)
                 self._children.append(node)
@@ -85,19 +150,28 @@ class TreeNode(QObject):
 
 
 class SceneTree(QTreeWidget):
+    inspection_requested = Signal(object)
+
     def __init__(self, parent=None):
         super().__init__(parent=parent)
-        self.header().hide()
+        
+        self.setItemDelegate(SceneTreeDelegate())
         self.setColumnCount(2)
+        self.header().hide()
         self.header().setMinimumSectionSize(1)
         self.header().setStretchLastSection(False)
         self.header().setSectionResizeMode(0, QHeaderView.Stretch)
+
+        for i in range(1, 2):
+            self.setColumnWidth(i, 30)
 
         self.itemClicked.connect(self.click)
         self.itemDoubleClicked.connect(self.double_click)
         self.itemSelectionChanged.connect(self.selection_changed)
 
     def click(self, item, column):
+        if column == 0:
+            self.inspection_requested.emit(item)
         if column == 1:
             item.toggle_visibility()
 
@@ -117,6 +191,8 @@ class SceneTree(QTreeWidget):
                 menu.addAction('Hide').triggered.connect(item.toggle_visibility)
             else:
                 menu.addAction('Show').triggered.connect(item.toggle_visibility)
+
+        menu.addAction('Show').triggered.connect(item.toggle_visibility)
         
         menu.exec_(pos)
 
@@ -125,6 +201,32 @@ class SceneTree(QTreeWidget):
         self.root_node = TreeNode(obj=obj, item_parent=self)
         self.root_node.scan()
         self.root_node.item.setExpanded(True)
+
+
+class Inspector(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+        
+        self.obj_name = QLabel()
+        self.obj_type = QLabel()
+
+        with CVBoxLayout(self, margins=2) as layout:
+            layout.add(QLabel('Inspector'))
+            with layout.hbox(margins=0):
+                layout.add(QLabel('Name:'))
+                layout.add(self.obj_name)
+            with layout.hbox(margins=0):
+                layout.add(QLabel('Type:'))
+                layout.add(self.obj_type)
+            layout.add(QLabel(), 1)
+
+    def inspect(self, item):
+        pass
+        print(item.obj)
+
+        self.obj_name.setText(item.obj.objectName())
+        self.obj_type.setText(type(item.obj).__name__)
+
 
 class SceneTreeDockWidget(StagehandDockWidget):
     _title = 'Scene Tree'
@@ -135,8 +237,13 @@ class SceneTreeDockWidget(StagehandDockWidget):
         super().__init__(parent=parent)
 
         self.tree = SceneTree()
+        self.inspector = Inspector()
+
+        self.tree.inspection_requested.connect(self.inspector.inspect)
 
         call_later(lambda: self.tree.scan(self.parent()), 2000)
 
-        with CVBoxLayout(self._widget, margins=2) as layout:
-            layout.add(self.tree)
+        with PersistentCSplitter('scene_tree_splitter', self._widget) as splitter:
+        # with CHBoxLayout(self._widget, margins=2) as layout:
+            splitter.add(self.tree)
+            splitter.add(self.inspector)
