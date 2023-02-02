@@ -1,8 +1,7 @@
 from qtstrap import *
 from qtstrap.extras.command_palette import Command
 from .godot_socket import GodotSocket
-from stagehand.components import StagehandStatusBarItem, SidebarButton
-from pathlib import Path
+from stagehand.components import StagehandStatusBarItem
 
 
 class GodotStatusWidget(StagehandStatusBarItem):
