@@ -11,7 +11,8 @@ future==0.18.2
 inquirerpy==0.3.4
 Jinja2==3.1.2
 MarkupSafe==2.1.1
-monaco-qt==0.1.5
+# monaco-qt==0.1.5
+-e P:/qtstrap/monaco-qt
 numpy==1.23.4
 packaging==21.3
 pefile==2022.5.30
@@ -31,8 +32,8 @@ PySide6-Essentials==6.3.0
 pywin32-ctypes==0.2.0
 QtAwesome==1.2.1
 QtPy==2.3.0
-qtstrap==0.3.11
-# -e P:/qtstrap/qtstrap
+# qtstrap==0.3.11
+-e P:/qtstrap/qtstrap
 shiboken6==6.3.0
 six==1.16.0
 sounddevice==0.4.5
