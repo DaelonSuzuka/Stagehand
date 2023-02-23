@@ -71,7 +71,9 @@ class MainTabWidget(QTabWidget):
         more_pages_button = MenuButton('New Page')
         
         for c in StagehandPage.__subclasses__():
-            more_pages_button.addAction(c.page_type).triggered.connect(lambda _=None, p=c: self.create_page(p.page_type))
+            if 'user' in c.tags:
+                action = more_pages_button.addAction(c.page_type)
+                action.triggered.connect(lambda _=None, p=c: self.create_page(p.page_type))
 
         corner = QWidget()
         with CHBoxLayout(corner, margins=(0, 0, 2, 0)) as layout:
@@ -131,9 +133,17 @@ class MainTabWidget(QTabWidget):
         return name
 
     def create_page(self, page_type=default_page_type):
-        name = self.get_unique_page_name()
-
         page_class = StagehandPage.get_subclasses()[page_type]
+            
+        if 'singleton' in page_class.tags:
+            name = page_class.page_type
+            for p in self.pages:
+                if p.page_type == page_class.page_type:
+                    self.setCurrentWidget(p)
+                    self.save()
+                    return
+        else:
+            name = self.get_unique_page_name()
 
         new_page = page_class(name, changed=self.save, data={})
         self.add(new_page)

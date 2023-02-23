@@ -17,6 +17,9 @@ class SidebarButton(QPushButton):
 
 
 class StagehandPage(QWidget):
+    page_type = ''
+    tags = ['user']
+
     @classmethod
     def get_subclasses(cls):
         return {c.page_type: c for c in cls.__subclasses__()}
