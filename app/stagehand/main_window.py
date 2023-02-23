@@ -31,6 +31,20 @@ class FontSizeMenu(QMenu):
         QSettings().setValue('font_size', size)
 
 
+class StyleMenu(QMenu):
+    def __init__(self, parent=None) -> None:
+        super().__init__(parent=parent)
+        self.setTitle('Style')
+
+        self.commands = [
+            Command("Theme: Set to Light Mode", triggered=lambda: App().update_style('Light')),
+            Command("Theme: Set to Dark Mode", triggered=lambda: App().update_style('Dark')),
+        ]
+
+        self.addAction('Light').triggered.connect(lambda: App().update_style('Light'))
+        self.addAction('Dark').triggered.connect(lambda: App().update_style('Dark'))
+
+
 class StyleEditorDockWidget(StagehandDockWidget):
     _title = 'Style Editor'
     _starting_area = Qt.BottomDockWidgetArea
@@ -78,6 +92,8 @@ class MainWindow(BaseMainWindow):
         self.force_close = False
 
         self.font_menu = FontSizeMenu(self)
+        self.style_menu = StyleMenu(self)
+        
         self.setTabPosition(Qt.TopDockWidgetArea | Qt.BottomDockWidgetArea | Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea, QTabWidget.North)
 
         self.about = AboutDialog(self)
@@ -145,6 +161,7 @@ class MainWindow(BaseMainWindow):
 
         menu.addSeparator()
         menu.addMenu(self.font_menu)
+        menu.addMenu(self.style_menu)
 
         menu.addSeparator()
         menu.addAction(self.minimize_to_tray)
