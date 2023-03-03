@@ -2,7 +2,7 @@ from qtstrap import *
 from qtstrap.extras.code_editor import CodeLine, PythonHighlighter
 import qtawesome as qta
 from stagehand.sandbox import Sandbox, SandboxCompletionModel
-from .action_editor import ActionEditorDialog
+from .sandbox_action_editor import ActionEditorDialog
 from .items import ActionItem
 
 
