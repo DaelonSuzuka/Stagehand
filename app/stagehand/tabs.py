@@ -174,9 +174,10 @@ class MainTabWidget(QTabWidget):
         if 'pages' in data and data['pages']:
             for name, page_data in data['pages'].items():
                 page_type = page_data.get('page_type', default_page_type)
-                page_class = StagehandPage.get_subclasses()[page_type]
-                page = page_class(name, changed=self.save, data=page_data)
-                self.add(page)
+                if page_type in StagehandPage.get_subclasses():
+                    page_class = StagehandPage.get_subclasses()[page_type]
+                    page = page_class(name, changed=self.save, data=page_data)
+                    self.add(page)
             if 'current_tab' in data:
                 self.setCurrentIndex(data['current_tab'])
         else:
