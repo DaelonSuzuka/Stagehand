@@ -155,6 +155,8 @@ $(VENV_CANARY_FILE): $(REQUIREMENTS)
 
 # forcibly update the canary file
 canary: $(VENV_CANARY_DIR)
+	-$(RM) $(VENV_CANARY_DIR)
+	-mkdir $(VENV_CANARY_DIR)
 	$(CP) $(REQUIREMENTS) $(VENV_CANARY_FILE)
 
 # update requirements.txt to match the state of the venv
