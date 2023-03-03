@@ -37,12 +37,12 @@ class ThemeMenu(QMenu):
         self.setTitle('Theme')
 
         self.commands = [
-            Command("Theme: Set to Light Mode", triggered=lambda: App().update_theme('Light')),
-            Command("Theme: Set to Dark Mode", triggered=lambda: App().update_theme('Dark')),
+            Command('Theme: Set to Light Mode', triggered=lambda: App().update_theme('light')),
+            Command('Theme: Set to Dark Mode', triggered=lambda: App().update_theme('dark')),
         ]
 
-        self.addAction('Light').triggered.connect(lambda: App().update_theme('Light'))
-        self.addAction('Dark').triggered.connect(lambda: App().update_theme('Dark'))
+        self.addAction('Light').triggered.connect(lambda: App().update_theme('light'))
+        self.addAction('Dark').triggered.connect(lambda: App().update_theme('dark'))
 
 
 class StyleEditorDockWidget(StagehandDockWidget):

@@ -1,16 +1,18 @@
 from qtstrap import *
+from qtstrap.extras.style import apply_theme
 from codex import DeviceManager
 from .app_updater import ApplicationUpdater
 import qtawesome as qta
+from qtstrap.extras.command_palette import CommandPalette
 
 
 class Application(BaseApplication):
     def __init__(self) -> None:
         super().__init__()
 
-        default_theme = 'Light'
-        self.current_theme: str = QSettings().value('theme', default_theme)
-        self.update_theme(self.current_theme)
+        default_theme = 'light'
+        theme = QSettings().value('theme', default_theme)
+        self.update_theme(theme)
         
         self.updater = ApplicationUpdater()
         # self.updater.check_latest()
@@ -18,14 +20,12 @@ class Application(BaseApplication):
         self.device_manager = DeviceManager(self)
         self.aboutToQuit.connect(self.device_manager.close)
 
-    def update_theme(self, theme: str):
-        self.current_theme = theme
-        OPTIONS.theme = theme.lower()
-        QSettings().setValue('theme', self.current_theme)
+    def update_theme(self, theme: str, force=False):
+        if theme == OPTIONS.theme:
+            return
 
-        if theme == qta.styles.DEFAULT_DARK_PALETTE:
-            qta.reset_cache()
-            qta.dark(self)
-        else:
-            qta.reset_cache()
-            qta.light(self)
+        OPTIONS.theme = theme
+        QSettings().setValue('theme', theme)
+
+        qta.reset_cache()
+        apply_theme(theme, self)
