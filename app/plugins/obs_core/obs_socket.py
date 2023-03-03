@@ -40,14 +40,19 @@ class ObsSocket(QObject):
     def set_status(self, status):
         self.status_changed.emit(status)
         if status == 'active':
+            self.reconnect_attempts = 0
             self.active = True
             self.socket_connected.emit()
             self.process_queue()
 
         elif status == 'inactive':
+            self.reconnect_attempts = 0
             self.active = False
 
         elif status == 'failed':
+            self.active = False
+
+        elif status == 'reconnecting':
             self.active = False
 
     def connected(self):
@@ -56,20 +61,14 @@ class ObsSocket(QObject):
                 # apparently this is how you process the challege/response
                 # this is shamelessly lifted from obs-websocket-py:
                 # https://github.com/Elektordi/obs-websocket-py/blob/master/obswebsocket/core.py#L120
-                secret = base64.b64encode(
-                    hashlib.sha256(
-                        (self.password + msg['salt']).encode('utf-8')
-                    ).digest()
+                secret = base64.b64encode(hashlib.sha256((self.password + msg['salt']).encode('utf-8')).digest())
+                auth = base64.b64encode(hashlib.sha256(secret + msg['challenge'].encode('utf-8')).digest()).decode(
+                    'utf-8'
                 )
-                auth = base64.b64encode(
-                    hashlib.sha256(
-                        secret + msg['challenge'].encode('utf-8')
-                    ).digest()
-                ).decode('utf-8')
 
                 auth_payload = {
-                    "request-type": "Authenticate",
-                    "auth": auth,
+                    'request-type': 'Authenticate',
+                    'auth': auth,
                 }
 
                 def auth_cb2(msg):
@@ -84,7 +83,7 @@ class ObsSocket(QObject):
             else:
                 self.set_status('active')
 
-        self._send({"request-type": "GetAuthRequired"}, auth_cb)
+        self._send({'request-type': 'GetAuthRequired'}, auth_cb)
 
     def disconnected(self):
         if self.we_closed:
@@ -97,29 +96,31 @@ class ObsSocket(QObject):
     def retry(self):
         self.reconnect_attempts += 1
         if self.reconnect_attempts >= self.max_attempts:
+            self.log.info('Max retry attempts reached, aborting')
             self.set_status('inactive')
             return
 
         self.set_status('reconnecting')
         if isValid(self.socket):
             self.socket.close()
+            self.log.info('Attempting to reconnect')
             self.socket.open(self.url)
 
     def open(self, url, port, password=''):
         self.url = QUrl(f'ws://{url}:{port}')
-        self.log.info(f"Attempting to connect to OBS at: {self.url}")
+        self.log.info(f'Attempting to connect to OBS at: {self.url}')
         self.password = password
         self.socket.open(self.url)
-        
+
     def close(self):
-        self.log.info(f"Closing socket")
+        self.log.info(f'Closing socket')
         self.socket.close()
 
     def _send(self, payload, callback=None):
         payload['message-id'] = str(self.id)
         self.history[self.id] = payload
 
-        self.log.info(f"TX: {payload}")
+        self.log.info(f'TX: {payload}')
 
         if callback:
             self.callbacks[str(self.id)] = callback
@@ -144,7 +145,7 @@ class ObsSocket(QObject):
         msg = json.loads(message)
         self.message_received.emit(msg)
 
-        self.log.info(f"RX: {message}")
+        self.log.info(f'RX: {message}')
 
         # process callbacks
         if 'message-id' in msg:

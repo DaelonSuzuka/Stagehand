@@ -6,7 +6,8 @@ import queue
 import logging
 
 
-class _GodotSocket(QObject):
+@singleton
+class GodotSocket(QObject):
     status_changed = Signal(str)
     message_received = Signal(dict)
     raw_message_received = Signal(str)
@@ -57,7 +58,8 @@ class _GodotSocket(QObject):
                 pass
             else:
                 self.set_status('active')
-        self._send({"request-type": "GetAuthRequired"}, auth_cb)
+
+        self._send({'request-type': 'GetAuthRequired'}, auth_cb)
 
     def disconnected(self):
         if self.we_closed:
@@ -70,31 +72,31 @@ class _GodotSocket(QObject):
     def retry(self):
         self.reconnect_attempts += 1
         if self.reconnect_attempts >= self.max_attempts:
+            self.log.info('Max retry attempts reached, aborting')
             self.set_status('inactive')
             return
 
         self.set_status('reconnecting')
         if isValid(self.socket):
             self.socket.close()
+            self.log.info('Attempting to reconnect')
             self.socket.open(self.url)
-        self.socket.close()
-        self.socket.open(self.url)
 
     def open(self, url, port, password=''):
         self.url = QUrl(f'ws://{url}:{port}')
-        self.log.info(f"Attempting to connect to Godot at: {self.url}")
+        self.log.info(f'Attempting to connect to Godot at: {self.url}')
         self.password = password
         self.socket.open(self.url)
 
     def close(self):
-        self.log.info(f"Closing socket")
+        self.log.info(f'Closing socket')
         self.socket.close()
 
     def _send(self, payload, callback=None):
         payload['message-id'] = str(self.id)
         self.history[self.id] = payload
 
-        self.log.info(f"TX: {payload}")
+        self.log.info(f'TX: {payload}')
 
         if callback:
             self.callbacks[str(self.id)] = callback
@@ -119,19 +121,9 @@ class _GodotSocket(QObject):
         msg = json.loads(message)
         self.message_received.emit(msg)
 
-        self.log.info(f"RX: {message}")
+        self.log.info(f'RX: {message}')
 
         # process callbacks
         if 'message-id' in msg:
             if msg['message-id'] in self.callbacks:
                 self.callbacks[msg['message-id']](msg)
-
-
-socket = None
-
-
-def GodotSocket(parent=None):
-    global socket
-    if socket is None:
-        socket = _GodotSocket(parent)
-    return socket
