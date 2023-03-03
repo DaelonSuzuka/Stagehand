@@ -29,6 +29,7 @@ class ObsStatusWidget(StagehandStatusBarItem):
         self.commands = [
             Command("OBS: Connect websocket", triggered=self.open),
             Command("OBS: Disconnect websocket", triggered=self.close),
+            Command("OBS: Open Settings", triggered=self.open_settings),
         ]
 
         with CHBoxLayout(self, margins=0) as layout:
