@@ -69,7 +69,7 @@ class Action(QWidget):
         return {
             'action': {
                 'type': self.type.currentText(),
-                **self.action.get_data(),
+                **(self.action.get_data() if self.action else {}),
             }
         }
 
