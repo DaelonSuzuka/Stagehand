@@ -1,33 +1,7 @@
 from qtstrap import *
 import json
 from .items import TriggerItem
-
-
-class SandboxTrigger(QWidget, TriggerItem):
-    name = 'sandbox'
-    triggered = Signal()
-
-    def __init__(self, changed, run, owner=None):
-        super().__init__()
-
-        self.owner = owner
-        self.trigger = QLineEdit()
-        self.trigger.textChanged.connect(changed)
-        
-        with CHBoxLayout(self, margins=0) as layout:
-            layout.add(self.trigger)
-
-    def reset(self):
-        self.trigger.clear()
-        
-    def set_data(self, data: dict):
-        if 'trigger' in data:
-            self.trigger.setText(data['trigger'])
-
-    def get_data(self):
-        return {
-            'trigger': self.trigger.text()
-        }
+from .sandbox_trigger import SandboxTrigger
 
 
 class ActionTrigger(QWidget):
@@ -93,9 +67,9 @@ class ActionTrigger(QWidget):
     def set_data(self, data):
         if 'trigger' in data:
             self.data = data
-            if 'type' not in data['trigger']:
-                data['trigger']['type'] = 'keyboard'
-            self.type.setCurrentText(data['trigger']['type'])
+            if 'trigger_type' not in data['trigger']:
+                data['trigger']['trigger_type'] = 'keyboard'
+            self.type.setCurrentText(data['trigger']['trigger_type'])
             
             self.type_changed()
 
@@ -106,7 +80,7 @@ class ActionTrigger(QWidget):
         return {
             'trigger': {
                 'enabled': self.enabled.isChecked(),
-                'type': self.type.currentText(),
+                'trigger_type': self.type.currentText(),
                 **self.trigger.get_data(),
             }
         }
