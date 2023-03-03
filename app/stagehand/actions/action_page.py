@@ -5,6 +5,11 @@ from stagehand.components import StagehandPage
 import json
 
 
+class CustomAnimatedToggle(AnimatedToggle):
+    def sizeHint(self):
+        return QSize(50, 32)
+
+
 class ActionsPage(StagehandPage):
     page_type = 'Generic Actions'
     changed = Signal()
@@ -22,7 +27,7 @@ class ActionsPage(StagehandPage):
         self.actions = []
         self.actions_container = CVBoxLayout()
 
-        self.enabled = AnimatedToggle()
+        self.enabled = CustomAnimatedToggle()
         self.enabled.stateChanged.connect(lambda _: self.group.set_active(self.enabled.isChecked()))
         self.enabled.stateChanged.connect(lambda _: self.changed.emit())
 

@@ -81,6 +81,11 @@ class Action(QWidget):
         self.action.reset()
 
 
+class CustomAnimatedToggle(AnimatedToggle):
+    def sizeHint(self):
+        return QSize(50, 32)
+
+
 @draggable
 class ActionWidget(QWidget):
     changed = Signal()
@@ -122,7 +127,7 @@ class ActionWidget(QWidget):
         self.run_btn = QPushButton('', clicked=self.run, icon=qta.icon('fa5.play-circle'))
         self.run_btn.setIconSize(QSize(22, 22))
 
-        self.enabled = AnimatedToggle()
+        self.enabled = CustomAnimatedToggle()
         self.enabled.stateChanged.connect(lambda _: self.changed.emit())
 
         self.label = LabelEdit(self.name, changed=self.on_change)
