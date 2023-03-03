@@ -466,8 +466,7 @@ def generate_classes():
     with open(Path(__file__).parent / 'requests.py', 'w') as f:
         w = Writer(f.write)
 
-        w += "from stagehand.sandbox import Sandbox"
-        w += "from .obs_socket import ObsSocket"
+        w += "from ..obs_socket import ObsSocket"
         w += ''
         w += ''
 
@@ -497,9 +496,8 @@ def generate_classes():
     with open(Path(__file__).parent / 'request_widgets.py', 'w') as f:
         w = Writer(f.write)
 
-        w += "from .base_classes import *"
         w += "from qtstrap import *"
-        w += "from stagehand.sandbox import Sandbox"
+        w += "from .base_classes import *"
         w += ''
         w += ''
 
@@ -511,7 +509,7 @@ def generate_classes():
                 w += ''
 
         w += ''
-        w += "widgets = {"
+        w += "request_widgets = {"
         with w:
             for c in classes:
                 w += f"'{c}': {c}Widget,"
@@ -521,7 +519,6 @@ def generate_classes():
     with open(Path(__file__).parent / 'events.py', 'w') as f:
         w = Writer(f.write)
 
-        w += "from stagehand.sandbox import Sandbox"
         w += ''
         w += ''
         
@@ -551,9 +548,8 @@ def generate_classes():
     with open(Path(__file__).parent / 'event_widgets.py', 'w') as f:
         w = Writer(f.write)
 
-        w += "from .base_classes import *"
         w += "from qtstrap import *"
-        w += "from stagehand.sandbox import Sandbox"
+        w += "from .base_classes import *"
         w += ''
         w += ''
 
@@ -565,7 +561,7 @@ def generate_classes():
                 w += ''
 
         w += ''
-        w += "widgets = {"
+        w += "event_widgets = {"
         with w:
             for c in classes:
                 w += f"'{c}': {c}Widget,"

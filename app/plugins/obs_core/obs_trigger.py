@@ -1,7 +1,6 @@
 from qtstrap import *
 from stagehand.actions import TriggerItem
-from .events import events
-from .event_widgets import widgets
+from .interface import events, event_widgets
 from .obs_socket import ObsSocket
 
 
@@ -38,7 +37,7 @@ class ObsTrigger(QWidget, TriggerItem):
             self.layout().removeWidget(self.event_widget)
             self.event_widget.deleteLater()
             
-        self.event_widget = widgets[self.type.currentText()](self.changed)
+        self.event_widget = event_widgets[self.type.currentText()](self.changed)
         self.layout().add(self.event_widget, 1)
 
     def set_data(self, data):

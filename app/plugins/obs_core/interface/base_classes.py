@@ -1,7 +1,6 @@
 from qtstrap import *
 from qtpy.shiboken import isValid
 from stagehand.sandbox import Sandbox
-from .requests import requests
 
 
 class UnimplementedField(QLabel):

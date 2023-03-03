@@ -1,8 +1,7 @@
 from qtstrap import *
 from stagehand.sandbox import Sandbox
 from stagehand.actions import ActionItem
-from .requests import requests
-from .request_widgets import widgets
+from .interface import requests, request_widgets
 
 
 def filt(r:str) -> bool:
@@ -43,7 +42,7 @@ class ObsAction(QWidget, ActionItem):
             self.layout().removeWidget(self.request_widget)
             self.request_widget.deleteLater()
             
-        self.request_widget = widgets[self.request.currentText()](self.changed)
+        self.request_widget = request_widgets[self.request.currentText()](self.changed)
         self.layout().add(self.request_widget, 1)
 
     def set_data(self, data):

@@ -1,6 +1,5 @@
-from .base_classes import *
 from qtstrap import *
-from stagehand.sandbox import Sandbox
+from .base_classes import *
 
 
 class GetVersionWidget(QWidget):
@@ -4382,7 +4381,7 @@ class StopVirtualCamWidget(QWidget):
 
 
 
-widgets = {
+request_widgets = {
     'GetVersion': GetVersionWidget,
     'GetAuthRequired': GetAuthRequiredWidget,
     'Authenticate': AuthenticateWidget,

@@ -1,6 +1,5 @@
-from .base_classes import *
 from qtstrap import *
-from stagehand.sandbox import Sandbox
+from .base_classes import *
 
 
 class SwitchScenesWidget(QWidget):
@@ -1516,7 +1515,7 @@ class StudioModeSwitchedWidget(QWidget):
 
 
 
-widgets = {
+event_widgets = {
     'SwitchScenes': SwitchScenesWidget,
     'ScenesChanged': ScenesChangedWidget,
     'SceneCollectionChanged': SceneCollectionChangedWidget,

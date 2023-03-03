@@ -1,5 +1,4 @@
-from stagehand.sandbox import Sandbox
-from .obs_socket import ObsSocket
+from ..obs_socket import ObsSocket
 
 
 class BaseRequest:
