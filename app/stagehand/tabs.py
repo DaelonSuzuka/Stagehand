@@ -91,16 +91,18 @@ class MainTabWidget(QTabWidget):
         
         call_later(self.enable_saving, 250)
 
-    def tab_context_menu(self, pos:QPoint):
+    def tab_context_menu(self, pos: QPoint):
         tab_bar = self.tabBar()
         tab_idx = tab_bar.tabAt(pos)
-        page = self.widget(tab_idx)
+        page: StagehandPage = self.widget(tab_idx)
 
-        menu = QMenu()
-        # if hasattr(page, ''):
-        menu.addAction('Rename Page').triggered.connect(lambda: self.rename_page(tab_idx))
-        menu.addAction('Delete Page').triggered.connect(lambda: self.remove_page(tab_idx))
-        menu.exec_(self.mapToGlobal(pos))
+        try:
+            page.tab_context_menu(self.mapToGlobal(pos), self, tab_idx)
+        except NotImplementedError:
+            menu = QMenu()
+            menu.addAction('Rename Page').triggered.connect(lambda: self.rename_page(tab_idx))
+            menu.addAction('Delete Page').triggered.connect(lambda: self.remove_page(tab_idx))
+            menu.exec_(self.mapToGlobal(pos))
 
     def enable_saving(self):
         self.saving_disabled = False

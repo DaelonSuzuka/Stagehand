@@ -6,13 +6,13 @@ from .obs_status_widget import ObsStatusWidget
 class ObsSettingsPage(StagehandPage):
     page_type = 'OBS Settings'
     tags = ['singleton']
-    
+
     def __init__(self, name='', changed=None, data=None):
         super().__init__()
         self.name = name
 
         if data is not None:
-                self.set_data(data)
+            self.set_data(data)
 
         obs = ObsStatusWidget()
 
@@ -27,8 +27,10 @@ class ObsSettingsPage(StagehandPage):
         # TODO: why doesn't this work?
         obs.status_changed.connect(self.status_changed)
         obs.connect_at_start.changed.connect(lambda: self.connect_at_start.setChecked(obs.connect_at_start.isChecked()))
-        self.connect_at_start.stateChanged.connect(lambda x: obs.connect_at_start.setChecked(self.connect_at_start.isChecked()))
-        
+        self.connect_at_start.stateChanged.connect(
+            lambda x: obs.connect_at_start.setChecked(self.connect_at_start.isChecked())
+        )
+
         self.url.textChanged.connect(obs.set_url)
         self.port.textChanged.connect(obs.set_port)
         self.password.textChanged.connect(obs.set_password)
@@ -41,6 +43,11 @@ class ObsSettingsPage(StagehandPage):
                 layout.addRow('Port:', self.port)
                 layout.addRow('Password:', self.password)
                 layout.addRow('Connect At Start:', self.connect_at_start)
+
+    def tab_context_menu(self, pos: QPoint, tabs, tab_idx: int):
+        menu = QMenu()
+        menu.addAction('Close').triggered.connect(lambda: tabs.remove_page(tab_idx))
+        menu.exec_(pos)
 
     def status_changed(self, status, message=''):
         if message:

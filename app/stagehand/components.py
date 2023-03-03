@@ -24,7 +24,10 @@ class StagehandPage(QWidget):
     def get_subclasses(cls):
         return {c.page_type: c for c in cls.__subclasses__()}
 
-    @abstractmethod    
+    def tab_context_menu(self, pos: QPoint, tabs, tab_idx: int):
+        raise NotImplementedError
+
+    @abstractmethod
     def get_name(self) -> str:
         raise NotImplementedError
 
@@ -63,11 +66,11 @@ class StagehandDockWidget(QDockWidget):
         self.setWidget(self._widget)
 
         self.setFeatures(self._features)
-        
+
         if not parent.restoreDockWidget(self):
             parent.addDockWidget(self._starting_area, self)
             self.hide()
-        
+
         self.closeEvent = lambda x: self.hide()
 
     def toggleViewAction(self):
