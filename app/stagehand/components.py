@@ -31,13 +31,14 @@ class StagehandPage(QWidget):
     def get_name(self) -> str:
         raise NotImplementedError
 
-    @abstractmethod
     def set_data(self, data: dict) -> None:
-        raise NotImplementedError
+        pass
 
-    @abstractmethod
     def get_data(self) -> dict:
-        raise NotImplementedError
+        data = {
+            'page_type': self.page_type,
+        }
+        return data
 
 
 class StagehandWidget(QWidget):

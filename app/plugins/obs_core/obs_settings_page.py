@@ -65,13 +65,3 @@ class ObsSettingsPage(StagehandPage):
 
     def get_name(self) -> str:
         return self.name
-
-    def set_data(self, data: dict) -> None:
-        self.name = data.get('name', self.name)
-
-    def get_data(self) -> dict:
-        data = {
-            'page_type': self.page_type,
-            'name': self.name,
-        }
-        return data
