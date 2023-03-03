@@ -1,37 +1,8 @@
 from qtstrap import *
-from abc import abstractmethod
 import qtawesome as qta
 import json
 from stagehand.sandbox import Sandbox
-
-
-class FilterStackItem:
-    @classmethod
-    def get_subclasses(cls):
-        return {c.name: c for c in cls.__subclasses__()}
-
-    @classmethod
-    def get_item(cls, name):
-        return cls.get_subclasses()[name]
-
-    @abstractmethod
-    def __init__(self, changed) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    def set_data(self, data: dict) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_data(self) -> dict:
-        raise NotImplementedError
-
-    def reset(self) -> None:
-        pass
-
-    @abstractmethod
-    def check(self) -> bool:
-        raise NotImplementedError
+from .items import FilterStackItem
 
 
 class SandboxFilterWidget(QWidget, FilterStackItem):
