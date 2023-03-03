@@ -82,7 +82,8 @@ class ReplDockWidget(StagehandDockWidget):
         with CVBoxLayout(self._widget, margins=2) as layout:
             layout.add(QLabel('REPL goes here'))
 
-    
+
+@singleton
 class MainWindow(BaseMainWindow):
     closing = Signal()
 
