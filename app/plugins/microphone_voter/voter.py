@@ -4,7 +4,7 @@ import sounddevice as sd
 from time import time
 import os
 from stagehand.sandbox import Sandbox
-from stagehand.components import StagehandWidget
+from stagehand.components import StagehandPage
 
 
 class MicStream:
@@ -67,9 +67,13 @@ class MicStreamWidget(QWidget):
         self.meter = QLabel()
         self.preferred = PersistentCheckBox(f'mic_voter/{self.name}/preferred')
 
-        self.gain = PersistentLineEdit(f'mic_voter/{self.name}/gain', changed=self.stream.set_gain, default=str(self.stream.gain))
+        self.gain = PersistentLineEdit(
+            f'mic_voter/{self.name}/gain', changed=self.stream.set_gain, default=str(self.stream.gain)
+        )
         self.gain.setFixedWidth(40)
-        self.beta = PersistentLineEdit(f'mic_voter/{self.name}/beta', changed=self.stream.set_beta, default=str(self.stream.beta))
+        self.beta = PersistentLineEdit(
+            f'mic_voter/{self.name}/beta', changed=self.stream.set_beta, default=str(self.stream.beta)
+        )
         self.beta.setFixedWidth(40)
 
         self.on_check()
@@ -84,9 +88,13 @@ class MicStreamWidget(QWidget):
             self.meter.setText('')
 
 
-class MicVoterWidget(StagehandWidget):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, icon_name='fa5s.microphone', **kwargs)
+class MicVoterPage(StagehandPage):
+    page_type = 'Microphone Voter'
+    tags = ['singleton', 'user']
+
+    def __init__(self, name='', changed=None, data=None):
+        super().__init__()
+        self.name = name
 
         self.best_mic = QLabel()
 
@@ -135,8 +143,16 @@ class MicVoterWidget(StagehandWidget):
 
                 if self.enabled:
                     self.create_devices()
-                
+
             layout.add(QLabel(), 1)
+
+    def get_name(self) -> str:
+        return self.name
+
+    def tab_context_menu(self, pos: QPoint, tabs, tab_idx: int):
+        menu = QMenu()
+        menu.addAction('Close').triggered.connect(lambda: tabs.remove_page(tab_idx))
+        menu.exec_(pos)
 
     def create_devices(self):
         for i, d in enumerate(sd.query_devices()):
@@ -150,7 +166,7 @@ class MicVoterWidget(StagehandWidget):
             self.grid.add(mic.gain, i + 2, 4)
             self.grid.add(mic.obs_name, i + 2, 5)
             self.grid.add(mic.enabled, i + 2, 6)
-    
+
         self.timer.start(20)
 
     def remove_devices(self):
@@ -193,7 +209,7 @@ class MicVoterWidget(StagehandWidget):
         if len(sorted_keys) == 0:
             return
         best_mic = self.mics[sorted_keys[0]]
-        
+
         need_to_change = False
         for _, vol in volumes.items():
             try:
@@ -217,7 +233,7 @@ class MicVoterWidget(StagehandWidget):
                 obs_name = self.mics[key].obs_name.text()
                 if obs_name:
                     mute[obs_name] = True
-                    
+
             obs_name = best_mic.obs_name.text()
             if obs_name:
                 mute[obs_name] = False
@@ -225,5 +241,5 @@ class MicVoterWidget(StagehandWidget):
             self.best_mic.setText(best_mic.name)
 
             for mic, state in mute.items():
-                mute_request = {"request-type": "SetMute", "source": mic, "mute": state}
+                mute_request = {'request-type': 'SetMute', 'source': mic, 'mute': state}
                 Sandbox().obs.send(mute_request)
