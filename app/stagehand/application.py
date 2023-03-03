@@ -8,9 +8,9 @@ class Application(BaseApplication):
     def __init__(self) -> None:
         super().__init__()
 
-        default_style = 'Light'
-        self.current_style: str = QSettings().value('style', default_style)
-        self.update_style(self.current_style)
+        default_theme = 'Light'
+        self.current_theme: str = QSettings().value('theme', default_theme)
+        self.update_theme(self.current_theme)
         
         self.updater = ApplicationUpdater()
         # self.updater.check_latest()
@@ -18,11 +18,12 @@ class Application(BaseApplication):
         self.device_manager = DeviceManager(self)
         self.aboutToQuit.connect(self.device_manager.close)
 
-    def update_style(self, text: str):
-        self.current_style = text
-        QSettings().setValue('style', self.current_style)
+    def update_theme(self, theme: str):
+        self.current_theme = theme
+        OPTIONS.theme = theme.lower()
+        QSettings().setValue('theme', self.current_theme)
 
-        if text == qta.styles.DEFAULT_DARK_PALETTE:
+        if theme == qta.styles.DEFAULT_DARK_PALETTE:
             qta.reset_cache()
             qta.dark(self)
         else:
