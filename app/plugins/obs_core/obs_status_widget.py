@@ -27,9 +27,9 @@ class ObsStatusWidget(StagehandStatusBarItem):
             self.open()
 
         self.commands = [
-            Command("OBS: Connect websocket", triggered=self.open),
-            Command("OBS: Disconnect websocket", triggered=self.close),
-            Command("OBS: Open Settings", triggered=self.open_settings),
+            Command('OBS: Connect websocket', triggered=self.open),
+            Command('OBS: Disconnect websocket', triggered=self.close),
+            Command('OBS: Open Settings', triggered=self.open_settings),
         ]
 
         with CHBoxLayout(self, margins=0) as layout:
@@ -65,7 +65,7 @@ class ObsStatusWidget(StagehandStatusBarItem):
 
         self.status_label.setText(message)
         self.status_changed.emit(self.status, message)
-        
+
     def contextMenuEvent(self, event):
         menu = QMenu()
         if self.status != 'active':
