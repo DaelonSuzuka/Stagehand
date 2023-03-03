@@ -7,6 +7,8 @@ from qtstrap.extras.command_palette import CommandPalette
 
 
 class Application(BaseApplication):
+    theme_changed = Signal()
+
     def __init__(self) -> None:
         super().__init__()
 
@@ -29,3 +31,5 @@ class Application(BaseApplication):
 
         qta.reset_cache()
         apply_theme(theme, self)
+
+        self.theme_changed.emit()
