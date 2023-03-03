@@ -18,7 +18,7 @@ class FontSizeMenu(QMenu):
         self.setTitle('Font Size')
 
         self.default_size = default
-        self.font_size:int = QSettings().value('font_size', self.default_size)
+        self.font_size: int = QSettings().value('font_size', self.default_size)
         self.set_font_size(self.font_size)
 
         self.addAction('+').triggered.connect(lambda: self.set_font_size(self.font_size + 2))
@@ -94,8 +94,11 @@ class MainWindow(BaseMainWindow):
 
         self.font_menu = FontSizeMenu(self)
         self.theme_menu = ThemeMenu(self)
-        
-        self.setTabPosition(Qt.TopDockWidgetArea | Qt.BottomDockWidgetArea | Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea, QTabWidget.North)
+
+        self.setTabPosition(
+            Qt.TopDockWidgetArea | Qt.BottomDockWidgetArea | Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea,
+            QTabWidget.North,
+        )
 
         self.about = AboutDialog(self)
         self.device_controls = DeviceControlsDockWidget(self)
@@ -105,9 +108,9 @@ class MainWindow(BaseMainWindow):
         self.repl = ReplDockWidget(self)
         self.scene_tree = SceneTreeDockWidget(self)
         self.log_monitor = LogMonitorDropdown(self)
+        self.sandbox = Sandbox()
         self.command_palette = CommandPalette(self)
         
-        self.sandbox = Sandbox()
         if not self.restoreDockWidget(self.sandbox.tools_dock):
             self.addDockWidget(self.sandbox.tools_dock.starting_area, self.sandbox.tools_dock)
 
@@ -123,8 +126,8 @@ class MainWindow(BaseMainWindow):
             self.tab_shortcuts.append(shortcut)
 
         self.commands = [
-            Command("Minimize to tray"),
-            Command("Quit Application", triggered=self.close, shortcut='Ctrl+Q'),
+            Command('Minimize to tray'),
+            Command('Quit Application', triggered=self.close, shortcut='Ctrl+Q'),
         ]
 
         self.init_tray_stuff()
@@ -170,7 +173,7 @@ class MainWindow(BaseMainWindow):
         menu.addSeparator()
         menu.addAction(App().updater.check_for_updates_action())
         menu.addAction(self.about.show_action())
-        
+
         menu.addSeparator()
         menu.addAction('&Exit', shortcut='Ctrl+Q').triggered.connect(self._close)
 
@@ -196,14 +199,11 @@ class MainWindow(BaseMainWindow):
             self.tray_icon.setIcon(QIcon(files[0].as_posix()))
 
         self.tray_menu = QMenu()
-        self.tray_menu.addAction(QAction("Stagehand", self, enabled=False))
-        self.tray_menu.addAction(QAction("Open", self, triggered=self.show))
-        self.tray_menu.addAction(QAction("Quit", self, triggered=qApp.quit))
+        self.tray_menu.addAction(QAction('Stagehand', self, enabled=False))
+        self.tray_menu.addAction(QAction('Open', self, triggered=self.show))
+        self.tray_menu.addAction(QAction('Quit', self, triggered=qApp.quit))
         self.tray_icon.setContextMenu(self.tray_menu)
 
         self.tray_icon.show()
 
-        self.minimize_to_tray = PersistentCheckableAction(
-            'mainwindow/minimize_to_tray', 
-            'Minimize to tray'
-        )
+        self.minimize_to_tray = PersistentCheckableAction('mainwindow/minimize_to_tray', 'Minimize to tray')
