@@ -55,16 +55,16 @@ class StyleEditorDockWidget(StagehandDockWidget):
 
         prev_text = QSettings().value('custom_style', '')
 
-        self.editor = MonacoWidget()
-        self.editor.setText(prev_text)
-        self.editor.setLanguage('css')
-        self.editor.textChanged.connect(lambda t: QSettings().setValue('custom_style', t))
+        # self.editor = MonacoWidget()
+        # self.editor.setText(prev_text)
+        # self.editor.setLanguage('css')
+        # self.editor.textChanged.connect(lambda t: QSettings().setValue('custom_style', t))
 
-        with CVBoxLayout(self._widget, margins=2) as layout:
-            layout.add(self.editor)
-            with layout.hbox():
-                layout.add(QLabel(), 1)
-                layout.add(QPushButton('Apply', clicked=self.apply))
+        # with CVBoxLayout(self._widget, margins=2) as layout:
+        #     layout.add(self.editor)
+        #     with layout.hbox():
+        #         layout.add(QLabel(), 1)
+        #         layout.add(QPushButton('Apply', clicked=self.apply))
 
     def apply(self):
         text = self.editor.text()

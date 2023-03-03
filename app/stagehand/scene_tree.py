@@ -241,7 +241,7 @@ class SceneTreeDockWidget(StagehandDockWidget):
 
         self.tree.inspection_requested.connect(self.inspector.inspect)
 
-        call_later(lambda: self.tree.scan(self.parent()), 2000)
+        # call_later(lambda: self.tree.scan(self.parent()), 2000)
 
         with PersistentCSplitter('scene_tree_splitter', self._widget) as splitter:
         # with CHBoxLayout(self._widget, margins=2) as layout:
