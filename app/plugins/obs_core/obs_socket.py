@@ -8,7 +8,8 @@ import queue
 import logging
 
 
-class _ObsSocket(QObject):
+@singleton
+class ObsSocket(QObject):
     status_changed = Signal(str)
     message_received = Signal(dict)
     raw_message_received = Signal(str)
@@ -151,13 +152,3 @@ class _ObsSocket(QObject):
                 self.callbacks[msg['message-id']](msg)
         if 'update-type' in msg:
             self.event_received.emit(msg)
-
-
-socket = None
-
-
-def ObsSocket(parent=None):
-    global socket
-    if socket is None:
-        socket = _ObsSocket(parent)
-    return socket
