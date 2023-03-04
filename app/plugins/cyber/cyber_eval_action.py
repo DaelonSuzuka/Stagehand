@@ -54,7 +54,7 @@ class CyberEvalAction(QWidget, ActionItem):
         return data
 
     def run(self):
-        Sandbox().cyber.eval(self.eval.text(), self.eval_result)
+        Sandbox().cyber.eval(self.eval.text())
 
     def eval_result(self, message):
         Sandbox().tools.print(message['result'])
