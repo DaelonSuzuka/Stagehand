@@ -4,6 +4,7 @@ import json
 from .action_trigger import ActionTrigger
 from .action_filter import ActionFilter
 from .items import ActionItem
+from stagehand.sandbox import Sandbox
 
 
 class Action(QWidget):
