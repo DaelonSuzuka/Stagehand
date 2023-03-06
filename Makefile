@@ -122,7 +122,7 @@ ifeq ($(OS),Windows_NT)
 	VENV_PYTHON := $(VENV)\$(PYTHON)
 	VENV_PYINSTALLER := $(VENV)\pyinstaller
 	RM := -rd /s /q 
-	CP := copy
+	CP := cp
 else
 	VENV_DIR := $(VENV_NAME)
 	VENV_CANARY_DIR := $(VENV_DIR)/canary
