@@ -31,20 +31,6 @@ class FontSizeMenu(QMenu):
         QSettings().setValue('font_size', size)
 
 
-class ThemeMenu(QMenu):
-    def __init__(self, parent=None) -> None:
-        super().__init__(parent=parent)
-        self.setTitle('Theme')
-
-        self.commands = [
-            Command('Theme: Set to Light Mode', triggered=lambda: App().update_theme('light')),
-            Command('Theme: Set to Dark Mode', triggered=lambda: App().update_theme('dark')),
-        ]
-
-        self.addAction('Light').triggered.connect(lambda: App().update_theme('light'))
-        self.addAction('Dark').triggered.connect(lambda: App().update_theme('dark'))
-
-
 class StyleEditorDockWidget(StagehandDockWidget):
     _title = 'Style Editor'
     _starting_area = Qt.BottomDockWidgetArea
@@ -128,6 +114,8 @@ class MainWindow(BaseMainWindow):
         self.commands = [
             Command('Minimize to tray'),
             Command('Quit Application', triggered=self.close, shortcut='Ctrl+Q'),
+            Command('Theme: Set to Light Mode', triggered=lambda: App().change_theme('light')),
+            Command('Theme: Set to Dark Mode', triggered=lambda: App().change_theme('dark')),
         ]
 
         self.init_tray_stuff()
