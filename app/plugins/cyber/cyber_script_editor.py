@@ -14,6 +14,9 @@ class CyberScriptEditorDialog(QDialog):
         self.owner = owner
         self.setWindowTitle('Cyber Script Editor')
 
+        size: int = QSettings().value('font_size', 12)
+        set_font_options(self, {'setPointSize': int(size)})
+
         self.geometry_setting = 'plugins/cyber/cyber_script_editor/geometry'
 
         geometry = QSettings().value(self.geometry_setting)

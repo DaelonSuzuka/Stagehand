@@ -16,6 +16,9 @@ class AHKScriptEditorDialog(QDialog):
         self.owner = owner
         self.setWindowTitle('AutoHotKey Script Editor')
 
+        size: int = QSettings().value('font_size', 12)
+        set_font_options(self, {'setPointSize': int(size)})
+
         self.geometry_setting = 'plugins/ahk/ahk_script_editor/geometry'
 
         geometry = QSettings().value(self.geometry_setting)

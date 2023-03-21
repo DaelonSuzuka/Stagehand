@@ -13,6 +13,9 @@ class ActionEditorDialog(QDialog):
         self.owner = owner
         self.setWindowTitle('Action Editor')
 
+        size: int = QSettings().value('font_size', 12)
+        set_font_options(self, {'setPointSize': int(size)})
+
         geometry = QSettings().value("script_editor/geometry")
         if isinstance(geometry, QByteArray):
             self.restoreGeometry(geometry)
