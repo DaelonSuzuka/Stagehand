@@ -19,7 +19,7 @@ class ObsTrigger(QWidget, TriggerItem):
 
         ObsSocket().event_received.connect(self.event_received)
 
-        self.type = QComboBox()
+        self.type = QSearchableComboBox()
         self.type.addItems(events.keys())
         
         self.type.currentIndexChanged.connect(changed)
