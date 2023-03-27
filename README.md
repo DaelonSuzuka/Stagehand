@@ -72,34 +72,44 @@ I can even use this in discord/zoom/whatever calls by using OBS to route my audi
 Don't let the limited number of built-in actions fool you, they're actually *extremely* powerful.
 
 Pretty much the simplest action in any language is to print 'hello world', so let's start with that.
+
 ![editing actions](images/action_basic.gif)
 
 Actions aren't limited to only one line, simply press the edit button to pop out the multiline editor.
+
 ![editing actions](images/action_multiline.gif)
 
 Actions can do a lot more than just print. The sandbox is a full python execution environment.
+
 ![editing actions](images/action_for_loop.gif)
 
 The sandbox is an isolated environment, and code is checked for errors before being executed. Typos and syntax errors aren't going to crash Stagehand.
+
 ![editing actions](images/sandbox_validation.gif)
 
 Stagehand has more tools available than just running code snippets directly. Data persistence allows you to write complex actions that just aren't possible on other platforms.
+
 ![editing actions](images/sandbox_persistence.gif)
 
 # Plugin Examples
 
 The `keyboard` plugin provides a `trigger` that listens for key presses and an `output` that can simulate keypresses in your system.
+
 ![editing actions](images/keyboard_plugin.gif)
 
 ## OBS Manager
+
 ![OBS Websocket Controls](images/obs_settings.png)
 
 # Workflow
 ## Copy/Paste
+
 ![editing actions](images/action_copy_paste.gif)
 
 ## Reset actions with one click
+
 ![editing actions](images/action_reset.gif)
 
 ## Rename actions with a double click
+
 ![editing actions](images/action_rename.gif)
