@@ -1,4 +1,5 @@
 from qtstrap import *
+from superqt import QSearchableComboBox
 from stagehand.sandbox import Sandbox
 from stagehand.actions import ActionItem
 from .interface import requests, request_widgets

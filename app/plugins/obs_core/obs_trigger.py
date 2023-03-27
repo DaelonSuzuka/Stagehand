@@ -1,4 +1,5 @@
 from qtstrap import *
+from superqt import QSearchableComboBox
 from stagehand.actions import TriggerItem
 from .interface import events, event_widgets
 from .obs_socket import ObsSocket
