@@ -12,10 +12,6 @@ class ActionItem:
         return cls.get_subclasses()[name]
 
     @abstractmethod
-    def __init__(self, changed) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
     def set_data(self, data: dict):
         raise NotImplementedError
 
@@ -41,10 +37,6 @@ class TriggerItem:
         return cls.get_subclasses()[name]
 
     @abstractmethod
-    def __init__(self, changed) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
     def set_data(self, data: dict):
         raise NotImplementedError
 
@@ -64,10 +56,6 @@ class FilterStackItem:
     @classmethod
     def get_item(cls, name):
         return cls.get_subclasses()[name]
-
-    @abstractmethod
-    def __init__(self, changed) -> None:
-        raise NotImplementedError
 
     @abstractmethod
     def set_data(self, data: dict) -> None:
