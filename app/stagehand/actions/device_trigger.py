@@ -3,6 +3,7 @@ import qtawesome as qta
 from stagehand.actions import TriggerItem
 from codex import DeviceManager, SubscriptionManager
 from enum import Enum
+from functools import cache
 
 
 class Status(Enum):
@@ -34,6 +35,41 @@ class KnownDevices:
         return name_map.get(display_name, display_name)
 
 
+class EventStatusIcon(QLabel):
+    def __init__(self):
+        super().__init__('')
+
+        self.update_icon(0.0)
+        
+        self.anim = QVariantAnimation(self)
+        self.anim.setEasingCurve(QEasingCurve.InCubic)
+        self.anim.setDuration(250)
+        self.anim.setStartValue(1.0)
+        self.anim.setEndValue(0.0)
+
+        self.anim.valueChanged.connect(self.update_icon)
+
+    def trigger(self):
+        self.anim.start()
+
+    @cache
+    def build_icon(self, fill:float):
+        icon = qta.icon(
+            'mdi.checkbox-blank-circle',
+            'mdi.checkbox-blank-circle-outline',
+            options = [
+                {'opacity': fill},
+                {}
+            ]
+        )
+
+        return icon.pixmap(QSize(25, 25))
+
+    def update_icon(self, fill:float):
+        icon = self.build_icon(fill)
+        self.setPixmap(icon)
+
+
 @SubscriptionManager.subscribe
 class DeviceTrigger(QWidget, TriggerItem):
     name = 'device'
@@ -62,25 +98,28 @@ class DeviceTrigger(QWidget, TriggerItem):
         self.connected = qta.icon('mdi.link-variant').pixmap(QSize(25, 25))
         self.disconnected = qta.icon('mdi.link-variant-off').pixmap(QSize(25, 25))
 
-        self.status = QLabel('')
+        self.connection_status = QLabel('')
         self.set_status(Status.DISCONNECTED)
+        
+        self.event_status = EventStatusIcon()
 
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.device_selector)
-            layout.add(self.status)
+            layout.add(self.connection_status)
             layout.add(QLabel('Event:'))
             layout.add(self.event_selector)
+            layout.add(self.event_status)
     
     def set_status(self, status:Status):
         if status is Status.CONNECTED:
-            self.status.setEnabled(True)
-            self.status.setToolTip('Device is connected')
-            self.status.setPixmap(self.connected)
+            self.connection_status.setEnabled(True)
+            self.connection_status.setToolTip('Device is connected')
+            self.connection_status.setPixmap(self.connected)
 
         if status is Status.DISCONNECTED:
-            self.status.setEnabled(False)
-            self.status.setToolTip('Device is disconnected')
-            self.status.setPixmap(self.disconnected)
+            self.connection_status.setEnabled(False)
+            self.connection_status.setToolTip('Device is disconnected')
+            self.connection_status.setPixmap(self.disconnected)
 
     def device_changed(self, display_name):
         self.set_status(Status.DISCONNECTED)
@@ -123,6 +162,7 @@ class DeviceTrigger(QWidget, TriggerItem):
     def event_received(self, event):
         if event == self.event_selector.currentText():
             self.triggered.emit()
+            self.event_status.trigger()
 
     def refresh_devices(self):
         with SignalBlocker(self.device_selector):
