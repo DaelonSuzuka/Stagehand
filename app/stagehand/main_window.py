@@ -187,11 +187,11 @@ class MainWindow(BaseMainWindow):
             self.tray_icon.setIcon(QIcon(files[0].as_posix()))
 
         self.tray_menu = QMenu()
-        self.tray_menu.addAction(QAction('Stagehand', self, enabled=False))
         self.tray_menu.addAction(QAction('Open', self, triggered=self.show))
         self.tray_menu.addAction(QAction('Quit', self, triggered=qApp.quit))
         self.tray_icon.setContextMenu(self.tray_menu)
 
         self.tray_icon.show()
+        self.tray_icon.setToolTip('Stagehand')
 
         self.minimize_to_tray = PersistentCheckableAction('mainwindow/minimize_to_tray', 'Minimize to tray')
