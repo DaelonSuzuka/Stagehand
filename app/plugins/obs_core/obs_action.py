@@ -27,9 +27,6 @@ class ObsAction(ActionItem):
         self.request_widget = None
 
         self.request = QSearchableComboBox()
-        # this can't be editable without some additional work to make completion and search
-        # behave better
-        # self.request.setEditable(True)
         self.request.addItems(request_names)
 
         self.request.currentIndexChanged.connect(changed)
