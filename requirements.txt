@@ -9,8 +9,12 @@ codex-engine-pyqt==0.0.15
 colorama==0.4.6
 cyberlang==0.6.3
 future==0.18.2
+fuzzywuzzy==0.18.0
+grpcio==1.54.0
 inquirerpy==0.3.4
 Jinja2==3.1.2
+Levenshtein==0.21.0
+logic2-automation==1.0.6
 MarkupSafe==2.1.1
 monaco-qt==0.1.7
 # -e P:/qtstrap/monaco-qt
@@ -19,10 +23,11 @@ packaging==21.3
 pefile==2022.5.30
 pfzy==0.3.4
 prompt-toolkit==3.0.31
+protobuf==4.22.3
 psutil==5.9.3
 pycparser==2.21
 pygame-ce==2.2.1
-pygments==2.15.1
+Pygments==2.15.1
 pyinstaller==5.6.1
 pyinstaller-hooks-contrib==2022.10
 pynput==1.7.6
@@ -31,13 +36,17 @@ pyserial==3.5
 PySide6==6.5.0
 PySide6-Addons==6.5.0
 PySide6-Essentials==6.5.0
+python-Levenshtein==0.21.0
+pywin32==306
 pywin32-ctypes==0.2.0
 QtAwesome==1.2.2
 QtPy==2.3.0
-qtstrap==0.4.1
+qtstrap==0.4.2
 # -e P:/qtstrap/qtstrap
+rapidfuzz==3.0.0
 shiboken6==6.5.0
 six==1.16.0
-superqt==0.4.1
 sounddevice==0.4.5
+superqt==0.4.1
+typing_extensions==4.5.0
 wcwidth==0.2.5
