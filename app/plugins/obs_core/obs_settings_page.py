@@ -1,11 +1,10 @@
 from qtstrap import *
-from stagehand.components import StagehandPage
+from stagehand.components import SingletonPageMixin, StagehandPage
 from .obs_status_widget import ObsStatusWidget
 
 
-class ObsSettingsPage(StagehandPage):
+class ObsSettingsPage(SingletonPageMixin, StagehandPage):
     page_type = 'OBS Settings'
-    tags = ['singleton']
 
     def __init__(self, name='', changed=None, data=None):
         super().__init__()
@@ -44,11 +43,6 @@ class ObsSettingsPage(StagehandPage):
                 layout.addRow('Password:', self.password)
                 layout.addRow('Connect At Start:', self.connect_at_start)
 
-    def tab_context_menu(self, pos: QPoint, tabs, tab_idx: int):
-        menu = QMenu()
-        menu.addAction('Close').triggered.connect(lambda: tabs.remove_page(tab_idx))
-        menu.exec_(pos)
-
     def status_changed(self, status, message=''):
         if message:
             self.status.setText(message)
@@ -62,6 +56,3 @@ class ObsSettingsPage(StagehandPage):
             self.url.setEnabled(True)
             self.port.setEnabled(True)
             self.password.setEnabled(True)
-
-    def get_name(self) -> str:
-        return self.name

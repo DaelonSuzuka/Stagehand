@@ -28,6 +28,18 @@ class StagehandPage(QWidget):
         return data
 
 
+class SingletonPageMixin:
+    tags = ['singleton']
+    
+    def get_name(self) -> str:
+        return self.page_type
+
+    def tab_context_menu(self, pos: QPoint, tabs, tab_idx: int):
+        menu = QMenu()
+        menu.addAction('Close').triggered.connect(lambda: tabs.remove_page(tab_idx))
+        menu.exec_(pos)
+
+
 class StagehandStatusBarItem(QWidget):
     pass
 
