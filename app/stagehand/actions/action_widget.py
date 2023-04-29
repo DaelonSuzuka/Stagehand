@@ -29,8 +29,10 @@ class Action(QWidget):
         self.action_box = CHBoxLayout(margins=0)
 
         with CHBoxLayout(self, margins=0) as layout:
-            layout.add(QLabel("Action:", minimumWidth=60))
-            layout.add(self.type)
+            with layout.vbox(align='top'):
+                layout.add(QLabel("Action:", minimumWidth=60))
+            with layout.vbox(align='top'):
+                layout.add(self.type)
             layout.add(self.action_box, 1)
 
     def type_changed(self):
@@ -161,7 +163,8 @@ class ActionWidget(QWidget):
                 layout.add(QWidget(), 1)
             with layout.hbox(margins=0):
                 layout.add(self.action, 2)
-                layout.add(self.run_btn)
+                with layout.vbox(align='top'):
+                    layout.add(self.run_btn)
             layout.add(HLine())
 
     def get_data(self):
