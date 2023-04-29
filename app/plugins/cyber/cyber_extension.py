@@ -1,6 +1,5 @@
-from qtstrap import *
 from stagehand.sandbox import Sandbox, SandboxExtension
-from cyber import *
+from cyber import CyberVM
 
 
 class CyberExtension(SandboxExtension):
