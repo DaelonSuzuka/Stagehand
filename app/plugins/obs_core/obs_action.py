@@ -15,7 +15,7 @@ def filt(r:str) -> bool:
 request_names = [r for r in requests.keys() if filt(r)]
 
 
-class ObsAction(QWidget, ActionItem):
+class ObsAction(ActionItem):
     name = 'obs'
 
     def __init__(self, changed, owner=None):

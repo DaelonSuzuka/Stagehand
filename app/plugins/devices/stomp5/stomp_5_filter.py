@@ -4,7 +4,7 @@ from codex import SubscriptionManager
 
 
 @SubscriptionManager.subscribe
-class Stomp5Filter(QWidget, FilterStackItem):
+class Stomp5Filter(FilterStackItem):
     name = 'Stomp 5'
 
     def __init__(self, changed, owner=None) -> None:

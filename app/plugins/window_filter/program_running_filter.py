@@ -24,7 +24,7 @@ def get_process_names():
     return prev_names
 
 
-class ProgramRunningFilter(QWidget, FilterStackItem):
+class ProgramRunningFilter(FilterStackItem):
     name = 'program running'
 
     def __init__(self, changed, owner=None) -> None:

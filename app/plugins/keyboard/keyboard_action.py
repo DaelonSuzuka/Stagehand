@@ -3,7 +3,7 @@ from stagehand.sandbox import Sandbox
 from stagehand.actions import ActionItem
 
 
-class KeyboardAction(QWidget, ActionItem):
+class KeyboardAction(ActionItem):
     name = 'keyboard'
 
     def __init__(self, changed, owner=None):

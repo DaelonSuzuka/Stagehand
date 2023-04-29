@@ -6,7 +6,7 @@ from .sandbox_action_editor import ActionEditorDialog
 from .items import ActionItem
 
 
-class SandboxAction(QWidget, ActionItem):
+class SandboxAction(ActionItem):
     name = 'sandbox'
 
     def __init__(self, changed, owner=None):

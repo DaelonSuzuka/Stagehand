@@ -30,7 +30,7 @@ class ListenerObject(QObject):
             self.release.emit(key)
 
 
-class KeyboardTrigger(QWidget, TriggerItem):
+class KeyboardTrigger(TriggerItem):
     name = 'keyboard'
     triggered = Signal()
 

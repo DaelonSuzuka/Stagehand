@@ -2,7 +2,7 @@ from qtstrap import *
 from .items import TriggerItem
 
 
-class SandboxTrigger(QWidget, TriggerItem):
+class SandboxTrigger(TriggerItem):
     name = 'sandbox'
     triggered = Signal()
 

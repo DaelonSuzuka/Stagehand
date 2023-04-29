@@ -71,7 +71,7 @@ class EventStatusIcon(QLabel):
 
 
 @SubscriptionManager.subscribe
-class DeviceTrigger(QWidget, TriggerItem):
+class DeviceTrigger(TriggerItem):
     name = 'device'
     triggered = Signal()
     

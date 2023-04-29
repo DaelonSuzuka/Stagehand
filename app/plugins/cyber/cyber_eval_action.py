@@ -7,7 +7,7 @@ from .cyber_script_editor import CyberScriptEditorDialog
 from .cyber_script_highlighter import CyberHighlighter
 
 
-class CyberEvalAction(QWidget, ActionItem):
+class CyberEvalAction(ActionItem):
     name = 'cyber-eval'
 
     def __init__(self, changed, owner=None):

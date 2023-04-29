@@ -4,7 +4,7 @@ from .web_interface import SocketListener
 import json
 
 
-class WebTrigger(QWidget, TriggerItem):
+class WebTrigger(TriggerItem):
     name = 'web'
     triggered = Signal()
 

@@ -2,7 +2,7 @@ from qtstrap import *
 from abc import abstractmethod
 
 
-class ActionItem:
+class ActionItem(QWidget):
     @classmethod
     def get_subclasses(cls):
         return {c.name: c for c in cls.__subclasses__()}
@@ -27,7 +27,7 @@ class ActionItem:
         pass
 
 
-class TriggerItem:
+class TriggerItem(QWidget):
     @classmethod
     def get_subclasses(cls):
         return {c.name: c for c in cls.__subclasses__()}
@@ -48,7 +48,7 @@ class TriggerItem:
         pass
 
 
-class FilterStackItem:
+class FilterStackItem(QWidget):
     @classmethod
     def get_subclasses(cls):
         return {c.name: c for c in cls.__subclasses__()}

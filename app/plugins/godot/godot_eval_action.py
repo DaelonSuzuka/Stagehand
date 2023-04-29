@@ -4,7 +4,7 @@ from stagehand.sandbox import Sandbox
 from stagehand.actions import ActionItem
 
 
-class GodotEvalAction(QWidget, ActionItem):
+class GodotEvalAction(ActionItem):
     name = 'godot-eval'
 
     def __init__(self, changed, owner=None):

@@ -106,7 +106,7 @@ class JoystickListener(QObject):
             return self.joysticks[name]
 
 
-class JoystickTrigger(QWidget, TriggerItem):
+class JoystickTrigger(TriggerItem):
     name = 'joystick'
     triggered = Signal()
     changed = Signal()

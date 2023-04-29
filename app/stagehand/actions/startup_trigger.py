@@ -13,7 +13,7 @@ class StartupRegistry(QObject):
             trigger.triggered.emit()
 
 
-class StartupTrigger(QWidget, TriggerItem):
+class StartupTrigger(TriggerItem):
     name = 'startup'
     triggered = Signal()
 

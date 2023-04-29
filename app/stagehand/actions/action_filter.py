@@ -5,7 +5,7 @@ from stagehand.sandbox import Sandbox
 from .items import FilterStackItem
 
 
-class SandboxFilterWidget(QWidget, FilterStackItem):
+class SandboxFilterWidget(FilterStackItem):
     name = 'sandbox'
 
     def __init__(self, changed, owner=None) -> None:

@@ -3,7 +3,7 @@ from stagehand.actions import FilterStackItem
 from .windows import getAllWindowTitles, getForegroundWindowTitle
 
 
-class ActiveWindowFilter(QWidget, FilterStackItem):
+class ActiveWindowFilter(FilterStackItem):
     name = 'active window'
 
     def __init__(self, changed, owner=None) -> None:

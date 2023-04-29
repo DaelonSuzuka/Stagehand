@@ -5,7 +5,7 @@ from stagehand.actions import ActionItem
 from .ahk_action_widgets import widgets
 
 
-class AutohotkeyAction(QWidget, ActionItem):
+class AutohotkeyAction(ActionItem):
     name = 'autohotkey'
 
     def __init__(self, changed, owner=None):

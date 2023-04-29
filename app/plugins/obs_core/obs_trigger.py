@@ -5,7 +5,7 @@ from .interface import events, event_widgets
 from .obs_socket import ObsSocket
 
 
-class ObsTrigger(QWidget, TriggerItem):
+class ObsTrigger(TriggerItem):
     name = 'obs'
     triggered = Signal()
 
