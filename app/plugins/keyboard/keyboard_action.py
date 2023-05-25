@@ -22,11 +22,8 @@ class KeyboardAction(ActionItem):
             layout.add(self.value)
 
     def set_data(self, data):
-        try:
-            self.type.setCurrentText(data['type'])
-            self.value.setText(data['value'])
-        except:
-            pass
+        self.type.setCurrentText(data.get('type', 'tap'))
+        self.value.setText(data.get('value', ''))
 
     def get_data(self):
         return {
