@@ -30,6 +30,9 @@ class Sandbox(QObject):
 
     def __getattr__(self, name):
         return self.extensions[name]
+    
+    def __getitem__(self, name):
+        return self.extensions[name]
 
     def reset_environment(self):
         self._data = {}
