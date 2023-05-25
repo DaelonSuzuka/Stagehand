@@ -7,7 +7,7 @@ click==8.1.3
 codex-engine-pyqt==0.0.15
 # -e P:/codex/codex-engine-pyqt
 colorama==0.4.6
-cyberlang==0.6.3
+cyberlang==0.6.5
 future==0.18.2
 fuzzywuzzy==0.18.0
 grpcio==1.54.0
