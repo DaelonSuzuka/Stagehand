@@ -89,11 +89,8 @@ class KeyboardTrigger(TriggerItem):
                 self.hotkey.release(self.listener.canonical(key))
 
     def set_data(self, data):
-        try:
-            self.type.setCurrentText(data['type'])
-            self.value.setText(data['value'])
-        except:
-            pass
+        self.type.setCurrentText(data.get('type', 'press'))
+        self.value.setText(data.get('value', ''))
 
     def get_data(self):
         return {

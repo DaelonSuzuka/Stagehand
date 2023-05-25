@@ -27,17 +27,14 @@ class WebTrigger(TriggerItem):
     def processTextMessage(self, text):
         try:
             msg = json.loads(text)
-            if 'command' in msg and msg['command'] == 'click':
+            if msg.get('command', '') == 'click':
                 if self.action.currentText() == f"Action {msg['button']}":
                     self.triggered.emit()
-        except:
+        except json.JSONDecodeError:
             pass
 
     def set_data(self, data):
-        try:
-            self.action.setCurrentText(data['action'])
-        except:
-            pass
+        self.action.setCurrentText(data.get('action', ''))
 
     def get_data(self):
         return {

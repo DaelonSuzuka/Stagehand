@@ -81,13 +81,11 @@ class Stomp4Filter(FilterStackItem):
             return not state
 
     def set_data(self, data):
-        try:
-            if data['device'] not in self.devices:
-                self.device.addItem(data['device'])
-            self.device.setCurrentText(data['device'])
-            self.signal.setCurrentText(data['signal'])
-        except:
-            pass
+        device = data.get('device', '')
+        if device not in self.devices:
+            self.device.addItem(device)
+        self.device.setCurrentText(device)
+        self.signal.setCurrentText(data.get('signal', ''))
 
     def get_data(self):
         return {

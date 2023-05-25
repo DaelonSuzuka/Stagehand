@@ -190,11 +190,11 @@ class WebInterfacePage(StagehandPage):
     def processTextMessage(self, text):
         try:
             msg = json.loads(text)
-            if 'command' in msg and msg['command'] == 'click':
+            if msg.get('command', '') == 'click':
                 btn_name = f"Web Action {msg['button']}"
                 if btn_name in self.actions:
                     self.actions[btn_name].run()
-        except:
+        except json.JSONDecodeError:
             pass
 
     def get_name(self):

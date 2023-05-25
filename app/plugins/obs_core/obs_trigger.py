@@ -42,11 +42,8 @@ class ObsTrigger(TriggerItem):
         self.layout().add(self.event_widget, 1)
 
     def set_data(self, data):
-        try:
-            self.type.setCurrentText(data['type'])
-            # self.value.setText(data['value'])
-        except:
-            pass
+        self.type.setCurrentText(data.get('type', ''))
+        # self.value.setText(data['value'])
 
     def get_data(self):
         return {

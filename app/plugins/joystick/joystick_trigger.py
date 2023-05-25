@@ -179,13 +179,9 @@ class JoystickTrigger(TriggerItem):
                 self.triggered.emit()
 
     def set_data(self, data):
-        try:
-            self.joystick.setCurrentText(data['joystick'])
-            self.source.setCurrentText(data['source'])
-            
-            self.refresh()
-        except:
-            pass
+        self.joystick.setCurrentText(data.get('joystick', ''))
+        self.source.setCurrentText(data.get('source', ''))
+        self.refresh()
 
     def get_data(self):
         return {

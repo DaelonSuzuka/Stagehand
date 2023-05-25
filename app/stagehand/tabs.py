@@ -168,7 +168,7 @@ class MainTabWidget(QTabWidget):
         try:
             with open(self.settings_file, 'r') as f:
                 data = json.loads(f.read())
-        except:
+        except json.JSONDecodeError:
             pass
   
         if 'pages' in data and data['pages']:
