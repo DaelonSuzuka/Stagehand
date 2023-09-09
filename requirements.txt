@@ -42,7 +42,7 @@ pywin32==306
 pywin32-ctypes==0.2.2
 QtAwesome==1.2.3
 QtPy==2.3.1
-qtstrap==0.5.0
+qtstrap==0.5.3
 # -e P:/qtstrap/qtstrap
 rapidfuzz==3.1.2
 shiboken6==6.5.2
