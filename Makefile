@@ -47,7 +47,7 @@ portable:
 	mkdir "$(PORTABLE_FLAG)"
 
 # remove the portable flag folder
-clean_portable:
+non_portable:
 	$(RM) "$(PORTABLE_FLAG)"
 
 # **************************************************************************** #
