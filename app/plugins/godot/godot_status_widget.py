@@ -1,10 +1,22 @@
 from qtstrap import *
 from qtstrap.extras.command_palette import Command
+from qtstrap.extras.settings_model import SettingsModel
 from .godot_socket import GodotSocket
 from stagehand.components import StagehandStatusBarItem
 from stagehand.main_window import MainWindow
 
 
+class GodotSettings(SettingsModel):
+    url: str = 'localhost'
+    port: str = '7000'
+    password: str = ''
+    connect_at_start: bool = False
+
+    class Config:
+        prefix = 'plugins/godot'
+
+
+@singleton
 class GodotStatusWidget(StagehandStatusBarItem):
     status_changed = Signal(str, str)
 
@@ -16,9 +28,7 @@ class GodotStatusWidget(StagehandStatusBarItem):
         self.status = ''
         self.status_label = QLabel('Not Connected')
 
-        self.url = QSettings().value('obs/url', 'localhost')
-        self.port = QSettings().value('obs/port', '7000')
-
+        self.settings = GodotSettings()
         self.connect_at_start = PersistentCheckableAction('godot/connect_at_start', 'Connect on Startup')
 
         if self.connect_at_start.isChecked():
@@ -36,16 +46,13 @@ class GodotStatusWidget(StagehandStatusBarItem):
             layout.add(QLabel())
 
     def set_url(self, url):
-        QSettings().setValue('obs/url', url)
-        self.url = url
+        self.settings.url = url
 
     def set_port(self, port):
-        QSettings().setValue('obs/port', port)
-        self.port = port
+        self.settings.port = port
 
     def set_password(self, password):
-        QSettings().setValue('obs/password', password)
-        self.password = password
+        self.settings.password = password
 
     def set_status(self, status):
         self.status = status

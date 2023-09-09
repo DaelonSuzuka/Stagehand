@@ -16,8 +16,8 @@ class GodotSettingsPage(SingletonPageMixin, StagehandPage):
         godot = GodotStatusWidget()
 
         self.status = QLabel(godot.status_label.text())
-        self.url = QLineEdit(godot.url)
-        self.port = QLineEdit(godot.port)
+        self.url = QLineEdit(godot.settings.url)
+        self.port = QLineEdit(godot.settings.port)
         # self.password = QLineEdit(godot.password)
         # self.password.setEchoMode(QLineEdit.PasswordEchoOnEdit)
         self.connect_at_start = QCheckBox()
