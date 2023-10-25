@@ -70,3 +70,11 @@ class StagehandDockWidget(QDockWidget):
         if self._shortcut:
             action.setShortcut(self._shortcut)
         return action
+
+
+class StagehandSidebar(QWidget):
+    name = ''
+
+    @classmethod
+    def get_subclasses(cls):
+        return {c.name: c for c in cls.__subclasses__()}

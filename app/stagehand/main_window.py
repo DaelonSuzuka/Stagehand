@@ -102,7 +102,15 @@ class MainWindow(BaseMainWindow):
 
         self.load_settings()
 
+        # self.create_activity_bar()
+
         self.tabs = MainTabWidget()
+        # self.sidebar = QWidget()
+        # self.sidebar.hide()  # temp
+
+        # with CSplitter(self, margins=0) as splitter:
+        #     splitter.add(self.sidebar)
+        #     splitter.add(self.tabs)
 
         self.setCentralWidget(self.tabs)
 
@@ -128,6 +136,9 @@ class MainWindow(BaseMainWindow):
 
     def display_update_available(self) -> None:
         self.tray_icon.showMessage('An update is available.', 'an update is available')
+
+    def create_activity_bar(self):
+        self.activity_bar = BaseToolbar(self, 'activitybar', location='left', size=40)
 
     def init_statusbar_items(self) -> None:
         self.statusbar.add_spacer()
