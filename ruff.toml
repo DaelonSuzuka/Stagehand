@@ -3,3 +3,4 @@ line-length = 120
 
 [format]
 quote-style = "single"
+exclude = ["app/app_info.py"]
