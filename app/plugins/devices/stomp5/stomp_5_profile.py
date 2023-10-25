@@ -3,14 +3,19 @@ from codex import SerialDevice, JudiStandardMixin
 
 
 class Stomp5(JudiStandardMixin, SerialDevice):
-    profile_name = "Stomp 5"
+    profile_name = 'Stomp 5'
 
     events = [
-        '1 Down', '1 Up',
-        '2 Down', '2 Up',
-        '3 Down', '3 Up',
-        '4 Down', '4 Up',
-        '5 Down', '5 Up',
+        '1 Down',
+        '1 Up',
+        '2 Down',
+        '2 Up',
+        '3 Down',
+        '3 Up',
+        '4 Down',
+        '4 Up',
+        '5 Down',
+        '5 Up',
     ]
 
     class Signals(Adapter):

@@ -6,7 +6,7 @@ from stagehand.sandbox import Sandbox
 class UnimplementedField(QLabel):
     def refresh(self):
         pass
-    
+
     def set_data(self, data):
         pass
 
@@ -72,7 +72,7 @@ class SourceSelector(QComboBox):
             self.changed()
 
         Sandbox().obs.GetSourcesList(cb)
-        
+
     def set_data(self, data):
         if data not in [self.itemText(i) for i in range(self.count())]:
             self.addItem(data)
@@ -80,7 +80,7 @@ class SourceSelector(QComboBox):
 
     def get_data(self):
         return self.currentText()
-    
+
 
 class FilterSelector(QComboBox):
     def __init__(self, changed=None, source=None, parent=None):
@@ -96,6 +96,7 @@ class FilterSelector(QComboBox):
 
     def refresh(self, source=None):
         if source:
+
             def cb(msg):
                 if not isValid(self):
                     return

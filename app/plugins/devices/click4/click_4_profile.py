@@ -3,15 +3,19 @@ from codex import SerialDevice, JudiStandardMixin
 
 
 class Click4(JudiStandardMixin, SerialDevice):
-    profile_name = "Click 4"
+    profile_name = 'Click 4'
 
     events = [
-        '1 Down', '1 Up',
-        '2 Down', '2 Up',
-        '3 Down', '3 Up',
-        '4 Down', '4 Up',
+        '1 Down',
+        '1 Up',
+        '2 Down',
+        '2 Up',
+        '3 Down',
+        '3 Up',
+        '4 Down',
+        '4 Up',
     ]
-    
+
     class Signals(Adapter):
         event_received = Signal(str)
 

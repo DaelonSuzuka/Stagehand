@@ -1,14 +1,14 @@
 import psutil
 from ctypes import wintypes, windll, create_unicode_buffer, byref
 import ctypes
- 
+
 
 EnumWindows = windll.user32.EnumWindows
 EnumWindowsProc = ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int))
 GetWindowText = windll.user32.GetWindowTextW
 GetWindowTextLength = windll.user32.GetWindowTextLengthW
 IsWindowVisible = windll.user32.IsWindowVisible
- 
+
 
 def get_window_title(window_handle):
     pid = wintypes.DWORD()
@@ -18,7 +18,7 @@ def get_window_title(window_handle):
     length = windll.user32.GetWindowTextLengthW(window_handle)
     buf = create_unicode_buffer(length + 1)
     windll.user32.GetWindowTextW(window_handle, buf, length + 1)
-    
+
     if buf.value:
         return f'[{info.name()}] "{buf.value}"'
     else:

@@ -22,7 +22,7 @@ class ObsTrigger(TriggerItem):
 
         self.type = QSearchableComboBox()
         self.type.addItems(events.keys())
-        
+
         self.type.currentIndexChanged.connect(changed)
         self.type.currentIndexChanged.connect(self.change_type)
 
@@ -37,7 +37,7 @@ class ObsTrigger(TriggerItem):
         if self.event_widget:
             self.layout().removeWidget(self.event_widget)
             self.event_widget.deleteLater()
-            
+
         self.event_widget = event_widgets[self.type.currentText()](self.changed)
         self.layout().add(self.event_widget, 1)
 

@@ -25,7 +25,9 @@ class GodotSettingsPage(SingletonPageMixin, StagehandPage):
 
         # TODO: why doesn't this work?
         godot.status_changed.connect(self.status_changed)
-        godot.connect_at_start.changed.connect(lambda: self.connect_at_start.setChecked(godot.connect_at_start.isChecked()))
+        godot.connect_at_start.changed.connect(
+            lambda: self.connect_at_start.setChecked(godot.connect_at_start.isChecked())
+        )
         self.connect_at_start.stateChanged.connect(
             lambda x: godot.connect_at_start.setChecked(self.connect_at_start.isChecked())
         )

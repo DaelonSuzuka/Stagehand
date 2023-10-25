@@ -10,7 +10,7 @@ class WebTrigger(TriggerItem):
 
     def __init__(self, changed, run, owner=None):
         super().__init__()
-        
+
         self.owner = owner
         self.triggered.connect(run)
 

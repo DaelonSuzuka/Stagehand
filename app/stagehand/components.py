@@ -30,7 +30,7 @@ class StagehandPage(QWidget):
 
 class SingletonPageMixin:
     tags = ['singleton']
-    
+
     def get_name(self) -> str:
         return self.page_type
 

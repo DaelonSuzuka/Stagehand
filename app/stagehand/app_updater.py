@@ -32,4 +32,4 @@ class ApplicationUpdater(QObject):
     def check_for_updates_action(self):
         action = QAction('Check for Updates', self)
         action.triggered.connect(self.check_latest)
-        return (action)
+        return action

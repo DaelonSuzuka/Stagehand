@@ -16,8 +16,8 @@ class CyberExtension(SandboxExtension):
         @self.vm.module
         class Stagehand:
             """Cyber module for Stagehand API"""
-            pass
 
+            pass
 
     def eval(self, string):
         self.vm.eval(string)

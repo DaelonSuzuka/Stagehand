@@ -28,7 +28,7 @@ class ShellAction(ActionItem):
 
         self.eval = CodeLine(changed=changed)
         self.eval.ctrl_enter_pressed.connect(self.run)
-        
+
         self.edit_btn = QPushButton('', clicked=self.open_editor, icon=qta.icon('fa5.edit'))
         self.edit_btn.setIconSize(QSize(22, 22))
 
@@ -63,6 +63,6 @@ class ShellAction(ActionItem):
             'shell': self.shell.currentText(),
             'eval': self.eval.text(),
         }
-    
+
     def run(self):
         Sandbox()[self.shell.currentText()].eval(self.eval.text())

@@ -23,12 +23,12 @@ class StartupTrigger(TriggerItem):
         self.changed = changed
         self.owner = owner
         self.triggered.connect(run)
-        
+
         self.delay = QLineEdit()
         self.delay.setText('1000')
         self.delay.setValidator(QIntValidator())
         self.delay.textChanged.connect(changed)
-        
+
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(QLabel('Delay:'))
             layout.add(self.delay)
@@ -36,13 +36,11 @@ class StartupTrigger(TriggerItem):
 
     def reset(self):
         pass
-        
+
     def set_data(self, data: dict):
         time = data.get('delay', '1000')
         self.delay.setText(time)
         StartupRegistry().register(self, int(time))
 
     def get_data(self):
-        return {
-            'delay': self.delay.text()
-        }
+        return {'delay': self.delay.text()}

@@ -12,18 +12,16 @@ class SandboxTrigger(TriggerItem):
         self.owner = owner
         self.trigger = QLineEdit()
         self.trigger.textChanged.connect(changed)
-        
+
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.trigger)
 
     def reset(self):
         self.trigger.clear()
-        
+
     def set_data(self, data: dict):
         if 'trigger' in data:
             self.trigger.setText(data['trigger'])
 
     def get_data(self):
-        return {
-            'trigger': self.trigger.text()
-        }
+        return {'trigger': self.trigger.text()}

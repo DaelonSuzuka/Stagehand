@@ -26,7 +26,7 @@ class AHKActionWidget(QWidget):
     @abstractmethod
     def run(self):
         raise NotImplementedError
-    
+
 
 class Beep(QWidget):
     def __init__(self, changed=None, owner=None):
@@ -41,8 +41,7 @@ class Beep(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
     def run(self):
         pass
@@ -54,7 +53,7 @@ class AHKScriptWidget(QWidget):
         super().__init__()
         self.changed = changed
         self.owner = owner
-        
+
         self.action = CodeLine(changed=changed)
         self.action.ctrl_enter_pressed.connect(self.run)
         self.edit_btn = QPushButton('', clicked=self.open_editor, icon=qta.icon('fa5.edit'))
@@ -88,9 +87,7 @@ class AHKScriptWidget(QWidget):
         self.action.setDisabled('\n' in self.action.text())
 
     def get_data(self):
-        return {
-            'action': self.action.text()
-        }
+        return {'action': self.action.text()}
 
     def run(self):
         Sandbox().run(f'ahk.run_script("{self.action.text()}")')

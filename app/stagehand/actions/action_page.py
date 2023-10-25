@@ -13,12 +13,12 @@ class CustomAnimatedToggle(AnimatedToggle):
 class ActionsPage(StagehandPage):
     page_type = 'Generic Actions'
     changed = Signal()
-    
+
     def __init__(self, name='', changed=None, data=None):
         super().__init__()
         self.name = name
         self.icon_name = 'mdi.format-list-checkbox'
-        
+
         self.setAcceptDrops(True)
 
         self.label = LabelEdit(f'Page {name}', changed=self.changed)
@@ -36,7 +36,7 @@ class ActionsPage(StagehandPage):
 
         if data is not None:
             self.set_data(data)
-        
+
         with CVBoxLayout(self, margins=2) as layout:
             with layout.hbox(margins=0):
                 layout.add(QWidget())
@@ -45,8 +45,7 @@ class ActionsPage(StagehandPage):
                 layout.add(self.enabled)
                 layout.add(QPushButton('New Action', clicked=self.create_action))
                 layout.add(self.group.filter)
-            with layout.scroll(margins=0):
-                self.scroll = layout._layout
+            with layout.scroll(margins=0) as self.scroll:
                 layout.setStretchFactor(layout._layout, 1)
                 layout.add(self.actions_container)
                 layout.add(QWidget(), 1)
@@ -78,7 +77,7 @@ class ActionsPage(StagehandPage):
         else:
             data = {
                 **ActionWidget.default_data,
-                "name": name,
+                'name': name,
             }
 
         action = ActionWidget(name, group=self.group)
@@ -113,14 +112,14 @@ class ActionsPage(StagehandPage):
         if not self.scroll.geometry().contains(pos):
             event.ignore()
             return
-        
+
         mime = event.mimeData()
         if not mime.hasFormat('action_drop'):
             event.ignore()
             return
 
         data = json.loads(bytes(mime.data('action_drop')).decode())
-            
+
         after = None
         for a in self.actions:
             if a.geometry().contains(pos):
@@ -131,7 +130,7 @@ class ActionsPage(StagehandPage):
                 break
         else:
             after = a
-        
+
         event.accept()
         idx = self.actions.index(after) + 1
         self.create_action(data, index=idx)
@@ -151,7 +150,7 @@ class ActionsPage(StagehandPage):
                 self.actions_container.add(action)
         else:
             self.create_action()
-            
+
     def get_data(self):
         data = {
             'page_type': self.page_type,

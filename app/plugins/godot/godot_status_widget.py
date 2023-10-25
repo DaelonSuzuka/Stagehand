@@ -37,7 +37,7 @@ class GodotStatusWidget(StagehandStatusBarItem):
         self.commands = [
             Command('Godot: Connect websocket', triggered=self.open),
             Command('Godot: Disconnect websocket', triggered=self.close),
-            Command("Godot: Open Settings", triggered=self.open_settings),
+            Command('Godot: Open Settings', triggered=self.open_settings),
         ]
 
         with CHBoxLayout(self, margins=0) as layout:

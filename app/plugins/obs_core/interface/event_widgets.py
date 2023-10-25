@@ -22,8 +22,7 @@ class SwitchScenesWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class ScenesChangedWidget(QWidget):
@@ -46,8 +45,7 @@ class ScenesChangedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class SceneCollectionChangedWidget(QWidget):
@@ -70,8 +68,7 @@ class SceneCollectionChangedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class SceneCollectionListChangedWidget(QWidget):
@@ -94,8 +91,7 @@ class SceneCollectionListChangedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class SwitchTransitionWidget(QWidget):
@@ -118,8 +114,7 @@ class SwitchTransitionWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class TransitionListChangedWidget(QWidget):
@@ -142,8 +137,7 @@ class TransitionListChangedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class TransitionDurationChangedWidget(QWidget):
@@ -166,8 +160,7 @@ class TransitionDurationChangedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class TransitionBeginWidget(QWidget):
@@ -190,8 +183,7 @@ class TransitionBeginWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class TransitionEndWidget(QWidget):
@@ -214,8 +206,7 @@ class TransitionEndWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class TransitionVideoEndWidget(QWidget):
@@ -238,8 +229,7 @@ class TransitionVideoEndWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class ProfileChangedWidget(QWidget):
@@ -262,8 +252,7 @@ class ProfileChangedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class ProfileListChangedWidget(QWidget):
@@ -286,8 +275,7 @@ class ProfileListChangedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class StreamStartingWidget(QWidget):
@@ -310,8 +298,7 @@ class StreamStartingWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class StreamStartedWidget(QWidget):
@@ -334,8 +321,7 @@ class StreamStartedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class StreamStoppingWidget(QWidget):
@@ -358,8 +344,7 @@ class StreamStoppingWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class StreamStoppedWidget(QWidget):
@@ -382,8 +367,7 @@ class StreamStoppedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class StreamStatusWidget(QWidget):
@@ -406,8 +390,7 @@ class StreamStatusWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class RecordingStartingWidget(QWidget):
@@ -430,8 +413,7 @@ class RecordingStartingWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class RecordingStartedWidget(QWidget):
@@ -454,8 +436,7 @@ class RecordingStartedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class RecordingStoppingWidget(QWidget):
@@ -478,8 +459,7 @@ class RecordingStoppingWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class RecordingStoppedWidget(QWidget):
@@ -502,8 +482,7 @@ class RecordingStoppedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class RecordingPausedWidget(QWidget):
@@ -526,8 +505,7 @@ class RecordingPausedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class RecordingResumedWidget(QWidget):
@@ -550,8 +528,7 @@ class RecordingResumedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class VirtualCamStartedWidget(QWidget):
@@ -574,8 +551,7 @@ class VirtualCamStartedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class VirtualCamStoppedWidget(QWidget):
@@ -598,8 +574,7 @@ class VirtualCamStoppedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class ReplayStartingWidget(QWidget):
@@ -622,8 +597,7 @@ class ReplayStartingWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class ReplayStartedWidget(QWidget):
@@ -646,8 +620,7 @@ class ReplayStartedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class ReplayStoppingWidget(QWidget):
@@ -670,8 +643,7 @@ class ReplayStoppingWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class ReplayStoppedWidget(QWidget):
@@ -694,8 +666,7 @@ class ReplayStoppedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class ExitingWidget(QWidget):
@@ -718,8 +689,7 @@ class ExitingWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class HeartbeatWidget(QWidget):
@@ -742,8 +712,7 @@ class HeartbeatWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class BroadcastCustomMessageWidget(QWidget):
@@ -766,8 +735,7 @@ class BroadcastCustomMessageWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class SourceCreatedWidget(QWidget):
@@ -790,8 +758,7 @@ class SourceCreatedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class SourceDestroyedWidget(QWidget):
@@ -814,8 +781,7 @@ class SourceDestroyedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class SourceVolumeChangedWidget(QWidget):
@@ -838,8 +804,7 @@ class SourceVolumeChangedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class SourceMuteStateChangedWidget(QWidget):
@@ -862,8 +827,7 @@ class SourceMuteStateChangedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class SourceAudioDeactivatedWidget(QWidget):
@@ -886,8 +850,7 @@ class SourceAudioDeactivatedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class SourceAudioActivatedWidget(QWidget):
@@ -910,8 +873,7 @@ class SourceAudioActivatedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class SourceAudioSyncOffsetChangedWidget(QWidget):
@@ -934,8 +896,7 @@ class SourceAudioSyncOffsetChangedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class SourceAudioMixersChangedWidget(QWidget):
@@ -958,8 +919,7 @@ class SourceAudioMixersChangedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class SourceRenamedWidget(QWidget):
@@ -982,8 +942,7 @@ class SourceRenamedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class SourceFilterAddedWidget(QWidget):
@@ -1006,8 +965,7 @@ class SourceFilterAddedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class SourceFilterRemovedWidget(QWidget):
@@ -1030,8 +988,7 @@ class SourceFilterRemovedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class SourceFilterVisibilityChangedWidget(QWidget):
@@ -1054,8 +1011,7 @@ class SourceFilterVisibilityChangedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class SourceFiltersReorderedWidget(QWidget):
@@ -1078,8 +1034,7 @@ class SourceFiltersReorderedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class MediaPlayingWidget(QWidget):
@@ -1102,8 +1057,7 @@ class MediaPlayingWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class MediaPausedWidget(QWidget):
@@ -1126,8 +1080,7 @@ class MediaPausedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class MediaRestartedWidget(QWidget):
@@ -1150,8 +1103,7 @@ class MediaRestartedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class MediaStoppedWidget(QWidget):
@@ -1174,8 +1126,7 @@ class MediaStoppedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class MediaNextWidget(QWidget):
@@ -1198,8 +1149,7 @@ class MediaNextWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class MediaPreviousWidget(QWidget):
@@ -1222,8 +1172,7 @@ class MediaPreviousWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class MediaStartedWidget(QWidget):
@@ -1246,8 +1195,7 @@ class MediaStartedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class MediaEndedWidget(QWidget):
@@ -1270,8 +1218,7 @@ class MediaEndedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class SourceOrderChangedWidget(QWidget):
@@ -1294,8 +1241,7 @@ class SourceOrderChangedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class SceneItemAddedWidget(QWidget):
@@ -1318,8 +1264,7 @@ class SceneItemAddedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class SceneItemRemovedWidget(QWidget):
@@ -1342,8 +1287,7 @@ class SceneItemRemovedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class SceneItemVisibilityChangedWidget(QWidget):
@@ -1366,8 +1310,7 @@ class SceneItemVisibilityChangedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class SceneItemLockChangedWidget(QWidget):
@@ -1390,8 +1333,7 @@ class SceneItemLockChangedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class SceneItemTransformChangedWidget(QWidget):
@@ -1414,8 +1356,7 @@ class SceneItemTransformChangedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class SceneItemSelectedWidget(QWidget):
@@ -1438,8 +1379,7 @@ class SceneItemSelectedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class SceneItemDeselectedWidget(QWidget):
@@ -1462,8 +1402,7 @@ class SceneItemDeselectedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class PreviewSceneChangedWidget(QWidget):
@@ -1486,8 +1425,7 @@ class PreviewSceneChangedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
+        return {}
 
 
 class StudioModeSwitchedWidget(QWidget):
@@ -1510,9 +1448,7 @@ class StudioModeSwitchedWidget(QWidget):
         self._data = data
 
     def get_data(self):
-        return {
-        }
-
+        return {}
 
 
 event_widgets = {

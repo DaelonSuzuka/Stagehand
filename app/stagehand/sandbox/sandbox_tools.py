@@ -19,7 +19,7 @@ class SandboxTools(QWidget):
         at_bottom = False
         if scrollbar.value() == scrollbar.maximum():
             at_bottom = True
-        
+
         s = ''
         for arg in args:
             s += str(arg)
@@ -29,7 +29,7 @@ class SandboxTools(QWidget):
 
         out = '\n'.join(l for l in s.split('\n') if l)
         self.output.setPlainText(out)
-        
+
         if at_bottom:
             scrollbar.setValue(scrollbar.maximum())
 
@@ -40,7 +40,9 @@ class SandboxToolsDockWidget(QDockWidget):
         self.setObjectName('SandboxOutput')
 
         self.setWidget(widget)
-        self.setFeatures(QDockWidget.DockWidgetClosable | QDockWidget.DockWidgetMovable | QDockWidget.DockWidgetFloatable)
+        self.setFeatures(
+            QDockWidget.DockWidgetClosable | QDockWidget.DockWidgetMovable | QDockWidget.DockWidgetFloatable
+        )
         self.starting_area = Qt.RightDockWidgetArea
         self.closeEvent = lambda x: self.hide()
 

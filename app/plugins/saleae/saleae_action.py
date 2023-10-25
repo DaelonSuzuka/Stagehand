@@ -13,7 +13,6 @@ class ActionSettings(QWidget):
             layout += QLabel('3')
 
 
-
 class SaleaeAction(ActionItem):
     name = 'saleae'
 
@@ -37,7 +36,7 @@ class SaleaeAction(ActionItem):
                 layout.add(QLabel(), 1)
                 layout += self.settings_button
             layout += self.settings
-        
+
     def toggle_settings(self):
         self.settings.setVisible(not self.settings.isVisible())
 

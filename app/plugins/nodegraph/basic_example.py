@@ -5,18 +5,12 @@ import signal
 
 from Qt import QtCore, QtWidgets
 
-from NodeGraphQt import (
-    NodeGraph,
-    PropertiesBinWidget,
-    NodesTreeWidget,
-    NodesPaletteWidget
-)
+from NodeGraphQt import NodeGraph, PropertiesBinWidget, NodesTreeWidget, NodesPaletteWidget
 
 # import example nodes from the "example_nodes" package
 from nodes import basic_nodes, custom_ports_node, group_node, widget_nodes
 
 if __name__ == '__main__':
-
     # handle SIGINT to make the app terminate on CTRL+C
     signal.signal(signal.SIGINT, signal.SIG_DFL)
 
@@ -31,15 +25,17 @@ if __name__ == '__main__':
     graph.set_context_menu_from_file('../examples/hotkeys/hotkeys.json')
 
     # registered example nodes.
-    graph.register_nodes([
-        basic_nodes.BasicNodeA,
-        basic_nodes.BasicNodeB,
-        custom_ports_node.CustomPortsNode,
-        group_node.MyGroupNode,
-        widget_nodes.DropdownMenuNode,
-        widget_nodes.TextInputNode,
-        widget_nodes.CheckboxNode
-    ])
+    graph.register_nodes(
+        [
+            basic_nodes.BasicNodeA,
+            basic_nodes.BasicNodeB,
+            custom_ports_node.CustomPortsNode,
+            group_node.MyGroupNode,
+            widget_nodes.DropdownMenuNode,
+            widget_nodes.TextInputNode,
+            widget_nodes.CheckboxNode,
+        ]
+    )
 
     # show the node graph widget.
     graph_widget = graph.widget
@@ -47,32 +43,26 @@ if __name__ == '__main__':
     graph_widget.show()
 
     # create node with custom text color and disable it.
-    n_basic_a = graph.create_node(
-        'nodes.basic.BasicNodeA', text_color='#feab20')
+    n_basic_a = graph.create_node('nodes.basic.BasicNodeA', text_color='#feab20')
     n_basic_a.set_disabled(True)
 
     # create node and set a custom icon.
-    n_basic_b = graph.create_node(
-        'nodes.basic.BasicNodeB', name='custom icon')
+    n_basic_b = graph.create_node('nodes.basic.BasicNodeB', name='custom icon')
     this_path = os.path.dirname(os.path.abspath(__file__))
     icon = os.path.join(this_path, 'examples', 'star.png')
     n_basic_b.set_icon(icon)
 
     # create node with the custom port shapes.
-    n_custom_ports = graph.create_node(
-        'nodes.custom.ports.CustomPortsNode', name='custom ports')
+    n_custom_ports = graph.create_node('nodes.custom.ports.CustomPortsNode', name='custom ports')
 
     # create node with the embedded QLineEdit widget.
-    n_text_input = graph.create_node(
-        'nodes.widget.TextInputNode', name='text node', color='#0a1e20')
+    n_text_input = graph.create_node('nodes.widget.TextInputNode', name='text node', color='#0a1e20')
 
     # create node with the embedded QCheckBox widgets.
-    n_checkbox = graph.create_node(
-        'nodes.widget.CheckboxNode', name='checkbox node')
+    n_checkbox = graph.create_node('nodes.widget.CheckboxNode', name='checkbox node')
 
     # create node with the QComboBox widget.
-    n_combo_menu = graph.create_node(
-        'nodes.widget.DropdownMenuNode', name='combobox node')
+    n_combo_menu = graph.create_node('nodes.widget.DropdownMenuNode', name='combobox node')
 
     # create group node.
     n_group = graph.create_node('nodes.group.MyGroupNode')

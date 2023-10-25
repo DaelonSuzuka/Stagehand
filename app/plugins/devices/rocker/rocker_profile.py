@@ -4,13 +4,13 @@ import json
 
 
 class Rocker(JudiStandardMixin, SerialDevice):
-    profile_name = "Rocker"
+    profile_name = 'Rocker'
 
     events = [
         'Channel 0 Changed',
         'Channel 1 Changed',
     ]
-    
+
     class Signals(Adapter):
         event_received = Signal(str)
         value_changed = Signal(str, int)

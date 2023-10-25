@@ -14,7 +14,7 @@ class SaleaeSettingsPage(SingletonPageMixin, StagehandPage):
 
         self.serial_number = QLineEdit()
         self.port = QLineEdit()
-        
+
         with CVBoxLayout(self) as layout:
             with layout.form():
                 layout.setFieldGrowthPolicy(QFormLayout.FieldsStayAtSizeHint)

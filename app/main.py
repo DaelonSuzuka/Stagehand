@@ -7,16 +7,16 @@ from qtstrap.extras import log_monitor
 def main():
     log_monitor.exception_logger_name = 'stagehand.exceptions'
     log_monitor.install()
-    
+
     Plugins()
-    
+
     app = Application()
-    
+
     window = MainWindow()
     window.show()
 
     app.exec_()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

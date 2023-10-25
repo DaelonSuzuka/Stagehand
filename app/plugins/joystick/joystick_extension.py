@@ -6,5 +6,5 @@ class JoystickExtension(SandboxExtension):
     name = ['joystick', 'joy']
 
     # def __init__(self):
-        # for j in get_joystick_list():
-        #     print(j.get_name())
+    # for j in get_joystick_list():
+    #     print(j.get_name())

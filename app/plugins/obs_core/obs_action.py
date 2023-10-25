@@ -5,12 +5,13 @@ from stagehand.actions import ActionItem
 from .interface import requests, request_widgets
 
 
-def filt(r:str) -> bool:
+def filt(r: str) -> bool:
     if r.startswith('Get'):
         return False
     if r in ['Authenticate']:
         return False
     return True
+
 
 request_names = [r for r in requests.keys() if filt(r)]
 
@@ -31,7 +32,7 @@ class ObsAction(ActionItem):
 
         self.request.currentIndexChanged.connect(changed)
         self.request.currentIndexChanged.connect(self.change_type)
-        
+
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.request)
 
@@ -39,7 +40,7 @@ class ObsAction(ActionItem):
         if self.request_widget:
             self.layout().removeWidget(self.request_widget)
             self.request_widget.deleteLater()
-            
+
         self.request_widget = request_widgets[self.request.currentText()](self.changed)
         self.layout().add(self.request_widget, 1)
 

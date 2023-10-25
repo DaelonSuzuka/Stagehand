@@ -27,7 +27,7 @@ class ActiveWindowFilter(FilterStackItem):
 
     def check(self) -> bool:
         return self.window.currentText() == getForegroundWindowTitle()
-    
+
     def set_data(self, data: dict) -> None:
         if 'window' in data:
             self.window.setCurrentText(data['window'])

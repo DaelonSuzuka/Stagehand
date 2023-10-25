@@ -11,11 +11,11 @@ class SandboxAction(ActionItem):
 
     def __init__(self, changed, owner=None):
         super().__init__()
-        
+
         self.owner = owner
         self.action = CodeLine(changed=changed, highlighter=PythonHighlighter, model=SandboxCompletionModel())
         self.action.ctrl_enter_pressed.connect(self.run)
-    
+
         self.changed = changed
 
         self.edit_btn = QPushButton('', clicked=self.open_editor, icon=qta.icon('fa5.edit'))
@@ -24,7 +24,7 @@ class SandboxAction(ActionItem):
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.action)
             layout.add(self.edit_btn)
-    
+
     def open_editor(self, *_):
         self.data['action'] = self.action.text()
         self.data['name'] = self.owner.name
@@ -46,9 +46,7 @@ class SandboxAction(ActionItem):
         self.action.setDisabled('\n' in self.action.text())
 
     def get_data(self):
-        return {
-            'action': self.action.text()
-        }
+        return {'action': self.action.text()}
 
     def reset(self):
         self.action.clear()

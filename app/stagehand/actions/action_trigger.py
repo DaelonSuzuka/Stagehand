@@ -32,7 +32,7 @@ class ActionTrigger(QWidget):
         self.trigger_box = CHBoxLayout(margins=0)
 
         with CHBoxLayout(self, margins=0) as layout:
-            layout.add(QLabel("Trigger:", minimumWidth=60))
+            layout.add(QLabel('Trigger:', minimumWidth=60))
             layout.add(self.type)
             layout.add(self.trigger_box, 1)
 
@@ -70,7 +70,7 @@ class ActionTrigger(QWidget):
             if 'trigger_type' not in data['trigger']:
                 data['trigger']['trigger_type'] = 'keyboard'
             self.type.setCurrentText(data['trigger']['trigger_type'])
-            
+
             self.type_changed()
 
             if 'enabled' in data['trigger']:

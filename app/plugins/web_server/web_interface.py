@@ -59,15 +59,15 @@ class SocketListener(QObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.clients = []
-        
+
         self.server = QWebSocketServer('stagehand_web_control', QWebSocketServer.NonSecureMode)
         self.server.listen(address=QHostAddress.Any, port=5001)
-        
+
         # if self.server.listen(address=QHostAddress.Any, port=5001):
         #     print(f"Device server listening at: {self.server.serverAddress().toString()}:{str(self.server.serverPort())}")
         # else:
         #     print('Failed to start device server.')
-        
+
         self.server.newConnection.connect(self.on_new_connection)
 
     def on_new_connection(self):
@@ -80,7 +80,7 @@ class SocketListener(QObject):
 class WebInterfacePage(StagehandPage):
     page_type = 'Web Actions'
     changed = Signal()
-    
+
     def __init__(self, name='', changed=None, data=None):
         super().__init__()
         self.name = name
@@ -119,7 +119,7 @@ class WebInterfacePage(StagehandPage):
 
         if changed:
             self.changed.connect(changed)
-        
+
         if data is not None:
             self.set_data(data)
 
@@ -185,7 +185,9 @@ class WebInterfacePage(StagehandPage):
     def rename_buttons(self):
         for client in self.socket.clients:
             for i, action in self.actions.items():
-                client.sendTextMessage(f'{{"command":"rename", "number":"{i[len("Web Action "):]}", "name":"{action.label.text()}"}}')
+                client.sendTextMessage(
+                    f'{{"command":"rename", "number":"{i[len("Web Action "):]}", "name":"{action.label.text()}"}}'
+                )
 
     def processTextMessage(self, text):
         try:
@@ -199,7 +201,7 @@ class WebInterfacePage(StagehandPage):
 
     def get_name(self):
         return self.label.text()
-    
+
     def on_change(self):
         self.changed.emit()
 
@@ -217,7 +219,7 @@ class WebInterfacePage(StagehandPage):
             for action_data in actions:
                 action = CompactActionWidget(action_data['name'], group=self.group)
                 action.set_data(action_data)
-                self.actions[action.name] = (action)
+                self.actions[action.name] = action
                 self.actions_container.add(action)
         else:
             self.actions = {}
@@ -225,10 +227,12 @@ class WebInterfacePage(StagehandPage):
                 name = f'Web Action {i}'
                 action = CompactActionWidget(name=name, group=self.group, changed=self.rename_buttons)
                 self.actions[name] = action
-                action.set_data({
-                    **CompactActionWidget.default_data,
-                    "name": name,
-                })
+                action.set_data(
+                    {
+                        **CompactActionWidget.default_data,
+                        'name': name,
+                    }
+                )
 
             self.actions_container.add(list(self.actions.values()))
 

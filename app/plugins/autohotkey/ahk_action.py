@@ -29,7 +29,7 @@ class AutohotkeyAction(ActionItem):
         if self.ahk_widget:
             self.layout().removeWidget(self.ahk_widget)
             self.ahk_widget.deleteLater()
-            
+
         self.ahk_widget = widgets[self.type.currentText()](changed=self.changed, owner=self.owner)
         self.layout().add(self.ahk_widget, 1)
 

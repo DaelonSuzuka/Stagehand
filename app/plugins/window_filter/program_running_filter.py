@@ -55,7 +55,7 @@ class ProgramRunningFilter(FilterStackItem):
 
     def check(self) -> bool:
         return self.process.currentText() in get_process_names()
-    
+
     def set_data(self, data: dict) -> None:
         if 'process' in data:
             self.process.setCurrentText(data['process'])

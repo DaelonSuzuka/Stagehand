@@ -30,7 +30,7 @@ class Sandbox(QObject):
 
     def __getattr__(self, name):
         return self.extensions[name]
-    
+
     def __getitem__(self, name):
         return self.extensions[name]
 
@@ -45,8 +45,7 @@ class Sandbox(QObject):
             'source': self.source,
             **self.extensions,
         }
-        self._locals = {
-        }
+        self._locals = {}
 
     def _save(self, name, value):
         self._data[name] = value
@@ -86,7 +85,7 @@ class Sandbox(QObject):
             error_cb(error)
         else:
             self.tools.print(error)
-    
+
     @Slot()
     def eval(self, text, error_cb=None):
         if text == '':

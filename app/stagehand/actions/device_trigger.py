@@ -40,7 +40,7 @@ class EventStatusIcon(QLabel):
         super().__init__('')
 
         self.update_icon(0.0)
-        
+
         self.anim = QVariantAnimation(self)
         self.anim.setEasingCurve(QEasingCurve.InCubic)
         self.anim.setDuration(250)
@@ -53,19 +53,14 @@ class EventStatusIcon(QLabel):
         self.anim.start()
 
     @cache
-    def build_icon(self, fill:float):
+    def build_icon(self, fill: float):
         icon = qta.icon(
-            'mdi.checkbox-blank-circle',
-            'mdi.checkbox-blank-circle-outline',
-            options = [
-                {'opacity': fill},
-                {}
-            ]
+            'mdi.checkbox-blank-circle', 'mdi.checkbox-blank-circle-outline', options=[{'opacity': fill}, {}]
         )
 
         return icon.pixmap(QSize(25, 25))
 
-    def update_icon(self, fill:float):
+    def update_icon(self, fill: float):
         icon = self.build_icon(fill)
         self.setPixmap(icon)
 
@@ -74,7 +69,7 @@ class EventStatusIcon(QLabel):
 class DeviceTrigger(TriggerItem):
     name = 'device'
     triggered = Signal()
-    
+
     def __init__(self, changed, run, owner=None):
         super().__init__()
 
@@ -90,7 +85,7 @@ class DeviceTrigger(TriggerItem):
         self.device_selector.setMinimumWidth(200)
         self.device_selector.currentIndexChanged.connect(changed)
         self.device_selector.currentTextChanged.connect(self.device_changed)
-        
+
         self.event_selector = QComboBox()
         self.event_selector.setMinimumWidth(200)
         self.event_selector.currentIndexChanged.connect(changed)
@@ -100,7 +95,7 @@ class DeviceTrigger(TriggerItem):
 
         self.connection_status = QLabel('')
         self.set_status(Status.DISCONNECTED)
-        
+
         self.event_status = EventStatusIcon()
 
         with CHBoxLayout(self, margins=0) as layout:
@@ -109,8 +104,8 @@ class DeviceTrigger(TriggerItem):
             layout.add(QLabel('Event:'))
             layout.add(self.event_selector)
             layout.add(self.event_status)
-    
-    def set_status(self, status:Status):
+
+    def set_status(self, status: Status):
         if status is Status.CONNECTED:
             self.connection_status.setEnabled(True)
             self.connection_status.setToolTip('Device is connected')
@@ -137,7 +132,7 @@ class DeviceTrigger(TriggerItem):
                 self.adapter.deleteLater()
             self.device = self.devices[guid]
             self.adapter = self.devices[guid].signals.adapter()
-            
+
             if hasattr(self.adapter, 'event_received'):
                 self.adapter.event_received.connect(self.event_received)
             self.set_status(Status.CONNECTED)

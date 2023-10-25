@@ -37,34 +37,85 @@ STYLES = {
 
 
 class AHKScriptHighlighter(QSyntaxHighlighter):
-    """Syntax highlighter for the AutoHotkey scripting language.
-    """
+    """Syntax highlighter for the AutoHotkey scripting language."""
+
     # keywords
     keywords = [
-        'and', 'assert', 'break', 'class', 'continue', 'def',
-        'del', 'elif', 'else', 'except', 'exec', 'finally',
-        'for', 'from', 'global', 'if', 'import', 'in',
-        'is', 'lambda', 'not', 'or', 'pass', 'print',
-        'raise', 'return', 'try', 'while', 'yield',
-        'None', 'True', 'False',
+        'and',
+        'assert',
+        'break',
+        'class',
+        'continue',
+        'def',
+        'del',
+        'elif',
+        'else',
+        'except',
+        'exec',
+        'finally',
+        'for',
+        'from',
+        'global',
+        'if',
+        'import',
+        'in',
+        'is',
+        'lambda',
+        'not',
+        'or',
+        'pass',
+        'print',
+        'raise',
+        'return',
+        'try',
+        'while',
+        'yield',
+        'None',
+        'True',
+        'False',
     ]
 
     # operators
     operators = [
         '=',
         # Comparison
-        '==', '!=', '<', '<=', '>', '>=',
+        '==',
+        '!=',
+        '<',
+        '<=',
+        '>',
+        '>=',
         # Arithmetic
-        '\+', '-', '\*', '/', '//', '\%', '\*\*',
+        '\+',
+        '-',
+        '\*',
+        '/',
+        '//',
+        '\%',
+        '\*\*',
         # In-place
-        '\+=', '-=', '\*=', '/=', '\%=',
+        '\+=',
+        '-=',
+        '\*=',
+        '/=',
+        '\%=',
         # Bitwise
-        '\^', '\|', '\&', '\~', '>>', '<<',
+        '\^',
+        '\|',
+        '\&',
+        '\~',
+        '>>',
+        '<<',
     ]
 
     # braces
     braces = [
-        '\{', '\}', '\(', '\)', '\[', '\]',
+        '\{',
+        '\}',
+        '\(',
+        '\)',
+        '\[',
+        '\]',
     ]
 
     def __init__(self, document):
@@ -87,20 +138,16 @@ class AHKScriptHighlighter(QSyntaxHighlighter):
         rules += [
             # 'self'
             (r'\bself\b', 0, STYLES['self']),
-
             # Double-quoted string, possibly containing escape sequences
             (r'"[^"\\]*(\\.[^"\\]*)*"', 0, STYLES['string']),
             # Single-quoted string, possibly containing escape sequences
             (r"'[^'\\]*(\\.[^'\\]*)*'", 0, STYLES['string']),
-
             # 'def' followed by an identifier
             (r'\bdef\b\s*(\w+)', 1, STYLES['defclass']),
             # 'class' followed by an identifier
             (r'\bclass\b\s*(\w+)', 1, STYLES['defclass']),
-
             # From '#' until a newline
             (r'#[^\n]*', 0, STYLES['comment']),
-
             # Numeric literals
             (r'\b[+-]?[0-9]+[lL]?\b', 0, STYLES['numbers']),
             (r'\b[+-]?0[xX][0-9A-Fa-f]+[lL]?\b', 0, STYLES['numbers']),
@@ -111,8 +158,7 @@ class AHKScriptHighlighter(QSyntaxHighlighter):
         self.rules = [(QRegularExpression(pat), index, fmt) for (pat, index, fmt) in rules]
 
     def highlightBlock(self, text):
-        """Apply syntax highlighting to the given block of text.
-        """
+        """Apply syntax highlighting to the given block of text."""
         # Do other syntax formatting
         for regex, nth, fmt in self.rules:
             match = regex.match(text)

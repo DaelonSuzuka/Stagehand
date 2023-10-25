@@ -11,9 +11,7 @@ class SaleaeExtension(SandboxExtension):
         super().__init__()
         self.connection = SaleaeConnection()
 
-        self.commands = [
-            Command('Saleae: Open Settings', triggered=self._open_settings)
-        ]
+        self.commands = [Command('Saleae: Open Settings', triggered=self._open_settings)]
 
     def _open_settings(self):
         MainWindow().tabs.create_page('Saleae Settings')

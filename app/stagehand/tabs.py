@@ -69,7 +69,7 @@ class MainTabWidget(QTabWidget):
         self.currentChanged.connect(self.save)
 
         more_pages_button = MenuButton('New Page')
-        
+
         for c in StagehandPage.__subclasses__():
             if 'user' in c.tags:
                 action = more_pages_button.addAction(c.page_type)
@@ -86,9 +86,9 @@ class MainTabWidget(QTabWidget):
         self.setMovable(True)
 
         self.pages = []
-        
+
         self.load()
-        
+
         call_later(self.enable_saving, 250)
 
     def tab_context_menu(self, pos: QPoint):
@@ -136,7 +136,7 @@ class MainTabWidget(QTabWidget):
 
     def create_page(self, page_type=default_page_type):
         page_class = StagehandPage.get_subclasses()[page_type]
-            
+
         if 'singleton' in page_class.tags:
             name = page_class.page_type
             for p in self.pages:
@@ -170,7 +170,7 @@ class MainTabWidget(QTabWidget):
                 data = json.loads(f.read())
         except json.JSONDecodeError:
             pass
-  
+
         if 'pages' in data and data['pages']:
             for name, page_data in data['pages'].items():
                 page_type = page_data.get('page_type', default_page_type)
@@ -182,23 +182,23 @@ class MainTabWidget(QTabWidget):
                 self.setCurrentIndex(data['current_tab'])
         else:
             default_data = {
-                "actions": [
+                'actions': [
                     {
                         'name': 'Action',
                         'enabled': True,
                         'action': {
                             'type': 'sandbox',
-                            'action': 'print("Hello world!")'
+                            'action': 'print("Hello world!")',
                         },
                         'trigger': {
                             'enabled': True,
                             'trigger_type': 'keyboard',
-                            'trigger': ''
+                            'trigger': '',
                         },
                         'filter': {
                             'enabled': True,
-                            'filters': []
-                        }
+                            'filters': [],
+                        },
                     }
                 ]
             }
@@ -216,6 +216,6 @@ class MainTabWidget(QTabWidget):
             'current_tab': self.currentIndex(),
             'pages': {p.name: p.get_data() for p in pages},
         }
-        
+
         with open(self.settings_file, 'w') as f:
             f.write(json.dumps(data, indent=4))

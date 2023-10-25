@@ -5,8 +5,6 @@ from stagehand.sandbox import Sandbox
 from .ahk_script_highlighter import AHKScriptHighlighter
 
 
-
-
 class AHKScriptEditorDialog(QDialog):
     reload = Signal(str, Slot)
 

@@ -15,7 +15,7 @@ def get_word_list():
             **Sandbox()._globals,
         }
         subwords = {}
-        
+
         for word, obj in words.items():
             if type(obj).__name__ not in ['method', 'dict', 'NoneType']:
                 subwords[word] = []
@@ -33,7 +33,7 @@ class SandboxCompletionModel(QAbstractListModel):
         words, subwords = get_word_list()
         self.words = words
         self.subwords = subwords
-        
+
         self.sorted_words = []
 
     def get_prev_word(self, cursor):
@@ -62,7 +62,7 @@ class SandboxCompletionModel(QAbstractListModel):
                 continue
             if prefix.lower() in w.lower():
                 self.sorted_words.append(w)
-            
+
     def rowCount(self, parent: QModelIndex) -> int:
         return len(self.sorted_words)
 

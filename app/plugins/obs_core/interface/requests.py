@@ -54,17 +54,17 @@ class GetVersion(BaseRequest):
 
 class GetAuthRequired(BaseRequest):
     """Tells the client if authentication is required. If so, returns authentication parameters `challenge`
-and `salt` (see "Authentication" for more information).
+    and `salt` (see "Authentication" for more information).
 
-    :Returns:
-        *authRequired*
-            type: boolean
-            Indicates whether authentication is required.
-        *challenge*
-            type: String (optional)
+        :Returns:
+            *authRequired*
+                type: boolean
+                Indicates whether authentication is required.
+            *challenge*
+                type: String (optional)
 
-        *salt*
-            type: String (optional)
+            *salt*
+                type: String (optional)
 
     """
 
@@ -569,15 +569,15 @@ class Sleep(BaseRequest):
 
 class PlayPauseMedia(BaseRequest):
     """Pause or play a media source. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
-Note :Leaving out `playPause` toggles the current pause state
+    Note :Leaving out `playPause` toggles the current pause state
 
-    :Arguments:
-        *sourceName*
-            type: String
-            Source name.
-        *playPause*
-            type: boolean
-            (optional) Whether to pause or play the source. `false` for play, `true` for pause.
+        :Arguments:
+            *sourceName*
+                type: String
+                Source name.
+            *playPause*
+                type: boolean
+                (optional) Whether to pause or play the source. `false` for play, `true` for pause.
     """
 
     name = 'PlayPauseMedia'
@@ -747,16 +747,16 @@ class PreviousMedia(BaseRequest):
 
 class GetMediaDuration(BaseRequest):
     """Get the length of media in milliseconds. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
-Note: For some reason, for the first 5 or so seconds that the media is playing, the total duration can be off by upwards of 50ms.
+    Note: For some reason, for the first 5 or so seconds that the media is playing, the total duration can be off by upwards of 50ms.
 
-    :Arguments:
-        *sourceName*
-            type: String
-            Source name.
-    :Returns:
-        *mediaDuration*
-            type: int
-            The total length of media in milliseconds..
+        :Arguments:
+            *sourceName*
+                type: String
+                Source name.
+        :Returns:
+            *mediaDuration*
+                type: int
+                The total length of media in milliseconds..
     """
 
     name = 'GetMediaDuration'
@@ -869,15 +869,15 @@ class SetMediaTime(BaseRequest):
 
 class ScrubMedia(BaseRequest):
     """Scrub media using a supplied offset. Supports ffmpeg and vlc media sources (as of OBS v25.0.8)
-Note: Due to processing/network delays, this request is not perfect. The processing rate of this request has also not been tested.
+    Note: Due to processing/network delays, this request is not perfect. The processing rate of this request has also not been tested.
 
-    :Arguments:
-        *sourceName*
-            type: String
-            Source name.
-        *timeOffset*
-            type: int
-            Millisecond offset (positive or negative) to offset the current media position.
+        :Arguments:
+            *sourceName*
+                type: String
+                Source name.
+            *timeOffset*
+                type: int
+                Millisecond offset (positive or negative) to offset the current media position.
     """
 
     name = 'ScrubMedia'
@@ -1520,15 +1520,15 @@ class GetAudioActive(BaseRequest):
 class SetSourceName(BaseRequest):
     """
 
-Note: If the new name already exists as a source, obs-websocket will return an error.
+    Note: If the new name already exists as a source, obs-websocket will return an error.
 
-    :Arguments:
-        *sourceName*
-            type: String
-            Source name.
-        *newName*
-            type: String
-            New source name.
+        :Arguments:
+            *sourceName*
+                type: String
+                Source name.
+            *newName*
+                type: String
+                New source name.
     """
 
     name = 'SetSourceName'
@@ -2034,7 +2034,35 @@ class SetTextGDIPlusProperties(BaseRequest):
         self.dataout['vertical'] = None
         self.dataout['render'] = None
 
-    def __call__(self, source, align=None, bk_color=None, bk_opacity=None, chatlog=None, chatlog_lines=None, color=None, extents=None, extents_cx=None, extents_cy=None, file=None, read_from_file=None, font=None, gradient=None, gradient_color=None, gradient_dir=None, gradient_opacity=None, outline=None, outline_color=None, outline_size=None, outline_opacity=None, text=None, valign=None, vertical=None, render=None, cb=None):
+    def __call__(
+        self,
+        source,
+        align=None,
+        bk_color=None,
+        bk_opacity=None,
+        chatlog=None,
+        chatlog_lines=None,
+        color=None,
+        extents=None,
+        extents_cx=None,
+        extents_cy=None,
+        file=None,
+        read_from_file=None,
+        font=None,
+        gradient=None,
+        gradient_color=None,
+        gradient_dir=None,
+        gradient_opacity=None,
+        outline=None,
+        outline_color=None,
+        outline_size=None,
+        outline_opacity=None,
+        text=None,
+        valign=None,
+        vertical=None,
+        render=None,
+        cb=None,
+    ):
         payload = {}
         payload['request-type'] = 'SetTextGDIPlusProperties'
         payload['source'] = source
@@ -2065,7 +2093,33 @@ class SetTextGDIPlusProperties(BaseRequest):
         ObsSocket().send(payload, cb)
 
     @staticmethod
-    def payload(source, align=None, bk_color=None, bk_opacity=None, chatlog=None, chatlog_lines=None, color=None, extents=None, extents_cx=None, extents_cy=None, file=None, read_from_file=None, font=None, gradient=None, gradient_color=None, gradient_dir=None, gradient_opacity=None, outline=None, outline_color=None, outline_size=None, outline_opacity=None, text=None, valign=None, vertical=None, render=None):
+    def payload(
+        source,
+        align=None,
+        bk_color=None,
+        bk_opacity=None,
+        chatlog=None,
+        chatlog_lines=None,
+        color=None,
+        extents=None,
+        extents_cx=None,
+        extents_cy=None,
+        file=None,
+        read_from_file=None,
+        font=None,
+        gradient=None,
+        gradient_color=None,
+        gradient_dir=None,
+        gradient_opacity=None,
+        outline=None,
+        outline_color=None,
+        outline_size=None,
+        outline_opacity=None,
+        text=None,
+        valign=None,
+        vertical=None,
+        render=None,
+    ):
         payload = {}
         payload['request-type'] = 'SetTextGDIPlusProperties'
         payload['source'] = source
@@ -2255,7 +2309,22 @@ class SetTextFreetype2Properties(BaseRequest):
         self.dataout['text_file'] = None
         self.dataout['word_wrap'] = None
 
-    def __call__(self, source, color1=None, color2=None, custom_width=None, drop_shadow=None, font=None, from_file=None, log_mode=None, outline=None, text=None, text_file=None, word_wrap=None, cb=None):
+    def __call__(
+        self,
+        source,
+        color1=None,
+        color2=None,
+        custom_width=None,
+        drop_shadow=None,
+        font=None,
+        from_file=None,
+        log_mode=None,
+        outline=None,
+        text=None,
+        text_file=None,
+        word_wrap=None,
+        cb=None,
+    ):
         payload = {}
         payload['request-type'] = 'SetTextFreetype2Properties'
         payload['source'] = source
@@ -2273,7 +2342,20 @@ class SetTextFreetype2Properties(BaseRequest):
         ObsSocket().send(payload, cb)
 
     @staticmethod
-    def payload(source, color1=None, color2=None, custom_width=None, drop_shadow=None, font=None, from_file=None, log_mode=None, outline=None, text=None, text_file=None, word_wrap=None):
+    def payload(
+        source,
+        color1=None,
+        color2=None,
+        custom_width=None,
+        drop_shadow=None,
+        font=None,
+        from_file=None,
+        log_mode=None,
+        outline=None,
+        text=None,
+        text_file=None,
+        word_wrap=None,
+    ):
         payload = {}
         payload['request-type'] = 'SetTextFreetype2Properties'
         payload['source'] = source
@@ -2428,7 +2510,20 @@ class SetBrowserSourceProperties(BaseRequest):
         self.dataout['shutdown'] = None
         self.dataout['render'] = None
 
-    def __call__(self, source, is_local_file=None, local_file=None, url=None, css=None, width=None, height=None, fps=None, shutdown=None, render=None, cb=None):
+    def __call__(
+        self,
+        source,
+        is_local_file=None,
+        local_file=None,
+        url=None,
+        css=None,
+        width=None,
+        height=None,
+        fps=None,
+        shutdown=None,
+        render=None,
+        cb=None,
+    ):
         payload = {}
         payload['request-type'] = 'SetBrowserSourceProperties'
         payload['source'] = source
@@ -2444,7 +2539,18 @@ class SetBrowserSourceProperties(BaseRequest):
         ObsSocket().send(payload, cb)
 
     @staticmethod
-    def payload(source, is_local_file=None, local_file=None, url=None, css=None, width=None, height=None, fps=None, shutdown=None, render=None):
+    def payload(
+        source,
+        is_local_file=None,
+        local_file=None,
+        url=None,
+        css=None,
+        width=None,
+        height=None,
+        fps=None,
+        shutdown=None,
+        render=None,
+    ):
         payload = {}
         payload['request-type'] = 'SetBrowserSourceProperties'
         payload['source'] = source
@@ -3021,43 +3127,43 @@ class GetSourceDefaultSettings(BaseRequest):
 class TakeSourceScreenshot(BaseRequest):
     """
 
-At least `embedPictureFormat` or `saveToFilePath` must be specified.
+    At least `embedPictureFormat` or `saveToFilePath` must be specified.
 
-Clients can specify `width` and `height` parameters to receive scaled pictures. Aspect ratio is
-preserved if only one of these two parameters is specified.
+    Clients can specify `width` and `height` parameters to receive scaled pictures. Aspect ratio is
+    preserved if only one of these two parameters is specified.
 
-    :Arguments:
-        *sourceName*
-            type: String (optional)
-            Source name. Note: Since scenes are also sources, you can also provide a scene name. If not provided, the currently active scene is used.
-        *embedPictureFormat*
-            type: String (optional)
-            Format of the Data URI encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module)
-        *saveToFilePath*
-            type: String (optional)
-            Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path.
-        *fileFormat*
-            type: String (optional)
-            Format to save the image file as (one of the values provided in the `supported-image-export-formats` response field of `GetVersion`). If not specified, tries to guess based on file extension.
-        *compressionQuality*
-            type: int (optional)
-            Compression ratio between -1 and 100 to write the image with. -1 is automatic, 1 is smallest file/most compression, 100 is largest file/least compression. Varies with image type.
-        *width*
-            type: int (optional)
-            Screenshot width. Defaults to the source's base width.
-        *height*
-            type: int (optional)
-            Screenshot height. Defaults to the source's base height.
-    :Returns:
-        *sourceName*
-            type: String
-            Source name
-        *img*
-            type: String
-            Image Data URI (if `embedPictureFormat` was specified in the request)
-        *imageFile*
-            type: String
-            Absolute path to the saved image file (if `saveToFilePath` was specified in the request)
+        :Arguments:
+            *sourceName*
+                type: String (optional)
+                Source name. Note: Since scenes are also sources, you can also provide a scene name. If not provided, the currently active scene is used.
+            *embedPictureFormat*
+                type: String (optional)
+                Format of the Data URI encoded picture. Can be "png", "jpg", "jpeg" or "bmp" (or any other value supported by Qt's Image module)
+            *saveToFilePath*
+                type: String (optional)
+                Full file path (file extension included) where the captured image is to be saved. Can be in a format different from `pictureFormat`. Can be a relative path.
+            *fileFormat*
+                type: String (optional)
+                Format to save the image file as (one of the values provided in the `supported-image-export-formats` response field of `GetVersion`). If not specified, tries to guess based on file extension.
+            *compressionQuality*
+                type: int (optional)
+                Compression ratio between -1 and 100 to write the image with. -1 is automatic, 1 is smallest file/most compression, 100 is largest file/least compression. Varies with image type.
+            *width*
+                type: int (optional)
+                Screenshot width. Defaults to the source's base width.
+            *height*
+                type: int (optional)
+                Screenshot height. Defaults to the source's base height.
+        :Returns:
+            *sourceName*
+                type: String
+                Source name
+            *img*
+                type: String
+                Image Data URI (if `embedPictureFormat` was specified in the request)
+            *imageFile*
+                type: String
+                Absolute path to the saved image file (if `saveToFilePath` was specified in the request)
     """
 
     name = 'TakeSourceScreenshot'
@@ -3087,7 +3193,17 @@ preserved if only one of these two parameters is specified.
         self.dataout['width'] = None
         self.dataout['height'] = None
 
-    def __call__(self, sourceName=None, embedPictureFormat=None, saveToFilePath=None, fileFormat=None, compressionQuality=None, width=None, height=None, cb=None):
+    def __call__(
+        self,
+        sourceName=None,
+        embedPictureFormat=None,
+        saveToFilePath=None,
+        fileFormat=None,
+        compressionQuality=None,
+        width=None,
+        height=None,
+        cb=None,
+    ):
         payload = {}
         payload['request-type'] = 'TakeSourceScreenshot'
         payload['sourceName'] = sourceName
@@ -3100,7 +3216,15 @@ preserved if only one of these two parameters is specified.
         ObsSocket().send(payload, cb)
 
     @staticmethod
-    def payload(sourceName=None, embedPictureFormat=None, saveToFilePath=None, fileFormat=None, compressionQuality=None, width=None, height=None):
+    def payload(
+        sourceName=None,
+        embedPictureFormat=None,
+        saveToFilePath=None,
+        fileFormat=None,
+        compressionQuality=None,
+        width=None,
+        height=None,
+    ):
         payload = {}
         payload['request-type'] = 'TakeSourceScreenshot'
         payload['sourceName'] = sourceName
@@ -3220,12 +3344,12 @@ class GetOutputInfo(BaseRequest):
 class StartOutput(BaseRequest):
     """
 
-Note: Controlling outputs is an experimental feature of obs-websocket. Some plugins which add outputs to OBS may not function properly when they are controlled in this way.
+    Note: Controlling outputs is an experimental feature of obs-websocket. Some plugins which add outputs to OBS may not function properly when they are controlled in this way.
 
-    :Arguments:
-        *outputName*
-            type: String
-            Output name
+        :Arguments:
+            *outputName*
+                type: String
+                Output name
     """
 
     name = 'StartOutput'
@@ -3256,15 +3380,15 @@ Note: Controlling outputs is an experimental feature of obs-websocket. Some plug
 class StopOutput(BaseRequest):
     """
 
-Note: Controlling outputs is an experimental feature of obs-websocket. Some plugins which add outputs to OBS may not function properly when they are controlled in this way.
+    Note: Controlling outputs is an experimental feature of obs-websocket. Some plugins which add outputs to OBS may not function properly when they are controlled in this way.
 
-    :Arguments:
-        *outputName*
-            type: String
-            Output name
-        *force*
-            type: boolean (optional)
-            Force stop (default: false)
+        :Arguments:
+            *outputName*
+                type: String
+                Output name
+            *force*
+                type: boolean (optional)
+                Force stop (default: false)
     """
 
     name = 'StopOutput'
@@ -3433,9 +3557,7 @@ class GetRecordingStatus(BaseRequest):
 
 
 class StartStopRecording(BaseRequest):
-    """Toggle recording on or off (depending on the current recording state).
-
-    """
+    """Toggle recording on or off (depending on the current recording state)."""
 
     name = 'StartStopRecording'
     category = 'recording'
@@ -3458,7 +3580,7 @@ class StartStopRecording(BaseRequest):
 
 class StartRecording(BaseRequest):
     """Start recording.
-Will return an `error` if recording is already active.
+    Will return an `error` if recording is already active.
 
     """
 
@@ -3483,7 +3605,7 @@ Will return an `error` if recording is already active.
 
 class StopRecording(BaseRequest):
     """Stop recording.
-Will return an `error` if recording is not active.
+    Will return an `error` if recording is not active.
 
     """
 
@@ -3508,7 +3630,7 @@ Will return an `error` if recording is not active.
 
 class PauseRecording(BaseRequest):
     """Pause the current recording.
-Returns an error if recording is not active or already paused.
+    Returns an error if recording is not active or already paused.
 
     """
 
@@ -3533,7 +3655,7 @@ Returns an error if recording is not active or already paused.
 
 class ResumeRecording(BaseRequest):
     """Resume/unpause the current recording (if paused).
-Returns an error if recording is not active or not paused.
+    Returns an error if recording is not active or not paused.
 
     """
 
@@ -3559,14 +3681,14 @@ Returns an error if recording is not active or not paused.
 class SetRecordingFolder(BaseRequest):
     """
 
-Note: If `SetRecordingFolder` is called while a recording is
-in progress, the change won't be applied immediately and will be
-effective on the next recording.
+    Note: If `SetRecordingFolder` is called while a recording is
+    in progress, the change won't be applied immediately and will be
+    effective on the next recording.
 
-    :Arguments:
-        *rec_folder*
-            type: String
-            Path of the recording folder.
+        :Arguments:
+            *rec_folder*
+                type: String
+                Path of the recording folder.
     """
 
     name = 'SetRecordingFolder'
@@ -3655,9 +3777,7 @@ class GetReplayBufferStatus(BaseRequest):
 
 
 class StartStopReplayBuffer(BaseRequest):
-    """Toggle the Replay Buffer on/off (depending on the current state of the replay buffer).
-
-    """
+    """Toggle the Replay Buffer on/off (depending on the current state of the replay buffer)."""
 
     name = 'StartStopReplayBuffer'
     category = 'replay buffer'
@@ -3680,10 +3800,10 @@ class StartStopReplayBuffer(BaseRequest):
 
 class StartReplayBuffer(BaseRequest):
     """Start recording into the Replay Buffer.
-Will return an `error` if the Replay Buffer is already active or if the
-"Save Replay Buffer" hotkey is not set in OBS' settings.
-Setting this hotkey is mandatory, even when triggering saves only
-through obs-websocket.
+    Will return an `error` if the Replay Buffer is already active or if the
+    "Save Replay Buffer" hotkey is not set in OBS' settings.
+    Setting this hotkey is mandatory, even when triggering saves only
+    through obs-websocket.
 
     """
 
@@ -3708,7 +3828,7 @@ through obs-websocket.
 
 class StopReplayBuffer(BaseRequest):
     """Stop recording into the Replay Buffer.
-Will return an `error` if the Replay Buffer is not active.
+    Will return an `error` if the Replay Buffer is not active.
 
     """
 
@@ -3733,8 +3853,8 @@ Will return an `error` if the Replay Buffer is not active.
 
 class SaveReplayBuffer(BaseRequest):
     """Flush and save the contents of the Replay Buffer to disk. This is
-basically the same as triggering the "Save Replay Buffer" hotkey.
-Will return an `error` if the Replay Buffer is not active.
+    basically the same as triggering the "Save Replay Buffer" hotkey.
+    Will return an `error` if the Replay Buffer is not active.
 
     """
 
@@ -3897,64 +4017,64 @@ class GetSceneItemList(BaseRequest):
 
 class GetSceneItemProperties(BaseRequest):
     """Gets the scene specific properties of the specified source item.
-Coordinates are relative to the item's parent (the scene or group it belongs to).
+    Coordinates are relative to the item's parent (the scene or group it belongs to).
 
-    :Arguments:
-        *scene_name*
-            type: String (optional)
-            Name of the scene the scene item belongs to. Defaults to the current scene.
-        *item*
-            type: String | Object
-            Scene Item name (if this field is a string) or specification (if it is an object).
-    :Returns:
-        *name*
-            type: String
-            Scene Item name.
-        *itemId*
-            type: int
-            Scene Item ID.
-        *position*
-            type: double
-            The x position of the source from the left.
-        *rotation*
-            type: double
-            The clockwise rotation of the item in degrees around the point of alignment.
-        *scale*
-            type: double
-            The x-scale factor of the source.
-        *crop*
-            type: int
-            The number of pixels cropped off the top of the source before scaling.
-        *visible*
-            type: bool
-            If the source is visible.
-        *muted*
-            type: bool
-            If the source is muted.
-        *locked*
-            type: bool
-            If the source's transform is locked.
-        *bounds*
-            type: String
-            Type of bounding box. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE".
-        *sourceWidth*
-            type: int
-            Base width (without scaling) of the source
-        *sourceHeight*
-            type: int
-            Base source (without scaling) of the source
-        *width*
-            type: double
-            Scene item width (base source width multiplied by the horizontal scaling factor)
-        *height*
-            type: double
-            Scene item height (base source height multiplied by the vertical scaling factor)
-        *parentGroupName*
-            type: String (optional)
-            Name of the item's parent (if this item belongs to a group)
-        *groupChildren*
-            type: Array<SceneItemTransform> (optional)
-            List of children (if this item is a group)
+        :Arguments:
+            *scene_name*
+                type: String (optional)
+                Name of the scene the scene item belongs to. Defaults to the current scene.
+            *item*
+                type: String | Object
+                Scene Item name (if this field is a string) or specification (if it is an object).
+        :Returns:
+            *name*
+                type: String
+                Scene Item name.
+            *itemId*
+                type: int
+                Scene Item ID.
+            *position*
+                type: double
+                The x position of the source from the left.
+            *rotation*
+                type: double
+                The clockwise rotation of the item in degrees around the point of alignment.
+            *scale*
+                type: double
+                The x-scale factor of the source.
+            *crop*
+                type: int
+                The number of pixels cropped off the top of the source before scaling.
+            *visible*
+                type: bool
+                If the source is visible.
+            *muted*
+                type: bool
+                If the source is muted.
+            *locked*
+                type: bool
+                If the source's transform is locked.
+            *bounds*
+                type: String
+                Type of bounding box. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE".
+            *sourceWidth*
+                type: int
+                Base width (without scaling) of the source
+            *sourceHeight*
+                type: int
+                Base source (without scaling) of the source
+            *width*
+                type: double
+                Scene item width (base source width multiplied by the horizontal scaling factor)
+            *height*
+                type: double
+                Scene item height (base source height multiplied by the vertical scaling factor)
+            *parentGroupName*
+                type: String (optional)
+                Name of the item's parent (if this item belongs to a group)
+            *groupChildren*
+                type: Array<SceneItemTransform> (optional)
+                List of children (if this item is a group)
     """
 
     name = 'GetSceneItemProperties'
@@ -4005,36 +4125,36 @@ Coordinates are relative to the item's parent (the scene or group it belongs to)
 
 class SetSceneItemProperties(BaseRequest):
     """Sets the scene specific properties of a source. Unspecified properties will remain unchanged.
-Coordinates are relative to the item's parent (the scene or group it belongs to).
+    Coordinates are relative to the item's parent (the scene or group it belongs to).
 
-    :Arguments:
-        *scene_name*
-            type: String (optional)
-            Name of the scene the source item belongs to. Defaults to the current scene.
-        *item*
-            type: String | Object
-            Scene Item name (if this field is a string) or specification (if it is an object).
-        *position*
-            type: double (optional)
-            The new x position of the source.
-        *rotation*
-            type: double (optional)
-            The new clockwise rotation of the item in degrees.
-        *scale*
-            type: double (optional)
-            The new x scale of the item.
-        *crop*
-            type: int (optional)
-            The new amount of pixels cropped off the top of the source before scaling.
-        *visible*
-            type: bool (optional)
-            The new visibility of the source. 'true' shows source, 'false' hides source.
-        *locked*
-            type: bool (optional)
-            The new locked status of the source. 'true' keeps it in its current position, 'false' allows movement.
-        *bounds*
-            type: String (optional)
-            The new bounds type of the source. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE".
+        :Arguments:
+            *scene_name*
+                type: String (optional)
+                Name of the scene the source item belongs to. Defaults to the current scene.
+            *item*
+                type: String | Object
+                Scene Item name (if this field is a string) or specification (if it is an object).
+            *position*
+                type: double (optional)
+                The new x position of the source.
+            *rotation*
+                type: double (optional)
+                The new clockwise rotation of the item in degrees.
+            *scale*
+                type: double (optional)
+                The new x scale of the item.
+            *crop*
+                type: int (optional)
+                The new amount of pixels cropped off the top of the source before scaling.
+            *visible*
+                type: bool (optional)
+                The new visibility of the source. 'true' shows source, 'false' hides source.
+            *locked*
+                type: bool (optional)
+                The new locked status of the source. 'true' keeps it in its current position, 'false' allows movement.
+            *bounds*
+                type: String (optional)
+                The new bounds type of the source. Can be "OBS_BOUNDS_STRETCH", "OBS_BOUNDS_SCALE_INNER", "OBS_BOUNDS_SCALE_OUTER", "OBS_BOUNDS_SCALE_TO_WIDTH", "OBS_BOUNDS_SCALE_TO_HEIGHT", "OBS_BOUNDS_MAX_ONLY" or "OBS_BOUNDS_NONE".
     """
 
     name = 'SetSceneItemProperties'
@@ -4064,7 +4184,19 @@ Coordinates are relative to the item's parent (the scene or group it belongs to)
         self.dataout['locked'] = None
         self.dataout['bounds'] = None
 
-    def __call__(self, item, scene_name=None, position=None, rotation=None, scale=None, crop=None, visible=None, locked=None, bounds=None, cb=None):
+    def __call__(
+        self,
+        item,
+        scene_name=None,
+        position=None,
+        rotation=None,
+        scale=None,
+        crop=None,
+        visible=None,
+        locked=None,
+        bounds=None,
+        cb=None,
+    ):
         payload = {}
         payload['request-type'] = 'SetSceneItemProperties'
         payload['scene-name'] = scene_name
@@ -4079,7 +4211,17 @@ Coordinates are relative to the item's parent (the scene or group it belongs to)
         ObsSocket().send(payload, cb)
 
     @staticmethod
-    def payload(item, scene_name=None, position=None, rotation=None, scale=None, crop=None, visible=None, locked=None, bounds=None):
+    def payload(
+        item,
+        scene_name=None,
+        position=None,
+        rotation=None,
+        scale=None,
+        crop=None,
+        visible=None,
+        locked=None,
+        bounds=None,
+    ):
         payload = {}
         payload['request-type'] = 'SetSceneItemProperties'
         payload['scene-name'] = scene_name
@@ -4891,9 +5033,7 @@ class GetStreamingStatus(BaseRequest):
 
 
 class StartStopStreaming(BaseRequest):
-    """Toggle streaming on or off (depending on the current stream state).
-
-    """
+    """Toggle streaming on or off (depending on the current stream state)."""
 
     name = 'StartStopStreaming'
     category = 'streaming'
@@ -4916,12 +5056,12 @@ class StartStopStreaming(BaseRequest):
 
 class StartStreaming(BaseRequest):
     """Start streaming.
-Will return an `error` if streaming is already active.
+    Will return an `error` if streaming is already active.
 
-    :Arguments:
-        *stream*
-            type: Object (optional)
-            Special stream configuration. Note: these won't be saved to OBS' configuration.
+        :Arguments:
+            *stream*
+                type: Object (optional)
+                Special stream configuration. Note: these won't be saved to OBS' configuration.
     """
 
     name = 'StartStreaming'
@@ -4951,7 +5091,7 @@ Will return an `error` if streaming is already active.
 
 class StopStreaming(BaseRequest):
     """Stop streaming.
-Will return an `error` if streaming is not active.
+    Will return an `error` if streaming is not active.
 
     """
 
@@ -5057,9 +5197,7 @@ class GetStreamSettings(BaseRequest):
 
 
 class SaveStreamSettings(BaseRequest):
-    """Save the current streaming server settings to disk.
-
-    """
+    """Save the current streaming server settings to disk."""
 
     name = 'SaveStreamSettings'
     category = 'streaming'
@@ -5146,14 +5284,14 @@ class GetStudioModeStatus(BaseRequest):
 
 class GetPreviewScene(BaseRequest):
     """Get the name of the currently previewed scene and its list of sources.
-Will return an `error` if Studio Mode is not enabled.
+    Will return an `error` if Studio Mode is not enabled.
 
-    :Returns:
-        *name*
-            type: String
-            The name of the active preview scene.
-        *sources*
-            type: Array<SceneItem>
+        :Returns:
+            *name*
+                type: String
+                The name of the active preview scene.
+            *sources*
+                type: Array<SceneItem>
 
     """
 
@@ -5181,12 +5319,12 @@ Will return an `error` if Studio Mode is not enabled.
 
 class SetPreviewScene(BaseRequest):
     """Set the active preview scene.
-Will return an `error` if Studio Mode is not enabled.
+    Will return an `error` if Studio Mode is not enabled.
 
-    :Arguments:
-        *scene_name*
-            type: String
-            The name of the scene to preview.
+        :Arguments:
+            *scene_name*
+                type: String
+                The name of the scene to preview.
     """
 
     name = 'SetPreviewScene'
@@ -5216,12 +5354,12 @@ Will return an `error` if Studio Mode is not enabled.
 
 class TransitionToProgram(BaseRequest):
     """Transitions the currently previewed scene to the main output.
-Will return an `error` if Studio Mode is not enabled.
+    Will return an `error` if Studio Mode is not enabled.
 
-    :Arguments:
-        *with_transition*
-            type: Object (optional)
-            Change the active transition before switching scenes. Defaults to the active transition.
+        :Arguments:
+            *with_transition*
+                type: Object (optional)
+                Change the active transition before switching scenes. Defaults to the active transition.
     """
 
     name = 'TransitionToProgram'
@@ -5250,9 +5388,7 @@ Will return an `error` if Studio Mode is not enabled.
 
 
 class EnableStudioMode(BaseRequest):
-    """Enables Studio Mode.
-
-    """
+    """Enables Studio Mode."""
 
     name = 'EnableStudioMode'
     category = 'studio mode'
@@ -5274,9 +5410,7 @@ class EnableStudioMode(BaseRequest):
 
 
 class DisableStudioMode(BaseRequest):
-    """Disables Studio Mode.
-
-    """
+    """Disables Studio Mode."""
 
     name = 'DisableStudioMode'
     category = 'studio mode'
@@ -5298,9 +5432,7 @@ class DisableStudioMode(BaseRequest):
 
 
 class ToggleStudioMode(BaseRequest):
-    """Toggles Studio Mode (depending on the current state of studio mode).
-
-    """
+    """Toggles Studio Mode (depending on the current state of studio mode)."""
 
     name = 'ToggleStudioMode'
     category = 'studio mode'
@@ -5606,7 +5738,7 @@ class SetTransitionSettings(BaseRequest):
 
 class ReleaseTBar(BaseRequest):
     """Release the T-Bar (like a user releasing their mouse button after moving it).
-*YOU MUST CALL THIS if you called `SetTBarPosition` with the `release` parameter set to `false`.*
+    *YOU MUST CALL THIS if you called `SetTBarPosition` with the `release` parameter set to `false`.*
 
     """
 
@@ -5632,15 +5764,15 @@ class ReleaseTBar(BaseRequest):
 class SetTBarPosition(BaseRequest):
     """
 
-If your code needs to perform multiple successive T-Bar moves (e.g. : in an animation, or in response to a user moving a T-Bar control in your User Interface), set `release` to false and call `ReleaseTBar` later once the animation/interaction is over.
+    If your code needs to perform multiple successive T-Bar moves (e.g. : in an animation, or in response to a user moving a T-Bar control in your User Interface), set `release` to false and call `ReleaseTBar` later once the animation/interaction is over.
 
-    :Arguments:
-        *position*
-            type: double
-            T-Bar position. This value must be between 0.0 and 1.0.
-        *release*
-            type: boolean (optional)
-            Whether or not the T-Bar gets released automatically after setting its new position (like a user releasing their mouse button after moving the T-Bar). Call `ReleaseTBar` manually if you set `release` to false. Defaults to true.
+        :Arguments:
+            *position*
+                type: double
+                T-Bar position. This value must be between 0.0 and 1.0.
+            *release*
+                type: boolean (optional)
+                Whether or not the T-Bar gets released automatically after setting its new position (like a user releasing their mouse button after moving the T-Bar). Call `ReleaseTBar` manually if you set `release` to false. Defaults to true.
     """
 
     name = 'SetTBarPosition'
@@ -5707,9 +5839,7 @@ class GetVirtualCamStatus(BaseRequest):
 
 
 class StartStopVirtualCam(BaseRequest):
-    """Toggle virtual cam on or off (depending on the current virtual cam state).
-
-    """
+    """Toggle virtual cam on or off (depending on the current virtual cam state)."""
 
     name = 'StartStopVirtualCam'
     category = 'virtual cam'
@@ -5732,7 +5862,7 @@ class StartStopVirtualCam(BaseRequest):
 
 class StartVirtualCam(BaseRequest):
     """Start virtual cam.
-Will return an `error` if virtual cam is already active.
+    Will return an `error` if virtual cam is already active.
 
     """
 
@@ -5757,7 +5887,7 @@ Will return an `error` if virtual cam is already active.
 
 class StopVirtualCam(BaseRequest):
     """Stop virtual cam.
-Will return an `error` if virtual cam is not active.
+    Will return an `error` if virtual cam is not active.
 
     """
 
@@ -5778,8 +5908,6 @@ Will return an `error` if virtual cam is not active.
         payload = {}
         payload['request-type'] = 'StopVirtualCam'
         return payload
-
-
 
 
 requests = {

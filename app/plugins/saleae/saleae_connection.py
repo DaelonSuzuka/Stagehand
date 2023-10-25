@@ -13,5 +13,5 @@ class SaleaeConnection:
     def close(self):
         if self.manager is None:
             return
-        
+
         self.manager.close()

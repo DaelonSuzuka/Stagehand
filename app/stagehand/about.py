@@ -29,7 +29,7 @@ class AboutDialog(QDialog):
                 layout.add(QLabel('Designed for:'))
                 layout.add(QLabel('OBS Studio: 26.1.1'))
                 layout.add(QLabel('obs-websocket: 4.9.0'))
-                
+
             layout.add(QLabel(), 1)
             with layout.hbox() as layout:
                 layout.add(QLabel(), 1)

@@ -2,12 +2,7 @@ from qtstrap import *
 from stagehand.components import StagehandPage
 
 
-from NodeGraphQt import (
-    NodeGraph,
-    PropertiesBinWidget,
-    NodesTreeWidget,
-    NodesPaletteWidget
-)
+from NodeGraphQt import NodeGraph, PropertiesBinWidget, NodesTreeWidget, NodesPaletteWidget
 from .nodes import basic_nodes, custom_ports_node, group_node, widget_nodes
 
 
@@ -30,15 +25,17 @@ class NodeGraphPage(StagehandPage):
         graph.clear_selection()
         graph.fit_to_selection()
 
-        graph.register_nodes([
-            basic_nodes.BasicNodeA,
-            basic_nodes.BasicNodeB,
-            custom_ports_node.CustomPortsNode,
-            group_node.MyGroupNode,
-            widget_nodes.DropdownMenuNode,
-            widget_nodes.TextInputNode,
-            widget_nodes.CheckboxNode
-        ])
+        graph.register_nodes(
+            [
+                basic_nodes.BasicNodeA,
+                basic_nodes.BasicNodeB,
+                custom_ports_node.CustomPortsNode,
+                group_node.MyGroupNode,
+                widget_nodes.DropdownMenuNode,
+                widget_nodes.TextInputNode,
+                widget_nodes.CheckboxNode,
+            ]
+        )
 
         self.properties_bin = PropertiesBinWidget(node_graph=graph)
         self.properties_bin.setWindowFlags(Qt.Tool)
@@ -49,7 +46,7 @@ class NodeGraphPage(StagehandPage):
 
         # wire function to "node_double_clicked" signal.
         graph.node_double_clicked.connect(display_properties_bin)
-            
+
         self.nodes_tree = NodesTreeWidget(node_graph=graph)
         self.nodes_tree.set_category_label('nodeGraphQt.nodes', 'Builtin Nodes')
         self.nodes_tree.set_category_label('nodes.custom.ports', 'Custom Port Nodes')
@@ -63,7 +60,7 @@ class NodeGraphPage(StagehandPage):
         self.nodes_palette.set_category_label('nodes.widget', 'Widget Nodes')
         self.nodes_palette.set_category_label('nodes.basic', 'Basic Nodes')
         self.nodes_palette.set_category_label('nodes.group', 'Group Nodes')
-        
+
         if changed:
             self.changed.connect(changed)
 
@@ -96,9 +93,5 @@ class NodeGraphPage(StagehandPage):
         self.graph.fit_to_selection()
 
     def get_data(self) -> dict:
-        data = {
-            'page_type': self.page_type,
-            'name': self.label.text(),
-            'session': self.graph.serialize_session()
-        }
+        data = {'page_type': self.page_type, 'name': self.label.text(), 'session': self.graph.serialize_session()}
         return data

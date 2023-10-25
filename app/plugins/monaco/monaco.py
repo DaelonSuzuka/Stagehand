@@ -4,6 +4,7 @@ from monaco import MonacoWidget
 
 
 from qtpy.QtQuick import QQuickWindow, QSGRendererInterface
+
 QCoreApplication.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
 QQuickWindow.setGraphicsApi(QSGRendererInterface.OpenGLRhi)
 
@@ -11,7 +12,7 @@ QQuickWindow.setGraphicsApi(QSGRendererInterface.OpenGLRhi)
 class MonacoExample(StagehandPage):
     page_type = 'Monaco Notes'
     changed = Signal()
-    
+
     def __init__(self, name='', changed=None, data=None):
         super().__init__()
         self.name = name
@@ -26,7 +27,7 @@ class MonacoExample(StagehandPage):
         with CVBoxLayout(self) as layout:
             layout.add(self.label)
             layout.add(self.monaco, 1)
-        
+
     def get_name(self):
         return self.label.text()
 

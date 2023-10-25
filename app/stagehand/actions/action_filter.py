@@ -14,7 +14,7 @@ class SandboxFilterWidget(FilterStackItem):
         self.owner = owner
         self.filter = QLineEdit()
         self.filter.textChanged.connect(changed)
-        
+
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(self.filter)
 
@@ -26,9 +26,7 @@ class SandboxFilterWidget(FilterStackItem):
         self.filter.setText(data['filter'])
 
     def get_data(self) -> dict:
-        return {
-            'filter': self.filter.text()
-        }
+        return {'filter': self.filter.text()}
 
 
 class FilterStack(QWidget):
@@ -43,7 +41,7 @@ class FilterStack(QWidget):
         self.remove = QPushButton('X', clicked=self.on_remove)
 
         self.pls_delete = False
-        
+
         for name, filt in FilterStackItem.get_subclasses().items():
             self.type.addItem(name)
             self.stack.addWidget(filt(changed, owner=owner))
@@ -82,8 +80,8 @@ class FilterStack(QWidget):
 class ActionFilterDialog(QDialog):
     def __init__(self, filters, owner=None):
         super().__init__()
-        self.setWindowTitle("Filter Editor")
-        
+        self.setWindowTitle('Filter Editor')
+
         self.owner = owner
         self.filters = filters
 
@@ -127,7 +125,9 @@ class ActionFilter(QWidget):
         self.filters = []
 
         self.enabled = QAction('Filter Enabled', self, triggered=changed, checkable=True)
-        self.open_btn = QPushButton('0', clicked=self.open_editor, icon=qta.icon('mdi.filter-menu-outline'), parent=self)
+        self.open_btn = QPushButton(
+            '0', clicked=self.open_editor, icon=qta.icon('mdi.filter-menu-outline'), parent=self
+        )
         self.open_btn.setToolTip('Edit Filters')
 
         self.editor = ActionFilterDialog(self.filters, owner)

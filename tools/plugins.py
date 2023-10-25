@@ -38,7 +38,7 @@ def build():
 @main.command()
 def clean():
     plugins = [p for p in Path(PLUGIN_FOLDER).rglob('*.zip')]
-    
+
     for plugin in plugins:
         os.remove(plugin)
 

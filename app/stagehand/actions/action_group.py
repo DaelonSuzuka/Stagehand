@@ -11,13 +11,7 @@ class ActionWidgetGroup(QObject):
         self.name = name
         self.autosave = autosave
 
-        self.data = {
-            'actions': {},
-            'filter': {
-                'enabled': True,
-                'filters': []
-            }
-        }
+        self.data = {'actions': {}, 'filter': {'enabled': True, 'filters': []}}
 
         self.filter = ActionFilter(self.action_changed, owner=self)
         self.active = True
@@ -31,7 +25,7 @@ class ActionWidgetGroup(QObject):
 
     def register(self, action):
         self.actions.append(action)
-        
+
         action.changed.connect(self.on_action_change)
         action.action.this = self.this
 

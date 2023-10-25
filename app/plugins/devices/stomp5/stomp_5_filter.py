@@ -29,13 +29,20 @@ class Stomp5Filter(FilterStackItem):
         }
 
         # [f'{n} {d}' for n, d in zip(['1','2','3','4','5'], ['Up', 'Down'])]
-        self.signal.addItems([
-            '1 Down', '1 Up',
-            '2 Down', '2 Up',
-            '3 Down', '3 Up',
-            '4 Down', '4 Up',
-            '5 Down', '5 Up',
-        ])
+        self.signal.addItems(
+            [
+                '1 Down',
+                '1 Up',
+                '2 Down',
+                '2 Up',
+                '3 Down',
+                '3 Up',
+                '4 Down',
+                '4 Up',
+                '5 Down',
+                '5 Up',
+            ]
+        )
         self.signal.currentIndexChanged.connect(changed)
 
         with CHBoxLayout(self, margins=0) as layout:
@@ -76,7 +83,7 @@ class Stomp5Filter(FilterStackItem):
     def check(self) -> bool:
         button = self.signal.currentText()[0]
         state = self.state[button]
-        
+
         if self.signal.currentText()[2:] == 'Down':
             return state
         else:
@@ -88,7 +95,6 @@ class Stomp5Filter(FilterStackItem):
             self.device.addItem(device)
         self.device.setCurrentText(device)
         self.signal.setCurrentText(data.get('signal', ''))
-
 
     def get_data(self):
         return {

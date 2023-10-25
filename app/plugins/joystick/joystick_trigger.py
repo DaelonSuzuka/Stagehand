@@ -34,7 +34,7 @@ button_name_map = {
             (1, -1): 'D-Pad SE',
             (-1, 1): 'D-Pad NW',
             (-1, -1): 'D-Pad SW',
-        }
+        },
     }
 }
 

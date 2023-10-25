@@ -19,10 +19,10 @@ class Action(QWidget):
         self._changed = changed
         self.data = None
         self.this = None
-        
+
         for action in ActionItem.__subclasses__():
             self.type.addItem(action.name)
-        
+
         self.type.currentIndexChanged.connect(changed)
         self.type.currentIndexChanged.connect(self.type_changed)
 
@@ -30,7 +30,7 @@ class Action(QWidget):
 
         with CHBoxLayout(self, margins=0) as layout:
             with layout.vbox(align='top'):
-                layout.add(QLabel("Action:", minimumWidth=60))
+                layout.add(QLabel('Action:', minimumWidth=60))
             with layout.vbox(align='top'):
                 layout.add(self.type)
             layout.add(self.action_box, 1)
@@ -99,19 +99,9 @@ class ActionWidget(QWidget):
         return {
             'name': 'Action',
             'enabled': True,
-            'action': {
-                'type': 'sandbox',
-                'action': ''
-            },
-            'trigger': {
-                'enabled': True,
-                'trigger_type': 'keyboard',
-                'trigger': ''
-            },
-            'filter': {
-                'enabled': True,
-                'filters': []
-            }
+            'action': {'type': 'sandbox', 'action': ''},
+            'trigger': {'enabled': True, 'trigger_type': 'keyboard', 'trigger': ''},
+            'filter': {'enabled': True, 'filters': []},
         }
 
     def __init__(self, name='', group=None, trigger=False, data=None, changed=None, parent=None):
@@ -185,7 +175,7 @@ class ActionWidget(QWidget):
         self.action.set_data(data)
         self.trigger.set_data(data)
         self.filter.set_data(data)
-        call_later(self.on_change, 50) #TODO: this is a hack, find a real solution
+        call_later(self.on_change, 50)  # TODO: this is a hack, find a real solution
 
     def on_change(self):
         self.filter.setVisible(self.filter.enabled.isChecked())
@@ -267,19 +257,9 @@ class CompactActionWidget(ActionWidget):
         return {
             'name': 'Action',
             'enabled': True,
-            'action': {
-                'type': 'sandbox',
-                'action': ''
-            },
-            'trigger': {
-                'enabled': False,
-                'trigger_type': 'sandbox',
-                'trigger': ''
-            },
-            'filter': {
-                'enabled': False,
-                'filters': []
-            }
+            'action': {'type': 'sandbox', 'action': ''},
+            'trigger': {'enabled': False, 'trigger_type': 'sandbox', 'trigger': ''},
+            'filter': {'enabled': False, 'filters': []},
         }
 
     def do_layout(self):
@@ -290,7 +270,7 @@ class CompactActionWidget(ActionWidget):
             # layout.add(self.filter)
             layout.add(self.action, 2)
             layout.add(self.run_btn)
-        
+
     def contextMenuEvent(self, event: QContextMenuEvent) -> None:
         menu = QMenu()
         menu.addAction('Run').triggered.connect(self.run)

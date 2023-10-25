@@ -16,11 +16,11 @@ class ActionEditorDialog(QDialog):
         size: int = QSettings().value('font_size', 12)
         set_font_options(self, {'setPointSize': int(size)})
 
-        geometry = QSettings().value("script_editor/geometry")
+        geometry = QSettings().value('script_editor/geometry')
         if isinstance(geometry, QByteArray):
             self.restoreGeometry(geometry)
 
-        self.finished.connect(lambda _: QSettings().setValue("script_editor/geometry", self.saveGeometry()))
+        self.finished.connect(lambda _: QSettings().setValue('script_editor/geometry', self.saveGeometry()))
 
         self.name = owner.name
         self.label = QLineEdit(owner.label.text())

@@ -9,7 +9,7 @@ from pathlib import Path
 import json
 
 
-import_url = "https://raw.githubusercontent.com/obsproject/obs-websocket/4.x-compat/docs/generated/comments.json"  # noqa: E501
+import_url = 'https://raw.githubusercontent.com/obsproject/obs-websocket/4.x-compat/docs/generated/comments.json'  # noqa: E501
 
 
 def clean_var(string):
@@ -52,7 +52,7 @@ class Writer:
 
     def __call__(self, string=''):
         self.out(' ' * self.indent * self.level + string)
-    
+
     def __enter__(self):
         self.level += 1
         return self
@@ -60,22 +60,23 @@ class Writer:
     def __exit__(self, *_):
         self.level -= 1
 
+
 sections = [
-    'subheads', 
-    'description', 
-    'return', 
-    'api', 
-    'name', 
-    'category', 
-    'since', 
-    'returns', 
-    'names', 
-    'categories', 
-    'sinces', 
-    'heading', 
-    'lead', 
-    'type', 
-    'examples'
+    'subheads',
+    'description',
+    'return',
+    'api',
+    'name',
+    'category',
+    'since',
+    'returns',
+    'names',
+    'categories',
+    'sinces',
+    'heading',
+    'lead',
+    'type',
+    'examples',
 ]
 
 
@@ -85,21 +86,24 @@ def collect_fields(data):
     try:
         if len(data['params']) > 0:
             for a in data['params']:
-                a['name'] = a['name'].replace("[]", ".*")
-                name = a['name'].split(".")[0]
+                a['name'] = a['name'].replace('[]', '.*')
+                name = a['name'].split('.')[0]
                 if name not in known_fields:
                     known_fields.append(name)
-                    fields.append({
-                        'original_name': name,
-                        'name': clean_var(name),
-                        'type': a['type'],
-                        'description': a['description'],
-                        'optional': 'optional' in a['type'],
-                    })
+                    fields.append(
+                        {
+                            'original_name': name,
+                            'name': clean_var(name),
+                            'type': a['type'],
+                            'description': a['description'],
+                            'optional': 'optional' in a['type'],
+                        }
+                    )
     except KeyError:
         pass
 
     return fields
+
 
 def collect_returns(data):
     returns = []
@@ -107,16 +111,18 @@ def collect_returns(data):
     try:
         if len(data['returns']) > 0:
             for r in data['returns']:
-                r['name'] = r['name'].replace("[]", ".*")
-                name = r['name'].split(".")[0]
+                r['name'] = r['name'].replace('[]', '.*')
+                name = r['name'].split('.')[0]
                 if name not in known_returns:
                     known_returns.append(name)
-                    returns.append({
+                    returns.append(
+                        {
                             'name': name,
                             'clean_name': clean_var(name),
                             'type': r['type'],
-                            'description': r['description']
-                        })
+                            'description': r['description'],
+                        }
+                    )
     except KeyError:
         pass
 
@@ -131,13 +137,13 @@ def build_request(w, i, event):
     fields = collect_fields(i)
     returns = collect_returns(i)
 
-    # 
-    w += f"class {name}({classname[event]}):"
+    #
+    w += f'class {name}({classname[event]}):'
     with w:
         w += f'"""{description}'
         w += ''
         if fields:
-            w += ":Arguments:"
+            w += ':Arguments:'
         for field in fields:
             with w:
                 w += f"*{clean_var(field['name'])}*"
@@ -146,7 +152,7 @@ def build_request(w, i, event):
                     w += f"{field['description']}"
 
         if returns:
-            w += ":Returns:"
+            w += ':Returns:'
         for ret in returns:
             with w:
                 w += f"*{clean_var(ret['name'])}*"
@@ -161,28 +167,28 @@ def build_request(w, i, event):
         w += f"name = '{name}'"
         w += f"category = '{i['category']}'"
         if fields:
-            w += "fields = ["
+            w += 'fields = ['
             for field in fields:
                 with w:
                     w += f"'{field['name']}',"
-            w += "]"
+            w += ']'
         else:
-            w += "fields = []"
+            w += 'fields = []'
         w += ''
 
         # init method
-        w += "def __init__(self):"
+        w += 'def __init__(self):'
         with w:
-            w += "super().__init__()"
+            w += 'super().__init__()'
             # datain
             if returns:
-                w += "self.datain = {}"
+                w += 'self.datain = {}'
             for r in returns:
                 w += f"self.datain['{r['name']}'] = None"
 
             # dataout
             if fields:
-                w += "self.dataout = {}"
+                w += 'self.dataout = {}'
             for a in fields:
                 if not a['optional']:
                     w += f"self.dataout['{a['name']}'] = {None}"
@@ -192,36 +198,36 @@ def build_request(w, i, event):
             w += ''
 
         # send the request by calling
-        w += "def __call__({}):".format(
-            ", ".join(
+        w += 'def __call__({}):'.format(
+            ', '.join(
                 ['self']
                 + [clean_var(a['name']) for a in fields if not a['optional']]
-                + [clean_var(a['name']) + "=None" for a in fields if a['optional']]
+                + [clean_var(a['name']) + '=None' for a in fields if a['optional']]
                 + ['cb=None']
             )
         )
         with w:
-            w += "payload = {}"
+            w += 'payload = {}'
             w += f"payload['request-type'] = '{i['name']}'"
             for field in fields:
                 w += f"payload['{field['original_name']}'] = {field['name']}"
-            w += "ObsSocket().send(payload, cb)"
+            w += 'ObsSocket().send(payload, cb)'
             w += ''
 
         # build payload
-        w += "@staticmethod"
-        w += "def payload({}):".format(
-            ", ".join(
+        w += '@staticmethod'
+        w += 'def payload({}):'.format(
+            ', '.join(
                 [clean_var(a['name']) for a in fields if not a['optional']]
-                + [clean_var(a['name']) + "=None" for a in fields if a['optional']]
+                + [clean_var(a['name']) + '=None' for a in fields if a['optional']]
             )
         )
         with w:
-            w += "payload = {}"
+            w += 'payload = {}'
             w += f"payload['request-type'] = '{i['name']}'"
             for field in fields:
                 w += f"payload['{field['original_name']}'] = {field['name']}"
-            w += "return payload"
+            w += 'return payload'
             w += ''
         w += ''
 
@@ -234,20 +240,21 @@ def build_request_widget(w, i, event):
     fields = collect_fields(i)
     returns = collect_returns(i)
 
-    # 
-    w += f"class {name}Widget(QWidget):"
+    #
+    w += f'class {name}Widget(QWidget):'
     with w:
+
         def field_widget(field):
             line = f"UnimplementedField('[{field['name']}: {field['type']}]')"
 
             if field['name'] in ['sourceName', 'source']:
-                line = f"SourceSelector(changed, parent=self)"
+                line = f'SourceSelector(changed, parent=self)'
             elif field['name'] in ['sceneName', 'scene_name']:
-                line = f"SceneSelector(changed, parent=self)"
+                line = f'SceneSelector(changed, parent=self)'
             elif field['name'] == 'filterName':
-                line = f"FilterSelector(changed, self.sourceName, parent=self)"
+                line = f'FilterSelector(changed, self.sourceName, parent=self)'
             elif field['type'] == 'boolean' or 'Bool' in field['name'] or 'Enabled' in field['name']:
-                line = f"BoolSelector(changed, parent=self)"
+                line = f'BoolSelector(changed, parent=self)'
             elif 'String' in field['type']:
                 line = f"StringSelector(changed, parent=self, placeholder='{field['name']}')"
             elif 'int' in field['type']:
@@ -261,14 +268,14 @@ def build_request_widget(w, i, event):
 
             return line
 
-        w += "def __init__(self, changed=None, parent=None):"
+        w += 'def __init__(self, changed=None, parent=None):'
         with w:
-            w += "super().__init__(parent=parent)"
-            w += "self.changed = changed"
+            w += 'super().__init__(parent=parent)'
+            w += 'self.changed = changed'
             for field in fields:
                 w += f"self.{field['name']} = {field_widget(field)}"
             w += ''
-            w += "with CHBoxLayout(self, margins=0) as layout:"
+            w += 'with CHBoxLayout(self, margins=0) as layout:'
             with w:
                 if fields:
                     for field in fields:
@@ -277,39 +284,39 @@ def build_request_widget(w, i, event):
                     w += "layout.add(QLabel('[ request has no fields ]'))"
         w += ''
 
-        w += "def payload(self):"
+        w += 'def payload(self):'
         with w:
-            w += "payload = {}"
+            w += 'payload = {}'
             w += f"payload['request-type'] = '{i['name']}'"
             for field in fields:
                 w += f"payload['{field['original_name']}'] = self.{field['name']}.get_data()"
-            w += "return payload"
+            w += 'return payload'
         w += ''
 
-        w += "def refresh(self):"
+        w += 'def refresh(self):'
         with w:
             for field in fields:
                 w += f"self.{field['name']}.refresh()"
-            w += "return"
+            w += 'return'
         w += ''
-        
-        w += "def set_data(self, data):"
+
+        w += 'def set_data(self, data):'
         with w:
-            w += "self._data = data"
+            w += 'self._data = data'
             for field in fields:
                 w += f"self.{field['name']}.set_data(data['{field['name']}']) "
         w += ''
 
-        w += "def get_data(self):"
+        w += 'def get_data(self):'
         with w:
-            w += "return {"
+            w += 'return {'
             with w:
                 for field in fields:
                     w += f"'{field['name']}': self.{field['name']}.get_data(),"
-            w += "}"
+            w += '}'
         w += ''
 
-        
+
 def build_event(w, i, event):
     # gather class info
     name = i['name']
@@ -318,13 +325,13 @@ def build_event(w, i, event):
     fields = collect_fields(i)
     returns = collect_returns(i)
 
-    # 
-    w += f"class {name}({classname[event]}):"
+    #
+    w += f'class {name}({classname[event]}):'
     with w:
         w += f'"""{description}'
         w += ''
         if fields:
-            w += ":Arguments:"
+            w += ':Arguments:'
         for field in fields:
             with w:
                 w += f"*{clean_var(field['name'])}*"
@@ -333,7 +340,7 @@ def build_event(w, i, event):
                     w += f"{field['description']}"
 
         if returns:
-            w += ":Returns:"
+            w += ':Returns:'
         for ret in returns:
             with w:
                 w += f"*{clean_var(ret['name'])}*"
@@ -348,8 +355,8 @@ def build_event(w, i, event):
         w += f"name = '{name}'"
         w += f"category = '{i['category']}'"
 
-        w += '' # init method
-        w += "def __init__(self, payload=None):"
+        w += ''  # init method
+        w += 'def __init__(self, payload=None):'
         # w += "def __init__({}):".format(
         #     ", ".join(
         #         ["self"]
@@ -358,8 +365,8 @@ def build_event(w, i, event):
         #     )
         # )
         with w:
-            w += "super().__init__()"
-            
+            w += 'super().__init__()'
+
             # if returns:
             #     w += "self.datain = {}"
             # for r in returns:
@@ -367,6 +374,7 @@ def build_event(w, i, event):
 
         w += ''
         w += ''
+
 
 def build_event_widget(w, i, event):
     # gather class info
@@ -376,19 +384,20 @@ def build_event_widget(w, i, event):
     fields = collect_fields(i)
     returns = collect_returns(i)
 
-    w += f"class {name}Widget(QWidget):"
+    w += f'class {name}Widget(QWidget):'
     with w:
+
         def field_widget(field):
             line = "UnimplementedField('[field not implemented]')"
 
             if field['name'] in ['sourceName', 'source']:
-                line = f"SourceSelector(changed, parent=self)"
+                line = f'SourceSelector(changed, parent=self)'
             elif field['name'] in ['sceneName', 'scene_name']:
-                line = f"SceneSelector(changed, parent=self)"
+                line = f'SceneSelector(changed, parent=self)'
             elif field['name'] == 'filterName':
-                line = f"FilterSelector(changed, self.sourceName, parent=self)"
+                line = f'FilterSelector(changed, self.sourceName, parent=self)'
             elif field['type'] == 'boolean' or 'Bool' in field['name'] or 'Enabled' in field['name']:
-                line = f"BoolSelector(changed, parent=self)"
+                line = f'BoolSelector(changed, parent=self)'
             elif 'String' in field['type']:
                 line = f"StringSelector(changed, parent=self, placeholder='{field['name']}')"
             elif 'int' in field['type']:
@@ -402,14 +411,14 @@ def build_event_widget(w, i, event):
 
             return line
 
-        w += "def __init__(self, changed=None, parent=None):"
+        w += 'def __init__(self, changed=None, parent=None):'
         with w:
-            w += "super().__init__(parent=parent)"
-            w += "self.changed = changed"
+            w += 'super().__init__(parent=parent)'
+            w += 'self.changed = changed'
             # for field in returns:
             #     w += f"self.{field['clean_name']} = {field_widget(field)}"
             w += ''
-            w += "with CHBoxLayout(self, margins=0) as layout:"
+            w += 'with CHBoxLayout(self, margins=0) as layout:'
             with w:
                 w += 'pass'
             #     if returns:
@@ -419,54 +428,55 @@ def build_event_widget(w, i, event):
             #         w += "layout.add(QLabel('[ request has no fields ]'))"
         w += ''
 
-        w += "def validate_event(self, event):"
+        w += 'def validate_event(self, event):'
         with w:
             w += f"if event['update-type'] != '{name}':"
             with w:
-                w += "return False"
+                w += 'return False'
             # for field in returns:
             #     w += f"self.{field['name']}.refresh()"
-            w += "return True"
+            w += 'return True'
         w += ''
 
-        w += "def refresh(self):"
+        w += 'def refresh(self):'
         with w:
             # for field in returns:
             #     w += f"self.{field['name']}.refresh()"
-            w += "return"
+            w += 'return'
         w += ''
-        
-        w += "def set_data(self, data):"
+
+        w += 'def set_data(self, data):'
         with w:
-            w += "self._data = data"
+            w += 'self._data = data'
             # for field in returns:
             #     w += f"self.{field['name']}.set_data(data['{field['name']}']) "
         w += ''
 
-        w += "def get_data(self):"
+        w += 'def get_data(self):'
         with w:
-            w += "return {"
+            w += 'return {'
             # with w:
             #     for field in returns:
             #         w += f"'{field['name']}': self.{field['name']}.get_data(),"
-            w += "}"
+            w += '}'
         w += ''
+
 
 def generate_classes():
     """Generates the necessary classes."""
-    print("Downloading {} for last API version.".format(import_url))
+    print('Downloading {} for last API version.'.format(import_url))
     data = json.loads(urlopen(import_url).read().decode('utf-8'), object_pairs_hook=OrderedDict)
-    print("Download OK. Generating python files...")
+    print('Download OK. Generating python files...')
 
     event = 'requests'
 
     if event not in data:
-        raise Exception("Missing {} in data.".format(event))
+        raise Exception('Missing {} in data.'.format(event))
 
     with open(Path(__file__).parent / 'requests.py', 'w') as f:
         w = Writer(f.write)
 
-        w += "from ..obs_socket import ObsSocket"
+        w += 'from ..obs_socket import ObsSocket'
         w += ''
         w += ''
 
@@ -486,18 +496,18 @@ def generate_classes():
 
         w += ''
         w += ''
-        w += "requests = {"
+        w += 'requests = {'
         with w:
             for c in classes:
                 w += f"'{c}': {c}(),"
-        w += "}"
+        w += '}'
 
     event = 'requests'
     with open(Path(__file__).parent / 'request_widgets.py', 'w') as f:
         w = Writer(f.write)
 
-        w += "from qtstrap import *"
-        w += "from .base_classes import *"
+        w += 'from qtstrap import *'
+        w += 'from .base_classes import *'
         w += ''
         w += ''
 
@@ -509,11 +519,11 @@ def generate_classes():
                 w += ''
 
         w += ''
-        w += "request_widgets = {"
+        w += 'request_widgets = {'
         with w:
             for c in classes:
                 w += f"'{c}': {c}Widget,"
-        w += "}"
+        w += '}'
 
     event = 'events'
     with open(Path(__file__).parent / 'events.py', 'w') as f:
@@ -521,7 +531,7 @@ def generate_classes():
 
         w += ''
         w += ''
-        
+
         w += f'class {classname[event]}:'
         with w:
             w += 'def __init__(self):'
@@ -538,18 +548,18 @@ def generate_classes():
 
         w += ''
         w += ''
-        w += "events = {"
+        w += 'events = {'
         with w:
             for c in classes:
                 w += f"'{c}': {c}(),"
-        w += "}"
+        w += '}'
 
     event = 'events'
     with open(Path(__file__).parent / 'event_widgets.py', 'w') as f:
         w = Writer(f.write)
 
-        w += "from qtstrap import *"
-        w += "from .base_classes import *"
+        w += 'from qtstrap import *'
+        w += 'from .base_classes import *'
         w += ''
         w += ''
 
@@ -561,13 +571,13 @@ def generate_classes():
                 w += ''
 
         w += ''
-        w += "event_widgets = {"
+        w += 'event_widgets = {'
         with w:
             for c in classes:
                 w += f"'{c}': {c}Widget,"
-        w += "}"
+        w += '}'
 
-    print("API classes have been generated.")
+    print('API classes have been generated.')
 
 
 if __name__ == '__main__':

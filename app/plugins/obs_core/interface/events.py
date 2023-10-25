@@ -1,5 +1,3 @@
-
-
 class BaseEvent:
     def __init__(self):
         pass
@@ -27,12 +25,12 @@ class SwitchScenes(BaseEvent):
 class ScenesChanged(BaseEvent):
     """
 
-Note: This event is not fired when the scenes are reordered.
+    Note: This event is not fired when the scenes are reordered.
 
-    :Returns:
-        *scenes*
-            type: Array<Scene>
-            Scenes list.
+        :Returns:
+            *scenes*
+                type: Array<Scene>
+                Scenes list.
     """
 
     name = 'ScenesChanged'
@@ -92,12 +90,12 @@ class SwitchTransition(BaseEvent):
 
 class TransitionListChanged(BaseEvent):
     """The list of available transitions has been modified.
-Transitions have been added, removed, or renamed.
+    Transitions have been added, removed, or renamed.
 
-    :Returns:
-        *transitions*
-            type: Array<Object>
-            Transitions list.
+        :Returns:
+            *transitions*
+                type: Array<Object>
+                Transitions list.
     """
 
     name = 'TransitionListChanged'
@@ -153,21 +151,21 @@ class TransitionBegin(BaseEvent):
 
 class TransitionEnd(BaseEvent):
     """A transition (other than "cut") has ended.
-Note: The `from-scene` field is not available in TransitionEnd.
+    Note: The `from-scene` field is not available in TransitionEnd.
 
-    :Returns:
-        *name*
-            type: String
-            Transition name.
-        *type*
-            type: String
-            Transition type.
-        *duration*
-            type: int
-            Transition duration (in milliseconds).
-        *to_scene*
-            type: String
-            Destination scene of the transition
+        :Returns:
+            *name*
+                type: String
+                Transition name.
+            *type*
+                type: String
+                Transition type.
+            *duration*
+                type: int
+                Transition duration (in milliseconds).
+            *to_scene*
+                type: String
+                Destination scene of the transition
     """
 
     name = 'TransitionEnd'
@@ -254,9 +252,7 @@ class StreamStarting(BaseEvent):
 
 
 class StreamStarted(BaseEvent):
-    """Streaming started successfully.
-
-    """
+    """Streaming started successfully."""
 
     name = 'StreamStarted'
     category = 'streaming'
@@ -282,9 +278,7 @@ class StreamStopping(BaseEvent):
 
 
 class StreamStopped(BaseEvent):
-    """Streaming stopped successfully.
-
-    """
+    """Streaming stopped successfully."""
 
     name = 'StreamStopped'
     category = 'streaming'
@@ -366,8 +360,8 @@ class StreamStatus(BaseEvent):
 class RecordingStarting(BaseEvent):
     """
 
-Note: `recordingFilename` is not provided in this event because this information
-is not available at the time this event is emitted.
+    Note: `recordingFilename` is not provided in this event because this information
+    is not available at the time this event is emitted.
 
     """
 
@@ -427,9 +421,7 @@ class RecordingStopped(BaseEvent):
 
 
 class RecordingPaused(BaseEvent):
-    """Current recording paused
-
-    """
+    """Current recording paused"""
 
     name = 'RecordingPaused'
     category = 'recording'
@@ -439,9 +431,7 @@ class RecordingPaused(BaseEvent):
 
 
 class RecordingResumed(BaseEvent):
-    """Current recording resumed
-
-    """
+    """Current recording resumed"""
 
     name = 'RecordingResumed'
     category = 'recording'
@@ -451,9 +441,7 @@ class RecordingResumed(BaseEvent):
 
 
 class VirtualCamStarted(BaseEvent):
-    """Virtual cam started successfully.
-
-    """
+    """Virtual cam started successfully."""
 
     name = 'VirtualCamStarted'
     category = 'virtual cam'
@@ -463,9 +451,7 @@ class VirtualCamStarted(BaseEvent):
 
 
 class VirtualCamStopped(BaseEvent):
-    """Virtual cam stopped successfully.
-
-    """
+    """Virtual cam stopped successfully."""
 
     name = 'VirtualCamStopped'
     category = 'virtual cam'
@@ -475,9 +461,7 @@ class VirtualCamStopped(BaseEvent):
 
 
 class ReplayStarting(BaseEvent):
-    """A request to start the replay buffer has been issued.
-
-    """
+    """A request to start the replay buffer has been issued."""
 
     name = 'ReplayStarting'
     category = 'replay buffer'
@@ -487,9 +471,7 @@ class ReplayStarting(BaseEvent):
 
 
 class ReplayStarted(BaseEvent):
-    """Replay Buffer started successfully
-
-    """
+    """Replay Buffer started successfully"""
 
     name = 'ReplayStarted'
     category = 'replay buffer'
@@ -499,9 +481,7 @@ class ReplayStarted(BaseEvent):
 
 
 class ReplayStopping(BaseEvent):
-    """A request to stop the replay buffer has been issued.
-
-    """
+    """A request to stop the replay buffer has been issued."""
 
     name = 'ReplayStopping'
     category = 'replay buffer'
@@ -511,9 +491,7 @@ class ReplayStopping(BaseEvent):
 
 
 class ReplayStopped(BaseEvent):
-    """Replay Buffer stopped successfully
-
-    """
+    """Replay Buffer stopped successfully"""
 
     name = 'ReplayStopped'
     category = 'replay buffer'
@@ -523,9 +501,7 @@ class ReplayStopped(BaseEvent):
 
 
 class Exiting(BaseEvent):
-    """OBS is exiting.
-
-    """
+    """OBS is exiting."""
 
     name = 'Exiting'
     category = 'other'
@@ -876,15 +852,15 @@ class SourceFiltersReordered(BaseEvent):
 class MediaPlaying(BaseEvent):
     """
 
-Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
+    Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
 
-    :Returns:
-        *sourceName*
-            type: String
-            Source name
-        *sourceKind*
-            type: String
-            The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
+        :Returns:
+            *sourceName*
+                type: String
+                Source name
+            *sourceKind*
+                type: String
+                The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
     """
 
     name = 'MediaPlaying'
@@ -897,15 +873,15 @@ Note: This event is only emitted when something actively controls the media/VLC 
 class MediaPaused(BaseEvent):
     """
 
-Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
+    Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
 
-    :Returns:
-        *sourceName*
-            type: String
-            Source name
-        *sourceKind*
-            type: String
-            The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
+        :Returns:
+            *sourceName*
+                type: String
+                Source name
+            *sourceKind*
+                type: String
+                The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
     """
 
     name = 'MediaPaused'
@@ -918,15 +894,15 @@ Note: This event is only emitted when something actively controls the media/VLC 
 class MediaRestarted(BaseEvent):
     """
 
-Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
+    Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
 
-    :Returns:
-        *sourceName*
-            type: String
-            Source name
-        *sourceKind*
-            type: String
-            The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
+        :Returns:
+            *sourceName*
+                type: String
+                Source name
+            *sourceKind*
+                type: String
+                The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
     """
 
     name = 'MediaRestarted'
@@ -939,15 +915,15 @@ Note: This event is only emitted when something actively controls the media/VLC 
 class MediaStopped(BaseEvent):
     """
 
-Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
+    Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
 
-    :Returns:
-        *sourceName*
-            type: String
-            Source name
-        *sourceKind*
-            type: String
-            The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
+        :Returns:
+            *sourceName*
+                type: String
+                Source name
+            *sourceKind*
+                type: String
+                The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
     """
 
     name = 'MediaStopped'
@@ -960,15 +936,15 @@ Note: This event is only emitted when something actively controls the media/VLC 
 class MediaNext(BaseEvent):
     """
 
-Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
+    Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
 
-    :Returns:
-        *sourceName*
-            type: String
-            Source name
-        *sourceKind*
-            type: String
-            The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
+        :Returns:
+            *sourceName*
+                type: String
+                Source name
+            *sourceKind*
+                type: String
+                The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
     """
 
     name = 'MediaNext'
@@ -981,15 +957,15 @@ Note: This event is only emitted when something actively controls the media/VLC 
 class MediaPrevious(BaseEvent):
     """
 
-Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
+    Note: This event is only emitted when something actively controls the media/VLC source. In other words, the source will never emit this on its own naturally.
 
-    :Returns:
-        *sourceName*
-            type: String
-            Source name
-        *sourceKind*
-            type: String
-            The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
+        :Returns:
+            *sourceName*
+                type: String
+                Source name
+            *sourceKind*
+                type: String
+                The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
     """
 
     name = 'MediaPrevious'
@@ -1002,15 +978,15 @@ Note: This event is only emitted when something actively controls the media/VLC 
 class MediaStarted(BaseEvent):
     """
 
-Note: These events are emitted by the OBS sources themselves. For example when the media file starts playing. The behavior depends on the type of media source being used.
+    Note: These events are emitted by the OBS sources themselves. For example when the media file starts playing. The behavior depends on the type of media source being used.
 
-    :Returns:
-        *sourceName*
-            type: String
-            Source name
-        *sourceKind*
-            type: String
-            The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
+        :Returns:
+            *sourceName*
+                type: String
+                Source name
+            *sourceKind*
+                type: String
+                The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
     """
 
     name = 'MediaStarted'
@@ -1023,15 +999,15 @@ Note: These events are emitted by the OBS sources themselves. For example when t
 class MediaEnded(BaseEvent):
     """
 
-Note: These events are emitted by the OBS sources themselves. For example when the media file ends. The behavior depends on the type of media source being used.
+    Note: These events are emitted by the OBS sources themselves. For example when the media file ends. The behavior depends on the type of media source being used.
 
-    :Returns:
-        *sourceName*
-            type: String
-            Source name
-        *sourceKind*
-            type: String
-            The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
+        :Returns:
+            *sourceName*
+                type: String
+                Source name
+            *sourceKind*
+                type: String
+                The ID type of the source (Eg. `vlc_source` or `ffmpeg_source`)
     """
 
     name = 'MediaEnded'
@@ -1256,8 +1232,6 @@ class StudioModeSwitched(BaseEvent):
 
     def __init__(self, payload=None):
         super().__init__()
-
-
 
 
 events = {

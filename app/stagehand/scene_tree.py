@@ -28,25 +28,25 @@ class SceneTreeDelegate(QStyledItemDelegate):
             painter.fillRect(QRect(bg_rect), brush)
         if option.state & QStyle.State_Selected:
             if option.state & QStyle.State_Active:
-                brush = QBrush(QColor('#cde8ff'))  
+                brush = QBrush(QColor('#cde8ff'))
             elif option.state & QStyle.State_MouseOver:
                 brush = QBrush(QColor('#cde8ff'))
             else:
                 brush = QBrush(QColor('#d9d9d9'))
             painter.fillRect(QRect(bg_rect), brush)
-            
+
             if option.state & QStyle.State_MouseOver:
                 painter.setPen(QColor('#99d1ff'))
                 r = QRect(bg_rect)
                 painter.drawLine(r.topLeft(), r.topRight())
                 painter.drawLine(r.bottomLeft(), r.bottomRight())
                 painter.drawLine(r.topLeft(), r.bottomLeft())
-    
+
         painter.save()
 
         parts = text.split('<')
         parts[1] = '<' + parts[1]
-        
+
         rect = QRect(option.rect)
 
         if parts[0]:
@@ -68,7 +68,7 @@ class SceneTreeWidgetItem(QTreeWidgetItem):
         self.obj = node.obj
 
         obj = node.obj
-        
+
         name = obj.objectName()
         klass = type(obj).__name__
 
@@ -117,7 +117,7 @@ class TreeNode(QObject):
     def eventFilter(self, watched, event) -> bool:
         if not isValid(self.item):
             return False
-        
+
         if event.type() in (QEvent.Show, QEvent.Hide):
             self.item.update_visibility_icon()
 
@@ -154,7 +154,7 @@ class SceneTree(QTreeWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
-        
+
         self.setItemDelegate(SceneTreeDelegate())
         self.setColumnCount(2)
         self.header().hide()
@@ -193,7 +193,7 @@ class SceneTree(QTreeWidget):
                 menu.addAction('Show').triggered.connect(item.toggle_visibility)
 
         menu.addAction('Show').triggered.connect(item.toggle_visibility)
-        
+
         menu.exec_(pos)
 
     def scan(self, obj):
@@ -206,7 +206,7 @@ class SceneTree(QTreeWidget):
 class Inspector(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
-        
+
         self.obj_name = QLabel()
         self.obj_type = QLabel()
 
@@ -244,6 +244,6 @@ class SceneTreeDockWidget(StagehandDockWidget):
         # call_later(lambda: self.tree.scan(self.parent()), 2000)
 
         with PersistentCSplitter('scene_tree_splitter', self._widget) as splitter:
-        # with CHBoxLayout(self._widget, margins=2) as layout:
+            # with CHBoxLayout(self._widget, margins=2) as layout:
             splitter.add(self.tree)
             splitter.add(self.inspector)
