@@ -13,7 +13,7 @@ class BasicNodeA(BaseNode):
     NODE_NAME = 'node A'
 
     def __init__(self):
-        super(BasicNodeA, self).__init__()
+        super().__init__()
 
         # create node inputs.
         self.add_input('in A')
@@ -37,7 +37,7 @@ class BasicNodeB(BaseNode):
     NODE_NAME = 'node B'
 
     def __init__(self):
-        super(BasicNodeB, self).__init__()
+        super().__init__()
 
         # create node inputs
         self.add_input('single 1')

@@ -13,7 +13,7 @@ class MyGroupNode(GroupNode):
     NODE_NAME = 'group node'
 
     def __init__(self):
-        super(MyGroupNode, self).__init__()
+        super().__init__()
         self.set_color(50, 8, 25)
 
         # create input and output port.

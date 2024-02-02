@@ -111,7 +111,7 @@ class CustomPortsNode(BaseNode):
     NODE_NAME = 'node'
 
     def __init__(self):
-        super(CustomPortsNode, self).__init__()
+        super().__init__()
 
         # create input and output port.
         self.add_input('in', color=(200, 10, 0))

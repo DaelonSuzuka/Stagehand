@@ -13,7 +13,7 @@ class DropdownMenuNode(BaseNode):
     NODE_NAME = 'menu'
 
     def __init__(self):
-        super(DropdownMenuNode, self).__init__()
+        super().__init__()
 
         # create input & output ports
         self.add_input('in 1')
@@ -37,7 +37,7 @@ class TextInputNode(BaseNode):
     NODE_NAME = 'text'
 
     def __init__(self):
-        super(TextInputNode, self).__init__()
+        super().__init__()
 
         # create input & output ports
         self.add_input('in')
@@ -59,7 +59,7 @@ class CheckboxNode(BaseNode):
     NODE_NAME = 'checkbox'
 
     def __init__(self):
-        super(CheckboxNode, self).__init__()
+        super().__init__()
 
         # create the checkboxes.
         self.add_checkbox('cb_1', '', 'Checkbox 1', True)

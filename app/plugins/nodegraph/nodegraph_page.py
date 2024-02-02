@@ -68,9 +68,6 @@ class NodeGraphPage(StagehandPage):
             self.set_data(data)
 
         with CVBoxLayout(self, margins=0) as layout:
-            with layout.hbox(margins=0):
-                layout.add(QWidget())
-                layout.add(self.label)
             with layout.split(orientation='h'):
                 layout.add(self.nodes_palette)
                 layout.add(graph.widget)
