@@ -34,11 +34,11 @@ class NodeItem(AbstractNodeItem):
         if pixmap.size().height() > NodeEnum.ICON_SIZE.value:
             pixmap = pixmap.scaledToHeight(
                 NodeEnum.ICON_SIZE.value,
-                QtCore.Qt.SmoothTransformation
+                QtCore.Qt.TransformationMode.SmoothTransformation
             )
         self._properties['icon'] = ICON_NODE_BASE
         self._icon_item = QtWidgets.QGraphicsPixmapItem(pixmap, self)
-        self._icon_item.setTransformationMode(QtCore.Qt.SmoothTransformation)
+        self._icon_item.setTransformationMode(QtCore.Qt.TransformationMode.SmoothTransformation)
         self._text_item = NodeTextItem(self.name, self)
         self._x_item = XDisabledItem(self, 'DISABLED')
         self._input_items = OrderedDict()
@@ -69,8 +69,8 @@ class NodeItem(AbstractNodeItem):
 
     def _paint_horizontal(self, painter, option, widget):
         painter.save()
-        painter.setPen(QtCore.Qt.NoPen)
-        painter.setBrush(QtCore.Qt.NoBrush)
+        painter.setPen(QtCore.Qt.PenStyle.NoPen)
+        painter.setBrush(QtCore.Qt.BrushStyle.NoBrush)
 
         # base background.
         margin = 1.0
@@ -119,7 +119,7 @@ class NodeItem(AbstractNodeItem):
         pen.setCosmetic(self.viewer().get_zoom() < 0.0)
         path = QtGui.QPainterPath()
         path.addRoundedRect(border_rect, radius, radius)
-        painter.setBrush(QtCore.Qt.NoBrush)
+        painter.setBrush(QtCore.Qt.BrushStyle.NoBrush)
         painter.setPen(pen)
         painter.drawPath(path)
 
@@ -127,8 +127,8 @@ class NodeItem(AbstractNodeItem):
 
     def _paint_vertical(self, painter, option, widget):
         painter.save()
-        painter.setPen(QtCore.Qt.NoPen)
-        painter.setBrush(QtCore.Qt.NoBrush)
+        painter.setPen(QtCore.Qt.PenStyle.NoPen)
+        painter.setBrush(QtCore.Qt.BrushStyle.NoBrush)
 
         # base background.
         margin = 1.0
@@ -174,7 +174,7 @@ class NodeItem(AbstractNodeItem):
 
         pen = QtGui.QPen(border_color, border_width)
         pen.setCosmetic(self.viewer().get_zoom() < 0.0)
-        painter.setBrush(QtCore.Qt.NoBrush)
+        painter.setBrush(QtCore.Qt.BrushStyle.NoBrush)
         painter.setPen(pen)
         painter.drawRoundedRect(border_rect, radius, radius)
 
@@ -205,7 +205,7 @@ class NodeItem(AbstractNodeItem):
         Args:
             event (QtWidgets.QGraphicsSceneMouseEvent): mouse event.
         """
-        if event.button() == QtCore.Qt.LeftButton:
+        if event.button() == QtCore.Qt.MouseButton.LeftButton:
             for p in self._input_items.keys():
                 if p.hovered:
                     event.ignore()
@@ -223,7 +223,7 @@ class NodeItem(AbstractNodeItem):
         Args:
             event (QtWidgets.QGraphicsSceneMouseEvent): mouse event.
         """
-        if event.modifiers() == QtCore.Qt.AltModifier:
+        if event.modifiers() == QtCore.Qt.KeyboardModifier.AltModifier:
             event.ignore()
             return
         super(NodeItem, self).mouseReleaseEvent(event)
@@ -235,15 +235,15 @@ class NodeItem(AbstractNodeItem):
         Args:
             event (QtWidgets.QGraphicsSceneMouseEvent): mouse event.
         """
-        if event.button() == QtCore.Qt.LeftButton:
-
-            # enable text item edit mode.
-            items = self.scene().items(event.scenePos())
-            if self._text_item in items:
-                self._text_item.set_editable(True)
-                self._text_item.setFocus()
-                event.ignore()
-                return
+        if event.button() == QtCore.Qt.MouseButton.LeftButton:
+            if not self.disabled:
+                # enable text item edit mode.
+                items = self.scene().items(event.scenePos())
+                if self._text_item in items:
+                    self._text_item.set_editable(True)
+                    self._text_item.setFocus()
+                    event.ignore()
+                    return
 
             viewer = self.viewer()
             if viewer:
@@ -258,7 +258,7 @@ class NodeItem(AbstractNodeItem):
             change:
             value:
         """
-        if change == self.ItemSelectedChange and self.scene():
+        if change == self.GraphicsItemChange.ItemSelectedChange and self.scene():
             self.reset_pipes()
             if value:
                 self.highlight_pipes()
@@ -372,6 +372,8 @@ class NodeItem(AbstractNodeItem):
         widget_width = 0.0
         widget_height = 0.0
         for widget in self._widgets.values():
+            if not widget.isVisible():
+                continue
             w_width = widget.boundingRect().width()
             w_height = widget.boundingRect().height()
             if w_width > widget_width:
@@ -415,6 +417,8 @@ class NodeItem(AbstractNodeItem):
         widget_width = 0.0
         widget_height = 0.0
         for widget in self._widgets.values():
+            if not widget.isVisible():
+                continue
             if widget.boundingRect().width() > widget_width:
                 widget_width = widget.boundingRect().width()
             widget_height += widget.boundingRect().height()
@@ -511,6 +515,8 @@ class NodeItem(AbstractNodeItem):
         inputs = [p for p in self.inputs if p.isVisible()]
         outputs = [p for p in self.outputs if p.isVisible()]
         for widget in self._widgets.values():
+            if not widget.isVisible():
+                continue
             widget_rect = widget.boundingRect()
             if not inputs:
                 x = rect.left() + 10
@@ -531,11 +537,15 @@ class NodeItem(AbstractNodeItem):
         y = rect.center().y() + v_offset
         widget_height = 0.0
         for widget in self._widgets.values():
+            if not widget.isVisible():
+                continue
             widget_rect = widget.boundingRect()
             widget_height += widget_rect.height()
         y -= widget_height / 2
 
         for widget in self._widgets.values():
+            if not widget.isVisible():
+                continue
             widget_rect = widget.boundingRect()
             x = rect.center().x() - (widget_rect.width() / 2)
             widget.widget().setTitleAlign('center')
@@ -640,9 +650,11 @@ class NodeItem(AbstractNodeItem):
 
         # update port text items in visibility.
         for port, text in self._input_items.items():
-            text.setVisible(port.display_name)
+            if port.isVisible():
+                text.setVisible(port.display_name)
         for port, text in self._output_items.items():
-            text.setVisible(port.display_name)
+            if port.isVisible():
+                text.setVisible(port.display_name)
 
         # setup initial base size.
         self._set_base_size(add_h=height)
@@ -759,15 +771,21 @@ class NodeItem(AbstractNodeItem):
         for w in self._widgets.values():
             w.widget().setVisible(visible)
 
+        # port text is not visible in vertical layout.
+        if self.layout_direction is LayoutDirectionEnum.VERTICAL.value:
+            port_text_visible = False
+        else:
+            port_text_visible = visible
+
         # input port text visibility.
         for port, text in self._input_items.items():
             if port.display_name:
-                text.setVisible(visible)
+                text.setVisible(port_text_visible)
 
         # output port text visibility.
         for port, text in self._output_items.items():
             if port.display_name:
-                text.setVisible(visible)
+                text.setVisible(port_text_visible)
 
         self._text_item.setVisible(visible)
         self._icon_item.setVisible(visible)
@@ -784,7 +802,7 @@ class NodeItem(AbstractNodeItem):
         if pixmap.size().height() > NodeEnum.ICON_SIZE.value:
             pixmap = pixmap.scaledToHeight(
                 NodeEnum.ICON_SIZE.value,
-                QtCore.Qt.SmoothTransformation
+                QtCore.Qt.TransformationMode.SmoothTransformation
             )
         self._icon_item.setPixmap(pixmap)
         if self.scene():
@@ -1024,4 +1042,4 @@ class NodeItem(AbstractNodeItem):
         widgets = node_dict.pop('widgets', {})
         for name, value in widgets.items():
             if self._widgets.get(name):
-                self._widgets[name].value = value
+                self._widgets[name].set_value(value)

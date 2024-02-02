@@ -7,11 +7,12 @@ from NodeGraphQt.qgraphics.node_port_out import PortOutputNodeItem
 
 class PortInputNode(BaseNode):
     """
-    The ``PortInputNode`` class is the node object that represents a port from a
+    The ``PortInputNode`` is the node that represents a input port from a
     :class:`NodeGraphQt.GroupNode` when expanded in a
     :class:`NodeGraphQt.SubGraph`.
 
-    **Inherited from:** :class:`NodeGraphQt.BaseNode`
+    .. inheritance-diagram:: NodeGraphQt.nodes.port_node.PortInputNode
+        :parts: 1
 
     .. image:: ../_images/port_in_node.png
         :width: 150px
@@ -38,7 +39,8 @@ class PortInputNode(BaseNode):
     def add_input(self, name='input', multi_input=False, display_name=True,
                   color=None, locked=False, painter_func=None):
         """
-        This is not available for the `PortInputNode` class.
+        Warnings:
+            This is not available for the ``PortInputNode`` class.
         """
         raise PortRegistrationError(
             '"{}.add_input()" is not available for {}.'
@@ -47,6 +49,11 @@ class PortInputNode(BaseNode):
 
     def add_output(self, name='output', multi_output=True, display_name=True,
                    color=None, locked=False, painter_func=None):
+        """
+        Warnings:
+            This function is called by :meth:`NodeGraphQt.SubGraph.expand_group_node`
+            and is not available for the ``PortInputNode`` class.
+        """
         if self._outputs:
             raise PortRegistrationError(
                 '"{}.add_output()" only ONE output is allowed for this node.'
@@ -64,11 +71,12 @@ class PortInputNode(BaseNode):
 
 class PortOutputNode(BaseNode):
     """
-    The ``PortOutputNode`` class is the node object that represents a port
-    from a :class:`NodeGraphQt.GroupNode` when expanded in a
+    The ``PortOutputNode`` is the node that represents a output port from a
+    :class:`NodeGraphQt.GroupNode` when expanded in a
     :class:`NodeGraphQt.SubGraph`.
 
-    **Inherited from:** :class:`NodeGraphQt.BaseNode`
+    .. inheritance-diagram:: NodeGraphQt.nodes.port_node.PortOutputNode
+        :parts: 1
 
     .. image:: ../_images/port_out_node.png
         :width: 150px
@@ -96,6 +104,11 @@ class PortOutputNode(BaseNode):
 
     def add_input(self, name='input', multi_input=False, display_name=True,
                   color=None, locked=False, painter_func=None):
+        """
+        Warnings:
+            This function is called by :meth:`NodeGraphQt.SubGraph.expand_group_node`
+            and is not available for the ``PortOutputNode`` class.
+        """
         if self._inputs:
             raise PortRegistrationError(
                 '"{}.add_input()" only ONE input is allowed for this node.'
@@ -113,7 +126,8 @@ class PortOutputNode(BaseNode):
     def add_output(self, name='output', multi_output=True, display_name=True,
                    color=None, locked=False, painter_func=None):
         """
-        This is not available for the `PortOutputNode` class.
+        Warnings:
+            This is not available for the ``PortOutputNode`` class.
         """
         raise PortRegistrationError(
             '"{}.add_output()" is not available for {}.'

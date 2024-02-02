@@ -1,6 +1,6 @@
 #!/usr/bin/python
 from NodeGraphQt.base.node import NodeObject
-from NodeGraphQt.constants import NODE_PROP_QTEXTEDIT
+from NodeGraphQt.constants import NodePropWidgetEnum
 from NodeGraphQt.qgraphics.node_backdrop import BackdropNodeItem
 
 
@@ -9,7 +9,7 @@ class BackdropNode(NodeObject):
     The ``NodeGraphQt.BackdropNode`` class allows other node object to be
     nested inside, it's mainly good for grouping nodes together.
 
-    **Inherited from:** :class:`NodeGraphQt.NodeObject`
+    .. inheritance-diagram:: NodeGraphQt.BackdropNode
 
     .. image:: ../_images/backdrop.png
         :width: 250px
@@ -24,7 +24,7 @@ class BackdropNode(NodeObject):
         # override base default color.
         self.model.color = (5, 129, 138, 255)
         self.create_property('backdrop_text', '',
-                             widget_type=NODE_PROP_QTEXTEDIT,
+                             widget_type=NodePropWidgetEnum.QTEXT_EDIT.value,
                              tab='Backdrop')
 
     def on_backdrop_updated(self, update_prop, value=None):

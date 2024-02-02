@@ -12,6 +12,9 @@ class NodeGraphMenu(object):
     """
     The ``NodeGraphMenu`` is the main context menu triggered from the node graph.
 
+    .. inheritance-diagram:: NodeGraphQt.NodeGraphMenu
+        :parts: 1
+
     example for accessing the node graph context menu.
 
     .. code-block:: python
@@ -86,7 +89,7 @@ class NodeGraphMenu(object):
             name (str): name of the command.
 
         Returns:
-            NodeGraphQt.MenuCommand: context menu command.
+            NodeGraphQt.NodeGraphCommand: context menu command.
         """
         return self._commands.get(name)
 
@@ -132,10 +135,10 @@ class NodeGraphMenu(object):
                 shortcut = getattr(QtGui.QKeySequence, search.group(1))
             elif all([i in ['Alt', 'Enter'] for i in shortcut.split('+')]):
                 shortcut = QtGui.QKeySequence(
-                    QtCore.Qt.ALT + QtCore.Qt.Key_Return
+                    QtCore.Qt.Modifier.ALT | QtCore.Qt.Key.Key_Return
                 )
             elif all([i in ['Return', 'Enter'] for i in shortcut.split('+')]):
-                shortcut = QtCore.Qt.Key_Return
+                shortcut = QtCore.Qt.Key.Key_Return
 
         if shortcut:
             action.setShortcut(shortcut)
@@ -159,7 +162,8 @@ class NodesMenu(NodeGraphMenu):
     """
     The ``NodesMenu`` is the context menu triggered from a node.
 
-    **Inherited from:** :class:`NodeGraphQt.NodeGraphMenu`
+    .. inheritance-diagram:: NodeGraphQt.NodesMenu
+        :parts: 1
 
     example for accessing the nodes context menu.
 
@@ -220,8 +224,8 @@ class NodesMenu(NodeGraphMenu):
             for menu in node_menus:
                 menu.addAction(action)
 
-        qaction = node_menu.addAction(action)
-        command = NodeGraphCommand(self._graph, qaction, func)
+        node_menu.addAction(action)
+        command = NodeGraphCommand(self._graph, action, func)
         self._commands[name] = command
         self._items.append(command)
         return command
@@ -230,6 +234,10 @@ class NodesMenu(NodeGraphMenu):
 class NodeGraphCommand(object):
     """
     Node graph menu command.
+
+    .. inheritance-diagram:: NodeGraphQt.NodeGraphCommand
+        :parts: 1
+
     """
 
     def __init__(self, graph, qaction, func=None):
@@ -286,3 +294,33 @@ class NodeGraphCommand(object):
         execute the menu command.
         """
         self.qaction.trigger()
+
+    def set_enabled(self, state):
+        """
+        Sets the command to either be enabled or disabled.
+
+        Args:
+            state (bool): true to enable.
+        """
+        self.qaction.setEnabled(state)
+
+    def set_hidden(self, hidden):
+        """
+        Sets then command item visibility in the context menu.
+
+        Args:
+            hidden (bool): true to hide the command item.
+        """
+        self.qaction.setVisible(not hidden)
+
+    def show(self):
+        """
+        Set the command to be visible in the context menu.
+        """
+        self.qaction.setVisible(True)
+
+    def hide(self):
+        """
+        Set the command to be hidden in the context menu.
+        """
+        self.qaction.setVisible(False)

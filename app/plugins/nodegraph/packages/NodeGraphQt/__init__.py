@@ -17,7 +17,7 @@ example code:
 
     class MyNode(BaseNode):
 
-        __identifier__ = 'com.chantasticvfx'
+        __identifier__ = 'io.github.jchanvfx'
         NODE_NAME = 'My Node'
 
         def __init__(self):
@@ -33,8 +33,8 @@ example code:
         graph.register_node(BackdropNode)
 
         backdrop = graph.create_node('nodeGraphQt.nodes.Backdrop', name='Backdrop')
-        node_a = graph.create_node('com.chantasticvfx.MyNode', name='Node A')
-        node_b = graph.create_node('com.chantasticvfx.MyNode', name='Node B', color='#5b162f')
+        node_a = graph.create_node('io.github.jchanvfx.MyNode', name='Node A')
+        node_b = graph.create_node('io.github.jchanvfx.MyNode', name='Node B', color='#5b162f')
 
         node_a.set_input(0, node_b.output(0))
 
@@ -54,6 +54,7 @@ from .base.menu import NodesMenu, NodeGraphMenu, NodeGraphCommand
 from .base.port import Port
 from .base.node import NodeObject
 from .nodes.base_node import BaseNode
+from .nodes.base_node_circle import BaseNodeCircle
 from .nodes.backdrop_node import BackdropNode
 from .nodes.group_node import GroupNode
 
@@ -61,13 +62,14 @@ from .nodes.group_node import GroupNode
 from .widgets.node_widgets import NodeBaseWidget
 from .custom_widgets.nodes_tree import NodesTreeWidget
 from .custom_widgets.nodes_palette import NodesPaletteWidget
-from .custom_widgets.properties_bin import PropertiesBinWidget
+from .custom_widgets.properties_bin.node_property_widgets import PropertiesBinWidget
 
 
 __version__ = VERSION
 __all__ = [
     'BackdropNode',
     'BaseNode',
+    'BaseNodeCircle',
     'GroupNode',
     'LICENSE',
     'NodeBaseWidget',

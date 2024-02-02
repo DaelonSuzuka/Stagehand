@@ -27,14 +27,14 @@ class NodeNavigationDelagate(QtWidgets.QStyledItemDelegate):
         )
 
         painter.save()
-        painter.setPen(QtCore.Qt.NoPen)
-        painter.setBrush(QtCore.Qt.NoBrush)
-        painter.setRenderHint(QtGui.QPainter.Antialiasing, True)
+        painter.setPen(QtCore.Qt.PenStyle.NoPen)
+        painter.setBrush(QtCore.Qt.BrushStyle.NoBrush)
+        painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing, True)
 
         # background.
         bg_color = QtGui.QColor(*ViewerNavEnum.ITEM_COLOR.value)
         itm_color = QtGui.QColor(80, 128, 123)
-        if option.state & QtWidgets.QStyle.State_Selected:
+        if option.state & QtWidgets.QStyle.StateFlag.State_Selected:
             bg_color = bg_color.lighter(120)
             itm_color = QtGui.QColor(*NodeEnum.SELECTED_BORDER_COLOR.value)
 
@@ -68,9 +68,12 @@ class NodeNavigationDelagate(QtWidgets.QStyledItemDelegate):
                 x += 2.5
 
         # text
-        pen_color = option.palette.text().color()
+        # pen_color = option.palette.text().color()
+        pen_color = QtGui.QColor(*tuple(map(
+            lambda i, j: i - j, (255, 255, 255), bg_color.getRgb()
+        )))
         pen = QtGui.QPen(pen_color, 0.5)
-        pen.setCapStyle(QtCore.Qt.RoundCap)
+        pen.setCapStyle(QtCore.Qt.PenCapStyle.RoundCap)
         painter.setPen(pen)
 
         font = painter.font()
@@ -84,7 +87,8 @@ class NodeNavigationDelagate(QtWidgets.QStyledItemDelegate):
         text_rect = QtCore.QRectF(
             rect.center().x() - (font_width / 2) + txt_offset,
             rect.center().y() - (font_height / 2),
-            font_width, font_height)
+            font_width, font_height
+        )
         painter.drawText(text_rect, item.text())
         painter.restore()
 
@@ -141,14 +145,22 @@ class NodeNavigationWidget(QtWidgets.QListView):
         item.setToolTip(node_id)
         metrics = QtGui.QFontMetrics(item.font())
         if hasattr(metrics, 'horizontalAdvance'):
-            width = metrics.horizontalAdvance(item.text()) + 30
+            width = metrics.horizontalAdvance(item.text())
         else:
-            width = metrics.width(item.text()) + 30
+            width = metrics.width(item.text())
+        width *= 1.5
         item.setSizeHint(QtCore.QSize(width, 20))
         self.model().appendRow(item)
         self.selectionModel().setCurrentIndex(
             self.model().indexFromItem(item),
-            QtCore.QItemSelectionModel.ClearAndSelect)
+            QtCore.QItemSelectionModel.SelectionFlag.ClearAndSelect)
+
+    def update_label_item(self, label, node_id):
+        rows = reversed(range(self.model().rowCount()))
+        for r in rows:
+            item = self.model().item(r, 0)
+            if item.toolTip() == node_id:
+                item.setText(label)
 
     def remove_label_item(self, node_id):
         rows = reversed(range(1, self.model().rowCount()))

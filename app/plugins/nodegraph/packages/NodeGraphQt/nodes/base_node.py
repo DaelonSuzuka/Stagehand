@@ -1,21 +1,22 @@
 #!/usr/bin/python
 from collections import OrderedDict
 
+from NodeGraphQt.base.commands import NodeVisibleCmd, NodeWidgetVisibleCmd
 from NodeGraphQt.base.node import NodeObject
 from NodeGraphQt.base.port import Port
-from NodeGraphQt.constants import (NODE_PROP_QLABEL,
-                                   NODE_PROP_QLINEEDIT,
-                                   NODE_PROP_QCOMBO,
-                                   NODE_PROP_QCHECKBOX,
-                                   PortTypeEnum)
-from NodeGraphQt.errors import (PortError,
-                                PortRegistrationError,
-                                NodeWidgetError)
+from NodeGraphQt.constants import NodePropWidgetEnum, PortTypeEnum
+from NodeGraphQt.errors import (
+    PortError,
+    PortRegistrationError,
+    NodeWidgetError
+)
 from NodeGraphQt.qgraphics.node_base import NodeItem
-from NodeGraphQt.widgets.node_widgets import (NodeBaseWidget,
-                                              NodeComboBox,
-                                              NodeLineEdit,
-                                              NodeCheckBox)
+from NodeGraphQt.widgets.node_widgets import (
+    NodeBaseWidget,
+    NodeCheckBox,
+    NodeComboBox,
+    NodeLineEdit
+)
 
 
 class BaseNode(NodeObject):
@@ -23,7 +24,7 @@ class BaseNode(NodeObject):
     The ``NodeGraphQt.BaseNode`` class is the base class for nodes that allows
     port connections from one node to another.
 
-    **Inherited from:** :class:`NodeGraphQt.NodeObject`
+    .. inheritance-diagram:: NodeGraphQt.BaseNode
 
     .. image:: ../_images/node.png
         :width: 250px
@@ -70,7 +71,36 @@ class BaseNode(NodeObject):
             self.model.set_property(name, val)
 
         for name, widget in self.view.widgets.items():
-            self.model.set_property(name, widget.value)
+            self.model.set_property(name, widget.get_value())
+
+    def set_property(self, name, value, push_undo=True):
+        """
+        Set the value on the node custom property.
+
+        Args:
+            name (str): name of the property.
+            value (object): property data (python built in types).
+            push_undo (bool): register the command to the undo stack. (default: True)
+        """
+        # prevent signals from causing a infinite loop.
+        if self.get_property(name) == value:
+            return
+
+        if name == 'visible':
+            if self.graph:
+                undo_cmd = NodeVisibleCmd(self, value)
+                if push_undo:
+                    self.graph.undo_stack().push(undo_cmd)
+                else:
+                    undo_cmd.redo()
+                return
+        elif name == 'disabled':
+            # redraw the connected pipes in the scene.
+            ports = self.view.inputs + self.view.outputs
+            for port in ports:
+                for pipe in port.connected_pipes:
+                    pipe.update()
+        super(BaseNode, self).set_property(name, value, push_undo)
 
     def set_layout_direction(self, value=0):
         """
@@ -142,7 +172,7 @@ class BaseNode(NodeObject):
         """
         return self.view.widgets.get(name)
 
-    def add_custom_widget(self, widget, widget_type=NODE_PROP_QLABEL, tab=None):
+    def add_custom_widget(self, widget, widget_type=None, tab=None):
         """
         Add a custom node widget into the node.
 
@@ -155,12 +185,15 @@ class BaseNode(NodeObject):
         Args:
             widget (NodeBaseWidget): node widget class object.
             widget_type: widget flag to display in the
-                :class:`NodeGraphQt.PropertiesBinWidget` (default: QLabel).
+                :class:`NodeGraphQt.PropertiesBinWidget`
+                (default: :attr:`NodeGraphQt.constants.NodePropWidgetEnum.HIDDEN`).
             tab (str): name of the widget tab to display in.
         """
         if not isinstance(widget, NodeBaseWidget):
             raise NodeWidgetError(
                 '\'widget\' must be an instance of a NodeBaseWidget')
+
+        widget_type = widget_type or NodePropWidgetEnum.HIDDEN.value
         self.create_property(widget.get_name(),
                              widget.get_value(),
                              widget_type=widget_type,
@@ -168,6 +201,8 @@ class BaseNode(NodeObject):
         widget.value_changed.connect(lambda k, v: self.set_property(k, v))
         widget._node = self
         self.view.add_widget(widget)
+        #: redraw node to address calls outside the "__init__" func.
+        self.view.draw_node()
 
     def add_combo_menu(self, name, label='', items=None, tab=None):
         """
@@ -185,13 +220,18 @@ class BaseNode(NodeObject):
             items (list[str]): items to be added into the menu.
             tab (str): name of the widget tab to display in.
         """
-        items = items or []
         self.create_property(
-            name, items[0], items=items, widget_type=NODE_PROP_QCOMBO, tab=tab)
-
+            name,
+            value=items[0] if items else None,
+            items=items or [],
+            widget_type=NodePropWidgetEnum.QCOMBO_BOX.value,
+            tab=tab
+        )
         widget = NodeComboBox(self.view, name, label, items)
         widget.value_changed.connect(lambda k, v: self.set_property(k, v))
         self.view.add_widget(widget)
+        #: redraw node to address calls outside the "__init__" func.
+        self.view.draw_node()
 
     def add_text_input(self, name, label='', text='', tab=None):
         """
@@ -210,10 +250,16 @@ class BaseNode(NodeObject):
             tab (str): name of the widget tab to display in.
         """
         self.create_property(
-            name, text, widget_type=NODE_PROP_QLINEEDIT, tab=tab)
+            name,
+            value=text,
+            widget_type=NodePropWidgetEnum.QLINE_EDIT.value,
+            tab=tab
+        )
         widget = NodeLineEdit(self.view, name, label, text)
         widget.value_changed.connect(lambda k, v: self.set_property(k, v))
         self.view.add_widget(widget)
+        #: redraw node to address calls outside the "__init__" func.
+        self.view.draw_node()
 
     def add_checkbox(self, name, label='', text='', state=False, tab=None):
         """
@@ -233,10 +279,50 @@ class BaseNode(NodeObject):
             tab (str): name of the widget tab to display in.
         """
         self.create_property(
-            name, state, widget_type=NODE_PROP_QCHECKBOX, tab=tab)
+            name,
+            value=state,
+            widget_type=NodePropWidgetEnum.QCHECK_BOX.value,
+            tab=tab
+        )
         widget = NodeCheckBox(self.view, name, label, text, state)
         widget.value_changed.connect(lambda k, v: self.set_property(k, v))
         self.view.add_widget(widget)
+        #: redraw node to address calls outside the "__init__" func.
+        self.view.draw_node()
+
+    def hide_widget(self, name):
+        """
+        Hide an embedded node widget.
+
+        Args:
+            name (str): node property name for the widget.
+
+        See Also:
+            :meth:`BaseNode.add_custom_widget`,
+            :meth:`BaseNode.show_widget`,
+            :meth:`BaseNode.get_widget`
+        """
+        if not self.view.has_widget(name):
+            return
+        undo_cmd = NodeWidgetVisibleCmd(self, name, visible=False)
+        self.graph.undo_stack().push(undo_cmd)
+
+    def show_widget(self, name):
+        """
+        Show an embedded node widget.
+
+        Args:
+            name (str): node property name for the widget.
+
+        See Also:
+            :meth:`BaseNode.add_custom_widget`,
+            :meth:`BaseNode.hide_widget`,
+            :meth:`BaseNode.get_widget`
+        """
+        if not self.view.has_widget(name):
+            return
+        undo_cmd = NodeWidgetVisibleCmd(self, name, visible=True)
+        self.graph.undo_stack().push(undo_cmd)
 
     def add_input(self, name='input', multi_input=False, display_name=True,
                   color=None, locked=False, painter_func=None):
@@ -608,6 +694,126 @@ class BaseNode(NodeObject):
         for p in self.output_ports():
             nodes[p] = [cp.node() for cp in p.connected_ports()]
         return nodes
+
+    def add_accept_port_type(self, port, port_type_data):
+        """
+        Add a accept constrain to a specified node port.
+
+        Once a constrain has been added only ports of that type specified will
+        be allowed a pipe connection.
+
+        port type data example
+
+        .. highlight:: python
+        .. code-block:: python
+
+            {
+                'port_name': 'foo'
+                'port_type': PortTypeEnum.IN.value
+                'node_type': 'io.github.jchanvfx.NodeClass'
+            }
+
+        See Also:
+            :meth:`NodeGraphQt.BaseNode.accepted_port_types`
+
+        Args:
+            port (NodeGraphQt.Port): port to assign constrain to.
+            port_type_data (dict): port type data to accept a connection
+        """
+        node_ports = self._inputs + self._outputs
+        if port not in node_ports:
+            raise PortError('Node does not contain port: "{}"'.format(port))
+
+        self._model.add_port_accept_connection_type(
+            port_name=port.name(),
+            port_type=port.type_(),
+            node_type=self.type_,
+            accept_pname=port_type_data['port_name'],
+            accept_ptype=port_type_data['port_type'],
+            accept_ntype=port_type_data['node_type']
+        )
+
+    def accepted_port_types(self, port):
+        """
+        Returns a dictionary of connection constrains of the port types
+        that allow for a pipe connection to this node.
+
+        Args:
+            port (NodeGraphQt.Port): port object.
+
+        Returns:
+            dict: {<node_type>: {<port_type>: [<port_name>]}}
+        """
+        ports = self._inputs + self._outputs
+        if port not in ports:
+            raise PortError('Node does not contain port "{}"'.format(port))
+
+        accepted_types = self.graph.model.port_accept_connection_types(
+            node_type=self.type_,
+            port_type=port.type_(),
+            port_name=port.name()
+        )
+        return accepted_types
+
+    def add_reject_port_type(self, port, port_type_data):
+        """
+        Add a reject constrain to a specified node port.
+
+        Once a constrain has been added only ports of that type specified will
+        NOT be allowed a pipe connection.
+
+        port type data example
+
+        .. highlight:: python
+        .. code-block:: python
+
+            {
+                'port_name': 'foo'
+                'port_type': PortTypeEnum.IN.value
+                'node_type': 'io.github.jchanvfx.NodeClass'
+            }
+
+        See Also:
+            :meth:`NodeGraphQt.Port.rejected_port_types`
+
+        Args:
+            port (NodeGraphQt.Port): port to assign constrain to.
+            port_type_data (dict): port type data to reject a connection
+        """
+        node_ports = self._inputs + self._outputs
+        if port not in node_ports:
+            raise PortError('Node does not contain port: "{}"'.format(port))
+
+        self._model.add_port_reject_connection_type(
+            port_name=port.name(),
+            port_type=port.type_(),
+            node_type=self.type_,
+            reject_pname=port_type_data['port_name'],
+            reject_ptype=port_type_data['port_type'],
+            reject_ntype=port_type_data['node_type']
+        )
+
+    def rejected_port_types(self, port):
+        """
+        Returns a dictionary of connection constrains of the port types
+        that are NOT allowed for a pipe connection to this node.
+
+        Args:
+            port (NodeGraphQt.Port): port object.
+
+        Returns:
+            dict: {<node_type>: {<port_type>: [<port_name>]}}
+        """
+        ports = self._inputs + self._outputs
+        if port not in ports:
+            raise PortError('Node does not contain port "{}"'.format(port))
+
+        rejected_types = self.graph.model.port_reject_connection_types(
+            node_type=self.type_,
+            port_type=port.type_(),
+            port_name=port.name()
+        )
+        return rejected_types
 
     def on_input_connected(self, in_port, out_port):
         """

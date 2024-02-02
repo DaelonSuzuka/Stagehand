@@ -16,16 +16,13 @@ class PropertyChangedCmd(QtWidgets.QUndoCommand):
 
     def __init__(self, node, name, value):
         QtWidgets.QUndoCommand.__init__(self)
-        if name == 'name':
-            self.setText('renamed "{}" to "{}"'.format(node.name(), value))
-        else:
-            self.setText('property "{}:{}"'.format(node.name(), name))
+        self.setText('property "{}:{}"'.format(node.name(), name))
         self.node = node
         self.name = name
         self.old_val = node.get_property(name)
         self.new_val = value
 
-    def set_node_prop(self, name, value):
+    def set_node_property(self, name, value):
         """
         updates the node view and model.
         """
@@ -50,21 +47,87 @@ class PropertyChangedCmd(QtWidgets.QUndoCommand):
                 name = 'xy_pos'
             setattr(view, name, value)
 
+        # emit property changed signal.
+        graph = self.node.graph
+        graph.property_changed.emit(self.node, self.name, value)
+
     def undo(self):
         if self.old_val != self.new_val:
-            self.set_node_prop(self.name, self.old_val)
-
-            # emit property changed signal.
-            graph = self.node.graph
-            graph.property_changed.emit(self.node, self.name, self.old_val)
+            self.set_node_property(self.name, self.old_val)
 
     def redo(self):
         if self.old_val != self.new_val:
-            self.set_node_prop(self.name, self.new_val)
+            self.set_node_property(self.name, self.new_val)
 
-            # emit property changed signal.
-            graph = self.node.graph
-            graph.property_changed.emit(self.node, self.name, self.new_val)
+
+class NodeVisibleCmd(QtWidgets.QUndoCommand):
+    """
+    Node visibility changed command.
+
+    Args:
+        node (NodeGraphQt.NodeObject): node.
+        visible (bool): node visible value.
+    """
+
+    def __init__(self, node, visible):
+        QtWidgets.QUndoCommand.__init__(self)
+        self.node = node
+        self.visible = visible
+        self.selected = self.node.selected()
+
+    def set_node_visible(self, visible):
+        model = self.node.model
+        model.set_property('visible', visible)
+
+        node_view = self.node.view
+        node_view.visible = visible
+
+        # redraw the connected pipes in the scene.
+        ports = node_view.inputs + node_view.outputs
+        for port in ports:
+            for pipe in port.connected_pipes:
+                pipe.update()
+
+        # restore the node selected state.
+        if self.selected != node_view.isSelected():
+            node_view.setSelected(model.selected)
+
+        # emit property changed signal.
+        graph = self.node.graph
+        graph.property_changed.emit(self.node, 'visible', visible)
+
+    def undo(self):
+        self.set_node_visible(not self.visible)
+
+    def redo(self):
+        self.set_node_visible(self.visible)
+
+
+class NodeWidgetVisibleCmd(QtWidgets.QUndoCommand):
+    """
+    Node widget visibility command.
+
+    Args:
+        node (NodeGraphQt.NodeObject): node object.
+        name (str): node widget name.
+        visible (bool): initial visibility state.
+    """
+
+    def __init__(self, node, name, visible):
+        QtWidgets.QUndoCommand.__init__(self)
+        label = 'show' if visible else 'hide'
+        self.setText('{} node widget "{}"'.format(label, name))
+        self.view = node.view
+        self.node_widget = self.view.get_widget(name)
+        self.visible = visible
+
+    def undo(self):
+        self.node_widget.setVisible(not self.visible)
+        self.view.draw_node()
+
+    def redo(self):
+        self.node_widget.setVisible(self.visible)
+        self.view.draw_node()
 
 
 class NodeMovedCmd(QtWidgets.QUndoCommand):
@@ -121,7 +184,7 @@ class NodeAddedCmd(QtWidgets.QUndoCommand):
         self.model.nodes[self.node.id] = self.node
         self.viewer.add_node(self.node.view, self.pos)
 
-        # node width & height is calculated when its added to the scene
+        # node width & height is calculated when it's added to the scene,
         # so we have to update the node model here.
         self.node.model.width = self.node.view.width
         self.node.model.height = self.node.view.height
@@ -350,10 +413,14 @@ class PortVisibleCmd(QtWidgets.QUndoCommand):
         port (NodeGraphQt.Port): node port.
     """
 
-    def __init__(self, port):
+    def __init__(self, port, visible):
         QtWidgets.QUndoCommand.__init__(self)
         self.port = port
-        self.visible = port.visible()
+        self.visible = visible
+        if visible:
+            self.setText('show port {}'.format(self.port.name()))
+        else:
+            self.setText('hide port {}'.format(self.port.name()))
 
     def set_visible(self, visible):
         self.port.model.visible = visible
@@ -366,7 +433,14 @@ class PortVisibleCmd(QtWidgets.QUndoCommand):
             text_item = node_view.get_output_text_item(self.port.view)
         if text_item:
             text_item.setVisible(visible)
-        node_view.post_init()
+
+        node_view.draw_node()
+
+        # redraw the connected pipes in the scene.
+        ports = node_view.inputs + node_view.outputs
+        for port in node_view.inputs + node_view.outputs:
+            for pipe in port.connected_pipes:
+                pipe.update()
 
     def undo(self):
         self.set_visible(not self.visible)

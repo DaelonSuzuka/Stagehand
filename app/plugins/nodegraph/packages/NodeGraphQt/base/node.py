@@ -1,7 +1,7 @@
 #!/usr/bin/python
 from NodeGraphQt.base.commands import PropertyChangedCmd
 from NodeGraphQt.base.model import NodeModel
-from NodeGraphQt.constants import NODE_PROP
+from NodeGraphQt.constants import NodePropWidgetEnum
 
 
 class _ClassProperty(object):
@@ -18,30 +18,61 @@ class NodeObject(object):
     The ``NodeGraphQt.NodeObject`` class is the main base class that all
     nodes inherit from.
 
-    **Inherited by:**
-        :class:`NodeGraphQt.BaseNode`,
-        :class:`NodeGraphQt.BackdropNode`
+    .. inheritance-diagram:: NodeGraphQt.NodeObject
 
     Args:
         qgraphics_item (AbstractNodeItem): QGraphicsItem item used for drawing.
-
-            .. code-block:: python
-
-                # snippet taken from the NodeGraphQt.BaseNode class.
-
-                class BaseNode(NodeObject):
-
-                    def __init__(self, qgraphics_item=None):
-                        qgraphics_item = qgraphics_item or NodeItem
-                        super(BaseNode, self).__init__(qgraphics_views)
-
     """
 
-    # Unique node identifier domain. `eg.` ``"com.chantacticvfx"``
     __identifier__ = 'nodeGraphQt.nodes'
+    """
+    Unique node identifier domain. eg. ``"io.github.jchanvfx"``
 
-    # Base node name.
+    .. important:: re-implement this attribute to provide a unique node type.
+    
+        .. code-block:: python
+            :linenos:
+    
+            from NodeGraphQt import NodeObject
+    
+            class ExampleNode(NodeObject):
+    
+                # unique node identifier domain.
+                __identifier__ = 'io.github.jchanvfx'
+    
+                def __init__(self):
+                    ...
+    
+    :return: node type domain.
+    :rtype: str
+    
+    :meta hide-value:
+    """
+
     NODE_NAME = None
+    """
+    Initial base node name.
+
+    .. important:: re-implement this attribute to provide a base node name.
+    
+        .. code-block:: python
+            :linenos:
+    
+            from NodeGraphQt import NodeObject
+    
+            class ExampleNode(NodeObject):
+    
+                # initial default node name.
+                NODE_NAME = 'Example Node'
+    
+                def __init__(self):
+                    ...
+    
+    :return: node name
+    :rtype: str
+    
+    :meta hide-value:
+    """
 
     def __init__(self, qgraphics_item=None):
         """
@@ -73,10 +104,10 @@ class NodeObject(object):
     def type_(cls):
         """
         Node type identifier followed by the class name.
-        `eg.` ``"com.chantacticvfx.NodeObject"``
+        `eg.` ``"nodeGraphQt.nodes.NodeObject"``
 
         Returns:
-            str: node type.
+            str: node type (``__identifier__.__className__``)
         """
         return cls.__identifier__ + '.' + cls.__name__
 
@@ -86,7 +117,7 @@ class NodeObject(object):
         The node unique id.
 
         Returns:
-            str: unique id string.
+            str: unique identifier string to the node.
         """
         return self.model.id
 
@@ -96,7 +127,7 @@ class NodeObject(object):
         The parent node graph.
 
         Returns:
-            NodeGraphQt.NodeGraph: node graph.
+            NodeGraphQt.NodeGraph: node graph instance.
         """
         return self._graph
 
@@ -192,7 +223,7 @@ class NodeObject(object):
                 'color': (48, 58, 69, 255),
                 'border_color': (85, 100, 100, 255),
                 'text_color': (255, 255, 255, 180),
-                'type': 'com.chantasticvfx.MyNode',
+                'type': 'io.github.jchanvfx.MyNode',
                 'selected': False,
                 'disabled': False,
                 'visible': True,
@@ -294,7 +325,7 @@ class NodeObject(object):
         self.set_property('selected', selected)
 
     def create_property(self, name, value, items=None, range=None,
-                        widget_type=NODE_PROP, tab=None):
+                        widget_type=None, tab=None):
         """
         Creates a custom property to the node.
 
@@ -303,34 +334,23 @@ class NodeObject(object):
             :class:`NodeGraphQt.PropertiesBinWidget`
 
         Hint:
-            Here are some constants variables used to define the node
-            widget type in the ``PropertiesBinWidget``.
-
-            - :attr:`NodeGraphQt.constants.NODE_PROP`
-            - :attr:`NodeGraphQt.constants.NODE_PROP_QLABEL`
-            - :attr:`NodeGraphQt.constants.NODE_PROP_QLINEEDIT`
-            - :attr:`NodeGraphQt.constants.NODE_PROP_QTEXTEDIT`
-            - :attr:`NodeGraphQt.constants.NODE_PROP_QCOMBO`
-            - :attr:`NodeGraphQt.constants.NODE_PROP_QCHECKBOX`
-            - :attr:`NodeGraphQt.constants.NODE_PROP_QSPINBOX`
-            - :attr:`NodeGraphQt.constants.NODE_PROP_COLORPICKER`
-            - :attr:`NodeGraphQt.constants.NODE_PROP_FILE`
-            - :attr:`NodeGraphQt.constants.NODE_PROP_VECTOR2`
-            - :attr:`NodeGraphQt.constants.NODE_PROP_VECTOR3`
-            - :attr:`NodeGraphQt.constants.NODE_PROP_VECTOR4`
-            - :attr:`NodeGraphQt.constants.NODE_PROP_FLOAT`
-            - :attr:`NodeGraphQt.constants.NODE_PROP_INT`
-            - :attr:`NodeGraphQt.constants.NODE_PROP_BUTTON`
+            To see all the available property widget types to display in
+            the ``PropertiesBinWidget`` widget checkout
+            :attr:`NodeGraphQt.constants.NodePropWidgetEnum`.
 
         Args:
             name (str): name of the property.
             value (object): data.
-            items (list[str]): items used by widget type ``NODE_PROP_QCOMBO``
-            range (tuple or list): ``(min, max)`` values used by ``NODE_PROP_SLIDER``
+            items (list[str]): items used by widget type
+                attr:`NodeGraphQt.constants.NodePropWidgetEnum.QCOMBO_BOX`
+            range (tuple or list): ``(min, max)`` values used by
+                :attr:`NodeGraphQt.constants.NodePropWidgetEnum.SLIDER`
             widget_type (int): widget flag to display in the
                 :class:`NodeGraphQt.PropertiesBinWidget`
-            tab (str): name of the widget tab to display in the properties bin.
+            tab (str): name of the widget tab to display in the
+                :class:`NodeGraphQt.PropertiesBinWidget`.
         """
+        widget_type = widget_type or NodePropWidgetEnum.HIDDEN.value
         self.model.add_property(name, value, items, range, widget_type, tab)
 
     def properties(self):
@@ -363,32 +383,44 @@ class NodeObject(object):
         """
         Set the value on the node custom property.
 
+        Note:
+            When setting the node ``"name"`` property a new unique name will be
+            used if another node in the graph has the same node name.
+
         Args:
             name (str): name of the property.
             value (object): property data (python built in types).
             push_undo (bool): register the command to the undo stack. (default: True)
         """
 
-        # prevent signals from causing a infinite loop.
+        # prevent signals from causing an infinite loop.
         if self.get_property(name) == value:
             return
 
+        # prevent nodes from have the same name.
         if self.graph and name == 'name':
             value = self.graph.get_unique_name(value)
             self.NODE_NAME = value
 
         if self.graph:
+            undo_cmd = PropertyChangedCmd(self, name, value)
+            if name == 'name':
+                undo_cmd.setText(
+                    'renamed "{}" to "{}"'.format(self.name(), value)
+                )
             if push_undo:
                 undo_stack = self.graph.undo_stack()
-                undo_stack.push(PropertyChangedCmd(self, name, value))
+                undo_stack.push(undo_cmd)
             else:
-                PropertyChangedCmd(self, name, value).redo()
+                undo_cmd.redo()
         else:
             if hasattr(self.view, name):
                 setattr(self.view, name, value)
             self.model.set_property(name, value)
-        
-        self.update()
+
+        # redraw the node for custom properties.
+        if self.model.is_custom_property(name):
+            self.view.draw_node()
 
     def has_property(self, name):
         """
@@ -494,4 +526,3 @@ class NodeObject(object):
         """
         self.model.layout_direction = value
         self.view.layout_direction = value
-

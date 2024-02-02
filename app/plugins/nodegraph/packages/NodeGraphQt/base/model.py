@@ -4,11 +4,8 @@ from collections import defaultdict
 
 from NodeGraphQt.constants import (
     LayoutDirectionEnum,
-    NODE_PROP,
-    NODE_PROP_QLABEL,
-    NODE_PROP_QLINEEDIT,
-    NODE_PROP_QCHECKBOX,
-    NODE_PROP_COLORPICKER
+    NodePropWidgetEnum,
+    PipeLayoutEnum
 )
 from NodeGraphQt.errors import NodePropertyError
 
@@ -97,40 +94,47 @@ class NodeModel(object):
         # temp store the property widget types.
         # (deleted when node is added to the graph)
         self._TEMP_property_widget_types = {
-            'type_': NODE_PROP_QLABEL,
-            'id': NODE_PROP_QLABEL,
-            'icon': NODE_PROP,
-            'name': NODE_PROP_QLINEEDIT,
-            'color': NODE_PROP_COLORPICKER,
-            'border_color': NODE_PROP,
-            'text_color': NODE_PROP_COLORPICKER,
-            'disabled': NODE_PROP_QCHECKBOX,
-            'selected': NODE_PROP,
-            'width': NODE_PROP,
-            'height': NODE_PROP,
-            'pos': NODE_PROP,
-            'layout_direction': NODE_PROP,
-            'inputs': NODE_PROP,
-            'outputs': NODE_PROP,
+            'type_': NodePropWidgetEnum.QLABEL.value,
+            'id': NodePropWidgetEnum.QLABEL.value,
+            'icon': NodePropWidgetEnum.HIDDEN.value,
+            'name': NodePropWidgetEnum.QLINE_EDIT.value,
+            'color': NodePropWidgetEnum.COLOR_PICKER.value,
+            'border_color': NodePropWidgetEnum.HIDDEN.value,
+            'text_color': NodePropWidgetEnum.COLOR_PICKER.value,
+            'disabled': NodePropWidgetEnum.QCHECK_BOX.value,
+            'selected': NodePropWidgetEnum.HIDDEN.value,
+            'width': NodePropWidgetEnum.HIDDEN.value,
+            'height': NodePropWidgetEnum.HIDDEN.value,
+            'pos': NodePropWidgetEnum.HIDDEN.value,
+            'layout_direction': NodePropWidgetEnum.HIDDEN.value,
+            'inputs': NodePropWidgetEnum.HIDDEN.value,
+            'outputs': NodePropWidgetEnum.HIDDEN.value,
         }
+
+        # temp store connection constrains.
+        # (deleted when node is added to the graph)
+        self._TEMP_accept_connection_types = {}
+        self._TEMP_reject_connection_types = {}
 
     def __repr__(self):
         return '<{}(\'{}\') object at {}>'.format(
             self.__class__.__name__, self.name, self.id)
 
     def add_property(self, name, value, items=None, range=None,
-                     widget_type=NODE_PROP, tab=None):
+                     widget_type=None, tab=None):
         """
-        add custom property.
+        add custom property or raises an error if the property name is already
+        taken.
 
         Args:
             name (str): name of the property.
             value (object): data.
             items (list[str]): items used by widget type NODE_PROP_QCOMBO.
-            range (tuple)): min, max values used by NODE_PROP_SLIDER.
+            range (tuple): min, max values used by NODE_PROP_SLIDER.
             widget_type (int): widget type flag.
             tab (str): widget tab name.
         """
+        widget_type = widget_type or NodePropWidgetEnum.HIDDEN.value
         tab = tab or 'Properties'
 
         if name in self.properties.keys():
@@ -150,10 +154,14 @@ class NodeModel(object):
             if range:
                 self._TEMP_property_attrs[name]['range'] = range
         else:
-            attrs = {self.type_: {name: {
-                'widget_type': widget_type,
-                'tab': tab
-            }}}
+            attrs = {
+                self.type_: {
+                    name: {
+                        'widget_type': widget_type,
+                        'tab': tab
+                    }
+                }
+            }
             if items:
                 attrs[self.type_][name]['items'] = items
             if range:
@@ -161,6 +169,11 @@ class NodeModel(object):
             self._graph_model.set_node_common_properties(attrs)
 
     def set_property(self, name, value):
+        """
+        Args:
+            name (str): property name.
+            value (object): property value.
+        """
         if name in self.properties.keys():
             setattr(self, name, value)
         elif name in self._custom_prop.keys():
@@ -169,17 +182,48 @@ class NodeModel(object):
             raise NodePropertyError('No property "{}"'.format(name))
 
     def get_property(self, name):
+        """
+        Args:
+            name (str): property name.
+
+        Returns:
+            object: property value.
+        """
         if name in self.properties.keys():
             return self.properties[name]
         return self._custom_prop.get(name)
 
+    def is_custom_property(self, name):
+        """
+        Args:
+            name (str): property name.
+
+        Returns:
+            bool: true if custom property.
+        """
+        return name in self._custom_prop
+
     def get_widget_type(self, name):
+        """
+        Args:
+            name (str): property name.
+
+        Returns:
+            int: node property widget type.
+        """
         model = self._graph_model
         if model is None:
             return self._TEMP_property_widget_types.get(name)
         return model.get_node_common_properties(self.type_)[name]['widget_type']
 
     def get_tab_name(self, name):
+        """
+        Args:
+            name (str): property name.
+
+        Returns:
+            str: name of the tab for the properties bin.
+        """
         model = self._graph_model
         if model is None:
             attrs = self._TEMP_property_attrs.get(name)
@@ -187,6 +231,85 @@ class NodeModel(object):
                 return attrs[name].get('tab')
             return
         return model.get_node_common_properties(self.type_)[name]['tab']
+
+    def add_port_accept_connection_type(
+            self,
+            port_name, port_type, node_type,
+            accept_pname, accept_ptype, accept_ntype
+    ):
+        """
+        Convenience function for adding to the "accept_connection_types" dict.
+        If the node graph model is unavailable yet then we store it to a
+        temp var that gets deleted.
+
+        Args:
+            port_name (str): current port name.
+            port_type (str): current port type.
+            node_type (str): current port node type.
+            accept_pname (str):port name to accept.
+            accept_ptype (str): port type accept.
+            accept_ntype (str):port node type to accept.
+        """
+        model = self._graph_model
+        if model:
+            model.add_port_accept_connection_type(
+                port_name, port_type, node_type,
+                accept_pname, accept_ptype, accept_ntype
+            )
+            return
+
+        connection_data = self._TEMP_accept_connection_types
+        keys = [node_type, port_type, port_name, accept_ntype]
+        for key in keys:
+            if key not in connection_data.keys():
+                connection_data[key] = {}
+            connection_data = connection_data[key]
+
+        if accept_ptype not in connection_data:
+            connection_data[accept_ptype] = set([accept_pname])
+        else:
+            connection_data[accept_ptype].add(accept_pname)
+
+    def add_port_reject_connection_type(
+        self,
+        port_name, port_type, node_type,
+        reject_pname, reject_ptype, reject_ntype
+    ):
+        """
+        Convenience function for adding to the "reject_connection_types" dict.
+        If the node graph model is unavailable yet then we store it to a
+        temp var that gets deleted.
+
+        Args:
+            port_name (str): current port name.
+            port_type (str): current port type.
+            node_type (str): current port node type.
+            reject_pname:
+            reject_ptype:
+            reject_ntype:
+
+        Returns:
+
+        """
+        model = self._graph_model
+        if model:
+            model.add_port_reject_connection_type(
+                port_name, port_type, node_type,
+                reject_pname, reject_ptype, reject_ntype
+            )
+            return
+
+        connection_data = self._TEMP_reject_connection_types
+        keys = [node_type, port_type, port_name, reject_ntype]
+        for key in keys:
+            if key not in connection_data.keys():
+                connection_data[key] = {}
+            connection_data = connection_data[key]
+
+        if reject_ptype not in connection_data:
+            connection_data[reject_ptype] = set([reject_pname])
+        else:
+            connection_data[reject_ptype].add(reject_pname)
 
     @property
     def properties(self):
@@ -226,7 +349,7 @@ class NodeModel(object):
                     'color': (48, 58, 69, 255),
                     'border_color': (85, 100, 100, 255),
                     'text_color': (255, 255, 255, 180),
-                    'type_': 'com.chantasticvfx.FooNode',
+                    'type_': 'io.github.jchanvfx.FooNode',
                     'selected': False,
                     'disabled': False,
                     'visible': True,
@@ -317,10 +440,15 @@ class NodeGraphModel(object):
     def __init__(self):
         self.__common_node_props = {}
 
+        self.accept_connection_types = {}
+        self.reject_connection_types = {}
+
         self.nodes = {}
         self.session = ''
         self.acyclic = True
         self.pipe_collision = False
+        self.pipe_slicing = True
+        self.pipe_style = PipeLayoutEnum.CURVED.value
         self.layout_direction = LayoutDirectionEnum.HORIZONTAL.value
 
     def common_properties(self):
@@ -384,6 +512,96 @@ class NodeGraphModel(object):
             dict: node common properties.
         """
         return self.__common_node_props.get(node_type)
+
+    def add_port_accept_connection_type(
+            self,
+            port_name, port_type, node_type,
+            accept_pname, accept_ptype, accept_ntype
+    ):
+        """
+        Convenience function for adding to the "accept_connection_types" dict.
+
+        Args:
+            port_name (str): current port name.
+            port_type (str): current port type.
+            node_type (str): current port node type.
+            accept_pname (str):port name to accept.
+            accept_ptype (str): port type accept.
+            accept_ntype (str):port node type to accept.
+        """
+        connection_data = self.accept_connection_types
+        keys = [node_type, port_type, port_name, accept_ntype]
+        for key in keys:
+            if key not in connection_data.keys():
+                connection_data[key] = {}
+            connection_data = connection_data[key]
+
+        if accept_ptype not in connection_data:
+            connection_data[accept_ptype] = [accept_pname]
+        else:
+            connection_data[accept_ptype].append(accept_pname)
+
+    def port_accept_connection_types(self, node_type, port_type, port_name):
+        """
+        Convenience function for getting the accepted port types from the
+        "accept_connection_types" dict.
+
+        Args:
+            node_type (str):
+            port_type (str):
+            port_name (str):
+
+        Returns:
+            dict: {<node_type>: {<port_type>: [<port_name>]}}
+        """
+        data = self.accept_connection_types.get(node_type) or {}
+        accepted_types = data.get(port_type) or {}
+        return accepted_types.get(port_name) or {}
+
+    def add_port_reject_connection_type(
+            self,
+            port_name, port_type, node_type,
+            reject_pname, reject_ptype, reject_ntype
+    ):
+        """
+        Convenience function for adding to the "reject_connection_types" dict.
+
+        Args:
+            port_name (str): current port name.
+            port_type (str): current port type.
+            node_type (str): current port node type.
+            reject_pname (str): port name to reject.
+            reject_ptype (str): port type to reject.
+            reject_ntype (str): port node type to reject.
+        """
+        connection_data = self.reject_connection_types
+        keys = [node_type, port_type, port_name, reject_ntype]
+        for key in keys:
+            if key not in connection_data.keys():
+                connection_data[key] = {}
+            connection_data = connection_data[key]
+
+        if reject_ptype not in connection_data:
+            connection_data[reject_ptype] = [reject_pname]
+        else:
+            connection_data[reject_ptype].append(reject_pname)
+
+    def port_reject_connection_types(self, node_type, port_type, port_name):
+        """
+        Convenience function for getting the accepted port types from the
+        "reject_connection_types" dict.
+
+        Args:
+            node_type (str):
+            port_type (str):
+            port_name (str):
+
+        Returns:
+            dict: {<node_type>: {<port_type>: [<port_name>]}}
+        """
+        data = self.reject_connection_types.get(node_type) or {}
+        rejected_types = data.get(port_type) or {}
+        return rejected_types.get(port_name) or {}
 
 
 if __name__ == '__main__':
