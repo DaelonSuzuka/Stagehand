@@ -15,15 +15,24 @@ class NodeGraphPage(StagehandPage):
         self.name = name
         self.icon_name = 'mdi.graph'
 
-        self.label = LabelEdit(f'Graph {name}', changed=self.changed)
-
         graph = NodeGraph()
         graph.set_context_menu_from_file('app/plugins/nodegraph/hotkeys/hotkeys.json')
 
-        self.graph = graph
+        graph.node_created.connect(changed)
+        graph.nodes_deleted.connect(changed)
+        graph.node_selected.connect(changed)
+        graph.node_selection_changed.connect(changed)
+        graph.port_connected.connect(changed)
+        graph.port_disconnected.connect(changed)
+        graph.property_changed.connect(changed)
+        graph.data_dropped.connect(changed)
+        graph._viewer.moved_nodes.connect(changed)
+        graph._viewer.connection_sliced.connect(changed)
+        graph._viewer.connection_changed.connect(changed)
+        graph._viewer.node_name_changed.connect(changed)
+        graph._viewer.node_backdrop_updated.connect(changed)
 
-        graph.clear_selection()
-        graph.fit_to_selection()
+        self.graph = graph
 
         graph.register_nodes(
             [
@@ -69,11 +78,13 @@ class NodeGraphPage(StagehandPage):
 
         with CVBoxLayout(self, margins=0) as layout:
             with layout.split(orientation='h'):
-                layout.add(self.nodes_palette)
+                with layout.vbox():
+                    # layout.add(self.nodes_tree)
+                    layout.add(self.nodes_palette)
                 layout.add(graph.widget)
 
     def get_name(self):
-        return self.label.text()
+        return self.name
 
     def on_change(self):
         self.changed.emit()
@@ -81,14 +92,15 @@ class NodeGraphPage(StagehandPage):
     def set_data(self, data: dict) -> None:
         self.data = data
 
-        self.label.setText(data.get('name', self.name))
-
         if 'session' in data:
             self.graph.deserialize_session(data['session'])
 
-        self.graph.clear_selection()
+        # self.graph.clear_selection()
         self.graph.fit_to_selection()
 
     def get_data(self) -> dict:
-        data = {'page_type': self.page_type, 'name': self.label.text(), 'session': self.graph.serialize_session()}
+        data = {
+            'page_type': self.page_type,
+            'session': self.graph.serialize_session(),
+        }
         return data
