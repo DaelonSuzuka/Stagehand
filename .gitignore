@@ -14,6 +14,13 @@ output
 build
 dist
 
+*.pyc
+build/
+dist/
+*.egg-info/
+.eggs/
+.pytest_cache/
+
 settings.json
 log.txt
 settings-logviewer.json
