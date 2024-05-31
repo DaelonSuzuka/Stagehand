@@ -2,6 +2,7 @@ from qtstrap import *
 from qtstrap.extras.style import qcolors
 from qtpy.shiboken import isValid, delete
 import qtawesome as qta
+from inspect import getmodule
 from .components import StagehandDockWidget
 
 
@@ -50,7 +51,7 @@ class SceneTreeDelegate(QStyledItemDelegate):
         rect = QRect(option.rect)
 
         if parts[0]:
-            painter.setPen(qcolors.black)
+            painter.setPen(qcolors.white)
             prev = painter.drawText(rect, Qt.AlignLeft, parts[0])
             rect = QRect(prev.x() + prev.width(), prev.y(), option.rect.width(), prev.height())
 
@@ -209,6 +210,7 @@ class Inspector(QWidget):
 
         self.obj_name = QLabel()
         self.obj_type = QLabel()
+        self.base_type = QLabel()
 
         with CVBoxLayout(self, margins=2) as layout:
             layout.add(QLabel('Inspector'))
@@ -218,11 +220,16 @@ class Inspector(QWidget):
             with layout.hbox(margins=0):
                 layout.add(QLabel('Type:'))
                 layout.add(self.obj_type)
+            with layout.hbox(margins=0):
+                layout.add(QLabel('Base Type:'))
+                layout.add(self.base_type)
             layout.add(QLabel(), 1)
 
     def inspect(self, item):
-        pass
-        print(item.obj)
+        for base in type(item.obj).__mro__:
+            if 'QtWidgets' in getattr(getmodule(base), '__name__', ''):
+                self.base_type.setText(base.__name__)
+                break
 
         self.obj_name.setText(item.obj.objectName())
         self.obj_type.setText(type(item.obj).__name__)
@@ -244,6 +251,5 @@ class SceneTreeDockWidget(StagehandDockWidget):
         # call_later(lambda: self.tree.scan(self.parent()), 2000)
 
         with PersistentCSplitter('scene_tree_splitter', self._widget) as splitter:
-            # with CHBoxLayout(self._widget, margins=2) as layout:
             splitter.add(self.tree)
             splitter.add(self.inspector)
