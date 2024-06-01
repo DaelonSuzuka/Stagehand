@@ -1,5 +1,5 @@
 from qtstrap import *
-from qtstrap.extras.log_monitor import LogMonitorDropdown
+from qtstrap.extras.log_monitor import LogMonitorDockWidget
 from qtstrap.extras.command_palette import CommandPalette, Command
 from qtstrap.extras.code_editor import CodeEditor
 from qtstrap.extras.scene_tree import SceneTreeDockWidget
@@ -93,7 +93,7 @@ class MainWindow(BaseMainWindow):
         self.style_editor = StyleEditorDockWidget(self)
         self.repl = ReplDockWidget(self)
         self.scene_tree = SceneTreeDockWidget(self)
-        self.log_monitor = LogMonitorDropdown(self)
+        self.log_monitor = LogMonitorDockWidget(self)
         self.sandbox = Sandbox()
         self.command_palette = CommandPalette(self)
 
