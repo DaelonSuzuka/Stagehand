@@ -1,5 +1,4 @@
 from qtstrap import *
-import qtawesome as qta
 from abc import abstractmethod
 
 
@@ -44,7 +43,7 @@ class StagehandStatusBarItem(QWidget):
     pass
 
 
-class StagehandDockWidget(DockWidget):
+class StagehandDockWidget(BaseDockWidget):
     pass
 
 
