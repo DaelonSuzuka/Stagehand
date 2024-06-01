@@ -94,11 +94,8 @@ class MainWindow(BaseMainWindow):
         self.repl = ReplDockWidget(self)
         self.scene_tree = SceneTreeDockWidget(self)
         self.log_monitor = LogMonitorDockWidget(self)
-        self.sandbox = Sandbox()
+        self.sandbox = Sandbox(self)
         self.command_palette = CommandPalette(self)
-
-        if not self.restoreDockWidget(self.sandbox.tools_dock):
-            self.addDockWidget(self.sandbox.tools_dock.starting_area, self.sandbox.tools_dock)
 
         self.load_settings()
 

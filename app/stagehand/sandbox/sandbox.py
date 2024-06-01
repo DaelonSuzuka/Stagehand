@@ -10,10 +10,10 @@ class SandboxExtension:
 class Sandbox(QObject):
     extensions = {}
 
-    def __init__(self):
-        super().__init__()
-        self.tools = SandboxTools()
-        self.tools_dock = SandboxToolsDockWidget(self.tools)
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+        self.tools_dock = SandboxToolsDockWidget(parent)
+        self.tools = self.tools_dock.tools
 
         self.this = None
         self.source = None

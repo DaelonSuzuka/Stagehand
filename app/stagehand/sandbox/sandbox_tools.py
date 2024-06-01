@@ -34,19 +34,13 @@ class SandboxTools(QWidget):
             scrollbar.setValue(scrollbar.maximum())
 
 
-class SandboxToolsDockWidget(QDockWidget):
-    def __init__(self, widget: QWidget):
-        super().__init__('Sandbox Output')
-        self.setObjectName('SandboxOutput')
+class SandboxToolsDockWidget(BaseDockWidget):
+    _title = 'Sandbox Output'
+    _starting_area = Qt.RightDockWidgetArea
+    _shortcut = 'Ctrl+T'
 
-        self.setWidget(widget)
-        self.setFeatures(
-            QDockWidget.DockWidgetClosable | QDockWidget.DockWidgetMovable | QDockWidget.DockWidgetFloatable
-        )
-        self.starting_area = Qt.RightDockWidgetArea
-        self.closeEvent = lambda x: self.hide()
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
 
-    def toggleViewAction(self):
-        action = super().toggleViewAction()
-        action.setShortcut('Ctrl+T')
-        return action
+        self.tools = SandboxTools(self)
+        self.setWidget(self.tools)
