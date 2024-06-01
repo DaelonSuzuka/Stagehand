@@ -2,7 +2,7 @@ from qtstrap import *
 from qtstrap.extras.log_monitor import LogMonitorDockWidget
 from qtstrap.extras.command_palette import CommandPalette, Command
 from qtstrap.extras.code_editor import CodeEditor
-from qtstrap.extras.scene_tree import SceneTreeDockWidget
+from qtstrap.extras.debugger import SceneTreeDockWidget
 from codex import DeviceControlsDockWidget
 from .sandbox import Sandbox
 from .about import AboutDialog
