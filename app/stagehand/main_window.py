@@ -2,12 +2,12 @@ from qtstrap import *
 from qtstrap.extras.log_monitor import LogMonitorDropdown
 from qtstrap.extras.command_palette import CommandPalette, Command
 from qtstrap.extras.code_editor import CodeEditor
+from qtstrap.extras.scene_tree import SceneTreeDockWidget
 from codex import DeviceControlsDockWidget
 from .sandbox import Sandbox
 from .about import AboutDialog
 from .components import StagehandStatusBarItem, StagehandDockWidget
 from .tabs import MainTabWidget
-from .scene_tree import SceneTreeDockWidget
 
 from monaco import MonacoWidget
 
