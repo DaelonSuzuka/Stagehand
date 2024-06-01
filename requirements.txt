@@ -10,8 +10,7 @@ cffi==1.16.0
     # via sounddevice
 click==8.1.7
     # via qtstrap
-codex-engine-pyqt==0.1.1
-# -e P:/codex/codex-engine-pyqt
+codex-engine-pyqt==0.1.
 colorama==0.4.6
     # via click
 cyberlang==0.7.0
@@ -21,8 +20,7 @@ jinja2==3.1.4
     # via ahk
 markupsafe==2.1.5
     # via jinja2
-monaco-qt==0.1.9
-# -e P:/qtstrap/monaco-qt
+monaco-qt==0.1.8
 numpy==1.26.4
 packaging==24.0
     # via
@@ -67,7 +65,6 @@ qtpy==2.4.1
     #   qtstrap
     #   superqt
 qtstrap==0.6.1
-# -e P:/qtstrap/qtstrap
     # via codex-engine-pyqt
 setuptools==69.5.1
     # via

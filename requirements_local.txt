@@ -1,0 +1,3 @@
+-e P:/codex/codex-engine-pyqt
+-e P:/qtstrap/monaco-qt
+-e P:/qtstrap/qtstrap
