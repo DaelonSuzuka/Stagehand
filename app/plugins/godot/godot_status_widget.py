@@ -29,8 +29,8 @@ class GodotStatusWidget(StagehandStatusBarItem):
         self.status_label = QLabel('Not Connected')
 
         self.settings = GodotSettings()
-        self.connect_at_start = PersistentCheckableAction('godot/connect_at_start', 'Connect on Startup')
 
+        self.connect_at_start = PersistentCheckableAction('godot/connect_at_start', 'Connect on Startup')
         if self.connect_at_start.isChecked():
             self.open()
 
@@ -83,7 +83,7 @@ class GodotStatusWidget(StagehandStatusBarItem):
 
     def open(self):
         self.set_status('pending')
-        self.socket.open(self.url, self.port)
+        self.socket.open(self.settings.url, self.settings.port)
 
     def close(self):
         self.socket.we_closed = True

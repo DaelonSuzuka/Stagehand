@@ -1,8 +1,19 @@
 from qtstrap import *
 from qtstrap.extras.command_palette import Command
+from qtstrap.extras.settings_model import SettingsModel
 from stagehand.components import StagehandStatusBarItem
 from stagehand.main_window import MainWindow
 from .obs_socket import ObsSocket
+
+
+class ObsSettings(SettingsModel):
+    url: str = 'localhost'
+    port: str = '4444'
+    password: str = 'websocketpassword'
+    connect_at_start: bool = False
+
+    class Config:
+        prefix = 'plugins/obs'
 
 
 @singleton
@@ -17,12 +28,9 @@ class ObsStatusWidget(StagehandStatusBarItem):
         self.status = ''
         self.status_label = QLabel('Not Connected')
 
-        self.url = QSettings().value('obs/url', 'localhost')
-        self.port = QSettings().value('obs/port', '4444')
-        self.password = QSettings().value('obs/password', 'websocketpassword')
+        self.settings = ObsSettings()
 
         self.connect_at_start = PersistentCheckableAction('obs/connect_at_start', 'Connect on Startup')
-
         if self.connect_at_start.isChecked():
             self.open()
 
@@ -41,16 +49,13 @@ class ObsStatusWidget(StagehandStatusBarItem):
         self.status_label.setText(text)
 
     def set_url(self, url):
-        QSettings().setValue('obs/url', url)
-        self.url = url
+        self.settings.url = url
 
     def set_port(self, port):
-        QSettings().setValue('obs/port', port)
-        self.port = port
+        self.settings.port = port
 
     def set_password(self, password):
-        QSettings().setValue('obs/password', password)
-        self.password = password
+        self.settings.password = password
 
     def set_status(self, status):
         self.status = status
@@ -81,7 +86,7 @@ class ObsStatusWidget(StagehandStatusBarItem):
 
     def open(self):
         self.set_status('pending')
-        self.socket.open(self.url, self.port, self.password)
+        self.socket.open(self.settings.url, self.settings.port, self.settings.password)
 
     def close(self):
         self.socket.we_closed = True

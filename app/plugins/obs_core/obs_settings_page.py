@@ -15,10 +15,16 @@ class ObsSettingsPage(SingletonPageMixin, StagehandPage):
 
         obs = ObsStatusWidget()
 
+        self.start = QPushButton('Start')
+        self.start.clicked.connect(obs.open)
+        self.stop = QPushButton('Stop')
+        self.stop.clicked.connect(obs.close)
+        self.stop.setEnabled(False)
+
         self.status = QLabel(obs.status_label.text())
-        self.url = QLineEdit(obs.url)
-        self.port = QLineEdit(obs.port)
-        self.password = QLineEdit(obs.password)
+        self.url = QLineEdit(obs.settings.url)
+        self.port = QLineEdit(obs.settings.port)
+        self.password = QLineEdit(obs.settings.password)
         self.password.setEchoMode(QLineEdit.PasswordEchoOnEdit)
         self.connect_at_start = QCheckBox()
         self.connect_at_start.setChecked(obs.connect_at_start.isChecked())
@@ -37,6 +43,7 @@ class ObsSettingsPage(SingletonPageMixin, StagehandPage):
         with CVBoxLayout(self) as layout:
             with layout.form():
                 layout.setFieldGrowthPolicy(QFormLayout.FieldsStayAtSizeHint)
+                layout.addRow(self.start, self.stop)
                 layout.addRow('Status:', self.status)
                 layout.addRow('Url:', self.url)
                 layout.addRow('Port:', self.port)
@@ -52,7 +59,11 @@ class ObsSettingsPage(SingletonPageMixin, StagehandPage):
             self.url.setEnabled(False)
             self.port.setEnabled(False)
             self.password.setEnabled(False)
+            self.start.setEnabled(False)
+            self.stop.setEnabled(True)
         elif status == 'inactive':
             self.url.setEnabled(True)
             self.port.setEnabled(True)
             self.password.setEnabled(True)
+            self.start.setEnabled(True)
+            self.stop.setEnabled(False)

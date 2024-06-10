@@ -14,6 +14,12 @@ class GodotSettingsPage(SingletonPageMixin, StagehandPage):
             self.set_data(data)
 
         godot = GodotStatusWidget()
+        
+        self.start = QPushButton('Start')
+        self.start.clicked.connect(godot.open)
+        self.stop = QPushButton('Stop')
+        self.stop.clicked.connect(godot.close)
+        self.stop.setEnabled(False)
 
         self.status = QLabel(godot.status_label.text())
         self.url = QLineEdit(godot.settings.url)
@@ -39,6 +45,7 @@ class GodotSettingsPage(SingletonPageMixin, StagehandPage):
         with CVBoxLayout(self) as layout:
             with layout.form():
                 layout.setFieldGrowthPolicy(QFormLayout.FieldsStayAtSizeHint)
+                layout.addRow(self.start, self.stop)
                 layout.addRow('Status:', self.status)
                 layout.addRow('Url:', self.url)
                 layout.addRow('Port:', self.port)
@@ -54,7 +61,11 @@ class GodotSettingsPage(SingletonPageMixin, StagehandPage):
             self.url.setEnabled(False)
             self.port.setEnabled(False)
             # self.password.setEnabled(False)
+            self.start.setEnabled(False)
+            self.stop.setEnabled(True)
         elif status == 'inactive':
             self.url.setEnabled(True)
             self.port.setEnabled(True)
             # self.password.setEnabled(True)
+            self.start.setEnabled(True)
+            self.stop.setEnabled(False)
