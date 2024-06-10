@@ -1,7 +1,6 @@
 from qtstrap import *
 from qtstrap.extras.log_monitor import LogMonitorDockWidget
 from qtstrap.extras.command_palette import CommandPalette, Command
-from qtstrap.extras.code_editor import CodeEditor
 from qtstrap.extras.devtools import SceneTreeDockWidget, StyleEditorDockWidget, ReplDockWidget
 from codex import DeviceControlsDockWidget
 from .sandbox import Sandbox
