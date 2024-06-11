@@ -190,8 +190,8 @@ class DeviceTrigger(TriggerItem):
         self.refresh_devices()
         if 'device' in data:
             self.device_selector.setCurrentText(data['device'])
-            self.event_selector.setCurrentText(data['event'])
             self.device_changed(data['device'])
+            self.event_selector.setCurrentText(data['event'])
 
     def get_data(self):
         return {
