@@ -39,5 +39,12 @@ dependencies = [
     "superqt",
 ]
 
-[project.gui-scripts]
-spam-gui = "app:main"
+[project.scripts]
+stagehand = "app.main:main"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "app"}
