@@ -42,7 +42,7 @@ requirements = [
     'pydantic==1.10.8',
     'pynput',
     'pyserial',
-    'PySide6==6.7.0',
+    'PySide6==6.7.2',
     'QtAwesome',
     'QtPy',
     'qtstrap',
