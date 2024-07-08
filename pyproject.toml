@@ -1,20 +1,7 @@
 [project]
 name = "Stagehand"
-description = "An event-based desktop automation tool for Windows, Linux, and macOS."
-readme = "README.md"
 license = { text = "MIT License" }
 version = "2024.0.0"
-authors = [{ name = "David Kincaid", email = "dlkincaid0@gmail.com" }]
-classifiers = [
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-]
-
 requires-python = ">= 3.10"
 dependencies = [
     "ahk==0.14.2",
@@ -38,13 +25,3 @@ dependencies = [
     "sounddevice",
     "superqt",
 ]
-
-[project.scripts]
-stagehand = "app.main:main"
-
-[build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
-
-[tool.setuptools]
-package-dir = {"" = "app"}
