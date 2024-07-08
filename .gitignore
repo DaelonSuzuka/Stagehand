@@ -6,6 +6,8 @@
 __pycache__
 output
 *.pyo
+.mypy_cache
+.ruff_cache
 
 # vs code project settings folder
 # .vscode
