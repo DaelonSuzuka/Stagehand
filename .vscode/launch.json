@@ -6,9 +6,9 @@
     "configurations": [
         {
             "name": "Stagehand",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
-            "program": "app/main.py",
+            "program": "src/stagehand/__main__.py",
             "console": "internalConsole",
             "justMyCode": true
         }

@@ -2,7 +2,7 @@ from qtstrap import *
 import qtawesome as qta
 import sys
 import qtpy
-import app_info
+from stagehand import app_info
 
 
 class AboutDialog(QDialog):

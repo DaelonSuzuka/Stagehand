@@ -1,27 +1,67 @@
 [project]
-name = "Stagehand"
-license = { text = "MIT License" }
-version = "2024.0.0"
-requires-python = ">= 3.10"
-dependencies = [
-    "ahk==0.14.2",
-    "ahk-binary==1.1.33.9",
-    "appdirs",
-    "click",
-    "codex-engine-pyqt",
-    "cyberlang",
-    "inquirerpy",
-    "monaco-qt",
-    "numpy",
-    "pygame-ce",
-    "psutil",
-    "pydantic==1.10.8",
-    "pynput",
-    "pyserial",
-    "PySide6==6.7.2",
-    "QtAwesome",
-    "QtPy",
-    "qtstrap",
-    "sounddevice",
-    "superqt",
+name = "stagehand"
+version = "0.1.0"
+description = "An event-based desktop automation tool for Windows, Linux, and macOS."
+readme = "README.md"
+authors = [{ name = "David Kincaid", email = "daelonsuzuka@gmail.com" }]
+classifiers = [
+    "Environment :: MacOS X",
+    "Environment :: Win32 (MS Windows)",
+    "Environment :: X11 Applications",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "License :: Freeware",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Education",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Debuggers",
+    "Topic :: Text Editors",
 ]
+requires-python = ">= 3.9"
+dependencies = [
+    "qtstrap>=0.6.4",
+    "pyside6>=6.7.2",
+    "pyserial>=3.5",
+    "cyberlang>=0.7.0",
+    "monaco-qt>=0.1.9",
+    "numpy>=2.0.1",
+    "psutil>=6.0.0",
+    "sounddevice>=0.4.7",
+    "superqt>=0.6.7",
+    "codex-engine-pyqt>=0.2.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/DaelonSuzuka/Stagehand"
+Repository = "https://github.com/DaelonSuzuka/Stagehand"
+Issues = "https://github.com/DaelonSuzuka/Stagehand/issues"
+
+[project.scripts]
+"stagehand" = "stagehand.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = []
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/stagehand"]
