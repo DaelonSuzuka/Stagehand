@@ -11,7 +11,7 @@ def main() -> None:
     pass
 
 
-PLUGIN_FOLDER = 'app/plugins/'
+PLUGIN_FOLDER = 'src/stagehand/plugins/'
 
 
 @main.command()

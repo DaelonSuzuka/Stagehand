@@ -41,8 +41,10 @@ log.db
 app/plugins/**/packages
 
 # zipped plugins
-app/plugins/**/*.zip
+src/stagehand/plugins/**/*.zip
 
 Stagehand.code-workspace
 
 .history
+
+.env

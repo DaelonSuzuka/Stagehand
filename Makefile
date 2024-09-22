@@ -14,9 +14,10 @@ MAKEFLAGS += --no-builtin-rules
 
 # **************************************************************************** #
 
-APP_FOLDER := app
-APP_MAIN := $(APP_FOLDER)/main.py
-APP_INFO := $(APP_FOLDER)/app_info.py
+APP_FOLDER := src
+APP_NAME := stagehand
+APP_MAIN := $(APP_FOLDER)/$(APP_NAME)/__main__.py
+APP_INFO := $(APP_FOLDER)/$(APP_NAME)/app_info.py
 
 # load the project variables
 ifneq (,$(wildcard $(APP_INFO)))
@@ -44,6 +45,11 @@ run: venv
 # run the application in pdb
 debug: venv
 > $(VENV_PYTHON) -m pdb $(APP_MAIN)
+
+#
+reload:
+> -pipx uninstall stagehand
+> pipx install . -e
 
 # ---------------------------------------------------------------------------- #
 

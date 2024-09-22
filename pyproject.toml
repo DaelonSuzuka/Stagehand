@@ -30,9 +30,9 @@ classifiers = [
     "Topic :: Software Development :: Debuggers",
     "Topic :: Text Editors",
 ]
-requires-python = ">= 3.9"
+requires-python = ">= 3.10"
 dependencies = [
-    "qtstrap>=0.6.4",
+    "qtstrap>=0.6.6",
     "pyside6>=6.7.2",
     "pyserial>=3.5",
     "cyberlang>=0.7.0",
@@ -42,6 +42,9 @@ dependencies = [
     "sounddevice>=0.4.7",
     "superqt>=0.6.7",
     "codex-engine-pyqt>=0.2.0",
+    "ahk[binary]==0.14.2",
+    "pygame-ce>=2.5.1",
+    "pynput>=1.7.7"
 ]
 
 [project.urls]
@@ -52,16 +55,29 @@ Issues = "https://github.com/DaelonSuzuka/Stagehand/issues"
 [project.scripts]
 "stagehand" = "stagehand.__main__:main"
 
+[tool.uv]
+package = true
+dev-dependencies = [
+    "PySide6>=6.7.0",
+    "pytest>=8.3.2",
+    "pytest-cov>=5.0.0",
+    "pytest-qt>=4.4.0",
+    "twine",
+    "click",
+]
+
+[tool.uv.sources]
+qtstrap = { workspace = true }
+codex-engine-pyqt = { workspace = true }
+monaco-qt = { workspace = true }
+
+[tool.uv.workspace]
+members = [
+    "../qtstrap",
+    "../codex/codex-engine-pyqt",
+    "../monaco-qt",
+]
+
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[tool.rye]
-managed = true
-dev-dependencies = []
-
-[tool.hatch.metadata]
-allow-direct-references = true
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/stagehand"]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
