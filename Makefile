@@ -14,6 +14,15 @@ MAKEFLAGS += --no-builtin-rules
 
 # **************************************************************************** #
 
+# load the pypi credentials
+ifneq (,$(wildcard .env))
+include .env
+# export them for twine
+export
+endif
+
+# **************************************************************************** #
+
 APP_FOLDER := src
 APP_NAME := stagehand
 APP_MAIN := $(APP_FOLDER)/$(APP_NAME)/__main__.py
@@ -45,6 +54,14 @@ run: venv
 # run the application in pdb
 debug: venv
 > $(VENV_PYTHON) -m pdb $(APP_MAIN)
+
+#
+build:
+> uv build
+
+#
+publish:
+> twine upload dist/* -u __token__
 
 #
 reload:
