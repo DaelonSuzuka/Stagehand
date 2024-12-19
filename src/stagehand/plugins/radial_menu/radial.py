@@ -121,38 +121,47 @@ class RadialMenu(QtWidgets.QGraphicsObject):
 
 class RadialPopup(QtWidgets.QDialog):
     buttonClicked = QtCore.Signal(object)
-    
-    def __init__(self):
+
+    def __init__(self, action_names: list[str]):
         super().__init__()
         self.setModal(True)
 
         self.setStyleSheet('background:transparent;')
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint | QtCore.Qt.WindowType.Window)
+        self.setWindowFlags(
+            QtCore.Qt.WindowType.FramelessWindowHint
+            | QtCore.Qt.WindowType.Window
+            # | QtCore.Qt.WindowType.Tool
+            # | QtCore.Qt.WindowType.Popup
+            # | QtCore.Qt.WindowType.NoDropShadowWindowHint
+            | QtCore.Qt.WindowType.WindowStaysOnTopHint
+        )
 
-        size = 300
+        self.size = 300
 
         menu = RadialMenu()
         menu.buttonClicked.connect(self.button_clicked)
 
         for index, angle in enumerate(range(0, 360, 60)):
-            menu.addButton(index, 40, 40, angle, 60)
+            menu.addButton(action_names[index], 40, 40, angle, 60)
 
-        menu.setPos(size // 2, size // 2)
+        menu.setPos(self.size // 2, self.size // 2)
         menu.setZValue(1000)
 
         self.scene = QtWidgets.QGraphicsScene(self)
         self.scene.addItem(menu)
-        self.scene.setSceneRect(0, 0, size, size)
+        self.scene.setSceneRect(0, 0, self.size, self.size)
 
         self.view = QtWidgets.QGraphicsView(self.scene, self)
         self.view.setRenderHints(QtGui.QPainter.Antialiasing)
 
+        self.move_to_cursor()
+
+    def move_to_cursor(self):
         pos = QtGui.QCursor().pos()
-        x = pos.x() - size // 2
-        y = pos.y() - size // 2
-        self.setGeometry(x, y, size, size)
-        self.show()
+        x = pos.x() - self.size // 2
+        y = pos.y() - self.size // 2
+        self.setGeometry(x, y, self.size, self.size)
 
     def button_clicked(self, id):
         print(f'Button id {id} has been clicked')
