@@ -120,6 +120,8 @@ class RadialMenu(QtWidgets.QGraphicsObject):
 
 
 class RadialPopup(QtWidgets.QDialog):
+    buttonClicked = QtCore.Signal(object)
+    
     def __init__(self):
         super().__init__()
         self.setModal(True)
@@ -131,7 +133,7 @@ class RadialPopup(QtWidgets.QDialog):
         size = 300
 
         menu = RadialMenu()
-        menu.buttonClicked.connect(self.buttonClicked)
+        menu.buttonClicked.connect(self.button_clicked)
 
         for index, angle in enumerate(range(0, 360, 60)):
             menu.addButton(index, 40, 40, angle, 60)
@@ -152,6 +154,7 @@ class RadialPopup(QtWidgets.QDialog):
         self.setGeometry(x, y, size, size)
         self.show()
 
-    def buttonClicked(self, id):
+    def button_clicked(self, id):
         print(f'Button id {id} has been clicked')
-        # self.accept()
+        self.buttonClicked.emit(id)
+        self.accept()
