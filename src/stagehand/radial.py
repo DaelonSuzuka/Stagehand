@@ -24,6 +24,15 @@ class RadialMenu(QtWidgets.QGraphicsObject):
         outerRadius = innerRadius + size
         endRect = QtCore.QRectF(-outerRadius, -outerRadius, outerRadius * 2, outerRadius * 2)
 
+        center_path = QtGui.QPainterPath()
+        center_path.moveTo(QtCore.QLineF.fromPolar(innerRadius, 0).p2())
+        center_path.arcTo(startRect, 0, 360)
+        center_path.closeSubpath()
+
+        self.center = QtWidgets.QGraphicsPathItem(center_path, self)
+        self.center.setPen(QtGui.QColor(QtCore.Qt.black))
+        self.center.setBrush(QtGui.QColor(QtGui.QColor(255, 255, 255, 1)))
+
         # create the circle section path
         path = QtGui.QPainterPath()
         # move to the start angle, using the outer circle
@@ -40,7 +49,7 @@ class RadialMenu(QtWidgets.QGraphicsObject):
 
         # create a child item for the "arc"
         item = QtWidgets.QGraphicsPathItem(path, self)
-        item.setPen(QtGui.QPen(QtGui.QColor(QtCore.Qt.black)))
+        item.setPen(QtGui.QColor(QtCore.Qt.black))
         item.setBrush(QtGui.QColor(180, 140, 70))
         self.buttons[id] = item
 
@@ -90,9 +99,16 @@ class RadialMenu(QtWidgets.QGraphicsObject):
         if clickButton:
             for id, btn in self.buttons.items():
                 if btn == clickButton:
+                    event.accept()
                     self.buttonClicked.emit(id)
                     return
 
+        if self.center.shape().contains(event.pos()):
+            event.accept()
+            self.buttonClicked.emit('center')
+            return
+
+        event.accept()
         self.buttonClicked.emit(None)
 
     def boundingRect(self):
@@ -103,35 +119,39 @@ class RadialMenu(QtWidgets.QGraphicsObject):
         pass
 
 
-class RadialTest(QtWidgets.QDialog):
+class RadialPopup(QtWidgets.QDialog):
     def __init__(self):
         super().__init__()
-        # self.setModal(True)
+        self.setModal(True)
 
         self.setStyleSheet('background:transparent;')
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint | QtCore.Qt.WindowType.Window)
-        self.scene = QtWidgets.QGraphicsScene(self)
 
-        buttonItem = RadialMenu()
-        self.scene.addItem(buttonItem)
-        buttonItem.buttonClicked.connect(self.buttonClicked)
+        size = 300
+
+        menu = RadialMenu()
+        menu.buttonClicked.connect(self.buttonClicked)
 
         for index, angle in enumerate(range(0, 360, 60)):
-            buttonItem.addButton(index, 40, 40, angle, 60)
+            menu.addButton(index, 40, 40, angle, 60)
 
-        buttonItem.setPos(150, 150)
-        buttonItem.setZValue(1000)
+        menu.setPos(size // 2, size // 2)
+        menu.setZValue(1000)
+
+        self.scene = QtWidgets.QGraphicsScene(self)
+        self.scene.addItem(menu)
+        self.scene.setSceneRect(0, 0, size, size)
 
         self.view = QtWidgets.QGraphicsView(self.scene, self)
         self.view.setRenderHints(QtGui.QPainter.Antialiasing)
-        self.scene.setSceneRect(0, 0, 300, 300)
 
         pos = QtGui.QCursor().pos()
-        self.setGeometry(pos.x() - 150, pos.y() - 150, 300, 300)
+        x = pos.x() - size // 2
+        y = pos.y() - size // 2
+        self.setGeometry(x, y, size, size)
         self.show()
 
     def buttonClicked(self, id):
         print(f'Button id {id} has been clicked')
-        self.accept()
-        
+        # self.accept()
