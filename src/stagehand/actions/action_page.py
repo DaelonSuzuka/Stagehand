@@ -24,7 +24,7 @@ class ActionsPage(StagehandPage):
         self.label = LabelEdit(f'Page {name}', changed=self.changed)
         self.group = ActionWidgetGroup(name, changed=self.on_change, parent=self, autosave=False)
 
-        self.actions = []
+        self.actions: list[ActionWidget] = []
         self.actions_container = CVBoxLayout()
 
         self.enabled = CustomAnimatedToggle()
