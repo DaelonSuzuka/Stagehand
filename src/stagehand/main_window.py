@@ -150,8 +150,8 @@ class MainWindow(BaseMainWindow):
 
     def init_tray_stuff(self):
         self.tray_icon = QSystemTrayIcon(self)
-        if files := list(Path(OPTIONS.APPLICATION_PATH).rglob(OPTIONS.app_info.AppIconName)):
-            self.tray_icon.setIcon(QIcon(files[0].as_posix()))
+        # if files := list(Path(OPTIONS.APPLICATION_PATH).rglob(OPTIONS.app_info.AppIconName)):
+        #     self.tray_icon.setIcon(QIcon(files[0].as_posix()))
 
         self.tray_menu = QMenu()
         self.tray_menu.addAction(QAction('Open', self, triggered=self.show))

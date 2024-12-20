@@ -1,50 +1,50 @@
-name: Release
-on: 
-  push:
-    branches:
-      - master
-    paths-ignore:
-      - '**/README.md'
-      - 'images/*'
+# name: Release
+# on: 
+#   push:
+#     branches:
+#       - master
+#     paths-ignore:
+#       - '**/README.md'
+#       - 'images/*'
 
-jobs:
-  build-windows:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10.8'
-          architecture: 'x64'
-          cache: 'pip'
-      - run: make bundle
-      - run: make installer
+# jobs:
+#   build-windows:
+#     runs-on: windows-latest
+#     steps:
+#       - uses: actions/checkout@v3
+#       - uses: actions/setup-python@v4
+#         with:
+#           python-version: '3.10.8'
+#           architecture: 'x64'
+#           cache: 'pip'
+#       - run: make bundle
+#       - run: make installer
 
-      - name: Upload installer
-        uses: actions/upload-artifact@v3.1.0
-        with:
-          name: windows-installer
-          path: dist/installer/*.exe
+#       - name: Upload installer
+#         uses: actions/upload-artifact@v3.1.0
+#         with:
+#           name: windows-installer
+#           path: dist/installer/*.exe
 
-      - name: Upload zip
-        uses: actions/upload-artifact@v3.1.0
-        with:
-          name: windows-portable
-          path: dist/Stagehand
+#       - name: Upload zip
+#         uses: actions/upload-artifact@v3.1.0
+#         with:
+#           name: windows-portable
+#           path: dist/Stagehand
 
-  build-linux:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10.8'
-          architecture: 'x64'
-          cache: 'pip'
-      - run: make bundle
+#   build-linux:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v3
+#       - uses: actions/setup-python@v4
+#         with:
+#           python-version: '3.10.8'
+#           architecture: 'x64'
+#           cache: 'pip'
+#       - run: make bundle
 
-      - name: Upload zip
-        uses: actions/upload-artifact@v3.1.0
-        with:
-          name: linux-portable
-          path: dist/Stagehand
+#       - name: Upload zip
+#         uses: actions/upload-artifact@v3.1.0
+#         with:
+#           name: linux-portable
+#           path: dist/Stagehand
