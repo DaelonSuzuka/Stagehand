@@ -6,20 +6,20 @@ from qtpy import QtCore, QtGui, QtWidgets
 class RadialMenu(QtWidgets.QGraphicsObject):
     buttonClicked = QtCore.Signal(object)
 
-    def __init__(self, parent=None):
-        super().__init__(parent)
+    def __init__(self, bg=None):
+        super().__init__()
         self.setAcceptHoverEvents(True)
         self.buttons = {}
 
+        self.bg = QtGui.QColor(bg) if bg else QtGui.QColor(180, 140, 70)
+
     def addButton(self, id, innerRadius, size, startAngle, angleSize, icon=None):
-        # if a button already exists with the same id, remove it
         if id in self.buttons:
             oldItem = self.buttons.pop(id)
             if self.scene():
                 self.scene().removeItem(oldItem)
             oldItem.setParent(None)
 
-        # compute the extents of the inner and outer "circles"
         startRect = QtCore.QRectF(-innerRadius, -innerRadius, innerRadius * 2, innerRadius * 2)
         outerRadius = innerRadius + size
         endRect = QtCore.QRectF(-outerRadius, -outerRadius, outerRadius * 2, outerRadius * 2)
@@ -31,42 +31,28 @@ class RadialMenu(QtWidgets.QGraphicsObject):
 
         self.center = QtWidgets.QGraphicsPathItem(center_path, self)
         self.center.setPen(QtGui.QColor(QtCore.Qt.black))
-        self.center.setBrush(QtGui.QColor(QtGui.QColor(255, 255, 255, 1)))
+        self.center.setBrush(QtGui.QColor(255, 255, 255, 1))
 
-        # create the circle section path
         path = QtGui.QPainterPath()
-        # move to the start angle, using the outer circle
         path.moveTo(QtCore.QLineF.fromPolar(outerRadius, startAngle).p2())
-        # draw the arc to the end of the angle size
         path.arcTo(endRect, startAngle, angleSize)
-        # draw a line that connects to the inner circle
         path.lineTo(QtCore.QLineF.fromPolar(innerRadius, startAngle + angleSize).p2())
-        # draw the inner circle arc back to the start angle
         path.arcTo(startRect, startAngle + angleSize, -angleSize)
-        # close the path back to the starting position; theoretically unnecessary,
-        # but better safe than sorry
         path.closeSubpath()
 
-        # create a child item for the "arc"
         item = QtWidgets.QGraphicsPathItem(path, self)
         item.setPen(QtGui.QColor(QtCore.Qt.black))
-        item.setBrush(QtGui.QColor(180, 140, 70))
+        item.setBrush(self.bg)
         self.buttons[id] = item
 
         if icon is not None:
-            # the maximum available size is at 45 degrees, use the Pythagorean
-            # theorem to compute it and create a new pixmap based on the icon
             iconSize = int(sqrt(size**2 / 2))
             pixmap = icon.pixmap(iconSize)
-            # create the child icon (pixmap) item
             iconItem = QtWidgets.QGraphicsPixmapItem(pixmap, self)
-            # push it above the "arc" item
             iconItem.setZValue(item.zValue() + 1)
-            # find the mid of the angle and put the icon there
             midAngle = startAngle + angleSize / 2
             iconPos = QtCore.QLineF.fromPolar(innerRadius + size * 0.5, midAngle).p2()
             iconItem.setPos(iconPos)
-            # use the center of the pixmap as the offset for centering
             iconItem.setOffset(-pixmap.rect().center())
 
     def itemAtPos(self, pos):
@@ -82,7 +68,7 @@ class RadialMenu(QtWidgets.QGraphicsObject):
                 button.setBrush(QtGui.QColor(QtCore.Qt.white))
             else:
                 button.setPen(QtGui.QColor(QtCore.Qt.black))
-                button.setBrush(QtGui.QColor(180, 140, 70))
+                button.setBrush(self.bg)
 
     def hoverEnterEvent(self, event):
         self.checkHover(event.pos())
@@ -114,15 +100,14 @@ class RadialMenu(QtWidgets.QGraphicsObject):
     def boundingRect(self):
         return self.childrenBoundingRect()
 
-    def paint(self, qp, option, widget):
-        # required for QGraphicsObject subclasses
+    def paint(self, *_):
         pass
 
 
 class RadialPopup(QtWidgets.QDialog):
     buttonClicked = QtCore.Signal(object)
 
-    def __init__(self, action_names: list[str]):
+    def __init__(self, action_names: list[str], bg=None):
         super().__init__()
         self.setModal(True)
 
@@ -139,7 +124,7 @@ class RadialPopup(QtWidgets.QDialog):
 
         self.size = 300
 
-        menu = RadialMenu()
+        menu = RadialMenu(bg=bg)
         menu.buttonClicked.connect(self.button_clicked)
 
         for index, angle in enumerate(range(0, 360, 60)):
