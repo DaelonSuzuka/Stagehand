@@ -149,7 +149,9 @@ class RadialMenuPage(StagehandPage):
 
     def open_popup(self):
         if self.menu:
-            self.menu.move_to_cursor()
+            # self.menu.move_to_cursor()
+            self.menu.deleteLater()
+            self.menu = None
             return
         self.menu = RadialPopup(list(self._actions.keys()), bg=self.color.text())
         self.menu.buttonClicked.connect(self.popup_clicked)
