@@ -1,7 +1,7 @@
 from qtstrap import *
 from qtstrap.extras.log_monitor import LogMonitorDockWidget
 from qtstrap.extras.command_palette import CommandPalette, Command
-from qtstrap.extras.devtools import SceneTreeDockWidget, StyleEditorDockWidget, ReplDockWidget
+# from qtstrap.extras.devtools import SceneTreeDockWidget, StyleEditorDockWidget, ReplDockWidget
 from codex import DeviceControlsDockWidget
 from .sandbox import Sandbox
 from .about import AboutDialog
@@ -49,9 +49,9 @@ class MainWindow(BaseMainWindow):
         self.device_controls = DeviceControlsDockWidget(self)
         self.device_controls.hide()
 
-        self.style_editor = StyleEditorDockWidget(self)
-        self.repl = ReplDockWidget(self)
-        self.scene_tree = SceneTreeDockWidget(self)
+        # self.style_editor = StyleEditorDockWidget(self)
+        # self.repl = ReplDockWidget(self)
+        # self.scene_tree = SceneTreeDockWidget(self)
         self.log_monitor = LogMonitorDockWidget(self)
         self.sandbox = Sandbox(self)
         self.command_palette = CommandPalette(self)
@@ -114,9 +114,9 @@ class MainWindow(BaseMainWindow):
         menu.addAction(self.device_controls.toggleViewAction())
         menu.addAction(self.log_monitor.toggleViewAction())
 
-        menu.addAction(self.style_editor.toggleViewAction())
-        menu.addAction(self.repl.toggleViewAction())
-        menu.addAction(self.scene_tree.toggleViewAction())
+        # menu.addAction(self.style_editor.toggleViewAction())
+        # menu.addAction(self.repl.toggleViewAction())
+        # menu.addAction(self.scene_tree.toggleViewAction())
 
         menu.addSeparator()
         menu.addMenu(self.font_menu)

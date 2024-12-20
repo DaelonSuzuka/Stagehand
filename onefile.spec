@@ -3,8 +3,10 @@
 import configparser
 
 
+APP_DIR = 'src/stagehand'
+
 # load app info
-with open('app/app_info.py') as f:
+with open(f'{APP_DIR}/app_info.py') as f:
     file_content = '[dummy_section]\n' + f.read()
 
 config = configparser.ConfigParser()
@@ -13,22 +15,24 @@ config.read_string(file_content)
 section = config['dummy_section']
 
 app_name = section['AppName'].replace('"', '')
-icon_file = str(section['AppIconPath'] + '/' + section['AppIconName']).replace('"', '')
+icon_file = APP_DIR + '/' + str(section['AppIconPath'] + '/' + section['AppIconName']).replace('"', '')
 
 
 a = Analysis(
-    ['app/main.py'],
-    pathex=['./app'],
+    [f'{APP_DIR}/__main__.py'],
+    pathex=[APP_DIR],
     binaries=[],
     datas=[
-        ('app/resources', 'resources'),
-        ('app/plugins/*.zip', 'plugins'),
-        ('app/plugins/devices/*.zip', 'plugins/devices'),
+        (f'{APP_DIR}/resources', 'resources'),
+        (f'{APP_DIR}/plugins/*.zip', 'plugins'),
+        (f'{APP_DIR}/plugins/devices/*.zip', 'plugins/devices'),
     ],
     hiddenimports=[
+        'pygame',
+        'pynput',
+        'ahk',
         'numpy',
         'sounddevice',
-        'flask',
         'qtpy.QtWebSockets',
         'qtpy.shiboken',
     ],
@@ -38,13 +42,13 @@ a = Analysis(
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
     cipher=None,
-    noarchive=False
+    noarchive=False,
 )
 
 pyz = PYZ(
-    a.pure, 
+    a.pure,
     a.zipped_data,
-    cipher=None
+    cipher=None,
 )
 
 exe = EXE(
@@ -59,5 +63,5 @@ exe = EXE(
     strip=False,
     upx=False,
     runtime_tmpdir=None,
-    console=False
+    console=False,
 )
