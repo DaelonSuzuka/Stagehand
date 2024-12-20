@@ -149,6 +149,5 @@ class RadialPopup(QtWidgets.QDialog):
         self.setGeometry(x, y, self.size, self.size)
 
     def button_clicked(self, id):
-        print(f'Button id {id} has been clicked')
         self.buttonClicked.emit(id)
         self.accept()
