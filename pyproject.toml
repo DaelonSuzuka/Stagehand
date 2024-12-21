@@ -44,7 +44,8 @@ dependencies = [
     "codex-engine-pyqt>=0.2.0",
     "ahk[binary]==0.14.2",
     "pygame-ce>=2.5.1",
-    "pynput>=1.7.7"
+    "pynput>=1.7.7",
+    "promisio>=0.1.1",
 ]
 
 [project.urls]
