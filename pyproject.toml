@@ -75,7 +75,7 @@ monaco-qt = { workspace = true }
 [tool.uv.workspace]
 members = [
     "../qtstrap",
-    "../codex/codex-engine-pyqt",
+    "../codex-engine-pyqt",
     "../monaco-qt",
 ]
 
