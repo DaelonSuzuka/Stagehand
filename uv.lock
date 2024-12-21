@@ -1223,8 +1223,6 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "click", marker = "python_full_version >= '3.12.4'" },
-    { name = "pyside6", marker = "python_full_version >= '3.12.4'" },
     { name = "pytest", marker = "python_full_version >= '3.12.4'" },
     { name = "pytest-cov", marker = "python_full_version >= '3.12.4'" },
     { name = "pytest-qt", marker = "python_full_version >= '3.12.4'" },
@@ -1251,8 +1249,6 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "click" },
-    { name = "pyside6", specifier = ">=6.7.0" },
     { name = "pytest", specifier = ">=8.3.2" },
     { name = "pytest-cov", specifier = ">=5.0.0" },
     { name = "pytest-qt", specifier = ">=4.4.0" },
