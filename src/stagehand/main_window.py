@@ -90,6 +90,8 @@ class MainWindow(BaseMainWindow):
 
         App().updater.update_found.connect(self.display_update_available)
 
+        self.show()
+
     def display_update_available(self) -> None:
         self.tray_icon.showMessage('An update is available.', 'an update is available')
 

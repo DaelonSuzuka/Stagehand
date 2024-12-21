@@ -1,14 +1,14 @@
 from stagehand.application import Application
 from stagehand.main_window import MainWindow
 
+import PySide6.QtAsyncio as QtAsyncio
+
 
 def main():
-    app = Application()
+    Application()
+    MainWindow()
 
-    window = MainWindow()
-    window.show()
-
-    app.exec_()
+    QtAsyncio.run(handle_sigint=True)
 
 
 if __name__ == '__main__':
