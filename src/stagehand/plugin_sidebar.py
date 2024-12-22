@@ -7,4 +7,4 @@ class PluginSidebar(StagehandSidebar):
         super().__init__()
 
         with CVBoxLayout(self) as layout:
-            layout.add('sidebar')
+            layout.add(QLabel('sidebar'))
