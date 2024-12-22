@@ -1,11 +1,20 @@
+from pathlib import Path
+
+from codex import DeviceManager
 from qtstrap import *
 from qtstrap.extras import log_monitor
-from codex import DeviceManager
+
 from .app_updater import ApplicationUpdater
 from .plugin_loader import Plugins
 
 
 class Application(BaseApplication):
+    class AppInfo:
+        NAME = 'Stagehand'
+        VERSION = '0.4'
+        PUBLISHER = 'DaelonCo'
+        ICON_PATH = 'resources/stagehand.ico'
+
     def __init__(self) -> None:
         super().__init__()
 

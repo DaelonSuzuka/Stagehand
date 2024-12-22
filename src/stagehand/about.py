@@ -2,7 +2,6 @@ from qtstrap import *
 import qtawesome as qta
 import sys
 import qtpy
-from stagehand import app_info
 
 
 class AboutDialog(QDialog):
@@ -13,7 +12,7 @@ class AboutDialog(QDialog):
 
         with CVBoxLayout(self) as layout:
             with layout.vbox() as layout:
-                layout.add(QLabel(f'Stagehand: v{app_info.AppVersion}'))
+                # layout.add(QLabel(f'Stagehand: v{app_info.AppInfo.VERSION}'))
                 layout.add(QLabel())
 
                 layout.add(QLabel('Built with:'))

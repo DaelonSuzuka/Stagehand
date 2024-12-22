@@ -148,16 +148,15 @@ class MainWindow(BaseMainWindow):
             self.closing.emit()
             self.tray_icon.hide()
             super().closeEvent(event)
-            qApp.quit()
+            App().quit()
 
     def init_tray_stuff(self):
         self.tray_icon = QSystemTrayIcon(self)
-        # if files := list(Path(OPTIONS.APPLICATION_PATH).rglob(OPTIONS.app_info.AppIconName)):
-        #     self.tray_icon.setIcon(QIcon(files[0].as_posix()))
+        self.tray_icon.setIcon(QIcon(OPTIONS.ICON_PATH))
 
         self.tray_menu = QMenu()
         self.tray_menu.addAction(QAction('Open', self, triggered=self.show))
-        self.tray_menu.addAction(QAction('Quit', self, triggered=qApp.quit))
+        self.tray_menu.addAction(QAction('Quit', self, triggered=App().quit))
         self.tray_icon.setContextMenu(self.tray_menu)
 
         self.tray_icon.show()
