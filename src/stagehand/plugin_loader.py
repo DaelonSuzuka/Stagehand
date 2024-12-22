@@ -8,9 +8,6 @@ from zipimport import zipimporter
 import logging
 
 
-plugin_folder = OPTIONS.APPLICATION_PATH / 'plugins'
-
-
 def flush_logs():
     logging.getLogger().handlers[0].flush()
 
@@ -24,6 +21,8 @@ class Plugins:
 
         def is_plugin(p):
             return Path(Path(p) / 'plugin.json').exists()
+        
+        plugin_folder = OPTIONS.BASE_PATH / 'plugins'
 
         for plugin in plugin_folder.rglob('*.zip'):
             self.load_zip_plugin(plugin)
@@ -39,7 +38,7 @@ class Plugins:
         return key in self._plugins
 
     def load_zip_plugin(self, plugin):
-        plugin_name = plugin.relative_to(OPTIONS.APPLICATION_PATH).as_posix()
+        plugin_name = plugin.relative_to(OPTIONS.BASE_PATH).as_posix()
         plugin_name = plugin_name.replace('/', '.')
         plugin_name = plugin_name[: -len('.zip')]
 
@@ -59,7 +58,7 @@ class Plugins:
                 flush_logs()
 
     def load_loose_plugin(self, plugin):
-        plugin_name = plugin.relative_to(OPTIONS.APPLICATION_PATH).as_posix()
+        plugin_name = plugin.relative_to(OPTIONS.BASE_PATH).as_posix()
         plugin_name = plugin_name.replace('/', '.')
 
         if plugin_name not in self._plugins:
