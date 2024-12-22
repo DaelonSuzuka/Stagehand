@@ -19,11 +19,9 @@ class MainWindow(QMainWindow):
         button = QPushButton(text='pick one')
         button.clicked(self.ask_question)
 
-        self.label = QLabel()
-
         with CVBoxLayout(self) as layout:
-            layout.add(button, alignment=Qt.AlignmentFlag.AlignCenter)
-            layout.add(self.label, alignment=Qt.AlignmentFlag.AlignCenter)
+            layout.add(button)
+            self.label = layout.add(QLabel())
 
         self.show()
 
@@ -36,5 +34,5 @@ class MainWindow(QMainWindow):
 if __name__ == '__main__':
     app = QApplication()
     window = MainWindow()
-    
+
     QtAsyncio.run(handle_sigint=True)
