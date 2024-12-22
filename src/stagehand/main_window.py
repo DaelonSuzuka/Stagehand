@@ -3,6 +3,7 @@ from qtstrap import *
 from qtstrap.extras.command_palette import Command, CommandPalette
 # from qtstrap.extras.devtools import ReplDockWidget, SceneTreeDockWidget, StyleEditorDockWidget
 from qtstrap.extras.log_monitor import LogMonitorDockWidget
+import qtawesome as qta
 
 from .about import AboutDialog
 from .components import StagehandStatusBarItem
@@ -59,18 +60,15 @@ class MainWindow(BaseMainWindow):
 
         self.load_settings()
 
-        # self.create_activity_bar()
+        self.create_activity_bar()
 
         self.tabs = MainTabWidget()
-        # self.sidebar = QWidget()
-        # self.sidebar.hide()  # temp
+        self.sidebar = QWidget()
+        self.sidebar.hide()
 
-        # with CSplitter(self, margins=0) as splitter:
-        #     splitter.add(self.sidebar)
-        #     splitter.add(self.tabs)
-
-        with CVBoxLayout(self, margins=0) as layout:
-            layout.add(self.tabs)
+        with PersistentCSplitter('main_split', self, margins=0) as splitter:
+            splitter.add(self.sidebar)
+            splitter.add(self.tabs)
 
         self.tab_shortcuts = []
         for i in range(10):
@@ -100,12 +98,15 @@ class MainWindow(BaseMainWindow):
     def create_activity_bar(self):
         self.activity_bar = BaseToolbar(self, 'activitybar', location='left', size=40)
 
+        self.activity_bar.addWidget(QToolButton(icon=qta.icon('fa.list', color='gray')))
+        self.activity_bar.addWidget(QToolButton(icon=qta.icon('fa.file', color='gray')))
+        self.activity_bar.addWidget(QToolButton(icon=qta.icon('mdi.file-tree', color='gray')))
+
     def init_statusbar_items(self) -> None:
         self.statusbar.add_spacer()
 
         for widget in StagehandStatusBarItem.__subclasses__():
-            w: StagehandStatusBarItem = widget(self.statusbar)
-            self.statusbar.addWidget(w)
+            self.statusbar.addWidget(widget(self.statusbar))
 
         self.statusbar.addWidget(QLabel())
 
