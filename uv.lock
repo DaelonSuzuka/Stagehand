@@ -1065,7 +1065,7 @@ wheels = [
 
 [[package]]
 name = "qtstrap"
-version = "0.6.6"
+version = "0.7.0"
 source = { editable = "../qtstrap" }
 dependencies = [
     { name = "appdirs", marker = "python_full_version >= '3.12.4'" },
@@ -1226,7 +1226,7 @@ wheels = [
 
 [[package]]
 name = "stagehand"
-version = "0.2.1"
+version = "0.3.1"
 source = { editable = "." }
 dependencies = [
     { name = "ahk", extra = ["binary"], marker = "python_full_version >= '3.12.4'" },
@@ -1247,6 +1247,7 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "click", marker = "python_full_version >= '3.12.4'" },
     { name = "pytest", marker = "python_full_version >= '3.12.4'" },
     { name = "pytest-cov", marker = "python_full_version >= '3.12.4'" },
     { name = "pytest-qt", marker = "python_full_version >= '3.12.4'" },
@@ -1273,6 +1274,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "click", specifier = ">=8.1.7" },
     { name = "pytest", specifier = ">=8.3.2" },
     { name = "pytest-cov", specifier = ">=5.0.0" },
     { name = "pytest-qt", specifier = ">=4.4.0" },

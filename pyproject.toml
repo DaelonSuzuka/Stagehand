@@ -1,6 +1,6 @@
 [project]
 name = "stagehand"
-version = "0.3.1"
+version = "0.3.2"
 description = "An event-based desktop automation tool for Windows, Linux, and macOS."
 readme = "README.md"
 authors = [{ name = "David Kincaid", email = "daelonsuzuka@gmail.com" }]
@@ -63,6 +63,7 @@ dev-dependencies = [
     "pytest-cov>=5.0.0",
     "pytest-qt>=4.4.0",
     "twine",
+    "click>=8.1.7",
 ]
 
 [tool.uv.sources]
