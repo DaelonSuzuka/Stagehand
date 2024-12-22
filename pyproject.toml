@@ -1,6 +1,6 @@
 [project]
 name = "stagehand"
-version = "0.3.2"
+version = "0.3.3"
 description = "An event-based desktop automation tool for Windows, Linux, and macOS."
 readme = "README.md"
 authors = [{ name = "David Kincaid", email = "daelonsuzuka@gmail.com" }]
