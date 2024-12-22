@@ -26,23 +26,6 @@ endif
 APP_FOLDER := src
 APP_NAME := stagehand
 APP_MAIN := $(APP_FOLDER)/$(APP_NAME)/__main__.py
-APP_INFO := $(APP_FOLDER)/$(APP_NAME)/app_info.py
-
-# load the project variables
-ifneq (,$(wildcard $(APP_INFO)))
-include $(APP_INFO)
-
-# remove extra quotes
-AppName := $(patsubst "%",%,$(AppName))
-AppVersion := $(patsubst "%",%,$(AppVersion))
-AppPublisher := $(patsubst "%",%,$(AppPublisher))
-AppExeName := $(patsubst "%",%,$(AppExeName))
-AppIconName := $(patsubst "%",%,$(AppIconName))
-AppId := $(patsubst "%",%,$(AppId))
-
-# export them for InnoSetup
-export
-endif
 
 # **************************************************************************** #
 # Development Targets
@@ -125,10 +108,6 @@ endif
 # wrap the bundle into a zip file
 zip:
 > $(PYTHON) -m zipfile -c dist/$(AppName)-$(AppVersion)-portable.zip dist/$(AppName)/
-
-# build an installer with InnoSetup
-installer:
-> iscc "installer.iss"
 
 # remove the various build outputs
 clean:
