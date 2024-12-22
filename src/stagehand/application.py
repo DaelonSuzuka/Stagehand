@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from codex import DeviceManager
 from qtstrap import *
 from qtstrap.extras import log_monitor

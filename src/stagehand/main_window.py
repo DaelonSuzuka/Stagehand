@@ -1,11 +1,12 @@
-from qtstrap import *
-from qtstrap.extras.log_monitor import LogMonitorDockWidget
-from qtstrap.extras.command_palette import CommandPalette, Command
-# from qtstrap.extras.devtools import SceneTreeDockWidget, StyleEditorDockWidget, ReplDockWidget
 from codex import DeviceControlsDockWidget
-from .sandbox import Sandbox
+from qtstrap import *
+from qtstrap.extras.command_palette import Command, CommandPalette
+# from qtstrap.extras.devtools import ReplDockWidget, SceneTreeDockWidget, StyleEditorDockWidget
+from qtstrap.extras.log_monitor import LogMonitorDockWidget
+
 from .about import AboutDialog
 from .components import StagehandStatusBarItem
+from .sandbox import Sandbox
 from .tabs import MainTabWidget
 
 
@@ -68,7 +69,8 @@ class MainWindow(BaseMainWindow):
         #     splitter.add(self.sidebar)
         #     splitter.add(self.tabs)
 
-        self.setCentralWidget(self.tabs)
+        with CVBoxLayout(self, margins=0) as layout:
+            layout.add(self.tabs)
 
         self.tab_shortcuts = []
         for i in range(10):
