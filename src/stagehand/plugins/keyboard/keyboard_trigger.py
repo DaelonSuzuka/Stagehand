@@ -10,21 +10,21 @@ class ListenerObject(QObject):
 
     def __init__(self):
         super().__init__()
-        self.pressed_keys = set()
+        self.pressed_keys: set[Key] = set()
 
         self.listener = Listener(on_press=self.on_press, on_release=self.on_release)
         App().aboutToQuit.connect(self.listener.stop)
         self.listener.start()
 
-    def canonical(self, key):
+    def canonical(self, key: Key | KeyCode):
         return self.listener.canonical(key)
 
-    def on_press(self, key):
+    def on_press(self, key: Key):
         if key not in self.pressed_keys:
             self.pressed_keys.add(key)
             self.press.emit(key)
 
-    def on_release(self, key):
+    def on_release(self, key: Key):
         if key in self.pressed_keys:
             self.pressed_keys.remove(key)
             self.release.emit(key)
@@ -62,11 +62,11 @@ class KeyboardTrigger(TriggerItem):
                 self.hotkey = HotKey(HotKey.parse(text), self.on_hotkey)
             except:
                 self.hotkey = None
-   
+
     def on_hotkey(self):
         self.triggered.emit()
 
-    def on_press(self, key):
+    def on_press(self, key: Key):
         if self.value.hasFocus():
             return
 
@@ -77,7 +77,7 @@ class KeyboardTrigger(TriggerItem):
             if self.hotkey:
                 self.hotkey.press(self.listener.canonical(key))
 
-    def on_release(self, key):
+    def on_release(self, key: Key):
         if self.value.hasFocus():
             return
 
