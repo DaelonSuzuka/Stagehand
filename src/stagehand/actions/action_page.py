@@ -1,8 +1,10 @@
-from qtstrap import *
-from .action_widget import ActionWidget
-from .action_group import ActionWidgetGroup
-from stagehand.components import StagehandPage
 import json
+
+from qtstrap import *
+
+from stagehand.components import StagehandPage
+
+from .action_widget import ActionWidget, ActionWidgetGroup
 
 
 class CustomAnimatedToggle(AnimatedToggle):

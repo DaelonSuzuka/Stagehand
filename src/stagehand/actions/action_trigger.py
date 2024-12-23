@@ -29,12 +29,10 @@ class ActionTrigger(QWidget):
         self.type.currentIndexChanged.connect(changed)
         self.type.currentIndexChanged.connect(self.type_changed)
 
-        self.trigger_box = CHBoxLayout(margins=0)
-
         with CHBoxLayout(self, margins=0) as layout:
             layout.add(QLabel('Trigger:', minimumWidth=60))
             layout.add(self.type)
-            layout.add(self.trigger_box, 1)
+            self.trigger_box = layout.add(CHBoxLayout(margins=0), 1)
 
     def contextMenuEvent(self, event: QContextMenuEvent) -> None:
         menu = QMenu()
