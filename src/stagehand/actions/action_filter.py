@@ -78,7 +78,7 @@ class FilterStack(QWidget):
 
 
 class ActionFilterDialog(QDialog):
-    def __init__(self, filters, owner=None):
+    def __init__(self, filters: list[FilterStack], owner=None):
         super().__init__()
         self.setWindowTitle('Filter Editor')
 
@@ -109,7 +109,8 @@ class ActionFilterDialog(QDialog):
         self.filter_box.add(filt)
 
     def set_data(self, data):
-        self.setWindowTitle(f"{data['name']} - Filter Editor")
+        if 'name' in data:
+            self.setWindowTitle(f"{data['name']} - Filter Editor")
 
 
 class ActionFilter(QWidget):
@@ -122,7 +123,7 @@ class ActionFilter(QWidget):
         self.owner = owner
         self.changed.connect(changed)
 
-        self.filters = []
+        self.filters: list[FilterStack] = []
 
         self.enabled = QAction('Filter Enabled', self, triggered=changed, checkable=True)
         self.open_btn = QPushButton(
@@ -137,6 +138,11 @@ class ActionFilter(QWidget):
             layout.add(self.open_btn)
 
     def open_editor(self, *_):
+        if self.editor.isVisible():
+            self.editor.raise_()
+            # self.editor.setFocus(Qt.FocusReason.MouseFocusReason)
+            return
+    
         self.data['filter'] = self.get_data()['filter']
         self.editor.set_data(self.data)
 
