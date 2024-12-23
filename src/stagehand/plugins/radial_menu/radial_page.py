@@ -16,7 +16,7 @@ class ListenerObject(QObject):
 
         hotkeys = {hotkey: self.hotkey_pressed}
         self.listener = GlobalHotKeys(hotkeys)
-        qApp.aboutToQuit.connect(self.listener.stop)
+        App().aboutToQuit.connect(self.listener.stop)
         self.listener.start()
 
         if cb:
