@@ -4,7 +4,7 @@ from qtstrap import *
 from stagehand.actions import ActionWidget, ActionWidgetGroup
 from stagehand.components import StagehandPage
 
-from .radial import RadialPopup
+from .radial_menu import RadialPopup
 
 
 class ListenerObject(QObject):
