@@ -13,17 +13,24 @@ from qtpy.QtWidgets import (
     QGraphicsView,
 )
 
+DEFAULT_RADIUS = 40
+DEFAULT_WIDTH = 40
 
-SIZE = (40 + 40) * 2
+Z_VALUE = 1000
+
+# SIZE = (DEFAULT_RADIUS + DEFAULT_WIDTH + 10) * 2
+SIZE = 300
 
 
 class BaseGraphicsObject(QGraphicsObject):
+    clicked = Signal()
+
     def __init__(self):
         super().__init__()
 
         self.setAcceptHoverEvents(True)
         self.setPos(SIZE // 2, SIZE // 2)
-        self.setZValue(1000)
+        self.setZValue(Z_VALUE)
 
         self.setBoundingRegionGranularity(1)
 
@@ -36,23 +43,24 @@ class BaseGraphicsObject(QGraphicsObject):
     def paint(self, *_):
         pass
 
+    def mousePressEvent(self, event):
+        self.clicked.emit()
+
 
 class CenterSegment(BaseGraphicsObject):
-    clicked = Signal()
-
-    def __init__(self, radius=40):
+    def __init__(self, radius=DEFAULT_RADIUS):
         super().__init__()
 
         startRect = QRectF(-radius, -radius, radius * 2, radius * 2)
 
-        self.path = QPainterPath()
-        self.path.moveTo(QLineF.fromPolar(radius, 0).p2())
-        self.path.arcTo(startRect, 0, 360)
-        self.path.closeSubpath()
+        path = QPainterPath()
+        path.moveTo(QLineF.fromPolar(radius, 0).p2())
+        path.arcTo(startRect, 0, 360)
+        path.closeSubpath()
 
-        self.item = QGraphicsPathItem(self.path, self)
-        self.item.setPen(QColor(Qt.GlobalColor.black))
-        self.item.setBrush(QColor(255, 255, 255))
+        self.item = QGraphicsPathItem(path, self)
+        # self.item.setPen(QColor(Qt.GlobalColor.black))
+        self.item.setBrush(QColor(255, 255, 255, 1))
 
     def hoverEnterEvent(self, event):
         pass
@@ -60,8 +68,16 @@ class CenterSegment(BaseGraphicsObject):
     def hoverLeaveEvent(self, event):
         pass
 
-    def mousePressEvent(self, event):
-        self.clicked.emit()
+    def contextMenuEvent(self, event):
+        return super().contextMenuEvent(event)
+
+
+@dataclass
+class ArcSize:
+    start: int
+    end: int
+    radius: int
+    width: int
 
 
 @dataclass
@@ -69,55 +85,100 @@ class SegmentColors:
     bg: QColor
 
 
-class ArcSegment(BaseGraphicsObject):
-    clicked = Signal()
-
-    def __init__(self, start: int, end: int, radius=40, width=40, icon: QIcon = None):
+class ArcPath(QPainterPath):
+    def __init__(self, start: int, end: int, radius: int, width: int):
         super().__init__()
 
-        # self.normal_bg
-        # self.hover_bg
-        # self.normal_outline
-        # self.hover_outline
-
-        startRect = QRectF(-radius, -radius, radius * 2, radius * 2)
+        start_rect = QRectF(-radius, -radius, radius * 2, radius * 2)
         outer = radius + width
-        endRect = QRectF(-outer, -outer, outer * 2, outer * 2)
+        end_rect = QRectF(-outer, -outer, outer * 2, outer * 2)
 
-        self.path = QPainterPath()
-        self.path.moveTo(QLineF.fromPolar(outer, start).p2())
-        self.path.arcTo(endRect, start, (end - start))
-        self.path.lineTo(QLineF.fromPolar(radius, end).p2())
-        self.path.arcTo(startRect, end, -(end - start))
-        self.path.closeSubpath()
+        self.moveTo(QLineF.fromPolar(radius + width, start).p2())
+        self.arcTo(end_rect, start, (end - start))
+        self.lineTo(QLineF.fromPolar(radius, end).p2())
+        self.arcTo(start_rect, end, -(end - start))
+        self.closeSubpath()
 
-        self.item = QGraphicsPathItem(self.path, self)
 
-        self.set_normal_colors()
+class ArcSegment(BaseGraphicsObject):
+    def __init__(
+        self,
+        start: int,
+        end: int,
+        radius=DEFAULT_RADIUS,
+        width=DEFAULT_WIDTH,
+        icon: QIcon = None,
+        normal_bg: QColor = None,
+        hover_bg: QColor = None,
+    ):
+        super().__init__()
 
-        if icon is not None:
-            iconSize = int(sqrt(width**2 / 2))
-            pixmap = icon.pixmap(iconSize)
-            iconItem = QGraphicsPixmapItem(pixmap, self)
-            iconItem.setZValue(self.zValue() + 1)
-            midAngle = start + (end - start) / 2
-            iconPos = QLineF.fromPolar(radius + width * 0.5, midAngle).p2()
-            iconItem.setPos(iconPos)
-            iconItem.setOffset(-pixmap.rect().center())
+        self.start = start
+        self.end = end
+        self.radius = radius
+        self.width = width
 
-    def set_normal_colors(self):
-        self.item.setPen(QColor(Qt.GlobalColor.black))
-        self.item.setBrush(QColor(180, 140, 70))
+        self.icon = icon
 
-    def set_hover_colors(self):
-        self.item.setPen(QColor(Qt.GlobalColor.red))
-        self.item.setBrush(QColor(Qt.GlobalColor.white))
+        self.normal_bg = QColor(normal_bg or QColor('#676767'))
+        self.hover_bg = QColor(hover_bg or QColor('#0078d4'))
+        # self.normal_outline = QColor(normal_outline or QColor(Qt.GlobalColor.black))
+        # self.hover_outline = QColor(hover_outline or QColor(Qt.GlobalColor.red))
+
+        self.build()
+
+        if self.icon:
+            self.set_icon(icon)
+
+    def build(self):
+        path = ArcPath(self.start, self.end, self.radius, self.width)
+        self.normal = QGraphicsPathItem(path, self)
+        # self.normal.setPen(QColor('#ffffff'))
+        self.normal.setBrush(self.normal_bg)
+
+        path = ArcPath(self.start - 4, self.end + 4, self.radius - 2, self.width + 6)
+        self.hover = QGraphicsPathItem(path, self)
+        # self.hover.setPen(QColor('#ffffff'))
+        self.hover.setBrush(self.hover_bg)
+        self.hover.hide()
+
+    def set_icon(self, icon: QIcon):
+        iconSize = int(sqrt(self.width**2 / 2))
+        pixmap = icon.pixmap(iconSize)
+        self.normal_icon = QGraphicsPixmapItem(pixmap, self)
+        self.normal_icon.setZValue(self.zValue() + 10)
+        midAngle = self.start + (self.end - self.start) / 2
+        iconPos = QLineF.fromPolar(self.radius + self.width * 0.5, midAngle).p2()
+        self.normal_icon.setPos(iconPos)
+        self.normal_icon.setOffset(-pixmap.rect().center())
+
+        iconSize = int(sqrt((self.width + 6) ** 2 / 2))
+        pixmap = icon.pixmap(iconSize)
+        self.hover_icon = QGraphicsPixmapItem(pixmap, self)
+        self.hover_icon.setZValue(self.zValue() + 10)
+        midAngle = (self.start - 4) + ((self.end + 4) - (self.start - 4)) / 2
+        iconPos = QLineF.fromPolar((self.radius - 2) + (self.width + 6) * 0.5, midAngle).p2()
+        self.hover_icon.setPos(iconPos)
+        self.hover_icon.setOffset(-pixmap.rect().center())
+        self.hover_icon.hide()
 
     def hoverEnterEvent(self, event):
-        self.set_hover_colors()
+        self.setZValue(Z_VALUE + 1)
+        self.normal.hide()
+        self.hover.show()
+
+        if self.icon:
+            self.normal_icon.hide()
+            self.hover_icon.show()
 
     def hoverLeaveEvent(self, event):
-        self.set_normal_colors()
+        self.setZValue(Z_VALUE)
+        self.normal.show()
+        self.hover.hide()
+
+        if self.icon:
+            self.normal_icon.show()
+            self.hover_icon.hide()
 
     # def hoverMoveEvent(self, event):
     #     if self.item.shape().contains(event.pos()):
@@ -125,8 +186,8 @@ class ArcSegment(BaseGraphicsObject):
     #     else:
     #         self.set_normal_colors()
 
-    def mousePressEvent(self, event):
-        self.clicked.emit()
+    def contextMenuEvent(self, event):
+        return super().contextMenuEvent(event)
 
 
 class MenuScene(QGraphicsScene):
@@ -151,14 +212,14 @@ class MenuScene(QGraphicsScene):
 class RadialPopup(QDialog):
     buttonClicked = Signal(object)
 
-    def __init__(self, action_names: list[str], bg=None):
+    def __init__(self, action_names: list[str], bg: QColor = None, hover: QColor = None):
         super().__init__()
         self.setModal(True)
 
         region = QRegion(0, 0, SIZE, SIZE, QRegion.RegionType.Ellipse)
         self.setMask(region)
 
-        # self.setStyleSheet('background:transparent;')
+        self.setStyleSheet('background:transparent;')
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setWindowFlags(
             Qt.WindowType.FramelessWindowHint
@@ -169,36 +230,61 @@ class RadialPopup(QDialog):
             | Qt.WindowType.WindowStaysOnTopHint
         )
 
+        self.capture_cursor = False
+
         with MenuScene(self) as self.scene:
             CenterSegment()
 
-            for i, angle in enumerate(range(0, 360, 60)):
+            # for i, angle in enumerate(range(0, 360, 180)):
+            #     ArcSegment(
+            #         start=angle + 90,
+            #         end=angle + 180 + 90,
+            #         # icon=qta.icon('fa.list', color='gray'),
+            #         normal_bg=bg,
+            #         hover_bg=hover,
+            #     ).clicked(lambda x=action_names[i]: self.button_clicked(x))
+            icons = [
+                qta.icon('mdi.content-cut', color='white'),
+                qta.icon('mdi.content-copy', color='white'),
+                qta.icon('mdi.wrench', color='white'),
+                qta.icon('mdi.content-paste', color='white'),
+            ]
+
+            for i, angle in enumerate(range(0, 360, 90)):
                 ArcSegment(
-                    start=angle,
-                    end=angle + 60,
-                    icon=qta.icon('fa.list', color='gray'),
+                    start=angle + 45,
+                    end=angle + 90 + 45,
+                    icon=icons[i],
+                    normal_bg=bg,
+                    hover_bg=hover,
                 ).clicked(lambda x=action_names[i]: self.button_clicked(x))
 
-            # for angle in range(0, 180, 45):
-            #     ArcSegment(start=angle, end=angle + 45)
-            # ArcSegment(start=180, end=360)
+            # for i, angle in enumerate(range(0, 360, 60)):
+            #     ArcSegment(
+            #         start=angle,
+            #         end=angle + 60,
+            #         # icon=qta.icon('fa.list', color='gray'),
+            #         normal_bg=bg,
+            #         hover_bg=hover,
+            #     ).clicked(lambda x=action_names[i]: self.button_clicked(x))
 
-            # for angle in range(0, 360, 90):
-            #     ArcSegment(start=angle + 45, end=angle + 135, radius=80)
+            # for angle in range(0, 360, 45):
+            #     ArcSegment(start=angle + 45, end=angle + 90, radius=80)
 
         self.move_to_cursor()
 
     def leaveEvent(self, event):
-        pos = QCursor().pos()
+        if self.capture_cursor:
+            pos = QCursor().pos()
 
-        radius = SIZE // 2
+            radius = SIZE // 2
 
-        vec = QVector2D(self.origin - pos)
-        norm = vec.normalized() * (radius - 5)
-        norm.setX(-norm.x())
-        norm.setY(-norm.y())
+            vec = QVector2D(self.origin - pos)
+            norm = vec.normalized() * (radius - 5)
+            norm.setX(-norm.x())
+            norm.setY(-norm.y())
 
-        QCursor().setPos(self.origin + norm.toPoint())
+            QCursor().setPos(self.origin + norm.toPoint())
 
         event.accept()
         return super().leaveEvent(event)

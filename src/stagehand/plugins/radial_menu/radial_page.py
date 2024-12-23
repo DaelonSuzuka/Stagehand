@@ -1,32 +1,8 @@
-from pynput.keyboard import GlobalHotKeys
 from qtstrap import *
-
-from stagehand.actions import ActionWidget, ActionWidgetGroup
+from stagehand.actions import ActionFilter, ActionTrigger, ActionWidget, ActionWidgetGroup
 from stagehand.components import StagehandPage
 
 from .radial_menu import RadialPopup
-
-
-class ListenerObject(QObject):
-    press = Signal()
-
-    def __init__(self, hotkey: str, cb=None):
-        super().__init__()
-        self.pressed_keys = set()
-
-        hotkeys = {hotkey: self.hotkey_pressed}
-        self.listener = GlobalHotKeys(hotkeys)
-        App().aboutToQuit.connect(self.listener.stop)
-        self.listener.start()
-
-        if cb:
-            self.press.connect(cb)
-
-    def stop(self):
-        self.listener.stop()
-
-    def hotkey_pressed(self):
-        self.press.emit()
 
 
 class RadialActionWidget(ActionWidget):
@@ -60,8 +36,38 @@ class RadialActionWidget(ActionWidget):
         menu.exec_(event.globalPos())
 
 
+class ColorPickerButton(QToolButton):
+    changed = Signal()
+
+    def __init__(self, title: str, color: QColor, changed):
+        super().__init__()
+        self.title = title
+        self.set_color(color)
+        self.setToolTip(title)
+        self.setMinimumSize(30, 30)
+
+        self.clicked.connect(self.on_click)
+        self.changed.connect(changed)
+
+    def on_click(self):
+        self.dialog = QColorDialog(self.color)
+        self.dialog.setWindowTitle(self.title)
+        self.dialog.setModal(True)
+        self.dialog.show()
+        self.dialog.colorSelected.connect(self.color_selected)
+
+    def set_color(self, new_color: QColor | str):
+        self.color = QColor(new_color)
+        self.setStyleSheet(f'background:{self.color.name()}')
+
+    def color_selected(self, new_color: QColor):
+        self.set_color(new_color)
+        self.changed.emit()
+
+
 class RadialMenuPage(StagehandPage):
     page_type = 'Radial Menu'
+    icon_name = 'ri.share-circle-line'
 
     changed = Signal()
 
@@ -71,23 +77,29 @@ class RadialMenuPage(StagehandPage):
 
         self.menu = None
 
-        # self.listener = ListenerObject('<ctrl>+<space>', self.open_popup)
-
-        self.group = ActionWidgetGroup(name, changed=self.on_change, parent=self, autosave=False)
-
         self.label = LabelEdit(f'Radial {name}', changed=self.changed)
+
+        self.trigger = ActionTrigger(self.on_change, run=self.open_popup, owner=self)
+        self.filter = ActionFilter(self.on_change, owner=self)
+        self.group = ActionWidgetGroup(name, changed=self.on_change, parent=self, autosave=False)
 
         self._actions: dict[str, RadialActionWidget] = {}
         self.actions_container = CVBoxLayout()
 
         self.enabled = AnimatedToggle()
+        self.enabled.setToolTip('Enable/Disable Menu')
         self.enabled.stateChanged.connect(lambda _: self.changed.emit())
 
-        self.hotkey = QLineEdit(textChanged=self.on_change)
-        self.hotkey.setText('<ctrl>+<space>')
-
-        self.color = QLineEdit(textChanged=self.on_change)
-        self.color.setText('')
+        self.background = ColorPickerButton(
+            title='Radial Menu Background Color',
+            color='#676767',
+            changed=self.on_change,
+        )
+        self.hover = ColorPickerButton(
+            title='Radial Menu Hover Color',
+            color='#0078d4',
+            changed=self.on_change,
+        )
 
         if changed:
             self.changed.connect(changed)
@@ -99,9 +111,12 @@ class RadialMenuPage(StagehandPage):
             with layout.hbox(margins=0):
                 layout.add(QWidget())
                 layout.add(self.label)
+                layout.add(self.trigger)
+                layout.add(self.filter)
                 layout.add(QWidget(), 1)
-                layout.add(self.color)
-                layout.add(self.hotkey)
+                layout.add(self.background)
+                layout.add(self.hover)
+                # layout.add(self.hotkey)
                 layout.add(self.enabled)
                 layout.add(QPushButton('New Action', clicked=self.create_action))
                 # layout.add(self.group.filter)
@@ -115,12 +130,6 @@ class RadialMenuPage(StagehandPage):
 
     def on_change(self):
         self.changed.emit()
-
-    def hotkey_changed(self, new):
-        print(new)
-
-    def color_changed(self, new):
-        print(new)
 
     def get_unique_action_name(self):
         name = f'Radial Action {len(self._actions) + 1}'
@@ -148,12 +157,22 @@ class RadialMenuPage(StagehandPage):
         self.actions_container.add(action)
 
     def open_popup(self):
+        if not self.enabled:
+            return
+
+        if not self.filter.check_filters():
+            return
+
         if self.menu:
             # self.menu.move_to_cursor()
             self.menu.deleteLater()
             self.menu = None
             return
-        self.menu = RadialPopup(list(self._actions.keys()), bg=self.color.text())
+        self.menu = RadialPopup(
+            list(self._actions.keys()),
+            bg=self.background.color,
+            hover=self.hover.color,
+        )
         self.menu.buttonClicked.connect(self.popup_clicked)
         self.menu.exec()
 
@@ -165,16 +184,14 @@ class RadialMenuPage(StagehandPage):
 
     def set_data(self, data):
         self.data = data
+        self.label.setText(data.get('name', self.name))
+        self.trigger.set_data(data)
+        self.filter.set_data(data)
         self.group.set_data(self.data)
 
         self.enabled.setChecked(data.get('enabled', True))
-        self.hotkey.setText(str(data.get('hotkey', '<ctrl>+<space>')))
-        self.color.setText(str(data.get('color', '')))
-
-        # if self.listener:
-        #     self.listener.stop()
-
-        self.listener = ListenerObject(self.hotkey.text(), self.open_popup)
+        self.background.set_color(data.get('background', '#676767'))
+        self.hover.set_color(data.get('hover', '#0078d4'))
 
         if actions := data.get('actions'):
             for action_data in actions:
@@ -197,8 +214,11 @@ class RadialMenuPage(StagehandPage):
     def get_data(self):
         return {
             'page_type': self.page_type,
+            'name': self.label.text(),
             'enabled': self.enabled.isChecked(),
-            'hotkey': self.hotkey.text(),
-            'color': self.color.text(),
+            'background': self.background.color.name(),
+            'hover': self.hover.color.name(),
+            **self.trigger.get_data(),
+            **self.filter.get_data(),
             **self.group.get_data(),
         }
