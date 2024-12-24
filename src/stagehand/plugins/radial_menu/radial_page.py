@@ -183,11 +183,19 @@ class RadialMenuPage(StagehandPage):
             self._actions[result].run()
 
     def set_data(self, data):
+        if 'trigger' not in data:
+            data['trigger'] = {
+                'enabled': False,
+                'trigger_type': 'keyboard',
+                'type': 'hotkey',
+                'value': '<ctrl>+<space>',
+            }
+
         self.data = data
         self.label.setText(data.get('name', self.name))
         self.trigger.set_data(data)
         self.filter.set_data(data)
-        self.group.set_data(self.data)
+        self.group.set_data(data)
 
         self.enabled.setChecked(data.get('enabled', True))
         self.background.set_color(data.get('background', '#676767'))
