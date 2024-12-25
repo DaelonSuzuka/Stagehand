@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from math import sqrt
 
-import qtawesome as qta
 from qtpy.QtCore import QLineF, QPoint, QRectF, Qt, Signal
 from qtpy.QtGui import QColor, QCursor, QIcon, QPainter, QPainterPath, QRegion, QVector2D
 from qtpy.QtWidgets import (
@@ -19,7 +18,7 @@ DEFAULT_WIDTH = 40
 Z_VALUE = 1000
 
 # SIZE = (DEFAULT_RADIUS + DEFAULT_WIDTH + 10) * 2
-SIZE = 300
+SIZE = 600
 
 
 class BaseGraphicsObject(QGraphicsObject):
@@ -110,6 +109,8 @@ class ArcSegment(BaseGraphicsObject):
         icon: QIcon = None,
         normal_bg: QColor = None,
         hover_bg: QColor = None,
+        normal_outline: QColor = None,
+        hover_outline: QColor = None,
     ):
         super().__init__()
 
@@ -122,6 +123,8 @@ class ArcSegment(BaseGraphicsObject):
 
         self.normal_bg = QColor(normal_bg or QColor('#676767'))
         self.hover_bg = QColor(hover_bg or QColor('#0078d4'))
+        self.normal_outline = QColor(normal_outline or QColor(0, 0, 0, 0))
+        self.hover_outline = QColor(hover_outline or QColor(255, 255, 255))
 
         self.build()
 
@@ -131,6 +134,7 @@ class ArcSegment(BaseGraphicsObject):
     def build(self):
         path = ArcPath(self.start, self.end, self.radius, self.width)
         self.item = QGraphicsPathItem(path, self)
+        self.item.setPen(self.normal_outline)
         self.item.setBrush(self.normal_bg)
 
     def set_icon(self, icon: QIcon):
@@ -148,12 +152,14 @@ class ArcSegment(BaseGraphicsObject):
 
         self.setScale(1.1)
         self.item.setBrush(self.hover_bg)
+        self.item.setPen(self.hover_outline)
 
     def hoverLeaveEvent(self, event):
         self.setZValue(Z_VALUE)
 
         self.setScale(1.0)
         self.item.setBrush(self.normal_bg)
+        self.item.setPen(self.normal_outline)
 
     # def hoverMoveEvent(self, event):
     #     if self.item.shape().contains(event.pos()):
@@ -187,12 +193,12 @@ class MenuScene(QGraphicsScene):
 class RadialPopup(QDialog):
     buttonClicked = Signal(object)
 
-    def __init__(self, action_names: list[str], bg: QColor = None, hover: QColor = None):
+    def __init__(self):
         super().__init__()
         self.setModal(True)
 
-        region = QRegion(0, 0, SIZE, SIZE, QRegion.RegionType.Ellipse)
-        self.setMask(region)
+        # region = QRegion(0, 0, SIZE, SIZE, QRegion.RegionType.Ellipse)
+        # self.setMask(region)
 
         self.setStyleSheet('background:transparent;')
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
@@ -206,46 +212,6 @@ class RadialPopup(QDialog):
         )
 
         self.capture_cursor = False
-
-        with MenuScene(self) as self.scene:
-            # CenterSegment()
-
-            icons = [
-                qta.icon('mdi.content-cut', color='white'),
-                qta.icon('mdi.content-copy', color='white'),
-                qta.icon('mdi.wrench', color='white'),
-                qta.icon('mdi.content-paste', color='white'),
-            ]
-
-            # for i, angle in enumerate(range(0, 360, 180)):
-            #     ArcSegment(
-            #         start=angle + 90,
-            #         end=angle + 180 + 90,
-            #         icon=icons[i],
-            #         normal_bg=bg,
-            #         hover_bg=hover,
-            #     ).clicked(lambda x=action_names[i]: self.button_clicked(x))
-
-            for i, angle in enumerate(range(0, 360, 90)):
-                ArcSegment(
-                    start=angle + 45,
-                    end=angle + 90 + 45,
-                    icon=icons[i],
-                    normal_bg=bg,
-                    hover_bg=hover,
-                ).clicked(lambda x=action_names[i]: self.button_clicked(x))
-
-            # for i, angle in enumerate(range(0, 360, 60)):
-            #     ArcSegment(
-            #         start=angle,
-            #         end=angle + 60,
-            #         icon=icons[i],
-            #         normal_bg=bg,
-            #         hover_bg=hover,
-            #     ).clicked(lambda x=action_names[i]: self.button_clicked(x))
-
-            # for angle in range(0, 360, 45):
-            #     ArcSegment(start=angle + 45, end=angle + 90, radius=80)
 
         self.move_to_cursor()
 

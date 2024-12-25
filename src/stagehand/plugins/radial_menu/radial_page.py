@@ -1,8 +1,9 @@
 from qtstrap import *
 from stagehand.actions import ActionFilter, ActionTrigger, ActionWidget, ActionWidgetGroup
 from stagehand.components import StagehandPage
+import qtawesome as qta
 
-from .radial_menu import RadialPopup
+from .radial_menu import RadialPopup, MenuScene, ArcSegment
 
 
 class RadialActionWidget(ActionWidget):
@@ -168,12 +169,47 @@ class RadialMenuPage(StagehandPage):
             self.menu.deleteLater()
             self.menu = None
             return
-        self.menu = RadialPopup(
-            list(self._actions.keys()),
-            bg=self.background.color,
-            hover=self.hover.color,
-        )
-        self.menu.buttonClicked.connect(self.popup_clicked)
+
+        self.menu = RadialPopup()
+
+        icons = [
+            qta.icon('mdi.content-cut', color='white'),
+            qta.icon('mdi.content-copy', color='white'),
+            qta.icon('mdi.wrench', color='white'),
+            qta.icon('mdi.content-paste', color='white'),
+            qta.icon('ei.adjust-alt', color='white'),
+            qta.icon('ei.ban-circle', color='white'),
+        ]
+
+        with MenuScene(self.menu) as self.scene:
+            # for i, angle in enumerate(range(0, 360, 180)):
+            #     ArcSegment(
+            #         start=angle + 90,
+            #         end=angle + 180 + 90,
+            #         icon=icons[i],
+            #         normal_bg=self.background.color,
+            #         hover_bg=self.hover.color,
+            #     )
+
+            for i, angle in enumerate(range(0, 360, 60)):
+                ArcSegment(
+                    start=angle,
+                    end=angle + 60,
+                    icon=icons[i],
+                    normal_bg=self.background.color,
+                    hover_bg=self.hover.color,
+                )
+
+            # for i, angle in enumerate(range(0, 360, 60)):
+            #     ArcSegment(
+            #         start=angle,
+            #         end=angle + 60,
+            #         icon=icons[i],
+            #         normal_bg=self.background.color,
+            #         hover_bg=self.hover.color,
+            #     )
+
+        # self.menu.buttonClicked.connect(self.popup_clicked)
         self.menu.exec()
 
     def popup_clicked(self, result):
