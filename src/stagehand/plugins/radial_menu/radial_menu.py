@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from math import sqrt
 
-from qtpy.QtCore import QLineF, QPoint, QRectF, Qt, Signal
+from qtpy.QtCore import QEasingCurve, QLineF, QPointF, QPropertyAnimation, QRectF, Qt, Signal
 from qtpy.QtGui import QColor, QCursor, QIcon, QPainter, QPainterPath, QRegion, QVector2D
 from qtpy.QtWidgets import (
     QDialog,
@@ -19,6 +19,7 @@ Z_VALUE = 1000
 
 # SIZE = (DEFAULT_RADIUS + DEFAULT_WIDTH + 10) * 2
 SIZE = 600
+CENTER = QPointF(SIZE // 2, SIZE // 2)
 
 
 class BaseGraphicsObject(QGraphicsObject):
@@ -113,7 +114,7 @@ class ArcSegment(BaseGraphicsObject):
         hover_outline: QColor = None,
     ):
         super().__init__()
-
+        # dimensions
         self.start = start
         self.end = end
         self.radius = radius
@@ -121,43 +122,62 @@ class ArcSegment(BaseGraphicsObject):
 
         self.icon = icon
 
+        # colors
         self.normal_bg = QColor(normal_bg or QColor('#676767'))
         self.hover_bg = QColor(hover_bg or QColor('#0078d4'))
         self.normal_outline = QColor(normal_outline or QColor(0, 0, 0, 0))
         self.hover_outline = QColor(hover_outline or QColor(255, 255, 255))
 
-        self.build()
+        # behavior
+        self.offset = QPointF()
+        if False:
+            # fix the center point
+            path = ArcPath(self.start, self.end, self.radius, self.width)
+            self.offset = path.boundingRect().center()
+            self.setPos(CENTER + self.offset)
 
-        if self.icon:
-            self.set_icon(icon)
+        self.scale_anim = QPropertyAnimation(self, b'scale', duration=100)
+        self.scale_anim.setEasingCurve(QEasingCurve.Type.OutQuad)
+
+        self.build()
 
     def build(self):
         path = ArcPath(self.start, self.end, self.radius, self.width)
+        path.translate(-self.offset)
         self.item = QGraphicsPathItem(path, self)
         self.item.setPen(self.normal_outline)
         self.item.setBrush(self.normal_bg)
 
-    def set_icon(self, icon: QIcon):
-        iconSize = int(sqrt(self.width**2 / 2))
-        pixmap = icon.pixmap(iconSize)
-        self.icon = QGraphicsPixmapItem(pixmap, self)
-        self.icon.setZValue(self.zValue() + 10)
-        midAngle = self.start + (self.end - self.start) / 2
-        iconPos = QLineF.fromPolar(self.radius + self.width * 0.5, midAngle).p2()
-        self.icon.setPos(iconPos)
-        self.icon.setOffset(-pixmap.rect().center())
+        if self.icon:
+            self.build_icon()
+
+    def build_icon(self):
+        icon_size = int(sqrt(self.width**2 / 2))
+        pixmap = self.icon.pixmap(icon_size)
+        self.icon_pixmap = QGraphicsPixmapItem(pixmap, self)
+        self.icon_pixmap.setZValue(self.zValue() + 10)
+        mid_angle = self.start + (self.end - self.start) / 2
+        iconPos = QLineF.fromPolar(self.radius + self.width * 0.5, mid_angle).p2()
+        self.icon_pixmap.setPos(iconPos - self.offset)
+        self.icon_pixmap.setOffset(-pixmap.rect().center())
+
+    def scale_to(self, scale: float):
+        self.scale_anim.stop()
+        self.scale_anim.setStartValue(self.scale())
+        self.scale_anim.setEndValue(scale)
+        self.scale_anim.start()
 
     def hoverEnterEvent(self, event):
         self.setZValue(Z_VALUE + 1)
+        self.scale_to(1.1)
 
-        self.setScale(1.1)
         self.item.setBrush(self.hover_bg)
         self.item.setPen(self.hover_outline)
 
     def hoverLeaveEvent(self, event):
         self.setZValue(Z_VALUE)
+        self.scale_to(1.0)
 
-        self.setScale(1.0)
         self.item.setBrush(self.normal_bg)
         self.item.setPen(self.normal_outline)
 
@@ -197,8 +217,8 @@ class RadialPopup(QDialog):
         super().__init__()
         self.setModal(True)
 
-        # region = QRegion(0, 0, SIZE, SIZE, QRegion.RegionType.Ellipse)
-        # self.setMask(region)
+        region = QRegion(0, 0, SIZE, SIZE, QRegion.RegionType.Ellipse)
+        self.setMask(region)
 
         self.setStyleSheet('background:transparent;')
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
