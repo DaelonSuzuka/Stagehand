@@ -9,7 +9,8 @@ from qtstrap import *
 
 
 def flush_logs():
-    logging.getLogger().handlers[0].flush()
+    if len(logging.getLogger().handlers) > 0:
+        logging.getLogger().handlers[0].flush()
 
 
 @singleton
