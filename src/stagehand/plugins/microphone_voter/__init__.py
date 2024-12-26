@@ -1,2 +1,2 @@
-from .voter import MicVoterPage
-from .voter_extension import MicVoterExtension
+# from .voter import MicVoterPage
+# from .voter_extension import MicVoterExtension
