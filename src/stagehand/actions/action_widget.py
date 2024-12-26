@@ -88,7 +88,7 @@ class Action(QWidget):
 
         with CHBoxLayout(self, margins=0) as layout:
             with layout.vbox(align='top'):
-                layout.add(QLabel('Action:', minimumWidth=60))
+                self.label = layout.add(QLabel('Action:', minimumWidth=60))
             with layout.vbox(align='top'):
                 layout.add(self.type)
             layout.add(self.action_box, 1)
@@ -151,8 +151,7 @@ class CustomAnimatedToggle(AnimatedToggle):
 class ActionWidget(QWidget):
     changed = Signal()
 
-    @classmethod
-    @property
+    @classproperty
     def default_data(cls):
         return {
             'name': 'Action',
@@ -309,8 +308,7 @@ class ActionWidget(QWidget):
 
 
 class CompactActionWidget(ActionWidget):
-    @classmethod
-    @property
+    @classproperty
     def default_data(cls):
         return {
             'name': 'Action',
