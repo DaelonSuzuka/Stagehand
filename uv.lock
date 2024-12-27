@@ -58,6 +58,15 @@ wheels = [
 ]
 
 [[package]]
+name = "beartype"
+version = "0.19.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/6f/e1/00515b97afa3993b4a314e4bc168fbde0917fd5845435cb6f16a19770746/beartype-0.19.0.tar.gz", hash = "sha256:de42dfc1ba5c3710fde6c3002e3bd2cad236ed4d2aabe876345ab0b4234a6573", size = 1294480 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/64/69/f6db6e4cb2fe2f887dead40b76caa91af4844cb647dd2c7223bb010aa416/beartype-0.19.0-py3-none-any.whl", hash = "sha256:33b2694eda0daf052eb2aff623ed9a8a586703bbf0a90bbc475a83bbf427f699", size = 1039760 },
+]
+
+[[package]]
 name = "certifi"
 version = "2024.8.30"
 source = { registry = "https://pypi.org/simple" }
@@ -182,7 +191,7 @@ name = "click"
 version = "8.1.7"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "python_full_version >= '3.12.4' and platform_system == 'Windows'" },
+    { name = "colorama", marker = "python_full_version >= '3.12.4' and sys_platform == 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/96/d3/f04c7bfcf5c1862a2a5b845c6b2b360488cf47af55dfa79c98f6a6bf98b5/click-8.1.7.tar.gz", hash = "sha256:ca9853ad459e787e2192211578cc907e7594e294c7ccc834310722b41b9ca6de", size = 336121 }
 wheels = [
@@ -1224,10 +1233,11 @@ wheels = [
 
 [[package]]
 name = "stagehand"
-version = "0.3.4"
+version = "0.3.5"
 source = { editable = "." }
 dependencies = [
     { name = "ahk", extra = ["binary"], marker = "python_full_version >= '3.12.4'" },
+    { name = "beartype", marker = "python_full_version >= '3.12.4'" },
     { name = "codex-engine-pyqt", marker = "python_full_version >= '3.12.4'" },
     { name = "cyberlang", marker = "python_full_version >= '3.12.4'" },
     { name = "monaco-qt", marker = "python_full_version >= '3.12.4'" },
@@ -1255,6 +1265,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "ahk", extras = ["binary"], specifier = "==0.14.2" },
+    { name = "beartype", specifier = ">=0.19.0" },
     { name = "codex-engine-pyqt", editable = "../codex-engine-pyqt" },
     { name = "cyberlang", specifier = ">=0.7.0" },
     { name = "monaco-qt", editable = "../monaco-qt" },
