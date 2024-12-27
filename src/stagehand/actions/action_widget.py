@@ -196,6 +196,9 @@ class ActionWidget(QWidget):
         if changed:
             self.changed.connect(changed)
 
+        if data:
+            self.set_data(data)
+
         self.do_layout()
 
     def do_layout(self):
@@ -223,7 +226,7 @@ class ActionWidget(QWidget):
             **self.filter.get_data(),
         }
 
-    def set_data(self, data):
+    def set_data(self, data: dict):
         if not data:
             data = self.default_data
 
