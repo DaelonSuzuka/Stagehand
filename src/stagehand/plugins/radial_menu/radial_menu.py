@@ -18,7 +18,7 @@ DEFAULT_WIDTH = 40
 Z_VALUE = 1000
 
 # SIZE = (DEFAULT_RADIUS + DEFAULT_WIDTH + 10) * 2
-SIZE = 600
+SIZE = 300
 CENTER = QPointF(SIZE // 2, SIZE // 2)
 
 
@@ -32,7 +32,7 @@ class BaseGraphicsObject(QGraphicsObject):
         self.setPos(SIZE // 2, SIZE // 2)
         self.setZValue(Z_VALUE)
 
-        self.setBoundingRegionGranularity(0.8)
+        self.setBoundingRegionGranularity(1)
 
         if MenuScene.active_scene:
             MenuScene.active_scene.addItem(self)
@@ -99,6 +99,11 @@ class ArcPath(QPainterPath):
         self.arcTo(start_rect, end, -(end - start))
         self.closeSubpath()
 
+        # center line for debugging
+        # mid_angle = start + (end - start) / 2
+        # self.moveTo(QLineF.fromPolar(radius + width, mid_angle).p1())
+        # self.lineTo(QLineF.fromPolar(radius + width, mid_angle).p2())
+
 
 class ArcSegment(BaseGraphicsObject):
     def __init__(
@@ -108,12 +113,16 @@ class ArcSegment(BaseGraphicsObject):
         radius=DEFAULT_RADIUS,
         width=DEFAULT_WIDTH,
         icon: QIcon = None,
+        show_ring: bool = False,
         normal_bg: QColor = None,
         hover_bg: QColor = None,
         normal_outline: QColor = None,
         hover_outline: QColor = None,
+        normal_decoration: QColor = None,
+        hover_decoration: QColor = None,
     ):
         super().__init__()
+
         # dimensions
         self.start = start
         self.end = end
@@ -122,11 +131,16 @@ class ArcSegment(BaseGraphicsObject):
 
         self.icon = icon
 
+        self.show_ring = show_ring
+
         # colors
         self.normal_bg = QColor(normal_bg or QColor('#676767'))
         self.hover_bg = QColor(hover_bg or QColor('#0078d4'))
         self.normal_outline = QColor(normal_outline or QColor(0, 0, 0, 0))
         self.hover_outline = QColor(hover_outline or QColor(255, 255, 255))
+
+        self.decoration_bg = QColor(normal_decoration or QColor('#8e1ab3'))
+        self.decoration_outline = QColor(hover_decoration or QColor(255, 255, 255))
 
         # behavior
         self.offset = QPointF()
@@ -148,6 +162,13 @@ class ArcSegment(BaseGraphicsObject):
         self.item.setPen(self.normal_outline)
         self.item.setBrush(self.normal_bg)
 
+        if self.show_ring:
+            path = ArcPath(self.start, self.end, self.radius + self.width + 1, 5)
+            path.translate(-self.offset)
+            self.ring = QGraphicsPathItem(path, self)
+            # self.ring.setPen(self.decoration_outline)
+            self.ring.setBrush(self.decoration_bg)
+
         if self.icon:
             self.build_icon()
 
@@ -159,7 +180,7 @@ class ArcSegment(BaseGraphicsObject):
         mid_angle = self.start + (self.end - self.start) / 2
         iconPos = QLineF.fromPolar(self.radius + self.width * 0.5, mid_angle).p2()
         self.icon_pixmap.setPos(iconPos - self.offset)
-        self.icon_pixmap.setOffset(-pixmap.rect().center())
+        self.icon_pixmap.setOffset(-(icon_size // 2), -(icon_size // 2))
 
     def scale_to(self, scale: float):
         self.scale_anim.stop()

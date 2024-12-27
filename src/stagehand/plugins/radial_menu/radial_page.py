@@ -141,7 +141,7 @@ class RadialButton(QWidget):
 class ColorPickerButton(QToolButton):
     changed = Signal()
 
-    def __init__(self, title: str, color: QColor|str, changed):
+    def __init__(self, title: str, color: QColor | str, changed):
         super().__init__()
         self.title = title
         self.set_color(color)
@@ -164,7 +164,7 @@ class ColorPickerButton(QToolButton):
 
     def color_selected(self, new_color: QColor):
         self.set_color(new_color)
-        self.changed.emit()
+        self.changed.emit()  
 
 
 class RadialMenuPage(StagehandPage):
@@ -298,6 +298,7 @@ class RadialMenuPage(StagehandPage):
                     icon=icons[i],
                     normal_bg=self.background.color,
                     hover_bg=self.hover.color,
+                    show_ring=i < 3,
                 )
 
             # ArcSegment(start=0, end=60, icon=icons[0])
