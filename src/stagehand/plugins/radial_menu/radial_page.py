@@ -1,9 +1,10 @@
+import qtawesome as qta
 from qtstrap import *
+
 from stagehand.actions import ActionFilter, ActionTrigger, ActionWidget, ActionWidgetGroup
 from stagehand.components import StagehandPage
-import qtawesome as qta
 
-from .radial_menu import RadialPopup, MenuScene, ArcSegment
+from .radial_menu import ArcSegment, MenuScene, RadialPopup
 
 
 class RadialActionWidget(ActionWidget):
@@ -18,9 +19,11 @@ class RadialActionWidget(ActionWidget):
         }
 
     def do_layout(self):
+        self.action.label.hide()
+
         with CHBoxLayout(self, margins=0) as layout:
-            layout.add(self.label)
-            layout.add(VLine())
+            # layout.add(self.label)
+            # layout.add(VLine())
             layout.add(self.action, 2)
             layout.add(self.run_btn)
 
@@ -30,11 +33,109 @@ class RadialActionWidget(ActionWidget):
         menu.addAction('Rename').triggered.connect(self.label.start_editing)
         menu.addAction('Copy').triggered.connect(self.copy)
         menu.addAction('Paste').triggered.connect(self.paste)
-        # menu.addAction(self.trigger.enabled)
-        # menu.addAction(self.filter.enabled)
         menu.addAction('Reset').triggered.connect(self.reset)
         menu.addAction('Remove').triggered.connect(self.remove)
         menu.exec_(event.globalPos())
+
+
+class RadialButton(QWidget):
+    """
+
+
+    each button needs:
+    - name
+    - icon
+    - hotkey
+    - color palette
+    - actions
+    - child buttons
+
+    """
+
+    changed = Signal()
+
+    def __init__(self, name: str, changed=None, level=0):
+        super().__init__()
+
+        self.menu_button = MenuButton(icon=qta.icon('mdi.menu'))
+        self.menu_button.addAction('Add Action')
+        self.menu_button.addAction('Add Submenu')
+
+        self.label = LabelEdit(f'{name}', changed=self.changed)
+
+        data = RadialActionWidget.make_default_data(name)
+
+        self.left_click = RadialActionWidget('Left Click', data=data)
+        self.right_click = RadialActionWidget('Right Click', data=data)
+
+        self.icon_button = QPushButton('Icon')
+
+        self.background = ColorPickerButton(
+            title='Radial Menu Background Color',
+            color='#676767',
+            changed=self.on_change,
+        )
+        self.hover = ColorPickerButton(
+            title='Radial Menu Hover Color',
+            color='#0078d4',
+            changed=self.on_change,
+        )
+
+        if changed:
+            self.changed.connect(changed)
+
+        self.action_container = CFormLayout(margins=0)
+        self.children_container = CVBoxLayout(margins=0)
+
+        self.action_container += ('Left Click', self.left_click)
+
+        if level == 0:
+            self.action_container += ('Right Click', self.right_click)
+
+        # if level == 0:
+        #     self.children_container += RadialButton('Child Action 1', self.on_change, level=level + 1)
+        #     self.children_container += RadialButton('Child Action 2', self.on_change, level=level + 1)
+
+        with CVBoxLayout(self, margins=0) as layout:
+            with layout.hbox(margins=0):
+                with layout.vbox(margins=0):
+                    with layout.hbox(margins=0):
+                        layout.add(self.label)
+                        layout.add(QWidget(), 1)
+                        layout.add(self.menu_button)
+                        layout.add(QWidget())
+                    with layout.hbox(margins=0):
+                        # layout += self.icon_button
+                        layout.add(QLabel('Icon:'))
+                        layout.add(QLineEdit())
+                        layout += self.background
+                        layout += self.hover
+                        layout.add(QWidget(), 1)
+
+                    # with layout.hbox(margins=0):
+                    #     layout.add(QWidget(), 1)
+                    layout.add(QWidget(), 1)
+
+                # layout += VLine()
+
+                with layout.vbox(margins=0, stretch=5):
+                    layout += self.action_container
+                    layout.add(QWidget(), 1)
+
+            if level == 0:
+                layout += HLine()
+
+            # with layout.hbox(margins=0):
+            #     if level == 0:
+            #         layout.add(QLabel('>'))
+
+            #     layout += VLine()
+            #     with layout.vbox(margins=0):
+            #         layout += self.children_container
+            #         layout.add(QWidget(), 1)
+
+    def on_change(self):
+        self.changed.emit()
 
 
 class ColorPickerButton(QToolButton):
@@ -82,10 +183,9 @@ class RadialMenuPage(StagehandPage):
 
         self.trigger = ActionTrigger(self.on_change, run=self.open_popup, owner=self)
         self.filter = ActionFilter(self.on_change, owner=self)
-        self.group = ActionWidgetGroup(name, changed=self.on_change, parent=self, autosave=False)
 
         self._actions: dict[str, RadialActionWidget] = {}
-        self.actions_container = CVBoxLayout()
+        self.actions_container = CVBoxLayout(margins=0)
 
         self.enabled = AnimatedToggle()
         self.enabled.setToolTip('Enable/Disable Menu')
@@ -108,19 +208,17 @@ class RadialMenuPage(StagehandPage):
         if data is not None:
             self.set_data(data)
 
-        with CVBoxLayout(self) as layout:
+        with CVBoxLayout(self, margins=0) as layout:
             with layout.hbox(margins=0):
                 layout.add(QWidget())
                 layout.add(self.label)
                 layout.add(self.trigger)
-                layout.add(self.filter)
                 layout.add(QWidget(), 1)
                 layout.add(self.background)
                 layout.add(self.hover)
-                # layout.add(self.hotkey)
                 layout.add(self.enabled)
                 layout.add(QPushButton('New Action', clicked=self.create_action))
-                # layout.add(self.group.filter)
+                layout.add(self.filter)
             with layout.scroll(margins=0):
                 layout.setStretchFactor(layout._layout, 1)
                 layout.add(self.actions_container)
@@ -152,7 +250,7 @@ class RadialMenuPage(StagehandPage):
         else:
             data = RadialActionWidget.make_default_data(name)
 
-        action = RadialActionWidget(name, group=self.group)
+        action = RadialActionWidget(name)
         action.set_data(data)
         self.actions[name] = action
         self.actions_container.add(action)
@@ -173,16 +271,18 @@ class RadialMenuPage(StagehandPage):
         self.menu = RadialPopup()
 
         icons = [
-            qta.icon('mdi.content-cut', color='white'),
-            qta.icon('mdi.content-copy', color='white'),
-            qta.icon('mdi.wrench', color='white'),
-            qta.icon('mdi.content-paste', color='white'),
-            qta.icon('ei.adjust-alt', color='white'),
-            qta.icon('ei.ban-circle', color='white'),
+            qta.icon('ph.number-circle-one-fill', color='white'),
+            qta.icon('ph.number-circle-two-fill', color='white'),
+            qta.icon('ph.number-circle-three-fill', color='white'),
+            qta.icon('ph.number-circle-four-fill', color='white'),
+            qta.icon('ph.number-circle-five-fill', color='white'),
+            qta.icon('ph.number-circle-six-fill', color='white'),
+            qta.icon('ph.number-circle-seven-fill', color='white'),
+            qta.icon('ph.number-circle-eight-fill', color='white'),
         ]
 
         with MenuScene(self.menu) as self.scene:
-            # for i, angle in enumerate(range(0, 360, 180)):
+            # for i, angle in enumerate(range(0, 180, 180)):
             #     ArcSegment(
             #         start=angle + 90,
             #         end=angle + 180 + 90,
@@ -191,14 +291,21 @@ class RadialMenuPage(StagehandPage):
             #         hover_bg=self.hover.color,
             #     )
 
-            for i, angle in enumerate(range(0, 360, 60)):
+            for i, angle in enumerate(range(0, 360, 60), 0):
                 ArcSegment(
-                    start=angle,
-                    end=angle + 60,
+                    start=angle + 90,
+                    end=angle + 60 + 90,
                     icon=icons[i],
                     normal_bg=self.background.color,
                     hover_bg=self.hover.color,
                 )
+
+            # ArcSegment(start=0, end=60, icon=icons[0])
+            # ArcSegment(start=60, end=120, icon=icons[1])
+            # ArcSegment(start=120, end=180, icon=icons[2])
+            # ArcSegment(start=180, end=240, icon=icons[3])
+            # ArcSegment(start=240, end=300, icon=icons[4])
+            # ArcSegment(start=300, end=360, icon=icons[5])
 
             # for i, angle in enumerate(range(0, 360, 60)):
             #     ArcSegment(
@@ -231,29 +338,33 @@ class RadialMenuPage(StagehandPage):
         self.label.setText(data.get('name', self.name))
         self.trigger.set_data(data)
         self.filter.set_data(data)
-        self.group.set_data(data)
 
         self.enabled.setChecked(data.get('enabled', True))
         self.background.set_color(data.get('background', '#676767'))
         self.hover.set_color(data.get('hover', '#0078d4'))
 
-        if actions := data.get('actions'):
-            for action_data in actions:
-                action = RadialActionWidget(action_data['name'], group=self.group)
-                action.set_data(action_data)
-                self._actions[action.name] = action
-                self.actions_container.add(action)
-        else:
-            self.actions = {}
-            for i in range(1, 7):
-                name = f'Radial Action {i}'
-                action = RadialActionWidget(name=name, group=self.group)
-                self._actions[name] = action
+        for i in range(1, 7):
+            name = f'Radial Action {i}'
+            item = RadialButton(name=name, changed=self.on_change)
+            self.actions_container.add(item)
 
-                data = RadialActionWidget.make_default_data(name)
-                action.set_data(data)
+        # if actions := data.get('actions'):
+        #     for action_data in actions:
+        #         action = RadialActionWidget(action_data['name'])
+        #         action.set_data(action_data)
+        #         self._actions[action.name] = action
+        #         self.actions_container.add(action)
+        # else:
+        #     self._actions = {}
+        #     for i in range(1, 7):
+        #         name = f'Radial Action {i}'
+        #         action = RadialActionWidget(name=name)
+        #         self._actions[name] = action
 
-            self.actions_container.add(list(self._actions.values()))
+        #         data = RadialActionWidget.make_default_data(name)
+        #         action.set_data(data)
+
+        #     self.actions_container.add(list(self._actions.values()))
 
     def get_data(self):
         return {
@@ -264,5 +375,4 @@ class RadialMenuPage(StagehandPage):
             'hover': self.hover.color.name(),
             **self.trigger.get_data(),
             **self.filter.get_data(),
-            **self.group.get_data(),
         }
