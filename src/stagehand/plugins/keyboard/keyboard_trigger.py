@@ -66,7 +66,7 @@ class KeyboardTrigger(TriggerItem):
     def on_hotkey(self):
         self.triggered.emit()
 
-    def on_press(self, key: Key):
+    def on_press(self, key: Key | KeyCode):
         if self.value.hasFocus():
             return
 
@@ -77,7 +77,7 @@ class KeyboardTrigger(TriggerItem):
             if self.hotkey:
                 self.hotkey.press(self.listener.canonical(key))
 
-    def on_release(self, key: Key):
+    def on_release(self, key: Key | KeyCode):
         if self.value.hasFocus():
             return
 

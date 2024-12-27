@@ -1,6 +1,7 @@
 from codex import DeviceControlsDockWidget
 from qtstrap import *
 from qtstrap.extras.command_palette import Command, CommandPalette
+
 # from qtstrap.extras.devtools import ReplDockWidget, SceneTreeDockWidget, StyleEditorDockWidget
 from qtstrap.extras.log_monitor import LogMonitorDockWidget
 import qtawesome as qta
@@ -17,17 +18,17 @@ class FontSizeMenu(QMenu):
         self.setTitle('Font Size')
 
         self.default_size = default
-        self.font_size: int = QSettings().value('font_size', self.default_size)
+        self.font_size: int = int(QSettings().value('font_size', self.default_size))
         self.set_font_size(self.font_size)
 
         self.addAction('+').triggered.connect(lambda: self.set_font_size(self.font_size + 2))
         self.addAction('-').triggered.connect(lambda: self.set_font_size(self.font_size - 2))
         self.addAction('Reset').triggered.connect(lambda: self.set_font_size(self.default_size))
 
-    def set_font_size(self, size) -> None:
-        set_font_options(self.parent(), {'setPointSize': int(size)})
+    def set_font_size(self, size: int | str) -> None:
         self.font_size = int(size)
-        QSettings().setValue('font_size', size)
+        set_font_options(self.parent(), {'setPointSize': self.font_size})
+        QSettings().setValue('font_size', self.font_size)
 
 
 @singleton

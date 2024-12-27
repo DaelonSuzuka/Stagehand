@@ -141,7 +141,7 @@ class RadialButton(QWidget):
 class ColorPickerButton(QToolButton):
     changed = Signal()
 
-    def __init__(self, title: str, color: QColor, changed):
+    def __init__(self, title: str, color: QColor|str, changed):
         super().__init__()
         self.title = title
         self.set_color(color)

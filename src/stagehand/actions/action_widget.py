@@ -161,7 +161,15 @@ class ActionWidget(QWidget):
             'filter': {'enabled': True, 'filters': []},
         }
 
-    def __init__(self, name='', group: ActionWidgetGroup = None, trigger=False, data=None, changed=None, parent=None):
+    def __init__(
+        self,
+        name='',
+        group: ActionWidgetGroup = None,
+        trigger=False,
+        data=None,
+        changed=None,
+        parent=None,
+    ):
         super().__init__(parent=parent)
 
         self.name = name
@@ -189,7 +197,7 @@ class ActionWidget(QWidget):
             self.trigger.enabled.setChecked(True)
             self.filter.enabled.setChecked(True)
 
-        self.group: ActionWidgetGroup = group
+        self.group: ActionWidgetGroup | None = group
         if group:
             group.register(self)
 
