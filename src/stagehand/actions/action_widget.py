@@ -234,7 +234,7 @@ class ActionWidget(QWidget):
             **self.filter.get_data(),
         }
 
-    def set_data(self, data: dict):
+    def set_data(self, data: dict | None):
         if not data:
             data = self.default_data
 
