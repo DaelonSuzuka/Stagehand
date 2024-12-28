@@ -7,11 +7,6 @@ from stagehand.components import StagehandPage
 from .action_widget import ActionWidget, ActionWidgetGroup
 
 
-class CustomAnimatedToggle(AnimatedToggle):
-    def sizeHint(self):
-        return QSize(50, 32)
-
-
 class ActionsPage(StagehandPage):
     page_type = 'Generic Actions'
     changed = Signal()
@@ -29,7 +24,7 @@ class ActionsPage(StagehandPage):
         self.actions: list[ActionWidget] = []
         self.actions_container = CVBoxLayout()
 
-        self.enabled = CustomAnimatedToggle()
+        self.enabled = AnimatedToggle()
         self.enabled.stateChanged.connect(lambda _: self.group.set_active(self.enabled.isChecked()))
         self.enabled.stateChanged.connect(lambda _: self.changed.emit())
 
@@ -39,7 +34,7 @@ class ActionsPage(StagehandPage):
         if data is not None:
             self.set_data(data)
 
-        with CVBoxLayout(self, margins=2) as layout:
+        with CVBoxLayout(self, margins=0) as layout:
             with layout.hbox(margins=0):
                 layout.add(QWidget())
                 layout.add(self.label)
@@ -47,6 +42,7 @@ class ActionsPage(StagehandPage):
                 layout.add(self.enabled)
                 layout.add(QPushButton('New Action', clicked=self.create_action))
                 layout.add(self.group.filter)
+                layout.add(QWidget())
             with layout.scroll(margins=0) as self.scroll:
                 layout.setStretchFactor(layout._layout, 1)
                 layout.add(self.actions_container)

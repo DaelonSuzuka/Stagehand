@@ -136,6 +136,7 @@ class WebInterfacePage(StagehandPage):
                 layout.add(QLabel(), 1)
                 layout.add(self.enabled)
                 layout.add(self.group.filter)
+                layout.add(QWidget())
             with layout.hbox(margins=0):
                 layout.add(QWidget())
                 layout.add(QLabel('Local Link:'))
