@@ -10,6 +10,7 @@ from qtpy.QtWidgets import (
     QGraphicsPixmapItem,
     QGraphicsScene,
     QGraphicsView,
+    QGraphicsSceneMouseEvent,
 )
 
 DEFAULT_RADIUS = 40
@@ -23,7 +24,7 @@ CENTER = QPointF(SIZE // 2, SIZE // 2)
 
 
 class BaseGraphicsObject(QGraphicsObject):
-    clicked = Signal()
+    clicked = Signal(QGraphicsSceneMouseEvent)
 
     def __init__(self):
         super().__init__()
@@ -43,8 +44,8 @@ class BaseGraphicsObject(QGraphicsObject):
     def paint(self, *_):
         pass
 
-    def mousePressEvent(self, event):
-        self.clicked.emit()
+    def mousePressEvent(self, event: QGraphicsSceneMouseEvent):
+        self.clicked.emit(event)
 
 
 class CenterSegment(BaseGraphicsObject):
@@ -128,6 +129,7 @@ class ArcSegment(BaseGraphicsObject):
         self.end = end
         self.radius = radius
         self.width = width
+        self.mid_angle = start + (end - start) / 2
 
         self.icon = icon
 
