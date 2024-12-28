@@ -41,20 +41,16 @@ class RadialItemWidget(QWidget):
         if deleted:
             self.deleted.connect(deleted)
 
-        self.action_container = CVBoxLayout(margins=0)
+        self.action_container = CFormLayout(margins=0)
         self.children_container = CVBoxLayout(margins=0)
 
         self._actions: list[RadialActionWidget] = []
         self._children: list[RadialItemWidget] = []
 
-        self.action_container += self.left_click
+        self.action_container += (self.left_click.label, self.left_click)
         self._actions.append(self.left_click)
-        self.action_container += self.right_click
+        self.action_container += (self.right_click.label, self.right_click)
         self._actions.append(self.right_click)
-
-        if level == 0:
-            self.add_child()
-            self.add_child()
 
         with CVBoxLayout(self, margins=0) as layout:
             with layout.hbox(margins=0):
@@ -66,8 +62,8 @@ class RadialItemWidget(QWidget):
                         # layout += self.icon_button
                         # layout.add(QLabel('Icon:'))
                         # layout.add(QLineEdit())
-                        layout += self.background
-                        layout += self.hover
+                        # layout += self.background
+                        # layout += self.hover
                         layout.add(QWidget(), 1)
                     layout.add(QWidget(), 1)
                 with layout.vbox(margins=0, stretch=5):
@@ -107,11 +103,13 @@ class RadialItemWidget(QWidget):
         )
         self._children.append(item)
         self.children_container += item
+        self.changed.emit()
 
     def delete_child(self, item: Self):
         if item in self._children:
             self._children.remove(item)
         item.deleteLater()
+        self.changed.emit()
 
     def contextMenuEvent(self, event: QContextMenuEvent) -> None:
         menu = QMenu()
@@ -126,16 +124,21 @@ class RadialItemWidget(QWidget):
         menu.addAction('Remove').triggered.connect(lambda: self.deleted.emit(self))
         menu.exec_(event.globalPos())
 
-    def remove(self):
-        self.deleteLater()
+    def set_data(self, data: dict):
+        self.data = data
+        self.label.setText(data.get('name', self.name))
 
-    # def get_data(self):
-    #     return {
-    #         'page_type': self.page_type,
-    #         'name': self.label.text(),
-    #         'enabled': self.enabled.isChecked(),
-    #         'background': self.background.color.name(),
-    #         'hover': self.hover.color.name(),
-    #         **self.trigger.get_data(),
-    #         **self.filter.get_data(),
-    #     }
+        self.background.set_color(data.get('background', '#676767'))
+        self.hover.set_color(data.get('hover', '#0078d4'))
+
+        self.left_click.set_data(data.get('left_click', None))
+        self.right_click.set_data(data.get('right_click', None))
+
+    def get_data(self):
+        return {
+            'name': self.label.text(),
+            'background': self.background.color.name(),
+            'hover': self.hover.color.name(),
+            'left_click': self.left_click.get_data(),
+            'right_click': self.right_click.get_data(),
+        }

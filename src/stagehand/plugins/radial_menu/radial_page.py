@@ -1,5 +1,3 @@
-from typing import Self
-
 import qtawesome as qta
 from qtstrap import *
 from stagehand.actions import ActionFilter, ActionTrigger
@@ -96,11 +94,13 @@ class RadialMenuPage(StagehandPage):
         action = RadialItemWidget(name, changed=self.on_change, deleted=self.delete_item)
         self._items.append(action)
         self.items_container.add(action)
+        self.changed.emit()
 
     def delete_item(self, item: RadialItemWidget):
         if item in self._items:
             self._items.remove(item)
         item.deleteLater()
+        self.changed.emit()
 
     def open_popup(self):
         if not self.enabled:
@@ -131,8 +131,12 @@ class RadialMenuPage(StagehandPage):
 
         with MenuScene(self.menu) as self.scene:
             count = len(self._items)
+            if count == 0:
+                return
             step = 360 // count
             offset = 90
+            if count == 4:
+                offset = 45
 
             for i, angle in enumerate(range(0, 360, step), 0):
                 item = self._items[i]
@@ -146,8 +150,8 @@ class RadialMenuPage(StagehandPage):
                 )
                 arc.clicked.connect(item.on_click)
 
-                for child in item._children:
-                    print(child)
+                # for child in item._children:
+                #     print(child)
 
         # self.menu.buttonClicked.connect(self.popup_clicked)
         self.menu.exec()
@@ -176,29 +180,26 @@ class RadialMenuPage(StagehandPage):
         self.background.set_color(data.get('background', '#676767'))
         self.hover.set_color(data.get('hover', '#0078d4'))
 
-        for i in range(1, 7):
-            name = f'Radial Action {i}'
-            item = RadialItemWidget(name=name, changed=self.on_change, deleted=self.delete_item)
-            self.items_container.add(item)
-            self._items.append(item)
+        if actions := data.get('actions'):
+            for action_data in actions:
+                action = RadialItemWidget(
+                    action_data['name'],
+                    changed=self.on_change,
+                    deleted=self.delete_item,
+                )
+                action.set_data(action_data)
+                self._items.append(action)
+        else:
+            self._items.clear()
+            for i in range(1, 7):
+                action = RadialItemWidget(
+                    f'Radial Action {i}',
+                    changed=self.on_change,
+                    deleted=self.delete_item,
+                )
+                self._items.append(action)
 
-        # if actions := data.get('actions'):
-        #     for action_data in actions:
-        #         action = RadialActionWidget(action_data['name'])
-        #         action.set_data(action_data)
-        #         self._actions[action.name] = action
-        #         self.actions_container.add(action)
-        # else:
-        #     self._actions = {}
-        #     for i in range(1, 7):
-        #         name = f'Radial Action {i}'
-        #         action = RadialActionWidget(name=name)
-        #         self._actions[name] = action
-
-        #         data = RadialActionWidget.make_default_data(name)
-        #         action.set_data(data)
-
-        #     self.actions_container.add(list(self._actions.values()))
+        self.items_container.add(self._items)
 
     def get_data(self):
         return {
@@ -209,4 +210,5 @@ class RadialMenuPage(StagehandPage):
             'hover': self.hover.color.name(),
             **self.trigger.get_data(),
             **self.filter.get_data(),
+            'actions': [item.get_data() for item in self._items],
         }
