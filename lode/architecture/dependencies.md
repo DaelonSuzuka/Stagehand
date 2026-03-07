@@ -56,6 +56,35 @@ App().change_theme('light')  # or 'dark'
 # Icons cached via qtawesome
 ```
 
+### CommandPalette Theming
+
+The `CommandPalette` widget uses QPalette colors dynamically for proper dark/light mode support:
+
+```python
+# PopupDelegate.get_colors() adapts colors based on theme
+palette = QApplication.palette()
+
+self.normal = QPen(palette.color(QPalette.WindowText))  # Normal text
+self.selected = QPen(QColor('#FFFFFF'))                  # White for selected items
+self.highlight = QPen(QColor('#00d4ff'))               # Cyan for search matches
+
+# Selection background - desaturated to let cyan matches stand out
+if palette.color(QPalette.Window).lightness() < 128:
+    self.background = QColor('#3d4f5f')  # Muted blue-gray for dark theme
+else:
+    self.background = QColor('#b0c4d1')  # Muted blue-gray for light theme
+```
+
+**Why custom selection background:**
+- Cyan match highlights (`#00d4ff`) need contrast against selection background
+- Standard `Highlight` color is too saturated blue, competing with cyan
+- Muted blue-gray (`#3d4f5f` / `#b0c4d1`) lets cyan matches pop visually
+
+**Color choices:**
+- `WindowText` → Normal text color (adapts to theme)
+- White selected text → Maximum contrast on muted background
+- Cyan highlight → Stands out against desaturated selection
+
 ### Key Pattern: `@singleton`
 
 ```python
