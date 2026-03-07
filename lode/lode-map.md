@@ -11,6 +11,7 @@
 - [architecture/sandbox.md](architecture/sandbox.md) - Python sandbox execution model
 - [architecture/plugins.md](architecture/plugins.md) - Plugin discovery and loading
 - [architecture/dependencies.md](architecture/dependencies.md) - External workspace dependencies (qtstrap, codex, monaco-qt)
+- [architecture/contribution-points.md](architecture/contribution-points.md) - Plugin extension points and registration
 
 ## Components
 - [actions/action-widget.md](actions/action-widget.md) - ActionWidget and ActionWidgetGroup
