@@ -12,6 +12,7 @@
 - [architecture/plugins.md](architecture/plugins.md) - Plugin discovery and loading
 - [architecture/dependencies.md](architecture/dependencies.md) - External workspace dependencies (qtstrap, codex, monaco-qt)
 - [architecture/contribution-points.md](architecture/contribution-points.md) - Plugin extension points and registration
+- [architecture/logging.md](architecture/logging.md) - LogMonitor performance issues and mitigation
 
 ## Components
 - [actions/action-widget.md](actions/action-widget.md) - ActionWidget and ActionWidgetGroup
