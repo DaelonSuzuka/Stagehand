@@ -47,4 +47,6 @@ Stagehand.code-workspace
 
 .history
 
-.env
+.env 
+
+.envlode/tmp/
