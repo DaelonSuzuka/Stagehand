@@ -59,6 +59,42 @@ Sandbox().source = self.sender()  # Event source
 Sandbox().run(text, error_cb=callback)  # Execute
 ```
 
+## Testing HTTP Actions
+
+Use the HTTP test server for testing HTTP actions locally:
+
+```bash
+# Run standalone
+make http-server
+# or
+uv run python tools/http_test_server.py
+```
+
+```python
+from tools.http_test_server import HttpTestServer
+
+# Start server on port 8080 (default)
+server = HttpTestServer()
+server.start()
+
+# Available endpoints:
+# GET  /              - Help message
+# GET  /echo          - Echo request details
+# POST /echo          - Echo POST body
+# PUT  /echo          - Echo PUT body
+# GET  /status/{code} - Return custom status code
+# GET  /slow          - Slow response (1s delay)
+# GET  /json          - Return sample JSON
+# GET  /requests      - Get all logged requests
+# DELETE /requests    - Clear request log
+
+# Make test requests
+import httpx
+response = httpx.post(f'{server.url}/echo', json={'test': 'data'})
+
+server.stop()
+```
+
 **Available in sandbox namespace**:
 - `save(name, value)` / `load(name)` - persistence
 - `data` - dict of saved values
@@ -97,3 +133,30 @@ Config stored in `OPTIONS.config_dir / 'actions.json'`:
 - `PersistentCheckableAction` for menu items with saved state
 - `Signal`/`Slot` for inter-widget communication
 - `changed` signal pattern for dirty tracking
+
+**IMPORTANT: Signal Declaration**
+
+Signals MUST be declared at the class level, never in `__init__()`:
+
+```python
+# CORRECT - Signal at class level
+class MyTrigger(TriggerItem):
+    name = 'my_trigger'
+    triggered = Signal()  # Class-level signal
+    
+    def __init__(self, changed, run, owner=None):
+        super().__init__()
+        self.triggered.connect(run)
+        # ...
+
+# WRONG - Signal in __init__ will fail
+class MyTrigger(TriggerItem):
+    name = 'my_trigger'
+    
+    def __init__(self, changed, run, owner=None):
+        super().__init__()
+        self.triggered = Signal()  # ERROR: AttributeError
+        self.triggered.connect(run)
+```
+
+This applies to all `QObject` subclasses including `TriggerItem`, `ActionItem`, `StagehandPage`, and custom widgets.

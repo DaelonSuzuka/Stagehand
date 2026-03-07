@@ -18,6 +18,7 @@ Stagehand includes several built-in plugins in `src/stagehand/plugins/`:
 | shell | - | ShellAction | - |
 | cyber | - | CyberAction | - |
 | window_filter | WindowFilter | - | - |
+| generic | - | HttpAction | HttpExtension, SocketsExtension |
 
 ## Plugin: keyboard
 
@@ -130,6 +131,122 @@ Streamers with multiple microphones at different positions (desk, workbench, hea
 # In sandbox:
 web_server.route('/api/custom', custom_handler)
 web_server.start(port=8080)
+```
+
+## Plugin: generic
+
+**Purpose**: Utility extensions for sandbox scripts.
+
+### HttpExtension
+
+**Purpose**: Make HTTP requests from sandbox scripts using httpx.
+
+```python
+# Available in sandbox as: http
+
+# Simple GET request
+response = http.get('https://api.example.com/data')
+print(response.text)
+
+# POST with JSON body
+response = http.post('https://api.example.com/users', 
+    json={'name': 'Alice', 'email': 'alice@example.com'})
+
+# With headers
+response = http.get('https://api.example.com/protected',
+    headers={'Authorization': 'Bearer token123'})
+
+# Access response
+data = response.json()
+status = response.status_code
+
+# All HTTP methods
+http.get(url, **kwargs)
+http.post(url, **kwargs)
+http.put(url, **kwargs)
+http.patch(url, **kwargs)
+http.delete(url, **kwargs)
+```
+
+### HttpAction
+
+**File**: `plugins/generic/http_action.py`
+
+**Purpose**: Make HTTP requests from action triggers (UI).
+
+**Status Bar**: Shows "HTTP:8080" when server is running, "HTTP: Off" when stopped.
+
+### HttpTrigger
+
+**File**: `plugins/generic/http_trigger.py`
+
+**Purpose**: Trigger actions when HTTP requests are received.
+
+**How it works**:
+1. Start the HTTP server from status bar or settings page
+2. Create an action with HTTP trigger
+3. Set method filter (ANY, GET, POST, etc.) and optional path filter
+4. External requests to `http://localhost:PORT/path` trigger the action
+
+**UI**: Status bar shows "HTTP:8080" when running. Right-click to start/stop or open settings.
+
+**Settings** (in status bar context menu):
+- Start/Stop HTTP server
+- Configure port (default 8080)
+
+**Settings Page**: "HTTP Server Settings" singleton page with:
+- Port configuration
+- Start/Stop buttons
+- Status display
+- Test endpoint info
+
+**Usage in Actions**:
+1. Create new action
+2. Select "http" from trigger dropdown
+3. Choose method filter: ANY, GET, POST, PUT, PATCH, DELETE
+4. Set path filter (e.g., "/webhook") or leave empty for all paths
+5. Configure action output
+
+**Example**: Webhook trigger
+- Method: POST
+- Path: /webhook
+- External service sends POST to `http://localhost:8080/webhook`
+- Action fires, runs configured output
+
+### SocketsExtension
+
+**Purpose**: Raw socket utilities (currently stub).
+
+### HttpAction
+
+**File**: `plugins/generic/http_action.py`
+
+**Purpose**: Make HTTP requests from action triggers.
+
+**UI Components**:
+- Method dropdown (GET, POST, PUT, PATCH, DELETE)
+- URL input field
+- JSON body editor (shown for POST/PUT/PATCH)
+- Edit button for multiline editor
+
+**Usage in UI**:
+1. Create new action
+2. Select "http" from action dropdown
+3. Choose HTTP method
+4. Enter URL
+5. For POST/PUT/PATCH, enter JSON body
+6. Click run or set up trigger
+
+**Sandbox Example with http extension**:
+```python
+# Direct sandbox usage
+response = http.get('https://api.example.com/data')
+data = response.json()
+
+# Using HttpAction (from UI trigger)
+# Method: POST
+# URL: https://api.example.com/users
+# Body: {"name": "Alice"}
 ```
 
 ## Plugin: shell

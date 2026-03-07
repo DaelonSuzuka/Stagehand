@@ -1,16 +1,27 @@
 # **************************************************************************** #
 # General Make configuration
 
-# This suppresses make's command echoing. This suppression produces a cleaner output. 
-# If you need to see the full commands being issued by make, comment this out.
-MAKEFLAGS += -s
-
 # Fix bad built-in make behaviors
 MAKEFLAGS += --warn-undefined-variables
 MAKEFLAGS += --no-builtin-rules
 
 # Use > instead of \t
 .RECIPEPREFIX = >
+
+# OS detection for cross-platform support
+# OS env var is set on Windows, use uname on Unix
+ifndef OS
+	UNAME_S := $(shell uname -s 2>/dev/null)
+	ifeq ($(UNAME_S),)
+		OS := Unknown
+	else
+		OS := $(UNAME_S)
+	endif
+endif
+
+# This suppresses make's command echoing. This suppression produces a cleaner output. 
+# If you need to see the full commands being issued by make, comment this out.
+MAKEFLAGS += -s
 
 # **************************************************************************** #
 
@@ -65,6 +76,10 @@ non_portable:
 
 # **************************************************************************** #
 # Utility Targets
+
+# start the HTTP test server for testing HTTP actions
+http-server:
+> uv run python tools/http_test_server.py
 
 # open the qtawesome icon browser
 qta: venv
