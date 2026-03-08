@@ -4,6 +4,7 @@ from qtstrap import *
 from qtstrap.extras.command_palette import Command
 from stagehand.components import StagehandSidebar
 from .manager import get_library
+import json
 
 
 class LibraryTreeWidget(QTreeWidget):
@@ -16,7 +17,37 @@ class LibraryTreeWidget(QTreeWidget):
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.show_context_menu)
         
+        # Enable dragging
+        self.setDragEnabled(True)
+        self.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.setDragDropMode(QAbstractItemView.DragOnly)
+        
         self.refresh()
+    
+    def mimeData(self, items):
+        """Create mime data for dragged items."""
+        if not items:
+            return QMimeData()
+        
+        item = items[0]  # Single selection
+        category = item.data(0, Qt.UserRole)
+        index = item.data(0, Qt.UserRole + 1)
+        item_data = item.data(0, Qt.UserRole + 2)
+        
+        # Category headers (index == -1) are not draggable
+        if index == -1 or not item_data:
+            return QMimeData()
+        
+        # Remove internal markers
+        data = {k: v for k, v in item_data.items() if not k.startswith('_')}
+        
+        mime = QMimeData()
+        payload = json.dumps({
+            'category': category,
+            'data': data
+        })
+        mime.setData('library_drop', payload.encode())
+        return mime
     
     def refresh(self):
         """Reload library items and rebuild the tree."""

@@ -227,6 +227,11 @@ class ActionWidget(QWidget):
             self.set_data(data)
 
         self.do_layout()
+        
+        # Drag and drop state for library items
+        self.setAcceptDrops(True)
+        self._drop_target = None
+        self._highlighted_widget = None
 
     def do_layout(self):
         with CVBoxLayout(self, margins=0) as layout:
@@ -292,6 +297,104 @@ class ActionWidget(QWidget):
     def handle_drop(self, drop):
         if drop == Qt.MoveAction:
             self.remove()
+
+    # ==================== Library Drag & Drop ====================
+    
+    def dragEnterEvent(self, event):
+        """Accept drag events from library items."""
+        if event.mimeData().hasFormat('library_drop'):
+            event.acceptProposedAction()
+        else:
+            event.ignore()
+    
+    def dragMoveEvent(self, event):
+        """Highlight the appropriate slot based on drag position and item category."""
+        if not event.mimeData().hasFormat('library_drop'):
+            self._clear_highlight()
+            event.ignore()
+            return
+        
+        # Parse mime data to get category
+        data = json.loads(bytes(event.mimeData().data('library_drop')).decode())
+        category = data['category']
+        
+        pos = event.pos()
+        
+        if category == 'actions':
+            # Highlight entire widget
+            self._highlight_widget(self)
+            self._drop_target = 'action'
+        elif category == 'triggers':
+            # Check if hovering over trigger widget
+            trigger_rect = self.trigger.geometry()
+            if trigger_rect.contains(pos):
+                self._highlight_widget(self.trigger)
+                self._drop_target = 'trigger'
+            else:
+                self._clear_highlight()
+        elif category == 'outputs':
+            # Check if hovering over action (output) widget
+            action_rect = self.action.geometry()
+            if action_rect.contains(pos):
+                self._highlight_widget(self.action)
+                self._drop_target = 'output'
+            else:
+                self._clear_highlight()
+        else:
+            # Unknown category or filter (not implemented)
+            self._clear_highlight()
+        
+        if self._drop_target:
+            event.acceptProposedAction()
+        else:
+            event.ignore()
+    
+    def dragLeaveEvent(self, event):
+        """Clear highlight when drag leaves the widget."""
+        self._clear_highlight()
+    
+    def dropEvent(self, event):
+        """Handle drop from library sidebar."""
+        if not event.mimeData().hasFormat('library_drop'):
+            event.ignore()
+            return
+        
+        data = json.loads(bytes(event.mimeData().data('library_drop')).decode())
+        category = data['category']
+        item_data = data['data']
+        
+        if category == 'actions':
+            # Replace entire action (but keep name)
+            name = self.label.text()
+            self.set_data(item_data)
+            self.label.setText(name)
+        elif category == 'triggers' and self._drop_target == 'trigger':
+            self.trigger.set_data(item_data)
+        elif category == 'outputs' and self._drop_target == 'output':
+            self.action.set_data(item_data)
+        
+        self._clear_highlight()
+        self.changed.emit()
+        event.acceptProposedAction()
+    
+    def _highlight_widget(self, widget):
+        """Highlight widget with border outline."""
+        self._clear_highlight()
+        self._highlighted_widget = widget
+        # Store original object name to restore later
+        self._original_object_name = widget.objectName()
+        widget.setObjectName("_drag_highlight_")
+        # Use object name selector to prevent cascading to children
+        widget.setStyleSheet("QObject#_drag_highlight_ { border: 2px solid #0078D7; border-radius: 3px; }")
+    
+    def _clear_highlight(self):
+        """Clear any active highlight."""
+        if self._highlighted_widget:
+            # Restore original object name
+            self._highlighted_widget.setObjectName(getattr(self, '_original_object_name', ''))
+            self._highlighted_widget.setStyleSheet("")
+        self._highlighted_widget = None
+        self._drop_target = None
 
     def copy(self):
         data = {

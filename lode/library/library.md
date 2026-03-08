@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Library provides a collection of reusable trigger, filter, output, and action definitions. Items are stored in JSON files and can be copied into action configurations. The library uses a copy-on-use model - when an item is copied, it becomes an independent instance.
+The Library provides a collection of reusable trigger, filter, output, and action definitions. Items are stored in JSON files and can be copied or dragged into action configurations. The library uses a copy-on-use model - when an item is copied or dropped, it becomes an independent instance.
 
 ## File Structure
 
@@ -10,8 +10,11 @@ The Library provides a collection of reusable trigger, filter, output, and actio
 # Built-in library (shipped with app, read-only)
 src/stagehand/library/builtin_library.json
 
-# User library (config directory, editable)
-~/.config/stagehand/user_library.json
+# User library (portable mode)
+src/stagehand/.portable/user_library.json
+
+# User library (standard mode)
+~/.config/Stagehand/user_library.json
 ```
 
 ## Data Format
@@ -66,7 +69,7 @@ library.rename_item('triggers', index, 'New Name')
 
 **File**: `src/stagehand/library/sidebar.py`
 
-Sidebar panel with tree view of library items.
+Sidebar panel with tree view of library items. Supports context menu (Copy/Rename/Delete) and drag to ActionWidget.
 
 ```mermaid
 classDiagram
@@ -86,7 +89,10 @@ classDiagram
     }
     
     class LibraryTreeWidget {
+        +setDragEnabled(True)
+        +setDragDropMode(DragOnly)
         +refresh()
+        +mimeData(items) QMimeData
         +show_context_menu(pos)
         +copy_item(category, index)
         +rename_item(category, index)
@@ -97,6 +103,42 @@ classDiagram
     LibrarySidebar --> LibraryTreeWidget
 ```
 
+## Drag & Drop
+
+Library items can be dragged onto ActionWidgets to replace slot contents.
+
+### Mime Type
+
+```
+library_drop
+```
+
+### Payload Format
+
+```json
+{
+  "category": "triggers|filters|outputs|actions",
+  "data": { ... item serialization ... }
+}
+```
+
+### Drop Targets
+
+| Category | Target Slot | Behavior |
+|----------|------------|----------|
+| Actions | Entire ActionWidget | Replace all (keep name) |
+| Triggers | Trigger widget | Replace trigger data |
+| Outputs | Action (output) widget | Replace output data |
+| Filters | Not implemented | Deferred |
+
+### Visual Feedback
+
+When dragging over an ActionWidget:
+- Blue border (`#0078D7`) highlights the target slot
+- For Actions: entire ActionWidget gets border
+- For Triggers: only the trigger area gets border
+- For Outputs: only the action/output area gets border
+
 ## Context Menu Actions
 
 | Action | Built-in Items | User Items |
@@ -104,6 +146,24 @@ classDiagram
 | Copy | ✓ | ✓ |
 | Rename | ✗ | ✓ |
 | Delete | ✗ | ✓ |
+
+## Copy/Paste Flow
+
+```
+1. User right-clicks library item → Copy
+2. LibraryTreeWidget.copy_item() puts JSON on clipboard (plain text)
+3. User right-clicks ActionWidget/Trigger/Filter/Output → Paste
+4. Target deserializes via set_data()
+```
+
+## Save to Library
+
+Context menu option on ActionWidget, ActionTrigger, ActionFilter, and Action:
+
+1. Right-click → "Save [type] to Library"
+2. Dialog opens with name input and JSON preview
+3. On confirm: saved to `user_library.json`
+4. Library sidebar refreshes automatically
 
 ## Built-in Starter Items
 
@@ -115,21 +175,11 @@ classDiagram
 | Hello World on Startup | Action | Startup trigger + sandbox print |
 | Toggle OBS Mute on F1 | Action | Keyboard F1 trigger + OBS mute |
 
-## Copy Flow
+## Future Considerations (Out of Scope)
 
-```
-1. User right-clicks library item → Copy
-2. LibraryTreeWidget.copy_item() puts JSON on clipboard
-3. User navigates to ActionWidget
-4. Right-click → Paste (existing paste functionality)
-5. ActionWidget deserializes via set_data()
-```
-
-## Save to Library (Future)
-
-Not yet implemented. Will add:
-- "Save Trigger to Library" context menu on TriggerItem
-- "Save Filter to Library" context menu on FilterStackItem  
-- "Save Output to Library" context menu on ActionItem
-- "Save Action to Library" context menu on ActionWidget
-- `SaveToLibraryDialog` popup for naming items
+- Drag-and-drop from sidebar to empty page (create new ActionWidget)
+- Drop support for CompactActionWidget
+- Library import/export (sharing between users)
+- Parameterized templates (slots for user input)
+- Library search/filter
+- Folders/sub-groups in library
