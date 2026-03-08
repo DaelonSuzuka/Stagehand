@@ -7,9 +7,11 @@ from qtstrap.extras.log_monitor import LogMonitorDockWidget
 import qtawesome as qta
 
 from .about import AboutDialog
-from .components import StagehandStatusBarItem
+from .components import StagehandStatusBarItem, StagehandSidebar, SidebarContainer
 from .sandbox import Sandbox
 from .tabs import MainTabWidget
+# Import library to ensure StagehandSidebar subclasses are discovered
+from . import library
 
 
 class FontSizeMenu(QMenu):
@@ -61,15 +63,16 @@ class MainWindow(BaseMainWindow):
 
         self.load_settings()
 
-        self.create_activity_bar()
-
         self.tabs = MainTabWidget()
-        self.sidebar = QWidget()
+        self.sidebar = SidebarContainer(self)
         self.sidebar.hide()
 
         with PersistentCSplitter('main_split', self, margins=0) as splitter:
             splitter.add(self.sidebar)
             splitter.add(self.tabs)
+
+        self.create_activity_bar()
+        self.restore_sidebar_state()
 
         self.tab_shortcuts = []
         for i in range(10):
@@ -98,10 +101,42 @@ class MainWindow(BaseMainWindow):
 
     def create_activity_bar(self):
         self.activity_bar = BaseToolbar(self, 'activitybar', location='left', size=40)
+        self.sidebar_buttons: dict[str, QToolButton] = {}
+        
+        # Create buttons for each sidebar panel
+        for name, cls in StagehandSidebar.get_subclasses().items():
+            icon = qta.icon(cls.icon_name, color='gray') if cls.icon_name else qta.icon('fa.file', color='gray')
+            btn = QToolButton(icon=icon)
+            btn.setCheckable(True)
+            btn.setToolTip(cls.display_name)
+            btn.clicked.connect(lambda checked, n=name: self.toggle_sidebar_panel(n))
+            self.activity_bar.addWidget(btn)
+            self.sidebar_buttons[name] = btn
 
-        self.activity_bar.addWidget(QToolButton(icon=qta.icon('fa.list', color='gray')))
-        self.activity_bar.addWidget(QToolButton(icon=qta.icon('fa.file', color='gray')))
-        self.activity_bar.addWidget(QToolButton(icon=qta.icon('mdi.file-tree', color='gray')))
+    def toggle_sidebar_panel(self, name: str):
+        """Toggle visibility of a sidebar panel and update button state."""
+        if name not in self.sidebar.panels:
+            return
+        
+        is_visible = self.sidebar.toggle_panel(name)
+        
+        # Update all button states
+        for btn_name, btn in self.sidebar_buttons.items():
+            btn.setChecked(btn_name == name and is_visible)
+        
+        # Save sidebar state
+        if is_visible:
+            QSettings().setValue('sidebar/current_panel', name)
+        else:
+            QSettings().remove('sidebar/current_panel')
+    
+    def restore_sidebar_state(self):
+        """Restore sidebar visibility from saved settings."""
+        panel_name = QSettings().value('sidebar/current_panel', '')
+        if panel_name and panel_name in self.sidebar.panels:
+            self.sidebar.show_panel(panel_name)
+            if panel_name in self.sidebar_buttons:
+                self.sidebar_buttons[panel_name].setChecked(True)
 
     def init_statusbar_items(self) -> None:
         self.statusbar.add_spacer()

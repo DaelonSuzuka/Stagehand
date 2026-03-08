@@ -4,6 +4,7 @@ import qtawesome as qta
 from qtstrap import *
 
 from stagehand.sandbox import Sandbox
+from stagehand.library import SaveToLibraryDialog, save_to_library
 
 from .action_filter import ActionFilter
 from .action_trigger import ActionTrigger
@@ -107,6 +108,8 @@ class Action(QWidget):
         menu.addAction(QAction('Copy Action', self, triggered=self.copy))
         menu.addAction(QAction('Paste Action', self, triggered=self.paste))
         menu.addAction(QAction('Reset Action', self, triggered=self.reset))
+        menu.addSeparator()
+        menu.addAction('Save Action to Library').triggered.connect(self.save_to_library)
         menu.exec_(event.globalPos())
 
     def copy(self):
@@ -116,6 +119,26 @@ class Action(QWidget):
     def paste(self):
         data = json.loads(QClipboard().text())
         self.set_data(data)
+
+    def reset(self):
+        self.type.setCurrentText('sandbox')
+        self.action.reset()
+
+    def save_to_library(self):
+        """Open dialog to save this output to the library."""
+        data = self.get_data()
+        dialog = SaveToLibraryDialog('outputs', data, self)
+        if dialog.exec() == QDialog.Accepted and dialog.get_name():
+            save_to_library('outputs', data, dialog.get_name())
+
+    def _refresh_library_sidebar(self):
+        """Find and refresh the library sidebar tree."""
+        from stagehand.library.sidebar import LibraryTreeWidget
+        
+        for widget in QApplication.allWidgets():
+            if isinstance(widget, LibraryTreeWidget):
+                widget.refresh()
+                return
 
     def set_data(self, data):
         if 'action' in data:
@@ -136,10 +159,6 @@ class Action(QWidget):
 
     def run(self):
         self.action.run()
-
-    def reset(self):
-        self.type.setCurrentText('sandbox')
-        self.action.reset()
 
 
 class CustomAnimatedToggle(AnimatedToggle):
@@ -256,6 +275,8 @@ class ActionWidget(QWidget):
         menu.addAction('Rename').triggered.connect(self.label.start_editing)
         menu.addAction('Copy').triggered.connect(self.copy)
         menu.addAction('Paste').triggered.connect(self.paste)
+        menu.addSeparator()
+        menu.addAction('Save Action to Library').triggered.connect(self.save_to_library)
         menu.addAction(self.trigger.enabled)
         menu.addAction(self.filter.enabled)
         menu.addAction('Reset').triggered.connect(self.reset)
@@ -285,6 +306,25 @@ class ActionWidget(QWidget):
         self.action.set_data(data)
         self.trigger.set_data(data)
         self.filter.set_data(data)
+
+    def save_to_library(self):
+        """Open dialog to save this action to the library."""
+        data = self.get_data()
+        dialog = SaveToLibraryDialog('actions', data, self)
+        if dialog.exec() == QDialog.Accepted and dialog.get_name():
+            save_to_library('actions', data, dialog.get_name())
+            self._refresh_library_sidebar()
+
+    def _refresh_library_sidebar(self):
+        """Find and refresh the library sidebar tree."""
+        from qtstrap import App
+        from stagehand.library.sidebar import LibraryTreeWidget
+        
+        # Find all LibraryTreeWidget instances in the application
+        for widget in App.instance().allWidgets():
+            if isinstance(widget, LibraryTreeWidget):
+                widget.refresh()
+                return
 
     def reset(self):
         self.label.setText(self.name)
@@ -344,5 +384,7 @@ class CompactActionWidget(ActionWidget):
         menu.addAction('Rename').triggered.connect(self.label.start_editing)
         menu.addAction('Copy').triggered.connect(self.copy)
         menu.addAction('Paste').triggered.connect(self.paste)
+        menu.addSeparator()
+        menu.addAction('Save Action to Library').triggered.connect(self.save_to_library)
         menu.addAction('Reset').triggered.connect(self.reset)
         menu.exec_(event.globalPos())

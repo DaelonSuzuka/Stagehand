@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "triggers": [
+    {
+      "name": "Push-to-Talk Key",
+      "enabled": true,
+      "trigger_type": "keyboard",
+      "trigger": ""
+    }
+  ],
+  "filters": [
+    {
+      "name": "OBS Window Focused",
+      "enabled": true,
+      "type": "active window",
+      "window": "OBS"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "Toggle OBS Mute",
+      "type": "obs",
+      "action": "toggle_mute"
+    }
+  ],
+  "actions": [
+    {
+      "name": "Hello World on Startup",
+      "enabled": true,
+      "trigger": {
+        "enabled": true,
+        "trigger_type": "startup",
+        "trigger": "1000"
+      },
+      "filter": {
+        "enabled": true,
+        "filters": []
+      },
+      "action": {
+        "type": "sandbox",
+        "action": "print(\"Stagehand ready!\")"
+      }
+    },
+    {
+      "name": "Toggle OBS Mute on F1",
+      "enabled": true,
+      "trigger": {
+        "enabled": true,
+        "trigger_type": "keyboard",
+        "trigger": "F1"
+      },
+      "filter": {
+        "enabled": true,
+        "filters": []
+      },
+      "action": {
+        "type": "obs",
+        "action": "toggle_mute"
+      }
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 from qtstrap import *
 import json
+from stagehand.library import SaveToLibraryDialog, save_to_library
 from .items import TriggerItem
 from .sandbox_trigger import SandboxTrigger
 
@@ -39,6 +40,8 @@ class ActionTrigger(QWidget):
         menu.addAction(QAction('Copy Trigger', self, triggered=self.copy))
         menu.addAction(QAction('Paste Trigger', self, triggered=self.paste))
         menu.addAction(QAction('Reset Trigger', self, triggered=self.reset))
+        menu.addSeparator()
+        menu.addAction('Save Trigger to Library').triggered.connect(self.save_to_library)
         menu.exec_(event.globalPos())
 
     def type_changed(self):
@@ -61,6 +64,23 @@ class ActionTrigger(QWidget):
 
     def reset(self):
         self.type.setCurrentText('keyboard')
+
+    def save_to_library(self):
+        """Open dialog to save this trigger to the library."""
+        data = self.get_data()
+        dialog = SaveToLibraryDialog('triggers', data, self)
+        if dialog.exec() == QDialog.Accepted and dialog.get_name():
+            save_to_library('triggers', data, dialog.get_name())
+            self._refresh_library_sidebar()
+
+    def _refresh_library_sidebar(self):
+        """Find and refresh the library sidebar tree."""
+        from stagehand.library.sidebar import LibraryTreeWidget
+        
+        for widget in QApplication.allWidgets():
+            if isinstance(widget, LibraryTreeWidget):
+                widget.refresh()
+                return
 
     def set_data(self, data):
         if 'trigger' in data:

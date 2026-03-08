@@ -2,6 +2,7 @@ from qtstrap import *
 import qtawesome as qta
 import json
 from stagehand.sandbox import Sandbox
+from stagehand.library import SaveToLibraryDialog, save_to_library
 from .items import FilterStackItem
 
 
@@ -159,6 +160,8 @@ class ActionFilter(QWidget):
         menu.addAction(QAction('Copy Filters', self, triggered=self.copy))
         menu.addAction(QAction('Paste Filters', self, triggered=self.paste))
         menu.addAction(QAction('Reset Filters', self, triggered=self.reset))
+        menu.addSeparator()
+        menu.addAction('Save Filters to Library').triggered.connect(self.save_to_library)
         menu.exec_(event.globalPos())
 
     def copy(self):
@@ -172,6 +175,23 @@ class ActionFilter(QWidget):
     def reset(self):
         self.filters = []
         self.open_btn.setText('0')
+
+    def save_to_library(self):
+        """Open dialog to save these filters to the library."""
+        data = self.get_data()
+        dialog = SaveToLibraryDialog('filters', data, self)
+        if dialog.exec() == QDialog.Accepted and dialog.get_name():
+            save_to_library('filters', data, dialog.get_name())
+            self._refresh_library_sidebar()
+
+    def _refresh_library_sidebar(self):
+        """Find and refresh the library sidebar tree."""
+        from stagehand.library.sidebar import LibraryTreeWidget
+        
+        for widget in QApplication.allWidgets():
+            if isinstance(widget, LibraryTreeWidget):
+                widget.refresh()
+                return
 
     def on_accept(self):
         filts = [f for f in self.filters if not f.pls_delete]

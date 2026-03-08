@@ -16,3 +16,7 @@
 | **ActionItem** | Base class for output widgets. Subclasses register via `name` class attribute. |
 | **FilterStackItem** | Base class for filter widgets. Must implement `check()` returning bool. |
 | **StagehandPage** | Base class for tab pages. Pages register via `page_type` and `tags` ['singleton', 'user']. |
+| **StagehandSidebar** | Base class for sidebar panels. Panels register via `name`, `display_name`, and `icon_name` class attributes. |
+| **SidebarContainer** | Container widget managing all sidebar panels in a QStackedWidget. Toggles visibility via activity bar. |
+| **Library** | Collection of reusable trigger/filter/output/action definitions stored in JSON files. Copy-on-use model. |
+| **LibrarySidebar** | Sidebar panel for browsing and managing library items. |

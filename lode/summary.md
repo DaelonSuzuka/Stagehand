@@ -12,3 +12,5 @@ Stagehand is a Python/Qt desktop automation tool for streamers and content creat
 - **monaco-qt** (v0.2.0): Monaco code editor embedded in Qt for sandbox script editing
 
 **Entry Point**: `stagehand.__main__:main()` creates the Application singleton and MainWindow, which initializes all plugins, the Sandbox, and loads saved action pages from JSON.
+
+**Sidebar System**: Activity bar on the left side provides access to tool panels (Library, Plugins) via toggleable buttons. Sidebar panels are discovered via `StagehandSidebar.__subclasses__()` and managed by `SidebarContainer`. The Library sidebar provides reusable trigger/filter/output/action definitions that can be copied into actions.
