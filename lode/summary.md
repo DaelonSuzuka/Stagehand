@@ -1,16 +1,19 @@
 # Stagehand Summary
 
-Stagehand is a Python/Qt desktop automation tool for streamers and content creators. It provides an event-driven action system where users configure triggers (keyboard, joystick, device inputs), filters (conditional logic), and outputs (actions) without writing code. The application connects to OBS via websocket, manages microphones, handles physical input devices (pedals, switches), and allows Python script execution in a sandboxed environment.
+Stagehand is a Python/Qt desktop automation tool for streamers and content creators. It provides an event-driven action system with a config-centric architecture: human-editable YAML config defines triggers and task references, JS task files define what the system can do, and the Roadie QuickJS engine evaluates all action code.
 
-**Core Architecture**: PySide6-based GUI application using the qtstrap framework. Actions are user-defined workflows combining a trigger, optional filters, and an output. Plugins extend functionality by registering new trigger/filter/action types. The sandbox provides a constrained Python execution environment with persistence (`save()`/`load()`) and extension points.
+**Core Architecture**: Actions combine a trigger, optional filters, and a task. The config file (`config/actions.yaml`) is the source of truth — widgets are editors for the config, not the routing layer. All trigger sources distill down to `fire` events, matched by a `TriggerRegistry` against the config. Tasks are JS code executed in isolated QuickJS contexts via the Roadie engine. Named tasks are defined in `config/tasks/*.js` and shared by reference. Inline JS uses `stagehand.js: {body: "..."}` or YAML block scalars.
 
-**Key Technology Stack**: Python 3.10+, PySide6, obs-websocket-py, pygame-ce, pynput, cython, numpy, sounddevice.
+**Config Format**: Everything follows the `type: {params}` pattern — triggers, tasks, and filters. Example: `- keyboard: {key: "ctrl+shift+l"}` (trigger), `obs.switchScene: {scene: "Live"}` (task). This makes the config human-readable, diffable, and editable by hand.
 
-**Workspace Dependencies** (tightly integrated custom packages):
-- **qtstrap** (v0.7.1): Qt framework providing BaseApplication, layout context managers, persistent widgets, and theme system
-- **codex-engine-pyqt** (v0.3.1): Serial device auto-discovery and management via DeviceManager
-- **monaco-qt** (v0.2.0): Monaco code editor embedded in Qt for sandbox script editing
+**Roadie Engine**: QuickJS evaluation engine at `src/stagehand/roadie/`. `Engine.execute()`/`evaluate()`/`validate()` for action code. `stagehand` JS Proxy routes `stagehand.service.method()` calls through FFI to Python `Service` methods. `ExtensionToServiceAdapter` wraps existing `SandboxExtension` subclasses — each will migrate to `Service` directly.
 
-**Entry Point**: `stagehand.__main__:main()` creates the Application singleton and MainWindow, which initializes all plugins, the Sandbox, and loads saved action pages from JSON.
+**Key Technology Stack**: Python 3.10+, PySide6, QuickJS (action evaluation), obs-websocket-py, pygame-ce, pynput.
 
-**Sidebar System**: Activity bar on the left side provides access to tool panels (Library, Plugins) via toggleable buttons. Sidebar panels are discovered via `StagehandSidebar.__subclasses__()` and managed by `SidebarContainer`. The Library sidebar provides reusable trigger/filter/output/action definitions that can be copied into actions.
+**Active Plugins** (during transition): keyboard, web_server. All others (obs_core, shell, joystick, godot, etc.) temporarily disabled.
+
+**Workspace Dependencies**: qtstrap (v0.7.1), codex-engine-pyqt (v0.3.1), monaco-qt (v0.2.0).
+
+**Entry Point**: `stagehand.__main__:main()` creates the Application singleton and MainWindow.
+
+**In Transition**: Replacing the old widget-centric architecture (actions.json Qt widget dump + Python sandbox) with config-centric architecture (YAML config + JS task library + fire events + Roadie engine). See `plans/config-format.md` for the full plan.

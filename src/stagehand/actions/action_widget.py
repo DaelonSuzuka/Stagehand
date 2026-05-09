@@ -369,9 +369,11 @@ class ActionWidget(QWidget):
             self.set_data(item_data)
             self.label.setText(name)
         elif category == 'triggers' and self._drop_target == 'trigger':
-            self.trigger.set_data(item_data)
+            # Wrap trigger data in expected format
+            self.trigger.set_data({'trigger': item_data})
         elif category == 'outputs' and self._drop_target == 'output':
-            self.action.set_data(item_data)
+            # Wrap output data in expected format
+            self.action.set_data({'action': item_data})
         
         self._clear_highlight()
         self.changed.emit()

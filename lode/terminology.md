@@ -2,21 +2,29 @@
 
 | Term | Meaning |
 |------|---------|
-| **Action** | User-defined workflow combining trigger + filter + output. Saved as JSON, displayed as ActionWidget. |
-| **Trigger** | Event source that activates an action. Types: keyboard, joystick, device, sandbox (manual), startup. |
-| **Filter** | Conditional check that must pass for an action to execute. Multiple filters can be stacked (AND logic). |
-| **Output** | The operation performed when action runs. Types: sandbox (Python), keyboard, shell, cyber, OBS commands. |
-| **Sandbox** | Sandboxed Python execution environment with `save()`/`load()` persistence and extension injection. |
-| **Page** | Tab in the main UI containing a collection of actions. Saved as `actions.json`. |
-| **Plugin** | Module in `src/stagehand/plugins/` that registers triggers, filters, or outputs. |
-| **Extension** | Object registered in Sandbox that injects functions/classes into sandbox namespace. |
+| **Action** | User-defined unit combining trigger + filter + task. The full routing unit. |
+| **Task** | What runs when an action fires. Was "Output" / "ActionItem". Either a named task ID from the library (`obs.switchScene`) or inline JS (`stagehand.js`). |
+| **Trigger** | Event source that activates an action. Distilled to a `fire` event for the engine. |
+| **Filter** | Conditional check on a `fire` event. Must pass for the task to execute. `type: {params}` format. |
+| **Fire** | The narrow-waist event. All trigger sources distill down to `fire` → engine matches → task execution. |
+| **Task Library** | JS files in `config/tasks/` defining named, composable tasks via `stagehand.register()`. Shared by reference, not copy. |
+| **Helpers** | JS utility functions in `config/helpers/`, injected as `roadie.helpers.*` into every context. |
+| **Action Config** | YAML file (`config/actions.yaml`) defining pages, actions, triggers, filters, and task references. Human-editable. |
+| **Page** | Named group of actions in the config. Displayed as a tab in the UI. |
+| **Service** | Python class injected into JS contexts via `stagehand.service.method()`. Replaces `SandboxExtension`. |
+| **stagehand Proxy** | Nested JS Proxy routing `stagehand.service.method()` calls to `__service_method` FFI callables, with auto-unwrap for dict/list returns. |
+| **Roadie** | QuickJS engine module at `src/stagehand/roadie/`. Provides `Engine`, `Service`, `ExecutionResult`, `ValidationResult`, `ExtensionToServiceAdapter`. |
+| **ExtensionToServiceAdapter** | Adapter wrapping any `SandboxExtension` as a `Service`. Transitional — each extension will migrate to `Service` directly. |
 | **Device** | Physical hardware (Stomp pedals, click switches) managed via codex DeviceManager. |
-| **ActionWidgetGroup** | Container managing a list of actions with group-level filters. |
-| **TriggerItem** | Base class for trigger widgets. Subclasses register via `name` class attribute. |
-| **ActionItem** | Base class for output widgets. Subclasses register via `name` class attribute. |
-| **FilterStackItem** | Base class for filter widgets. Must implement `check()` returning bool. |
-| **StagehandPage** | Base class for tab pages. Pages register via `page_type` and `tags` ['singleton', 'user']. |
-| **StagehandSidebar** | Base class for sidebar panels. Panels register via `name`, `display_name`, and `icon_name` class attributes. |
-| **SidebarContainer** | Container widget managing all sidebar panels in a QStackedWidget. Toggles visibility via activity bar. |
-| **Library** | Collection of reusable trigger/filter/output/action definitions stored in JSON files. Copy-on-use model. |
-| **LibrarySidebar** | Sidebar panel for browsing and managing library items. |
+| **Plugin** | Module in `src/stagehand/plugins/` that registers services, triggers, filters, or pages. |
+
+## Deprecated Terms (being replaced)
+
+| Old Term | New Term | Notes |
+|----------|----------|-------|
+| Output | Task | "Output" was the old name for what runs. Now "Task". |
+| ActionItem | TaskItem | Widget base class for task selectors. |
+| SandboxExtension | Service | Python callables injected into JS. Each ext migrates to `Service` parent class. |
+| Sandbox | Engine | The execution environment. `Sandbox` class delegates to Roadie `Engine`. |
+| actions.json | actions.yaml | Widget state dump → human-editable config. |
+| Library (copy-on-use) | Task Library (by reference) | Library copied templates → task library shared by name reference. |

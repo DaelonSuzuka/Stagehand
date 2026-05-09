@@ -1,4 +1,5 @@
 from qtstrap import *
+from stagehand.roadie import Engine, ExtensionToServiceAdapter
 from .sandbox_tools import SandboxTools, SandboxToolsDockWidget
 
 
@@ -15,8 +16,9 @@ class Sandbox(QObject):
         self.tools_dock = SandboxToolsDockWidget(parent)
         self.tools = self.tools_dock.tools
 
-        self.this = None
-        self.source = None
+        # Build the QuickJS engine and register all existing extensions
+        self._engine = Engine()
+        self._engine.on_print(lambda msg: self.tools.print(msg))
 
         for ext in SandboxExtension.__subclasses__():
             e = ext()
@@ -25,6 +27,7 @@ class Sandbox(QObject):
                     self.extensions[name] = e
             else:
                 self.extensions[ext.name] = e
+            self._engine.register_service(ExtensionToServiceAdapter(e))
 
         self.reset_environment()
 
@@ -41,8 +44,9 @@ class Sandbox(QObject):
             'load': self._load,
             'data': self._data,
             'print': self.tools.print,
-            'this': self.this,
-            'source': self.source,
+            # 'this' and 'source' removed — violations of the narrow waist.
+            # If action code needs trigger context, it should flow through
+            # the fire event payload, not UI object references.
             **self.extensions,
         }
         self._locals = {}
@@ -55,55 +59,37 @@ class Sandbox(QObject):
 
     @Slot()
     def compile(self, text, error_cb=None):
-        error = ''
-        try:
-            compile(text, '', 'exec')
-        except Exception as e:
-            error = str(e)
+        """Validate JS syntax without executing. Replaces Python's compile()."""
+        result = self._engine.validate(text)
+        error = result.error if not result.ok else ''
 
         if error_cb:
             error_cb(error)
 
     @Slot()
     def run(self, text, error_cb=None):
+        """Execute JS code in a fresh context. Replaces Python's exec()."""
         if text == '':
             return
 
-        error = ''
-        try:
-            code = compile(text, '', 'exec')
-            self._globals['this'] = self.this
-            self._globals['source'] = self.source
-            exec(code, self._globals, self._locals)
-        except Exception as e:
-            error = str(e)
-
-        self._globals['this'] = None
-        self._globals['source'] = None
+        result = self._engine.execute(text)
+        error = result.error if not result.ok else ''
 
         if error_cb:
             error_cb(error)
-        else:
+        elif error:
             self.tools.print(error)
 
     @Slot()
     def eval(self, text, error_cb=None):
+        """Evaluate JS code and return the result. Replaces Python's eval()."""
         if text == '':
             return
 
-        error = ''
-        try:
-            code = compile(text, '', 'exec')
-            self._globals['this'] = self.this
-            self._globals['source'] = self.source
-            eval(code, self._globals, self._locals)
-        except Exception as e:
-            error = str(e)
-
-        self._globals['this'] = None
-        self._globals['source'] = None
+        result = self._engine.evaluate(text)
+        error = result.error if not result.ok else ''
 
         if error_cb:
             error_cb(error)
-        else:
+        elif error:
             self.tools.print(error)
