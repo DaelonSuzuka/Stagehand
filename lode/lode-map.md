@@ -17,11 +17,15 @@
 - [architecture/sidebar.md](architecture/sidebar.md) - Sidebar system architecture
 
 ## Components
-- [actions/action-widget.md](actions/action-widget.md) - ActionWidget and ActionWidgetGroup (will become config editors)
+- [actions/action-widget.md](actions/action-widget.md) - ActionWidget and ActionWidgetGroup (being replaced by config editors)
 - [actions/triggers.md](actions/triggers.md) - Trigger system (being replaced by fire events)
 - [actions/filters.md](actions/filters.md) - Filter system (being replaced by data filters)
 - [sandbox/runtime.md](sandbox/runtime.md) - QuickJS sandbox execution via Roadie engine
 - [library/library.md](library/library.md) - Library system (being replaced by task library)
+
+## Config System
+- [config/config-module.md](config/config-module.md) - YAML config data models, I/O, and default seed
+- [config/trigger-registry.md](config/trigger-registry.md) - Fire event matching and task execution
 
 ## Roadie Engine
 - [roadie/engine.md](../src/stagehand/roadie/engine.py) - QuickJS evaluation engine: Proxy, autoUnwrap, Service, execution modes
