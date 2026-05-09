@@ -26,6 +26,9 @@
 ## Config System
 - [config/config-module.md](config/config-module.md) - YAML config data models, I/O, and default seed
 - [config/trigger-registry.md](config/trigger-registry.md) - Fire event matching and task execution
+- [config/action-pipeline.md](config/action-pipeline.md) - App-level wiring: engine, services, config, registry, fire sources
+- [config/fire-sources.md](config/fire-sources.md) - Keyboard and startup fire source bridges
+- [config/services.md](config/services.md) - Service subclasses (KeyboardService, MouseService)
 
 ## Roadie Engine
 - [roadie/engine.md](../src/stagehand/roadie/engine.py) - QuickJS evaluation engine: Proxy, autoUnwrap, Service, execution modes
