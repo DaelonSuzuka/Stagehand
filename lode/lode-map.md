@@ -31,8 +31,9 @@
 - [config/services.md](config/services.md) - Service subclasses (KeyboardService, MouseService)
 
 ## Roadie Engine
-- [roadie/engine.md](../src/stagehand/roadie/engine.py) - QuickJS evaluation engine: Proxy, autoUnwrap, Service, execution modes
-- [roadie/adapter.md](../src/stagehand/roadie/adapter.py) - ExtensionToServiceAdapter: wraps SandboxExtension as Service
+- [engine.py (source)](../src/stagehand/roadie/engine.py) - QuickJS evaluation engine: Proxy, autoUnwrap, Service, execution modes
+- [adapter.py (source)](../src/stagehand/roadie/adapter.py) - ExtensionToServiceAdapter: wraps SandboxExtension as Service
+- **This is the canonical engine.** The standalone repo at `~/projects/roadie` is a dormant ancestor (started as a NiceGUI Stagehand rewrite, shrank to just the engine) — do not sync to it; see its lode for the pivot rationale. Extraction/publication under the Roadie name is deferred (see plans/roadie-hardening.md H-7).
 
 ## Plugins
 - [plugins/builtin.md](plugins/builtin.md) - Built-in plugins overview
@@ -45,6 +46,8 @@
 ## Plans
 - [plans/library-system.md](plans/library-system.md) - Reusable definition library (legacy — replaced by task library)
 - [plans/config-format.md](plans/config-format.md) - New config format: YAML actions + JS tasks + fire events
+- [plans/migration-review-2026-07.md](plans/migration-review-2026-07.md) - Review gap list for the config-centric migration: fire-event contract (combos, press/release, threading), feedback loop, named tasks / register(), service fixes, two-engines. Read before resuming migration work.
+- [plans/roadie-hardening.md](plans/roadie-hardening.md) - Engine hardening: time/stack limits, error-masking Proxy fix, globalThis FFI, auto-unwrap sentinel, sync-service policy, benchmark cherry-pick, pre-extraction checklist.
 
 ## Scratch
 - [tmp/](tmp/) - Session scraps (git-ignored)
