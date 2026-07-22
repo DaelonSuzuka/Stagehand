@@ -12,13 +12,19 @@ Service classes are direct `Service` subclasses that inject Python callables int
 class KeyboardService(Service):
     name = ['keyboard', 'kb']
     
-    def tap(key: str) -> None      # Press + release
-    def press(key: str) -> None    # Press down
-    def release(key: str) -> None  # Release
-    def type(string: str) -> None  # Type a string
+    def tap(key: str) -> None      # Press + release a key or combo
+    def press(key: str) -> None    # Press down (holds; combos press all parts)
+    def release(key: str) -> None  # Release (combos release in reverse)
+    def type(string: str) -> None  # Type a string (always session tier)
 ```
 
-JS usage: `stagehand.keyboard.tap('a')`, `stagehand.kb.type('hello')`
+JS usage: `stagehand.keyboard.tap('ctrl+shift+l')`, `stagehand.kb.type('hello')`
+
+Key arguments are canonical combo specs (see
+[../architecture/keys.md](../architecture/keys.md)). Sending goes through a
+two-tier backend chosen at startup: uinput virtual device on Linux when
+`/dev/uinput` is writable (reaches raw-input listeners), pynput otherwise.
+Unknown key names raise `ValueError` into JS.
 
 ### MouseService (`services/keyboard_service.py`)
 

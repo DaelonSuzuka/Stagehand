@@ -1,5 +1,7 @@
 from qtstrap import *
+from stagehand import keys
 from stagehand.actions import TriggerItem
+from stagehand.key_picker import KeyPicker
 from pynput.keyboard import Listener, Key, KeyCode, HotKey
 
 
@@ -48,7 +50,7 @@ class KeyboardTrigger(TriggerItem):
         self.listener.press.connect(self.on_press)
         self.listener.release.connect(self.on_release)
 
-        self.value = QLineEdit()
+        self.value = KeyPicker()
         self.value.textChanged.connect(changed)
         self.value.textChanged.connect(self.on_change)
 
@@ -59,7 +61,12 @@ class KeyboardTrigger(TriggerItem):
     def on_change(self, text):
         if self.type.currentText() == 'hotkey':
             try:
-                self.hotkey = HotKey(HotKey.parse(text), self.on_hotkey)
+                # canonical specs ('ctrl+l') translate; legacy '<ctrl>+l' passes through
+                spec = keys.to_hotkey_spec(text)
+            except ValueError:
+                spec = text
+            try:
+                self.hotkey = HotKey(HotKey.parse(spec), self.on_hotkey)
             except:
                 self.hotkey = None
 

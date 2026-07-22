@@ -14,7 +14,9 @@ import logging
 from typing import TYPE_CHECKING
 
 from qtstrap import *
-from pynput.keyboard import Listener, Key, KeyCode, HotKey
+from pynput.keyboard import Listener
+
+from stagehand import keys
 
 if TYPE_CHECKING:
     from stagehand.trigger_registry import TriggerRegistry
@@ -53,37 +55,13 @@ class KeyboardFireSource(QObject):
         """Connect this fire source to a trigger registry."""
         self._registry = registry
 
-    def _normalize_key(self, key) -> str:
-        """Convert a pynput Key or KeyCode to a normalized string.
-
-        Examples:
-            KeyCode(char='a') -> 'a'
-            Key.space -> 'space'
-            Key.ctrl_l -> 'ctrl'
-            Key.shift_l -> 'shift'
-        """
-        if isinstance(key, KeyCode):
-            if key.char:
-                return key.char
-            return str(key)
-        if isinstance(key, Key):
-            # Map modifier variants to simple names
-            name = key.name
-            # Remove _l, _r, _gr variants for modifiers
-            for variant in ('_l', '_r', '_gr'):
-                if name.endswith(variant):
-                    name = name[: -len(variant)]
-                    break
-            return name
-        return str(key)
-
     def _on_press(self, key) -> None:
         """Called by pynput listener thread on key press."""
         if key in self._pressed_keys:
             return  # Debounce repeats
         self._pressed_keys.add(key)
 
-        normalized = self._normalize_key(key)
+        normalized = keys.normalize_pynput(key)
 
         # Emit Qt signal (for UI triggers that still use the old path)
         self.key_pressed.emit(normalized)
@@ -101,7 +79,7 @@ class KeyboardFireSource(QObject):
         if key in self._pressed_keys:
             self._pressed_keys.remove(key)
 
-        normalized = self._normalize_key(key)
+        normalized = keys.normalize_pynput(key)
 
         self.key_released.emit(normalized)
 

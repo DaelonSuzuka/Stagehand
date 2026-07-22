@@ -35,7 +35,8 @@ canonically-ordered combo strings (`ctrl+shift+h`) alongside or instead of bare
 keys. pynput's `HotKey` helper (already imported) can canonicalize.
 
 **Trap within the trap:** with Ctrl held, pynput delivers `KeyCode.char` as the
-*control character* (`'\x0c'` for ctrl+l), not `'l'` — `_normalize_key` passes
+*control character* (`'\x0c'` for ctrl+l), not `'l'` — `keys.normalize_pynput`
+(moved from `_normalize_key` during the key-vocabulary work) passes
 that through, so even bare-key matching breaks while modifiers are down. Combo
 composition must map control chars back to letters (or use `key.vk` /
 `HotKey.parse` canonicalization) — test on Windows AND Linux, the two platforms

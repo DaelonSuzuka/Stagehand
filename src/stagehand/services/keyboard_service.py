@@ -3,21 +3,83 @@
 These replace KeyboardExtension and MouseExtension as direct Service
 subclasses, accessible from JS as stagehand.keyboard.tap('a'),
 stagehand.mouse.click('left'), etc.
+
+KeyboardService sends through one of two tiers:
+    driver tier  — a uinput virtual device (Linux only). Events are
+                   indistinguishable from hardware, so raw-input listeners
+                   (games, TeamSpeak-style hotkey engines) receive them.
+    session tier — pynput (SendInput / XTEST / CGEventPost). Portable
+                   fallback; invisible to raw-input listeners.
+
+Tier selection happens once at startup: uinput if the platform and
+/dev/uinput permissions allow, pynput otherwise. type() always uses the
+session tier — driver-tier scancodes can't express arbitrary unicode text.
 """
 
 from __future__ import annotations
 
-from pynput.keyboard import Key, Controller as KeyboardController
+import logging
+import sys
+
+from pynput.keyboard import Controller as KeyboardController
 from pynput.mouse import Button, Controller as MouseController
 
+from stagehand import keys
 from stagehand.roadie import Service
+
+log = logging.getLogger(__name__)
+
+
+class _PynputBackend:
+    tier = 'session'
+
+    def __init__(self, controller: KeyboardController):
+        self.controller = controller
+
+    def press(self, name: str) -> None:
+        self.controller.press(self._resolve(name))
+
+    def release(self, name: str) -> None:
+        self.controller.release(self._resolve(name))
+
+    def _resolve(self, name: str):
+        key = keys.to_pynput(name)
+        if key is None:
+            raise ValueError(f'{name!r} requires the driver-tier (uinput) backend')
+        return key
+
+
+class _UinputBackend:
+    tier = 'driver'
+
+    def __init__(self):
+        from evdev import UInput, ecodes
+
+        self._ecodes = ecodes
+        codes = [ecodes.ecodes[name] for name in set(keys.KEYS.values())]
+        self.ui = UInput({ecodes.EV_KEY: codes}, name='stagehand-virtual-keyboard')
+
+    def press(self, name: str) -> None:
+        self._write(name, 1)
+
+    def release(self, name: str) -> None:
+        self._write(name, 0)
+
+    def _write(self, name: str, value: int) -> None:
+        evdev_name = keys.to_evdev(name)
+        if evdev_name is None:
+            log.warning(f'no physical key for {name!r}, skipping')
+            return
+        self.ui.write(self._ecodes.EV_KEY, self._ecodes.ecodes[evdev_name], value)
+        self.ui.syn()
 
 
 class KeyboardService(Service):
     """Provides keyboard simulation to JS action code.
 
-    JS usage:
+    All key arguments accept canonical combo specs (see stagehand.keys):
         stagehand.keyboard.tap('a')
+        stagehand.keyboard.tap('ctrl+shift+l')
         stagehand.keyboard.press('ctrl')
         stagehand.keyboard.release('ctrl')
         stagehand.keyboard.type('hello world')
@@ -27,19 +89,37 @@ class KeyboardService(Service):
 
     def __init__(self):
         self.controller = KeyboardController()
+        self.backend = self._pick_backend()
+
+    def _pick_backend(self):
+        if sys.platform == 'linux':
+            try:
+                backend = _UinputBackend()
+                log.info('keyboard send: driver tier (uinput)')
+                return backend
+            except Exception as e:
+                log.info(f'uinput unavailable ({e}), keyboard send: session tier (pynput)')
+        else:
+            log.info('keyboard send: session tier (pynput)')
+        return _PynputBackend(self.controller)
 
     def tap(self, key: str) -> None:
-        """Press and release a key."""
-        self.controller.press(key)
-        self.controller.release(key)
+        """Press and release a key or combo: mods down, key tapped, mods up."""
+        parts = keys.parse_combo(key)
+        for part in parts:
+            self.backend.press(part)
+        for part in reversed(parts):
+            self.backend.release(part)
 
     def press(self, key: str) -> None:
-        """Press a key down (hold)."""
-        self.controller.press(key)
+        """Press and hold a key or combo."""
+        for part in keys.parse_combo(key):
+            self.backend.press(part)
 
     def release(self, key: str) -> None:
-        """Release a held key."""
-        self.controller.release(key)
+        """Release a held key or combo."""
+        for part in reversed(keys.parse_combo(key)):
+            self.backend.release(part)
 
     def type(self, string: str) -> None:
         """Type a string character by character."""

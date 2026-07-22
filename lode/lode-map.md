@@ -9,6 +9,7 @@
 - [architecture/entry-points.md](architecture/entry-points.md) - Application bootstrap and initialization
 - [architecture/actions-system.md](architecture/actions-system.md) - Action/Trigger/Filter/Output architecture (legacy — being replaced)
 - [architecture/new-config-format.md](architecture/new-config-format.md) - Config-centric architecture: YAML actions + JS tasks + fire events
+- [architecture/keys.md](architecture/keys.md) - Canonical key vocabulary, representation adapters, send tiers (uinput/pynput), key picker
 - [architecture/sandbox.md](architecture/sandbox.md) - Python sandbox execution model (legacy — being replaced by Roadie engine)
 - [architecture/plugins.md](architecture/plugins.md) - Plugin discovery and loading
 - [architecture/dependencies.md](architecture/dependencies.md) - External workspace dependencies (qtstrap, codex, monaco-qt)

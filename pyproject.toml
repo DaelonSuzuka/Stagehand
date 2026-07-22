@@ -50,6 +50,7 @@ dependencies = [
     "httpx>=0.27.0",
     "quickjs>=1.19.4",
     "pyyaml>=6.0",
+    "evdev>=1.6 ; sys_platform == 'linux'",
 ]
 
 [project.urls]

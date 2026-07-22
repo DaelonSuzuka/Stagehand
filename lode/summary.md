@@ -8,7 +8,9 @@ Stagehand is a Python/Qt desktop automation tool for streamers and content creat
 
 **Roadie Engine**: QuickJS evaluation engine at `src/stagehand/roadie/`. `Engine.execute()`/`evaluate()`/`validate()` for action code. `stagehand` JS Proxy routes `stagehand.service.method()` calls through FFI to Python `Service` methods. `ExtensionToServiceAdapter` wraps existing `SandboxExtension` subclasses — each will migrate to `Service` directly.
 
-**Key Technology Stack**: Python 3.10+, PySide6, QuickJS (action evaluation), obs-websocket-py, pygame-ce, pynput.
+**Key Technology Stack**: Python 3.10+, PySide6, QuickJS (action evaluation), obs-websocket-py, pygame-ce, pynput, evdev (Linux uinput send tier).
+
+**Key Handling**: One canonical key vocabulary (`keys.py`, `ctrl+shift+f13` form) with adapters to pynput, evdev, and Qt. Keyboard sending is two-tier: uinput virtual device on Linux (reaches raw-input listeners like TeamSpeak/games), pynput fallback elsewhere. See `architecture/keys.md`.
 
 **Active Plugins** (during transition): keyboard, web_server. All others (obs_core, shell, joystick, godot, etc.) temporarily disabled.
 
