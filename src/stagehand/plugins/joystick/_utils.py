@@ -1,6 +1,9 @@
 import os
 
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = 'hide'
+# SDL installs its own SIGINT/SIGTERM handlers that convert signals into
+# SDL_QUIT events nobody consumes, making the whole app unkillable by SIGTERM
+os.environ['SDL_NO_SIGNAL_HANDLERS'] = '1'
 import pygame
 from pygame import joystick
 
