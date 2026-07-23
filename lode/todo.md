@@ -1,0 +1,1 @@
+- app ignores SIGTERM under QtAsyncio.run — check shutdown path (found 2026-07-22 during offscreen startup test)

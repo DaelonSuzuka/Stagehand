@@ -93,7 +93,7 @@ class MainWindow(BaseMainWindow):
         if sys.platform == 'linux':
             self.uinput_setup = UinputSetupDialog(parent=self)
             self.commands.append(Command('Keyboard: Output Setup', triggered=self.uinput_setup.open_manual))
-            call_later(2000, self.uinput_setup.maybe_offer)
+            call_later(self.uinput_setup.maybe_offer, 2000)
 
         self.init_tray_stuff()
 

@@ -106,7 +106,7 @@ class StartupFireSource:
         self._registry = registry
         self._delay_ms = delay_ms
         if delay_ms > 0:
-            call_later(delay_ms, self._fire)
+            call_later(self._fire, delay_ms)
         else:
             self._fire()
 
