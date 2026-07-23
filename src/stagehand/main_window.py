@@ -6,10 +6,13 @@ from qtstrap.extras.command_palette import Command, CommandPalette
 from qtstrap.extras.log_monitor import LogMonitorDockWidget
 import qtawesome as qta
 
+import sys
+
 from .about import AboutDialog
 from .components import StagehandStatusBarItem, StagehandSidebar, SidebarContainer
 from .sandbox import Sandbox
 from .tabs import MainTabWidget
+from .uinput_setup import UinputSetupDialog
 # Import library to ensure StagehandSidebar subclasses are discovered
 from . import library
 
@@ -85,6 +88,12 @@ class MainWindow(BaseMainWindow):
             Command('Theme: Set to Light Mode', triggered=lambda: App().change_theme('light')),
             Command('Theme: Set to Dark Mode', triggered=lambda: App().change_theme('dark')),
         ]
+
+        self.uinput_setup = None
+        if sys.platform == 'linux':
+            self.uinput_setup = UinputSetupDialog(parent=self)
+            self.commands.append(Command('Keyboard: Output Setup', triggered=self.uinput_setup.open_manual))
+            call_later(2000, self.uinput_setup.maybe_offer)
 
         self.init_tray_stuff()
 
@@ -165,6 +174,10 @@ class MainWindow(BaseMainWindow):
 
         menu.addSeparator()
         menu.addAction(self.minimize_to_tray)
+
+        if self.uinput_setup is not None:
+            menu.addSeparator()
+            menu.addAction('Keyboard Output Setup...').triggered.connect(self.uinput_setup.open_manual)
 
         menu.addSeparator()
         menu.addAction(App().updater.check_for_updates_action())

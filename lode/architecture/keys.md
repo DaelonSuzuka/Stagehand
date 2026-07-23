@@ -55,14 +55,25 @@ future options — see kmonad for the portable-trio existence proof. Note
 the anti-cheat asterisk: some anti-cheats detect the Interception driver
 itself.
 
-To enable the driver tier on Linux:
+## Setup Automation (`src/stagehand/uinput_setup.py`)
 
-```
-# /etc/udev/rules.d/70-stagehand-uinput.rules
-KERNEL=="uinput", MODE="0660", GROUP="input", OPTIONS+="static_node=uinput"
-```
+`diagnose_uinput()` (in `keyboard_service.py`) classifies driver-tier
+availability: `ok` / `unsupported` / `no_evdev` / `no_node` /
+`no_permission`. The last two are fixable by `ENABLE_SCRIPT`, which
+`UinputSetupDialog` runs via `pkexec` (polkit GUI auth). The script is
+idempotent by construction — it owns its drop-in files
+(`/etc/udev/rules.d/70-stagehand-uinput.rules`,
+`/etc/modules-load.d/stagehand-uinput.conf`) and never appends to shared
+config. The rule uses `TAG+="uaccess"`: logind grants an ACL to the
+active seat user immediately after `udevadm trigger` — no group
+membership, no re-login, and `KeyboardService.retry_backend()` hot-swaps
+to the driver tier without an app restart.
 
-plus membership in the `input` group.
+Entry points (Linux only): one-time startup offer (gated by
+`uinput_setup/dont_ask` in QSettings), settings menu ("Keyboard Output
+Setup..."), and command palette ("Keyboard: Output Setup"). The dialog
+works without a live `KeyboardService` — the action pipeline isn't wired
+into the app yet — and accepts one for live retry when it is.
 
 ## Key Picker (`src/stagehand/key_picker.py`)
 

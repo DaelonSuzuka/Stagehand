@@ -19,6 +19,7 @@ session tier — driver-tier scancodes can't express arbitrary unicode text.
 from __future__ import annotations
 
 import logging
+import os
 import sys
 
 from pynput.keyboard import Controller as KeyboardController
@@ -28,6 +29,41 @@ from stagehand import keys
 from stagehand.roadie import Service
 
 log = logging.getLogger(__name__)
+
+
+UDEV_RULE_PATH = '/etc/udev/rules.d/70-stagehand-uinput.rules'
+UDEV_RULE = 'KERNEL=="uinput", TAG+="uaccess", OPTIONS+="static_node=uinput"'
+
+# uaccess grants an ACL to the active seat user the moment udev retriggers —
+# no group membership, no re-login. Every step is idempotent (own rule file,
+# never appending to anything shared), so rerunning is always safe.
+ENABLE_SCRIPT = f"""set -e
+printf '%s\\n' '{UDEV_RULE}' > {UDEV_RULE_PATH}
+echo uinput > /etc/modules-load.d/stagehand-uinput.conf
+modprobe uinput
+udevadm control --reload-rules
+udevadm trigger --name-match=uinput
+"""
+
+OFFERABLE = ('no_node', 'no_permission')
+
+
+def diagnose_uinput() -> str:
+    """Driver-tier availability: 'ok', 'unsupported', 'no_evdev', 'no_node', 'no_permission'.
+
+    States in OFFERABLE are fixable by running ENABLE_SCRIPT as root.
+    """
+    if sys.platform != 'linux':
+        return 'unsupported'
+    try:
+        import evdev  # noqa: F401
+    except ImportError:
+        return 'no_evdev'
+    if not os.path.exists('/dev/uinput'):
+        return 'no_node'
+    if not os.access('/dev/uinput', os.W_OK):
+        return 'no_permission'
+    return 'ok'
 
 
 class _PynputBackend:
@@ -89,19 +125,28 @@ class KeyboardService(Service):
 
     def __init__(self):
         self.controller = KeyboardController()
-        self.backend = self._pick_backend()
+        self.backend = _PynputBackend(self.controller)
+        self.diagnosis = ''
+        self.retry_backend()
 
-    def _pick_backend(self):
-        if sys.platform == 'linux':
+    def retry_backend(self) -> bool:
+        """(Re)attempt the driver-tier backend, hot-swapping on success.
+
+        Callable at any time — the setup dialog uses it to activate the
+        driver tier live after the udev rule is installed.
+        """
+        if self.backend.tier == 'driver':
+            return True
+        self.diagnosis = diagnose_uinput()
+        if self.diagnosis == 'ok':
             try:
-                backend = _UinputBackend()
+                self.backend = _UinputBackend()
                 log.info('keyboard send: driver tier (uinput)')
-                return backend
+                return True
             except Exception as e:
-                log.info(f'uinput unavailable ({e}), keyboard send: session tier (pynput)')
-        else:
-            log.info('keyboard send: session tier (pynput)')
-        return _PynputBackend(self.controller)
+                self.diagnosis = f'uinput error: {e}'
+        log.info(f'keyboard send: session tier (pynput) [{self.diagnosis}]')
+        return False
 
     def tap(self, key: str) -> None:
         """Press and release a key or combo: mods down, key tapped, mods up."""
