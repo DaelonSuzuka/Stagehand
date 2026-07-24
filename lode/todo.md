@@ -1,1 +1,2 @@
 - app ignores SIGTERM under QtAsyncio.run — check shutdown path (found 2026-07-22 during offscreen startup test)
+- review plugin_loader.py (operator request 2026-07-23) — note: 'disabled' plugins still get imported, import-time side effects run (see pygame/SDL SIGTERM incident)
