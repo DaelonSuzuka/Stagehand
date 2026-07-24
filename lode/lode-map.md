@@ -2,6 +2,7 @@
 
 ## Core Documentation
 - [summary.md](summary.md) - Project overview and tech stack
+- [vision.md](vision.md) - Bottom-up vs top-down, the four-layer ladder, trust cliff, plugin distribution workshop
 - [terminology.md](terminology.md) - Domain vocabulary (updated for Task/Action/Fire model)
 - [practices.md](practices.md) - Development patterns and conventions
 
