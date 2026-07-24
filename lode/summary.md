@@ -18,4 +18,6 @@ Stagehand is a Python/Qt desktop automation tool for streamers and content creat
 
 **Entry Point**: `stagehand.__main__:main()` creates the Application singleton and MainWindow.
 
+**Distribution**: Run from source only (git + uv). The PyInstaller bundle path (onefile.spec / bundle.spec / zip plugins) was deprecated in favor of a planned `uv tool install` distribution, which was itself abandoned when the `stagehand` PyPI name was sold to Browserbase (for $1000, before 2026-07). Publishing under that name is no longer possible; `make publish` and the twine machinery are stale hazards. Any future distribution needs a new package name.
+
 **In Transition**: Replacing the old widget-centric architecture (actions.json Qt widget dump + Python sandbox) with config-centric architecture (YAML config + JS task library + fire events + Roadie engine). See `plans/config-format.md` for the full plan.
